@@ -1,10 +1,27 @@
 #include "engine.h"
-#include <GL/glew.h>
+#include <iostream>
 
 int main(int argc, char** argv)
 {
-	std::cout << "Hello world!" << std::endl;
-	int error = glewInit();
-	std::cout << error << std::endl;
+	Display display("Game Engine", 1920, 1080);
+
+	Timer timer;
+	int frames = 0;
+
+	while (!display.isClosed())
+	{
+		display.clear(255, 0, 0);
+
+		display.update();
+
+		if (timer.elapsed() >= 1.0)
+		{
+			printf("FPS: %i\n", frames);
+			frames = 0;
+			timer.reset();
+		}
+		else frames++;
+	}
+
 	return 0;
 }

@@ -2,7 +2,7 @@
 #include <iostream>
 
 #define FULLSCREEN_MODE 0
-#define SHOW_MOUSE 0
+#define SHOW_MOUSE 1
 #define VSYNC 0
 
 Display::Display(const char* title, int width, int height) :
@@ -38,9 +38,28 @@ void Display::clear() const
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
+void Display::clear(int red, int green, int blue) const
+{
+	glClearColor(red, green, blue, 255);
+	clear();
+}
+
 bool Display::isClosed() const
 {
 	return glfwWindowShouldClose(m_pWindow);
+}
+
+static void windowResize(GLFWwindow* pWindow, int width, int height)
+{
+	Display* display = (Display*)glfwGetWindowUserPointer(pWindow);
+	display->m_width = width;
+	display->m_height = height;
+	glViewport(0, 0, width, height);
+}
+
+static void errorCallback(int error, const char* desc)
+{
+	fprintf(stderr, "Error (%i):\n%s\n", error, desc);
 }
 
 int Display::init()
@@ -63,6 +82,10 @@ int Display::init()
 		glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	//TODO: Set up callbacks and whatnot
+	glfwMakeContextCurrent(m_pWindow);
+	glfwSetWindowUserPointer(m_pWindow, this);
+	glfwSetErrorCallback(errorCallback);
+	glfwSetWindowSizeCallback(m_pWindow, windowResize);
 
 	// VSYNC must be either 1 or 0
 	glfwSwapInterval(VSYNC);
@@ -74,3 +97,5 @@ int Display::init()
 
 	return 1;
 }
+
+
