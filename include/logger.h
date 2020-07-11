@@ -1,4 +1,4 @@
-// GameEngine
+﻿// GameEngine
 // Copyright (C) 2020 Blue Moon Development
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,32 +13,15 @@
 // 
 // Contact: team@bluemoondev.org
 // 
-// File Name: timer.h
-// Date File Created: 07/09/2020 at 2:09 AM
+// File Name: logger.h
+// Date File Created: 07/10/2020 at 11:28 PM
 // Author: Matt / TigerCipher
 
 #pragma once
 
-#include <GLFW/glfw3.h>
 
-class Timer
-{
-public:
-	Timer()
-	{
-		m_time = glfwGetTime();
-	}
-
-	void reset()
-	{
-		m_time = glfwGetTime();
-	}
-
-	double elapsed()
-	{
-		return glfwGetTime() - m_time;
-	}
-
-private:
-	double m_time;
-};
+void trace(const char** msg);
+void debug(const char** msg);
+void info(const char** msg);
+void warn(const char** msg);
+void error(const char** msg);
