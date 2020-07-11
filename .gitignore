@@ -28,3 +28,9 @@
 *.app
 
 *.bat
+
+*.vcxproj
+*.filters
+*.user
+/src/x64/
+/include/x64
