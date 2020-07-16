@@ -31,8 +31,8 @@
 *.filters
 *.user
 
-*build*
-*Build*
+**/*build*/
+**/*Build*/
 
 /tests
 /docs

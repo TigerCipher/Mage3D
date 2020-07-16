@@ -19,10 +19,11 @@
 
 #include <mage/lib.h>
 #include <mage3d_exported.h>
-#include <iostream>
+#include <mage/test/testheader.h>
 
 mage3d_EXPORT Test::Test()
 {
+	print("This is a sub folder header test");
 }
 
 mage3d_EXPORT GLenum Test::glewTest(int test)

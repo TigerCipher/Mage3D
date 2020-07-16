@@ -6,6 +6,7 @@ DESCRIPTION "An OpenGL Game engine, mostly focusing on graphics"
 LANGUAGES CXX)
 
 set(CMAKE_COLOR_MAKEFILE ON)
+set(LIB_TYPE "SHARED" CACHE STRING "The type of library to build")
 
 #SET(BUILD_SHARED_LIBS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)

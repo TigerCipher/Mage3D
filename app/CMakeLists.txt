@@ -12,14 +12,18 @@ message(STATUS "Setting compile features for the app")
 target_compile_features(app PRIVATE cxx_std_17)
 
 # mage3d = shared, libmage3d = static
-set(MAGE3D_WHICH_LIB mage3d)
+if(LIB_TYPE STREQUAL "SHARED")
+	set(MAGE3D_WHICH_LIB mage3d)
+else()
+	set(MAGE3D_WHICH_LIB libmage3d)
+endif()
 
 message(STATUS "Linking app libraries")
 target_link_libraries(app PUBLIC ${MAGE3D_WHICH_LIB})
 target_link_libraries(app PRIVATE fmt::fmt)
 
 
-if(MAGE3D_WHICH_LIB STREQUAL "mage3d")
+if(LIB_TYPE STREQUAL "SHARED")
 	message(STATUS "Building app with the shared build ${MAGE3D_WHICH_LIB}")
 	add_custom_command(TARGET app POST_BUILD
 		COMMAND "${CMAKE_COMMAND}" 
