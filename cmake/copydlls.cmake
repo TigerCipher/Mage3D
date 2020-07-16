@@ -19,6 +19,9 @@ message(STATUS "Regex friendly path: ${regex}")
 
 message(STATUS "Copying DLLs to ${EXEPATH}")
 
+# CMAKE_SHARED_LIBRARY_SUFFIX -> .dll on windows
+
+
 foreach(DEP IN LISTS DEPS)
 	# Should dll be copied? if so then don't set the COPY_DEP variable
 	string(REGEX MATCHALL "^${regex}/.[(A-z)|(a-z)|(0-9)]*\\.dll" FOUND_PATH ${DEP}) # Make this accept dll and mac/linux variants

@@ -37,18 +37,7 @@
 /tests
 /docs
 
-# Ignore the scripts for now since so many tests lol
-*.bat
-*.sh
-*.py
+
 mage.properties
 
 reminders.txt
-
-# Ignore source and headers for now while still setting up cmake
-*.cpp
-*.cc
-*.c
-*.cxx
-*.h
-*.hpp
