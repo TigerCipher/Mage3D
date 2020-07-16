@@ -22,7 +22,7 @@
 #endif
 
 #ifndef MAGE3D_DEPRECATED
-#  define MAGE3D_DEPRECATED __attribute__ ((__deprecated__))
+#  define MAGE3D_DEPRECATED __declspec(deprecated)
 #endif
 
 #ifndef MAGE3D_DEPRECATED_EXPORT
