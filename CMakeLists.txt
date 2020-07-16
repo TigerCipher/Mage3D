@@ -6,14 +6,16 @@ DESCRIPTION "An OpenGL Game engine, mostly focusing on graphics"
 LANGUAGES CXX)
 
 set(CMAKE_COLOR_MAKEFILE ON)
-set(LIB_TYPE "SHARED" CACHE STRING "The type of library to build")
+set(LIB_TYPE "BOTH" CACHE STRING "The type of library to build")
+set(MAGE3D_SHARED "mage3d")
+set(MAGE3D_STATIC "mage3ds")
 
 #SET(BUILD_SHARED_LIBS ON)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 INCLUDE(coloredmessage)
 INCLUDE(buildtype)
 
-if(NOT CMAKE_TOOLCHAIN_FILE AND NOT _VCPKG_INSTALLED_DIR)
+if(NOT CMAKE_TOOLCHAIN_FILE OR NOT _VCPKG_INSTALLED_DIR)
 	message(WARNING "It is recommended you use the provided shell scripts to set the project up")
 	message(FATAL_ERROR "You must supply the vcpkg tool chain file for this cmake system -DCMAKE_TOOLCHAIN_FILE=path/to/vcpkg.cmake")
 endif()
