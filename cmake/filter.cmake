@@ -1,6 +1,6 @@
 function (target_source_group)
   set (_options
-    GROUP_INTERFACE_SOURCES
+    # TODO
     )
   set (_multi_value_args
     # Required
@@ -9,24 +9,22 @@ function (target_source_group)
     PREFIX
     )
   set (_one_value_args
-    # PREFIX
+    # TODO
     )
 
   cmake_parse_arguments (i
     "${_options}" "${_one_value_args}" "${_multi_value_args}" ${ARGN})
-    # "${_options}" "${_multi_value_args}" ${ARGN})
     
 
   # Check inputs
 
   foreach (_target IN LISTS i_TARGET)
-    if (i_GROUP_INTERFACE_SOURCES)
+    # if (option)
       # TODO: Implement this
-      get_target_property (_target_sources ${_target} INTERFACE_SOURCES)
-    else ()
+    # else ()
       get_property(_target_sources TARGET ${_target} PROPERTY SRCS)
       get_property(_target_headers TARGET ${_target} PROPERTY HEADERS)
-    endif ()
+    # endif ()
 
     # Remove sources to be installed
     set (_source_to_install_regex
@@ -43,7 +41,6 @@ function (target_source_group)
       ""
       _headers_to_build
       "${_target_headers}")
-    message(STATUS "_target_headers = ${_target_headers}")
 
     # Remove remaining ";"s. It seems safer to do it this way rather than include
     # them in _source_to_install_regex

@@ -11,7 +11,7 @@ add_executable(app ${APP_SRC_LIST})
 message(STATUS "Setting compile features for the app")
 target_compile_features(app PRIVATE cxx_std_17)
 
-# mage3d = shared, libmage3d = static
+# mage3d = shared, mage3ds = static
 
 if(LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
 	message(Magenta "LIB_TYPE is set to ${LIB_TYPE} so the test app will be linked to the shared library ${MAGE3D_SHARED}")

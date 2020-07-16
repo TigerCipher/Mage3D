@@ -105,7 +105,7 @@ def main():
 				if seperator in line:
 					key, value = line.split(seperator, 1)
 					keys[key.strip()] = value.strip()
-		oldSettings = input("Keep these settings? [y,n]: ")
+		oldSettings = input("Keep these settings? [y,n]: ") or 'y'
 		if oldSettings.lower() == 'y' or oldSettings.lower() == 'yes':
 			generator = keys['CMAKE_GENERATOR']
 			toolchain = keys['CMAKE_TOOLCHAIN_FILE']
@@ -118,7 +118,7 @@ def main():
 		print('Select the generator you wish to create project files and build Mage3D with, or leave blank to use your cmake default\n')
 		print('Would you like to see a list of cmake generators?')
 		print('YES = y or yes... NO = n or no')
-		viewList = input('[y,n]: ')
+		viewList = input('[y,n]: ') or 'y'
 
 		if viewList.lower() == 'y' or viewList.lower() == 'yes':
 			print('\n=========================== Generators Available ======================================\n')
@@ -183,7 +183,7 @@ def main():
 	print('CMAKE_GENERATOR = ' + MAGENTA + generator + RESET)
 	print('CMAKE_TOOLCHAIN_FILE = ' + MAGENTA + toolchain + RESET)
 
-	confirm = input(YELLOW + 'Is this all correct? [y,n]: ' + RESET)
+	confirm = input(YELLOW + 'Is this all correct? [y,n]: ' + RESET) or 'y'
 	if confirm.lower() != 'y' and confirm.lower() != 'yes':
 		print(RED + "Script will now exit, re-run to correct your settings" + RESET)
 		sys.exit()
