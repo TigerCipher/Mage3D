@@ -1,4 +1,4 @@
-set(DEFAULT_BUILD_TYPE "Debug") #release doesnt seem to build quite right rn, so ignoring release rn
+set(DEFAULT_BUILD_TYPE "Release")
 # If the .git folder exists, its probably someone working on code so lets make it debug
 if(EXISTS "${CMAKE_SOURCE_DIR}/.git")
 	message(Magenta "Found .git folder, setting default build type to Debug")

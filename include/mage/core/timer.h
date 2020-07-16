@@ -1,4 +1,4 @@
-// TestProject
+// Mage3D
 // Copyright (C) 2020 Blue Moon Development
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -13,22 +13,22 @@
 // 
 // Contact: team@bluemoondev.org
 // 
-// File Name: lib.cpp
-// Date File Created: 07/11/2020 at 4:26 PM
+// File Name: timer.h
+// Date File Created: 07/09/2020 at 2:09 AM
 // Author: Matt / TigerCipher
 
-#include <mage/lib.h>
+#pragma once
 #include <mage3d_exported.h>
-#include <mage/test/testheader.h>
 
-mage3d_EXPORT Test::Test()
+class Timer
 {
-	print("This is a sub folder header test");
-}
+public:
+	mage3d_EXPORT Timer();
 
-mage3d_EXPORT GLenum Test::glewTest(int test)
-{
-	const int error = glewInit();
-	return error;
-}
+	mage3d_EXPORT void reset();
 
+	mage3d_EXPORT double elapsed();
+
+private:
+	double m_time;
+};
