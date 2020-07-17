@@ -1,12 +1,17 @@
 # Get the source files for the executable (which is only used for testing the engine and not for production)
-file(GLOB_RECURSE APP_SRC_LIST CONFIGURE_DEPENDS RELATIVE "${Mage3D_SOURCE_DIR}/app"
-	*.cpp
-	*.cc
-	*.cxx
-	*.c
+file(GLOB_RECURSE APP_SRC_LIST CONFIGURE_DEPENDS
+	"${Mage3D_SOURCE_DIR}/app/*.cpp"
+	"${Mage3D_SOURCE_DIR}/app/*.cc"
+	"${Mage3D_SOURCE_DIR}/app/*.cxx"
+	"${Mage3D_SOURCE_DIR}/app/*.c"
 	)
 
-add_executable(app ${APP_SRC_LIST})
+file(GLOB_RECURSE APP_HEADER_LIST CONFIGURE_DEPENDS
+	"${Mage3D_SOURCE_DIR}/app/*.h"
+	"${Mage3D_SOURCE_DIR}/app/*.hpp"
+	)
+
+add_executable(app ${APP_SRC_LIST} ${APP_HEADER_LIST})
 
 message(STATUS "Setting compile features for the app")
 target_compile_features(app PRIVATE cxx_std_17)
@@ -53,3 +58,11 @@ if(LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
 else()
 	message(STATUS "Building app with the static build ${MAGE3D_WHICH_LIB}")
 endif()
+
+include(filter)
+
+source_group (
+TREE    "${Mage3D_SOURCE_DIR}/app"
+FILES   ${APP_HEADER_LIST}
+PREFIX  "Header Files"
+)

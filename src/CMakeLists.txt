@@ -19,8 +19,10 @@ file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS
 include(GenerateExportHeader)
 include(filter)
 
-set(MAGE3D_LINKS ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL)
+set(MAGE3D_LINKS PRIVATE fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL)
 set(MAGE3D_INCLUDES "../include")
+
+
 
 
 if(LIB_TYPE STREQUAL "BOTH")
@@ -38,7 +40,7 @@ if(LIB_TYPE STREQUAL "BOTH")
 	message(STATUS "Setting include directories for ${MAGE3D_SHARED}, dirs: ${MAGE3D_INCLUDES}")
 	target_include_directories(${MAGE3D_SHARED} PUBLIC ${MAGE3D_INCLUDES})
 	message(STATUS "Linking libraries to ${MAGE3D_SHARED}, libs: ${MAGE3D_LINKS}")
-	target_link_libraries(${MAGE3D_SHARED} PRIVATE ${MAGE3D_LINKS})
+	target_link_libraries(${MAGE3D_SHARED} ${MAGE3D_LINKS})
 	message(STATUS "Setting compile features for ${MAGE3D_SHARED}")
 	target_compile_features(${MAGE3D_SHARED} PUBLIC cxx_std_11)
 
