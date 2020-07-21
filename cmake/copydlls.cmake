@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.16...3.18)
 message(STATUS "Resolving dependencies for ${EXEPATH}")
 
 file(GET_RUNTIME_DEPENDENCIES
+	PRE_EXCLUDE_REGEXES ${DEST}/.*
+	POST_EXCLUDE_REGEXES ${DEST}/.*
 	EXECUTABLES ${EXEPATH}
 	RESOLVED_DEPENDENCIES_VAR DEPS
 	UNRESOLVED_DEPENDENCIES_VAR UNRES_DEPS
@@ -17,7 +19,7 @@ message(STATUS "Project DLL path: ${DLL_PATH}")
 string(REGEX REPLACE "([][+.*()^])" "\\\\\\1" regex "${DLL_PATH}")
 message(STATUS "Regex friendly path: ${regex}")
 
-message(STATUS "Copying DLLs to ${EXEPATH}")
+message(STATUS "Copying DLLs to ${DEST}")
 
 # CMAKE_SHARED_LIBRARY_SUFFIX -> .dll on windows
 

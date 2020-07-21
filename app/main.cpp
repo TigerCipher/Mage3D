@@ -19,8 +19,6 @@
 
 
 #include <iostream>
-// #include <fmt/format.h>
-#include <fmt/color.h>
 #include <string>
 #include <io.h>
 #include <mage/mage.h>
@@ -32,21 +30,10 @@
 int main(int argc, char** argv)
 {
 
-	// Point p = {1, 2};
-	// const auto s = fmt::format("{:f}", p);
-	// fmt::print(s);
-	//
-	// const auto s1 = fmt::format("Something {:>10}", Color::blue);
-	// fmt::print(s1);
-
-	if(isatty(fileno(stdin)))
-		fmt::print("Stdin is in terminal");
-	else fmt::print("Stdin is a file or pipen");
-
-	print(RED, "Something like {} this\n", 32);
-	print(BRIGHT_RED, "Something like {} this now\n", 3232);
+    mage::std::print(mage::std::RED, "This is just a test");
 
 	const Display display("Game Engine", 1920, 1080);
+
 
 	Timer timer;
 	int frames = 0;
@@ -60,7 +47,8 @@ int main(int argc, char** argv)
 		if (timer.elapsed() >= 1.0)
 		{
 			// printf("FPS: %i\n", frames);
-			fmt::print(fg(fmt::terminal_color::bright_cyan), "FPS: {}\n", frames);
+			mage::std::print(mage::std::RED, "FPS: {}\n", frames);
+			// fmt::print(fg(fmt::terminal_color::bright_cyan), "FPS: {}\n", frames);
 			frames = 0;
 			timer.reset();
 		}

@@ -36,8 +36,9 @@
 
 /tests
 /docs
-
+/.idea/
 
 mage.properties
 
 reminders.txt
+

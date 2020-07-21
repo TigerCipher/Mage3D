@@ -19,7 +19,7 @@ file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS
 include(GenerateExportHeader)
 include(filter)
 
-set(MAGE3D_LINKS PRIVATE fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL)
+set(MAGE3D_LINKS PUBLIC fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL)
 set(MAGE3D_INCLUDES "../include")
 
 
@@ -29,6 +29,7 @@ if(LIB_TYPE STREQUAL "BOTH")
 
 	# Shared lib
 	message(Blue "Adding shared library ${MAGE3D_SHARED}")
+
 	add_library(${MAGE3D_SHARED} SHARED ${SRC_LIST} ${HEADER_LIST})
 
 	define_property(TARGET PROPERTY HEADERS BRIEF_DOCS "Header files for the target" FULL_DOCS "Header files for the target to be used in source grouping")

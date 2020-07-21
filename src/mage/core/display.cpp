@@ -17,7 +17,6 @@
 // Date File Created: 07/09/2020 at 2:17 AM
 // Author: Matt / TigerCipher
 
-#include <GL/glew.h>
 #include <mage/core/display.h>
 #include <iostream>
 

@@ -4,7 +4,7 @@ project(Mage3D
 VERSION 0.1
 DESCRIPTION "An OpenGL Game engine, mostly focusing on graphics"
 LANGUAGES CXX)
-
+set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE ON)
 set(LIB_TYPE "BOTH" CACHE STRING "The type of library to build")
 set(MAGE3D_SHARED "mage3d")

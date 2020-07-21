@@ -34,7 +34,7 @@ message(STATUS "Linking app libraries")
 # Additionally this can allow mage3d to be installed somewhere on the environment path
 # And then games can detect if the client needs to download and install mage3d or not
 # If the client already has the engine files, why bother downloading them again?
-target_link_libraries(app PUBLIC ${MAGE3D_WHICH_LIB})
+target_link_libraries(app PRIVATE ${MAGE3D_WHICH_LIB})
 
 # Libraries used by the test app but not the engine (currently this is purely for example/testing purposes.
 # Any libraries I feel needed for the engine will be added to the engine)
@@ -43,18 +43,28 @@ target_link_libraries(app PUBLIC ${MAGE3D_WHICH_LIB})
 # Note that if you do want to contribute to the engine, if you add additional libraries to the engine (src/CMakeLists.txt)
 # There would be a less likely chance of me accepting the pull request if it is a library I am unfamiliar with
 # In those cases, it's best to add here and add code to the app project to show case its usage and describe it's benefits
-target_link_libraries(app PRIVATE fmt::fmt)
+#target_link_libraries(app PRIVATE fmt::fmt)
 
 
 if(LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
 	message(STATUS "Building app with the shared build ${MAGE3D_WHICH_LIB}")
-	add_custom_command(TARGET app POST_BUILD
-		COMMAND "${CMAKE_COMMAND}" 
+	if(CMAKE_CONFIGURATION_TYPES)
+		add_custom_command(TARGET app POST_BUILD
+			COMMAND "${CMAKE_COMMAND}"
+					"-DEXEPATH=$<TARGET_FILE:app>"
+					"-DDEST=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
+					"-DDLL_PATH=${CMAKE_BINARY_DIR}/src/$<CONFIG>"
+					-P ${CMAKE_MODULE_PATH}/copydlls.cmake
+			)
+	else()
+		add_custom_command(TARGET app POST_BUILD
+				COMMAND "${CMAKE_COMMAND}"
 				"-DEXEPATH=$<TARGET_FILE:app>"
-				"-DDEST=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
-				"-DDLL_PATH=${CMAKE_BINARY_DIR}/src/$<CONFIG>"
+				"-DDEST=${CMAKE_CURRENT_BINARY_DIR}"
+				"-DDLL_PATH=${CMAKE_BINARY_DIR}/src"
 				-P ${CMAKE_MODULE_PATH}/copydlls.cmake
-		)
+				)
+	endif()
 else()
 	message(STATUS "Building app with the static build ${MAGE3D_WHICH_LIB}")
 endif()
