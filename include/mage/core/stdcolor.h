@@ -27,7 +27,6 @@
 
 #ifdef OS_WINDOWS
 #include <Windows.h>
-
 #endif
 
 #include <fmt/core.h>
@@ -40,27 +39,37 @@ namespace mage {
             bool bright;
             uByte fg;
             uByte bg;
+            bool _default = false;
         };
 
+        extern mage3d_EXPORT const Color WHITE;
         extern mage3d_EXPORT const Color RED;
+
+        extern mage3d_EXPORT const Color RED_ON_GREEN;
+
+        extern mage3d_EXPORT uByte background;
+        mage3d_EXPORT void clearConsole(Color color);
 
         template<typename S, typename... Args, typename Char = fmt::char_t<S>>
         void print(Color color, const S &format, Args &&... args) {
 #ifdef OS_WINDOWS
             CONSOLE_SCREEN_BUFFER_INFO csbi;
             GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-            fmt::print("Current attribs are: {}", csbi.wAttributes);
+            uByte inUseBg = color.bg;
+            if(color._default) inUseBg = background;
             uByte fg = color.bright ? color.fg + 8 : color.fg;
-            WORD attrib = fg + (color.bg * 16);
+            WORD attrib = fg + (inUseBg * 16);
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), attrib);
             fmt::print(format, args...);
             SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), csbi.wAttributes);
 #else
             fmt::print(getStyle(color), format, args...);
 #endif
-
-            MAGE3D_NO_EXPORT fmt::text_style getStyle(Color color);
         }
+        MAGE3D_NO_EXPORT fmt::text_style getStyle(Color color);
+
+
+
     }
 }
 

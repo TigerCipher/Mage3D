@@ -30,6 +30,7 @@
 int main(int argc, char** argv)
 {
 
+    mage::std::clearConsole(mage::std::RED_ON_GREEN);
     mage::std::print(mage::std::RED, "This is just a test");
 
 	const Display display("Game Engine", 1920, 1080);

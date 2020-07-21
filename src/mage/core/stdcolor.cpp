@@ -28,8 +28,11 @@ namespace mage
     namespace std
     {
 
-        const Color RED = {false, 4, 0};
+        const Color WHITE = {false, 7, 0, true};
+        const Color RED = {false, 4, 0, true};
+        const Color RED_ON_GREEN = {false, 4, 2};
 
+        uByte background = 0;
 
         fmt::text_style getStyle(Color color) {
             uByte actualBg = color.bright ? color.bg + 8 : color.bg;
@@ -71,6 +74,24 @@ namespace mage
             else if(actualFg == 15) fg = fmt::terminal_color::bright_white;
 
             return fmt::fg(fg) | fmt::bg(bg);
+        }
+
+        void clearConsole(Color color) {
+#ifdef OS_WINDOWS
+            background = color.bg;
+            WORD attrib = (color.bg << 4) + color.fg;
+            HANDLE stdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+            COORD coord = {0, 0};
+            DWORD count;
+            CONSOLE_SCREEN_BUFFER_INFO csbi;
+            SetConsoleTextAttribute(stdOut, attrib);
+            if(GetConsoleScreenBufferInfo(stdOut, &csbi))
+            {
+                FillConsoleOutputCharacter(stdOut, (TCHAR) 32, csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
+                FillConsoleOutputAttribute(stdOut, csbi.wAttributes, csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
+                SetConsoleCursorPosition(stdOut, coord);
+            }
+#endif
         }
     }
 }
