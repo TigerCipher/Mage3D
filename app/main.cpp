@@ -37,10 +37,10 @@ int main(int argc, char** argv)
 	};
     mage::clearConsole(mage::console::WHITE);
 	const mage::Display display("Mage3D Testing", 1920, 1080);
-	mage::Mesh* testMesh = new mage::Mesh(data);
+	auto* testMesh = new mage::Mesh(data);
 	mage::Renderer renderer;
 
-	mage::Shader* shader = new mage::Shader("./assets/basic");
+	auto* shader = new mage::Shader("./assets/basic");
 
 
 	mage::Timer timer;
@@ -73,7 +73,7 @@ int main(int argc, char** argv)
 		else frames++;
 	}
 
-	if(testMesh) delete testMesh;
-	if(shader) delete shader;
+	delete testMesh;
+	delete shader;
 	return 0;
 }
