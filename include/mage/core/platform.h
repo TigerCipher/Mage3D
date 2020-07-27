@@ -25,6 +25,7 @@
 #include <stdint.h>
 
 // I hate having to add _t. What does the _t even stand for?
+// Rename the fixed width integer types
 typedef int8_t int8; // signed char
 typedef int16_t int16; // signed short
 typedef int32_t int32; // signed int
@@ -34,8 +35,17 @@ typedef uint16_t uint16; // unsigned short
 typedef uint32_t uint32; // unsigned int
 typedef uint64_t uint64; // unsigned long long
 
-typedef int8_t sByte; // same as signed char, but makes more sense to call it a byte at times
-typedef uint8_t uByte; // same as unsigned char
+typedef signed char sByte;
+typedef unsigned char uByte;
+
+typedef unsigned short ushort;
+typedef unsigned int uint;
+typedef unsigned long ulong;
+
+#define MIN_SBYTE -127
+#define MAX_SBYTE 127
+#define MIN_UBYTE 0
+#define MAX_UBYTE 255
 
 // Max/min values got with:
 /* (from stdint.h)

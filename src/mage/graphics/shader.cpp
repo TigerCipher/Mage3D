@@ -67,7 +67,7 @@ GLuint mage::Shader::load(const char* vertexFile, const char* fragmentFile)
 		glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetShaderInfoLog(vertex, len, &len, &error[ 0 ]);
-		print(RED, "Error while compiling vertex shader [{}]\nError: {}\n", vertexFile, &error[ 0 ]);
+		print(console::RED, "Error while compiling vertex shader [{}]\nError: {}\n", vertexFile, &error[ 0 ]);
 		glDeleteShader(vertex);
 		return 0;
 	}
@@ -81,7 +81,7 @@ GLuint mage::Shader::load(const char* vertexFile, const char* fragmentFile)
 		glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetShaderInfoLog(fragment, len, &len, &error[ 0 ]);
-		print(RED, "Error while compiling fragment shader [{}]\nError: {}\n", fragmentFile, &error[ 0 ]);
+		print(console::RED, "Error while compiling fragment shader [{}]\nError: {}\n", fragmentFile, &error[ 0 ]);
 		glDeleteShader(fragment);
 		return 0;
 	}
@@ -98,7 +98,7 @@ GLuint mage::Shader::load(const char* vertexFile, const char* fragmentFile)
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetProgramInfoLog(program, len, &len, &error[0]);
-		print(RED, "Error while linking shader program\nError: {}\n", &error[0]);
+		print(console::RED, "Error while linking shader program\nError: {}\n", &error[0]);
 		glDeleteProgram(program);
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);

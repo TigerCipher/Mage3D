@@ -27,13 +27,33 @@ namespace mage
 {
 
 
-	const Color WHITE = { false, 7, 0, true };
-	const Color RED = { false, 4, 0, true };
-	const Color RED_ON_GREEN = { false, 4, 2 };
+	namespace console
+	{
 
+		const Color RED_ON_GREEN = { false, 4, 2 };
+
+		const Color BLACK = {false, 0, 0, true};
+		const Color BLUE = {false, 1, 0, true};
+		const Color GREEN = {false, 2, 0, true};
+		const Color CYAN = {false, 3, 0, true};
+		const Color RED = { false, 4, 0, true };
+		const Color MAGENTA = {false, 5, 0, true};
+		const Color YELLOW = {false, 6, 0, true};
+		const Color WHITE = { false, 7, 0, true };
+
+		const Color BRIGHT_BLACK = {true, 0, 0, true};
+		const Color GRAY = BRIGHT_BLACK;
+		const Color BRIGHT_BLUE = {true, 1, 0, true};
+		const Color BRIGHT_GREEN = {true, 2, 0, true};
+		const Color BRIGHT_CYAN = {true, 3, 0, true};
+		const Color BRIGHT_RED = {true, 4, 0, true};
+		const Color BRIGHT_MAGENTA = {true, 5, 0, true};
+		const Color BRIGHT_YELLOW = {true, 6, 0, true};
+		const Color BRIGHT_WHITE = {true, 7, 0, true};
+	}
 	uByte background = 0;
 
-	fmt::text_style getStyle(Color color)
+	fmt::text_style getStyle(console::Color color)
 	{
 		uByte actualBg = color.bright ? color.bg + 8 : color.bg;
 		fmt::terminal_color bg;
@@ -76,7 +96,7 @@ namespace mage
 		return fmt::fg(fg) | fmt::bg(bg);
 	}
 
-	void clearConsole(Color color)
+	void clearConsole(console::Color color)
 	{
 #ifdef OS_WINDOWS
 		background = color.bg;

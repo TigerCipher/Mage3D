@@ -17,18 +17,23 @@
 // Date File Created: 07/09/2020 at 2:09 AM
 // Author: Matt / TigerCipher
 
-#pragma once
-#include <mage3d_exported.h>
+#ifndef MAGE3D_TIMER_H
+#define MAGE3D_TIMER_H
+#include "mage3d_exported.h"
 
-class Timer
+namespace mage
 {
-public:
-	mage3d_EXPORT Timer();
+	class Timer
+	{
+	public:
+		mage3d_EXPORT Timer();
 
-	mage3d_EXPORT void reset();
+		mage3d_EXPORT void reset();
 
-	mage3d_EXPORT double elapsed();
+		mage3d_EXPORT double elapsed();
 
-private:
-	double m_time;
-};
+	private:
+		double m_time;
+	};
+}
+#endif // MAGE3D_TIMER_H

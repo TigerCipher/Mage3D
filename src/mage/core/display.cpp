@@ -17,18 +17,18 @@
 // Date File Created: 07/09/2020 at 2:17 AM
 // Author: Matt / TigerCipher
 
-#include <mage/core/display.h>
-#include <iostream>
+#include "mage/core/display.h"
+#include "mage/core/stdcolor.h"
 
 #define FULLSCREEN_MODE 0
 #define SHOW_MOUSE 1
 #define VSYNC 0
 
-Display::Display(const char* title, int width, int height) :
-	m_pTitle(title),
-	m_width(width),
-	m_height(height),
-	m_pWindow(nullptr)
+mage::Display::Display(const char* title, int width, int height) :
+		m_pTitle(title),
+		m_width(width),
+		m_height(height),
+		m_pWindow(nullptr)
 {
 	if (!init())
 	{
@@ -37,71 +37,75 @@ Display::Display(const char* title, int width, int height) :
 	}
 }
 
-Display::~Display()
+mage::Display::~Display()
 {
 	glfwDestroyWindow(m_pWindow);
 	glfwTerminate();
 }
 
-void Display::update() const
+void mage::Display::update() const
 {
 	const auto error = glGetError();
 	if (error != GL_NO_ERROR)
-		std::cout << "OpenGL Error: " << glGetString(error) << std::endl;
+		print(console::RED, "OpenGL Error: {}\n", glGetString(error));
+	//std::cout << "OpenGL Error: " << glGetString(error) << std::endl;
 
 	glfwSwapBuffers(m_pWindow);
 	glfwPollEvents();
 }
 
-void Display::clear() const
+void mage::Display::clear() const
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void Display::clear(int red, int green, int blue) const
+void mage::Display::clear(int red, int green, int blue) const
 {
 	glClearColor(red, green, blue, 255);
 	clear();
 }
 
-bool Display::isClosed() const
+bool mage::Display::isClosed() const
 {
 	return glfwWindowShouldClose(m_pWindow);
 }
 
 
-
-static void windowResize(GLFWwindow* pWindow, int width, int height)
+void mage::windowResize(GLFWwindow* pWindow, int width, int height)
 {
-	auto* const display = static_cast<Display*>(glfwGetWindowUserPointer(pWindow));
+	auto* const display = static_cast<mage::Display*>(glfwGetWindowUserPointer(pWindow));
 	display->m_width = width;
 	display->m_height = height;
 	glViewport(0, 0, width, height);
 }
 
 
-static void errorCallback(int error, const char* desc)
+void mage::errorCallback(int error, const char* desc)
 {
-	fprintf(stderr, "Error (%i):\n%s\n", error, desc);
+	print(console::RED, "Error ({}):\n{}\n", error, desc);
 }
 
-int Display::init()
+int mage::Display::init()
 {
+	println(console::BRIGHT_CYAN, "Initializing glfw");
 	const auto glfwError = glfwInit();
 	if (!glfwError) return glfwError;
+	println(console::BRIGHT_CYAN, "glfw initialized\nCreating window");
 	//glfwWindowHint(GLFW_SAMPLES, 4); // 4x AA
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // OpenGL 4+
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // OpenGL 4.3+
 	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // I think macos needs this?
 	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Ew to old opengl
 	m_pWindow = glfwCreateWindow(m_width, m_height, m_pTitle, nullptr, nullptr);
-	const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-	int centerX = (vidmode->width / 2) - (m_width / 2);
-	int centerY = (vidmode->height / 2) - (m_height / 2);
+
+	// Start the windowed screen at the center of the primary monitor
+	int centerX = (glfwGetVideoMode(glfwGetPrimaryMonitor())->width / 2) - (m_width / 2);
+	int centerY = (glfwGetVideoMode(glfwGetPrimaryMonitor())->height / 2) - (m_height / 2);
 	glfwSetWindowPos(m_pWindow, centerX, centerY);
 
 	if (!m_pWindow) return -1;
-
+	println(console::BRIGHT_CYAN, "Window created at position ({}, {}) with dimensions ({}, {})", centerX,
+			centerY, m_width, m_height);
 	//TODO: Set up callbacks and whatnot
 	glfwMakeContextCurrent(m_pWindow);
 	glfwSetWindowUserPointer(m_pWindow, this);
@@ -112,13 +116,12 @@ int Display::init()
 	// VSYNC must be either 1 or 0
 	glfwSwapInterval(VSYNC);
 
+	println(console::BRIGHT_CYAN, "Initializing glew");
 	const int glError = glewInit();
 	if (glError != GLEW_OK) return glError;
-	//int w, h;
-	//glfwGetFramebufferSize(m_pWindow, &w, &h);
-	//glViewport(0, 0,w, h);
+	println(console::BRIGHT_CYAN, "Glew initialized");
 
-	std::cout << "OpenGL " << glGetString(GL_VERSION) << std::endl;
-
+	print(console::YELLOW, "OpenGL {}\n", glGetString(GL_VERSION));
 	return 1;
 }
+

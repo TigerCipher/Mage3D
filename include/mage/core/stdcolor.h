@@ -37,25 +37,43 @@
 
 namespace mage
 {
-	struct Color
+	namespace console
 	{
-		bool bright;
-		uByte fg;
-		uByte bg;
-		bool _default = false;
-	};
+		struct Color
+		{
+			bool bright;
+			uByte fg;
+			uByte bg;
+			bool _default = false;
+		};
+		extern mage3d_EXPORT const Color BLACK;
+		extern mage3d_EXPORT const Color BLUE;
+		extern mage3d_EXPORT const Color GREEN;
+		extern mage3d_EXPORT const Color CYAN;
+		extern mage3d_EXPORT const Color RED;
+		extern mage3d_EXPORT const Color MAGENTA;
+		extern mage3d_EXPORT const Color YELLOW;
+		extern mage3d_EXPORT const Color WHITE;
 
-	extern mage3d_EXPORT const Color WHITE;
-	extern mage3d_EXPORT const Color RED;
+		extern mage3d_EXPORT const Color BRIGHT_BLACK;
+		extern mage3d_EXPORT const Color GRAY;
+		extern mage3d_EXPORT const Color BRIGHT_BLUE;
+		extern mage3d_EXPORT const Color BRIGHT_GREEN;
+		extern mage3d_EXPORT const Color BRIGHT_CYAN;
+		extern mage3d_EXPORT const Color BRIGHT_RED;
+		extern mage3d_EXPORT const Color BRIGHT_MAGENTA;
+		extern mage3d_EXPORT const Color BRIGHT_YELLOW;
+		extern mage3d_EXPORT const Color BRIGHT_WHITE;
 
-	extern mage3d_EXPORT const Color RED_ON_GREEN;
 
+		extern mage3d_EXPORT const Color RED_ON_GREEN;
+	}
 	extern mage3d_EXPORT uByte background;
 
-	mage3d_EXPORT void clearConsole(Color color);
+	mage3d_EXPORT void clearConsole(console::Color color);
 
 	template<typename S, typename... Args, typename Char = fmt::char_t<S>>
-	void print(Color color, const S& format, Args&& ... args)
+	void print(console::Color color, const S& format, Args&& ... args)
 	{
 #ifdef OS_WINDOWS
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
@@ -72,7 +90,14 @@ namespace mage
 #endif
 	}
 
-	MAGE3D_NO_EXPORT fmt::text_style getStyle(Color color);
+	template<typename S, typename... Args, typename Char = fmt::char_t<S>>
+	void println(console::Color color, const S& format, Args&& ... args)
+	{
+		print(color, format, args...);
+		fmt::print("\n");
+	}
+
+	MAGE3D_NO_EXPORT fmt::text_style getStyle(console::Color color);
 
 
 }

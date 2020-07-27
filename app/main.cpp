@@ -23,7 +23,6 @@
 
 int main(int argc, char** argv)
 {
-
 	mage::Vertex vert1;
 	mage::Vertex vert2;
 	mage::Vertex vert3;
@@ -36,15 +35,15 @@ int main(int argc, char** argv)
 	mage::Vertex data[] = {
 			vert1, vert2, vert3
 	};
-    mage::clearConsole(mage::WHITE);
-	const Display display("Mage3D Testing", 1920, 1080);
+    mage::clearConsole(mage::console::WHITE);
+	const mage::Display display("Mage3D Testing", 1920, 1080);
 	mage::Mesh* testMesh = new mage::Mesh(data);
 	mage::Renderer renderer;
 
 	mage::Shader* shader = new mage::Shader("./assets/basic");
 
 
-	Timer timer;
+	mage::Timer timer;
 	int frames = 0;
 
 	while (!display.isClosed())
@@ -66,7 +65,7 @@ int main(int argc, char** argv)
 		if (timer.elapsed() >= 1.0)
 		{
 			// printf("FPS: %i\n", frames);
-			mage::print(mage::RED, "FPS: {}\n", frames);
+			mage::println(mage::console::BRIGHT_RED, "FPS: {}", frames);
 			// fmt::print(fg(fmt::terminal_color::bright_cyan), "FPS: {}\n", frames);
 			frames = 0;
 			timer.reset();

@@ -1,18 +1,18 @@
 
-#include <mage/core/timer.h>
+#include "mage/core/timer.h"
 
 #include <GLFW/glfw3.h>
 
-Timer::Timer():
+mage::Timer::Timer():
 	m_time(glfwGetTime())
 	{}
 
-void Timer::reset()
+void mage::Timer::reset()
 {
 	m_time = glfwGetTime();
 }
 
-double Timer::elapsed()
+double mage::Timer::elapsed()
 {
 	return glfwGetTime() - m_time;
 }

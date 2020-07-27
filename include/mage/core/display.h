@@ -17,39 +17,47 @@
 // Date File Created: 07/09/2020 at 2:14 AM
 // Author: Matt / TigerCipher
 
-#pragma once
+#ifndef MAGE3D_DISPLAY_H
+#define MAGE3D_DISPLAY_H
 
-#include <mage3d_exported.h>
+#include "mage3d_exported.h"
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-class Display
+namespace mage
 {
-public:
+	class Display
+	{
+	public:
 
-	mage3d_EXPORT Display(const char* title, int width, int height);
-	mage3d_EXPORT ~Display();
+		mage3d_EXPORT Display(const char* title, int width, int height);
+		mage3d_EXPORT ~Display();
 
-	// Display should never be created with no arguments
-	Display() = delete;
+		// Display should never be created with no arguments
+		Display() = delete;
 
-	mage3d_EXPORT void update() const;
-	mage3d_EXPORT void clear() const;
-	mage3d_EXPORT void clear(int red, int green, int blue) const;
-	mage3d_EXPORT bool isClosed() const;
+		mage3d_EXPORT void update() const;
+		mage3d_EXPORT void clear() const;
+		mage3d_EXPORT void clear(int red, int green, int blue) const;
+		mage3d_EXPORT bool isClosed() const;
 
 
-	mage3d_EXPORT int getWidth() const { return m_width; }
-	mage3d_EXPORT int getHeight() const { return m_height; }
-private:
+		mage3d_EXPORT int getWidth() const { return m_width; }
 
-	const char* m_pTitle;
-	int m_width, m_height;
-	GLFWwindow* m_pWindow;
+		mage3d_EXPORT int getHeight() const { return m_height; }
 
-	int init();
+	private:
 
-	static friend void windowResize(GLFWwindow* pWindow, int width, int height);
-	static friend void errorCallback(int error, const char* desc);
-};
+		const char* m_pTitle;
+		int m_width, m_height;
+		GLFWwindow* m_pWindow;
+
+		int init();
+
+		friend void windowResize(GLFWwindow* pWindow, int width, int height);
+		friend void errorCallback(int error, const char* desc);
+	};
+}
+
+#endif //MAGE3D_DISPLAY_H
