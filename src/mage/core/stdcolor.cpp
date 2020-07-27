@@ -25,73 +25,75 @@
 
 namespace mage
 {
-    namespace std
-    {
 
-        const Color WHITE = {false, 7, 0, true};
-        const Color RED = {false, 4, 0, true};
-        const Color RED_ON_GREEN = {false, 4, 2};
 
-        uByte background = 0;
+	const Color WHITE = { false, 7, 0, true };
+	const Color RED = { false, 4, 0, true };
+	const Color RED_ON_GREEN = { false, 4, 2 };
 
-        fmt::text_style getStyle(Color color) {
-            uByte actualBg = color.bright ? color.bg + 8 : color.bg;
-            fmt::terminal_color bg;
-            if(actualBg == 0) bg = fmt::terminal_color::black;
-            else if(actualBg == 1) bg = fmt::terminal_color::blue;
-            else if(actualBg == 2) bg = fmt::terminal_color::green;
-            else if(actualBg == 3) bg = fmt::terminal_color::cyan;
-            else if(actualBg == 4) bg = fmt::terminal_color::red;
-            else if(actualBg == 5) bg = fmt::terminal_color::magenta;
-            else if(actualBg == 6) bg = fmt::terminal_color::yellow;
-            else if(actualBg == 7) bg = fmt::terminal_color::white;
-            else if(actualBg == 8) bg = fmt::terminal_color::bright_black;
-            else if(actualBg == 9) bg = fmt::terminal_color::bright_blue;
-            else if(actualBg == 10) bg = fmt::terminal_color::bright_green;
-            else if(actualBg == 11) bg = fmt::terminal_color::bright_cyan;
-            else if(actualBg == 12) bg = fmt::terminal_color::bright_red;
-            else if(actualBg == 13) bg = fmt::terminal_color::bright_magenta;
-            else if(actualBg == 14) bg = fmt::terminal_color::bright_yellow;
-            else if(actualBg == 15) bg = fmt::terminal_color::bright_white;
+	uByte background = 0;
 
-            uByte actualFg = color.bright ? color.fg + 8 : color.fg;
-            fmt::terminal_color fg;
-            if(actualFg == 0) fg = fmt::terminal_color::black;
-            else if(actualFg == 1) fg = fmt::terminal_color::blue;
-            else if(actualFg == 2) fg = fmt::terminal_color::green;
-            else if(actualFg == 3) fg = fmt::terminal_color::cyan;
-            else if(actualFg == 4) fg = fmt::terminal_color::red;
-            else if(actualFg == 5) fg = fmt::terminal_color::magenta;
-            else if(actualFg == 6) fg = fmt::terminal_color::yellow;
-            else if(actualFg == 7) fg = fmt::terminal_color::white;
-            else if(actualFg == 8) fg = fmt::terminal_color::bright_black;
-            else if(actualFg == 9) fg = fmt::terminal_color::bright_blue;
-            else if(actualFg == 10) fg = fmt::terminal_color::bright_green;
-            else if(actualFg == 11) fg = fmt::terminal_color::bright_cyan;
-            else if(actualFg == 12) fg = fmt::terminal_color::bright_red;
-            else if(actualFg == 13) fg = fmt::terminal_color::bright_magenta;
-            else if(actualFg == 14) fg = fmt::terminal_color::bright_yellow;
-            else if(actualFg == 15) fg = fmt::terminal_color::bright_white;
+	fmt::text_style getStyle(Color color)
+	{
+		uByte actualBg = color.bright ? color.bg + 8 : color.bg;
+		fmt::terminal_color bg;
+		if (actualBg == 0) bg = fmt::terminal_color::black;
+		else if (actualBg == 1) bg = fmt::terminal_color::blue;
+		else if (actualBg == 2) bg = fmt::terminal_color::green;
+		else if (actualBg == 3) bg = fmt::terminal_color::cyan;
+		else if (actualBg == 4) bg = fmt::terminal_color::red;
+		else if (actualBg == 5) bg = fmt::terminal_color::magenta;
+		else if (actualBg == 6) bg = fmt::terminal_color::yellow;
+		else if (actualBg == 7) bg = fmt::terminal_color::white;
+		else if (actualBg == 8) bg = fmt::terminal_color::bright_black;
+		else if (actualBg == 9) bg = fmt::terminal_color::bright_blue;
+		else if (actualBg == 10) bg = fmt::terminal_color::bright_green;
+		else if (actualBg == 11) bg = fmt::terminal_color::bright_cyan;
+		else if (actualBg == 12) bg = fmt::terminal_color::bright_red;
+		else if (actualBg == 13) bg = fmt::terminal_color::bright_magenta;
+		else if (actualBg == 14) bg = fmt::terminal_color::bright_yellow;
+		else if (actualBg == 15) bg = fmt::terminal_color::bright_white;
 
-            return fmt::fg(fg) | fmt::bg(bg);
-        }
+		uByte actualFg = color.bright ? color.fg + 8 : color.fg;
+		fmt::terminal_color fg;
+		if (actualFg == 0) fg = fmt::terminal_color::black;
+		else if (actualFg == 1) fg = fmt::terminal_color::blue;
+		else if (actualFg == 2) fg = fmt::terminal_color::green;
+		else if (actualFg == 3) fg = fmt::terminal_color::cyan;
+		else if (actualFg == 4) fg = fmt::terminal_color::red;
+		else if (actualFg == 5) fg = fmt::terminal_color::magenta;
+		else if (actualFg == 6) fg = fmt::terminal_color::yellow;
+		else if (actualFg == 7) fg = fmt::terminal_color::white;
+		else if (actualFg == 8) fg = fmt::terminal_color::bright_black;
+		else if (actualFg == 9) fg = fmt::terminal_color::bright_blue;
+		else if (actualFg == 10) fg = fmt::terminal_color::bright_green;
+		else if (actualFg == 11) fg = fmt::terminal_color::bright_cyan;
+		else if (actualFg == 12) fg = fmt::terminal_color::bright_red;
+		else if (actualFg == 13) fg = fmt::terminal_color::bright_magenta;
+		else if (actualFg == 14) fg = fmt::terminal_color::bright_yellow;
+		else if (actualFg == 15) fg = fmt::terminal_color::bright_white;
 
-        void clearConsole(Color color) {
+		return fmt::fg(fg) | fmt::bg(bg);
+	}
+
+	void clearConsole(Color color)
+	{
 #ifdef OS_WINDOWS
-            background = color.bg;
-            WORD attrib = (color.bg << 4) + color.fg;
-            HANDLE stdOut = GetStdHandle(STD_OUTPUT_HANDLE);
-            COORD coord = {0, 0};
-            DWORD count;
-            CONSOLE_SCREEN_BUFFER_INFO csbi;
-            SetConsoleTextAttribute(stdOut, attrib);
-            if(GetConsoleScreenBufferInfo(stdOut, &csbi))
-            {
-                FillConsoleOutputCharacter(stdOut, (TCHAR) 32, csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
-                FillConsoleOutputAttribute(stdOut, csbi.wAttributes, csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
-                SetConsoleCursorPosition(stdOut, coord);
-            }
+		background = color.bg;
+		WORD attrib = (color.bg << 4) + color.fg;
+		HANDLE stdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+		COORD coord = { 0, 0 };
+		DWORD count;
+		CONSOLE_SCREEN_BUFFER_INFO csbi;
+		SetConsoleTextAttribute(stdOut, attrib);
+		if (GetConsoleScreenBufferInfo(stdOut, &csbi))
+		{
+			FillConsoleOutputCharacter(stdOut, (TCHAR) 32, csbi.dwSize.X * csbi.dwSize.Y, coord, &count);
+			FillConsoleOutputAttribute(stdOut, csbi.wAttributes, csbi.dwSize.X * csbi.dwSize.Y, coord,
+									   &count);
+			SetConsoleCursorPosition(stdOut, coord);
+		}
 #endif
-        }
-    }
+	}
+
 }

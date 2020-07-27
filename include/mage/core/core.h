@@ -17,8 +17,14 @@
 // Date File Created: 07/16/2020 at 4:53 PM
 // Author: Matt / TigerCipher
 
-#pragma once
+#ifndef MAGE3D_CORE_H
+#define MAGE3D_CORE_H
 
+#include "platform.h"
 #include "display.h"
 #include "timer.h"
 #include "stdcolor.h"
+#include "file.h"
+
+
+#endif // MAGE3D_CORE_H

@@ -89,8 +89,16 @@ int Display::init()
 {
 	const auto glfwError = glfwInit();
 	if (!glfwError) return glfwError;
-
+	//glfwWindowHint(GLFW_SAMPLES, 4); // 4x AA
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // OpenGL 4+
+	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // OpenGL 4.3+
+	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // I think macos needs this?
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // Ew to old opengl
 	m_pWindow = glfwCreateWindow(m_width, m_height, m_pTitle, nullptr, nullptr);
+	const GLFWvidmode* vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	int centerX = (vidmode->width / 2) - (m_width / 2);
+	int centerY = (vidmode->height / 2) - (m_height / 2);
+	glfwSetWindowPos(m_pWindow, centerX, centerY);
 
 	if (!m_pWindow) return -1;
 
@@ -100,11 +108,15 @@ int Display::init()
 	glfwSetErrorCallback(errorCallback);
 	glfwSetWindowSizeCallback(m_pWindow, windowResize);
 
+
 	// VSYNC must be either 1 or 0
 	glfwSwapInterval(VSYNC);
 
 	const int glError = glewInit();
 	if (glError != GLEW_OK) return glError;
+	//int w, h;
+	//glfwGetFramebufferSize(m_pWindow, &w, &h);
+	//glViewport(0, 0,w, h);
 
 	std::cout << "OpenGL " << glGetString(GL_VERSION) << std::endl;
 

@@ -45,6 +45,25 @@ target_link_libraries(app PRIVATE ${MAGE3D_WHICH_LIB})
 # In those cases, it's best to add here and add code to the app project to show case its usage and describe it's benefits
 #target_link_libraries(app PRIVATE fmt::fmt)
 
+file(GLOB ASSETS CONFIGURE_DEPENDS
+	"${Mage3D_SOURCE_DIR}/assets/*.vert"
+	"${Mage3D_SOURCE_DIR}/assets/*.frag"
+	)
+
+# Copy_if_different doesnt seem to work
+foreach(SHADER_ASSET IN LISTS ASSETS)
+	if(CMAKE_CONFIGURATION_TYPES)
+		add_custom_command(TARGET app PRE_BUILD
+				COMMAND "${CMAKE_COMMAND}" -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
+				COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SHADER_ASSET} ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
+				COMMENT "Copying shader: ${SHADER_ASSET}")
+	else()
+		add_custom_command(TARGET app PRE_BUILD
+				COMMAND "${CMAKE_COMMAND}" -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/assets
+				COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SHADER_ASSET} ${CMAKE_CURRENT_BINARY_DIR}/assets
+				COMMENT "Copying shader: ${SHADER_ASSET}")
+	endif()
+endforeach()
 
 if(LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
 	message(STATUS "Building app with the shared build ${MAGE3D_WHICH_LIB}")

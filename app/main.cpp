@@ -18,22 +18,30 @@
 // Author: Matt / TigerCipher
 
 
-#include <iostream>
 #include <string>
-#include <io.h>
 #include <mage/mage.h>
-
-#ifdef WIN32 //|| _WIN32 || _WIN64 || _WINDOWS
-#include <Windows.h>
-#endif // WIN32
 
 int main(int argc, char** argv)
 {
 
-    mage::std::clearConsole(mage::std::RED_ON_GREEN);
-    mage::std::print(mage::std::RED, "This is just a test");
+	mage::Vertex vert1;
+	mage::Vertex vert2;
+	mage::Vertex vert3;
+	vert1.setPos(-1, -1, 0);
+	vert1.setColor(1, 0, 0);
+	vert2.setPos(1, -1, 0);
+	vert2.setColor(0, 1, 0);
+	vert3.setPos(0, 1, 0);
+	vert3.setColor(0, 0, 1);
+	mage::Vertex data[] = {
+			vert1, vert2, vert3
+	};
+    mage::clearConsole(mage::WHITE);
+	const Display display("Mage3D Testing", 1920, 1080);
+	mage::Mesh* testMesh = new mage::Mesh(data);
+	mage::Renderer renderer;
 
-	const Display display("Game Engine", 1920, 1080);
+	mage::Shader* shader = new mage::Shader("./assets/basic");
 
 
 	Timer timer;
@@ -41,14 +49,24 @@ int main(int argc, char** argv)
 
 	while (!display.isClosed())
 	{
-		display.clear(255, 0, 0);
+		display.clear(0, 0, 0);
+		// Render
+		shader->enable();
+
+
+		renderer.draw(testMesh);
+
+
+		shader->disable();
+
+
 
 		display.update();
 
 		if (timer.elapsed() >= 1.0)
 		{
 			// printf("FPS: %i\n", frames);
-			mage::std::print(mage::std::RED, "FPS: {}\n", frames);
+			mage::print(mage::RED, "FPS: {}\n", frames);
 			// fmt::print(fg(fmt::terminal_color::bright_cyan), "FPS: {}\n", frames);
 			frames = 0;
 			timer.reset();
@@ -56,5 +74,7 @@ int main(int argc, char** argv)
 		else frames++;
 	}
 
+	if(testMesh) delete testMesh;
+	if(shader) delete shader;
 	return 0;
 }
