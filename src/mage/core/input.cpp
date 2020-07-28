@@ -73,6 +73,9 @@ void mage::Input::update()
 	{
 		m_lastMouseButtons[i] = m_mouseButtons[i];
 	}
+
+	m_lastMouseX = m_mouseX;
+	m_lastMouseY = m_mouseY;
 }
 
 void mage::Input::setMousePos(double x, double y)

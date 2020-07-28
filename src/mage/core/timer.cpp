@@ -3,9 +3,10 @@
 
 #include <GLFW/glfw3.h>
 
-mage::Timer::Timer():
-	m_time(glfwGetTime())
-	{}
+mage::Timer::Timer() :
+m_time(glfwGetTime())
+{
+}
 
 void mage::Timer::reset()
 {
@@ -15,4 +16,9 @@ void mage::Timer::reset()
 double mage::Timer::elapsed()
 {
 	return glfwGetTime() - m_time;
+}
+
+double mage::Timer::currentTime()
+{
+	return glfwGetTime();
 }

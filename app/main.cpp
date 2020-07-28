@@ -45,6 +45,7 @@ int main(int argc, char** argv)
 	mage::clearConsole(mage::console::WHITE);
 	mage::Input input;
 	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
+	mage::Camera camera(&display);
 	auto* testMesh = new mage::Mesh(data);
 	mage::Renderer renderer;
 
@@ -54,14 +55,25 @@ int main(int argc, char** argv)
 	mage::Timer timer;
 	int frames = 0;
 	mage::Timer rotTimer;
+	double lastTime = 0;
 	while (!display.isClosed())
 	{
+		double currentTime = timer.currentTime();
+		float delta = (float)currentTime - (float)lastTime;
+		lastTime = currentTime;
+
+		if(input.keyPressed(GLFW_KEY_ESCAPE))
+			display.toggleCursor();
+
+		camera.update(input, delta);
 		display.clear(0, 0, 0);
 		// Render
 		shader->enable();
 		glm::mat4 rot(1);
 		rot = glm::rotate((float) rotTimer.elapsed() * 0.5f, glm::vec3(0, 1, 0));
-		shader->setUniformMatf("rotation", rot);
+		shader->setUniformMatf("model", rot);
+		shader->setUniformMatf("projection", camera.getProjectionMatrix());
+		shader->setUniformMatf("view", camera.getViewMatrix());
 
 		renderer.draw(testMesh);
 
@@ -81,15 +93,23 @@ int main(int argc, char** argv)
 
 		input.update();
 		display.update();
-
-		if (timer.elapsed() >= 1.0)
+		double elapsed = timer.elapsed();
+		// Calculating fps every single frame is a bit pointless and performance damaging
+		//mage::println(mage::console::BRIGHT_RED, "FPS: {}, frames: {}, time: {}", fps, frames, elapsed);
+		//std::string newTitle = fmt::format("{}{}", "Mage3D Testing -- FPS: ", fps);
+		//const char* newTitleCstr = newTitle.c_str();
+		//display.setTitle(newTitleCstr);
+		if (elapsed >= 1.0)
 		{
-			// printf("FPS: %i\n", frames);
-			mage::println(mage::console::BRIGHT_RED, "FPS: {}", frames);
-			// fmt::print(fg(fmt::terminal_color::bright_cyan), "FPS: {}\n", frames);
+			double fps = frames / elapsed;
+			mage::println(mage::console::BRIGHT_YELLOW, "Average FPS: {} | Precise: {}", frames, fps);
+			std::string newTitle = fmt::format("{}{:.{}f}", "Mage3D Testing -- FPS: ", fps, 4);
+			const char* newTitleCstr = newTitle.c_str();
+			display.setTitle(newTitleCstr);
 			frames = 0;
 			timer.reset();
 		} else frames++;
+
 	}
 
 	delete testMesh;

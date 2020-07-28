@@ -43,7 +43,9 @@ namespace mage
 		mage3d_EXPORT void clear() const;
 		mage3d_EXPORT void clear(int red, int green, int blue) const;
 		mage3d_EXPORT bool isClosed() const;
-
+		mage3d_EXPORT void setTitle(const char* title) const;
+		mage3d_EXPORT void toggleCursor() const;
+		mage3d_EXPORT bool isCursorLocked() const;
 
 		mage3d_EXPORT int getWidth() const { return m_width; }
 

@@ -32,6 +32,8 @@ namespace mage
 
 		mage3d_EXPORT double elapsed();
 
+		mage3d_EXPORT double currentTime();
+
 	private:
 		double m_time;
 	};

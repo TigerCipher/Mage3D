@@ -21,7 +21,6 @@
 #include "mage/core/stdcolor.h"
 
 #define FULLSCREEN_MODE 0
-#define SHOW_MOUSE 1
 #define VSYNC 0
 
 mage::Display::Display(const char* title, int width, int height, mage::Input* input) :
@@ -49,7 +48,6 @@ void mage::Display::update() const
 	const auto error = glGetError();
 	if (error != GL_NO_ERROR)
 		print(console::RED, "OpenGL Error: {}\n", glGetString(error));
-	//std::cout << "OpenGL Error: " << glGetString(error) << std::endl;
 
 	glfwSwapBuffers(m_pWindow);
 	glfwPollEvents();
@@ -100,6 +98,7 @@ void mage::mouse_button_callback(GLFWwindow* pWindow, int button, int action, in
 
 void mage::cursor_position_callback(GLFWwindow* pWindow, double xpos, double ypos)
 {
+	//if(glfwGetInputMode(pWindow, GLFW_CURSOR) != GLFW_CURSOR_DISABLED) return;
 	auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
 	display->m_input->setMousePos(xpos, ypos);
 }
@@ -141,6 +140,12 @@ int mage::Display::init()
 	glfwSetScrollCallback(m_pWindow, scroll_callback);
 	glfwSetWindowSizeCallback(m_pWindow, windowResize);
 
+	glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	if(glfwRawMouseMotionSupported())
+		glfwSetInputMode(m_pWindow, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+
+	glfwSetCursorPos(m_pWindow, 0, 0);
+
 
 	// VSYNC must be either 1 or 0
 	glfwSwapInterval(VSYNC);
@@ -152,6 +157,33 @@ int mage::Display::init()
 
 	print(console::YELLOW, "OpenGL {}\n", glGetString(GL_VERSION));
 	return 1;
+}
+
+void mage::Display::setTitle(const char* title) const
+{
+	glfwSetWindowTitle(m_pWindow, title);
+}
+
+void mage::Display::toggleCursor() const
+{
+	int mode = glfwGetInputMode(m_pWindow, GLFW_CURSOR);
+	if(mode == GLFW_CURSOR_DISABLED)
+	{
+		glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		double x, y;
+		glfwGetCursorPos(m_pWindow, &x, &y);
+		m_input->setMousePos(x, y);
+	}
+	else
+	{
+		glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		glfwSetCursorPos(m_pWindow, m_input->getMouseX(), m_input->getMouseY());
+	}
+}
+
+bool mage::Display::isCursorLocked() const
+{
+	return glfwGetInputMode(m_pWindow, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
 }
 
 

@@ -33,7 +33,7 @@ namespace mage
 	class Input
 	{
 	public:
-		mage3d_EXPORT Input() = default;
+		mage3d_EXPORT Input():m_mouseX(0), m_mouseY(0), m_lastMouseX(0), m_lastMouseY(0) {}
 		mage3d_EXPORT ~Input() = default;
 		mage3d_EXPORT void onKeyCallback(int key, int scancode, int action, int mods);
 		mage3d_EXPORT void onMouseButtonCallback(int button, int action, int mods);
@@ -51,10 +51,13 @@ namespace mage
 		mage3d_EXPORT void setMousePos(double x, double y);
 		mage3d_EXPORT double getMouseX() const { return m_mouseX; }
 		mage3d_EXPORT double getMouseY() const { return m_mouseY; }
+		mage3d_EXPORT double getMouseOffsetX() const { return m_mouseX - m_lastMouseX; }
+		mage3d_EXPORT double getMouseOffsetY() const { return m_lastMouseY - m_mouseY; }
 
 		mage3d_EXPORT void setMouseScroll(double x, double y);
 		mage3d_EXPORT double getScrollX() const { return m_scrollX; }
 		mage3d_EXPORT double getScrollY() const { return m_scrollY; }
+
 	protected:
 	private:
 		bool m_keys[MAX_KEYS] = { 0};
@@ -65,6 +68,8 @@ namespace mage
 
 		double m_mouseX;
 		double m_mouseY;
+		double m_lastMouseX;
+		double m_lastMouseY;
 
 		double m_scrollX;
 		double m_scrollY;
