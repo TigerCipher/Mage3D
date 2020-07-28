@@ -39,6 +39,7 @@
 
 namespace mage
 {
+	// TODO: Maybe make 2D and 3D variants for future 2D uses?
 	class Camera
 	{
 	public:

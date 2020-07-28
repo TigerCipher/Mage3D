@@ -7,12 +7,12 @@
 #  define MAGE3D_NO_EXPORT
 #else
 #  ifndef mage3d_EXPORT
-#    ifdef mage3d_EXPORTS
+#    ifdef mage3ds_EXPORTS
         /* We are building this library */
-#      define mage3d_EXPORT __declspec(dllexport)
+#      define mage3d_EXPORT 
 #    else
         /* We are using this library */
-#      define mage3d_EXPORT __declspec(dllimport)
+#      define mage3d_EXPORT 
 #    endif
 #  endif
 
@@ -22,7 +22,7 @@
 #endif
 
 #ifndef MAGE3D_DEPRECATED
-#  define MAGE3D_DEPRECATED __declspec(deprecated)
+#  define MAGE3D_DEPRECATED __attribute__ ((__deprecated__))
 #endif
 
 #ifndef MAGE3D_DEPRECATED_EXPORT

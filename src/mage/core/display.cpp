@@ -39,6 +39,7 @@ mage::Display::Display(const char* title, int width, int height, mage::Input* in
 
 mage::Display::~Display()
 {
+	println(console::BRIGHT_MAGENTA, "Closing display");
 	glfwDestroyWindow(m_pWindow);
 	glfwTerminate();
 }

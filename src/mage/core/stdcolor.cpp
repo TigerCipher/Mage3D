@@ -93,6 +93,7 @@ namespace mage
 		else if (actualFg == 14) fg = fmt::terminal_color::bright_yellow;
 		else if (actualFg == 15) fg = fmt::terminal_color::bright_white;
 
+		if(color._default) return fmt::fg(fg);
 		return fmt::fg(fg) | fmt::bg(bg);
 	}
 

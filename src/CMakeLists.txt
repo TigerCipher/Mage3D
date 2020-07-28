@@ -23,7 +23,7 @@ set(MAGE3D_LINKS PUBLIC fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL glm)
 set(MAGE3D_INCLUDES "../include")
 
 
-
+message(STATUS "Lib type is ${LIB_TYPE}")
 
 if(LIB_TYPE STREQUAL "BOTH")
 
@@ -67,6 +67,7 @@ if(LIB_TYPE STREQUAL "BOTH")
 	message(STATUS "Setting static preprocessor for static build ${MAGE3D_STATIC}")
 	set_target_properties(${MAGE3D_STATIC} PROPERTIES COMPILE_FLAGS -DMAGE3D_STATIC_DEFINE)
 elseif(LIB_TYPE STREQUAL "STATIC")
+	set(MAGE3D_TARGET ${MAGE3D_STATIC})
 	message(Blue "Adding static library ${MAGE3D_STATIC}")
 	add_library(${MAGE3D_STATIC} STATIC ${SRC_LIST} ${HEADER_LIST})
 	message(STATUS "Setting include directories for ${MAGE3D_STATIC}, dirs: ${MAGE3D_INCLUDES}")
@@ -84,7 +85,7 @@ elseif(LIB_TYPE STREQUAL "STATIC")
 	message(STATUS "Setting compile features for ${MAGE3D_STATIC}")
 	target_compile_features(${MAGE3D_STATIC} PUBLIC cxx_std_11)
 	message(STATUS "Setting static preprocessor for static build ${MAGE3D_STATIC}")
-	set_target_properties(${MAGE3D_STATIC} PROPERTIES COMPILE_FLAGS -DMAGE3D_STATIC_DEFINE)
+	set_target_properties(${MAGE3D_STATIC} PROPERTIES COMPILE_DEFINITIONS "MAGE3D_STATIC_DEFINE")
 else()
 	if(LIB_TYPE STREQUAL "SHARED")
 		message(Blue "Adding shared library ${MAGE3D_SHARED}")
@@ -95,7 +96,7 @@ else()
 		message(Blue "To specify the type of library to build, pass in -DLIB_TYPE=[SHARED | STATIC | BOTH]")
 		set(LIB_TYPE "SHARED")
 	endif()
-
+	set(MAGE3D_TARGET ${MAGE3D_SHARED})
 	add_library(${MAGE3D_SHARED} SHARED ${SRC_LIST} ${HEADER_LIST})
 
 	define_property(TARGET PROPERTY HEADERS BRIEF_DOCS "Header files for the target" FULL_DOCS "Header files for the target to be used in source grouping")
@@ -119,7 +120,7 @@ endif()
 set(EXPORT_FILE "${CMAKE_SOURCE_DIR}/include/mage3d_exported.h")
 message(STATUS "Generating library export header file: ${EXPORT_FILE}")
 
-GENERATE_EXPORT_HEADER(mage3d
+GENERATE_EXPORT_HEADER(${MAGE3D_TARGET}
 	BASE_NAME mage3d
 	EXPORT_MACRO_NAME mage3d_EXPORT
 	EXPORT_FILE_NAME ${EXPORT_FILE}

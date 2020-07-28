@@ -70,7 +70,8 @@ namespace mage
 	}
 	extern mage3d_EXPORT uByte background;
 
-	mage3d_EXPORT void clearConsole(console::Color color);
+	extern mage3d_EXPORT void clearConsole(console::Color color);
+	extern MAGE3D_NO_EXPORT fmt::text_style getStyle(console::Color color);
 
 	template<typename S, typename... Args, typename Char = fmt::char_t<S>>
 	void print(console::Color color, const S& format, Args&& ... args)
@@ -97,7 +98,6 @@ namespace mage
 		fmt::print("\n");
 	}
 
-	MAGE3D_NO_EXPORT fmt::text_style getStyle(console::Color color);
 
 
 }

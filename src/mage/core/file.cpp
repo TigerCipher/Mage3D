@@ -20,6 +20,7 @@
  */
 
 #include "mage/core/file.h"
+#include <cstring>
 
 mage::File::File(const char *path):
 m_path(path)
