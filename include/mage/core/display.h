@@ -25,13 +25,15 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "input.h"
+
 namespace mage
 {
 	class Display
 	{
 	public:
 
-		mage3d_EXPORT Display(const char* title, int width, int height);
+		mage3d_EXPORT Display(const char* title, int width, int height, Input* input);
 		mage3d_EXPORT ~Display();
 
 		// Display should never be created with no arguments
@@ -52,11 +54,16 @@ namespace mage
 		const char* m_pTitle;
 		int m_width, m_height;
 		GLFWwindow* m_pWindow;
+		Input* m_input;
 
 		int init();
 
 		friend void windowResize(GLFWwindow* pWindow, int width, int height);
 		friend void errorCallback(int error, const char* desc);
+		friend void key_callback(GLFWwindow* pWindow, int key, int scancode, int action, int mods);
+		friend void mouse_button_callback(GLFWwindow* pWindow, int button, int action, int mods);
+		friend void cursor_position_callback(GLFWwindow* pWindow, double xpos, double ypos);
+		friend void scroll_callback(GLFWwindow* pWindow, double xoffset, double yoffset);
 	};
 }
 

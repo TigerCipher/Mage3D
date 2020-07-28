@@ -46,7 +46,7 @@ namespace mage
 		float a;
 
 		mage3d_EXPORT ColorRGB8(float _r, float _g, float _b, float _a = 1.0f);
-		mage3d_EXPORT ColorRGB8(glm::vec4 color);
+		mage3d_EXPORT explicit ColorRGB8(glm::vec4 color);
 	};
 
 
@@ -54,7 +54,8 @@ namespace mage
 	{
 		Position pos;
 		ColorRGB8 color;
-		mage3d_EXPORT Vertex(glm::vec3 _pos = glm::vec3(0, 0, 0),
+		mage3d_EXPORT Vertex(float x, float y, float z, float r = 1, float g = 1, float b = 1, float a = 1);
+		mage3d_EXPORT explicit Vertex(glm::vec3 _pos = glm::vec3(0, 0, 0),
 							 glm::vec4 _color = glm::vec4(1, 1, 1, 1));
 
 		mage3d_EXPORT void setPos(float x, float y, float z);

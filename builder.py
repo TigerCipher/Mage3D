@@ -63,6 +63,7 @@ class GeneratorFinder:
 					else:
 						retPrintList.append('\t' + item)
 		self.maxIndex = index
+		defIndex = 0
 		for v in helpList:
 			st = -1
 			ind = v.find('=')
@@ -70,10 +71,12 @@ class GeneratorFinder:
 				ind = v.find('[')
 			if '*' in v:
 				st = v.find('*')
+				self.defaultIndex = defIndex
 			if ind == -1:
 				stripped = v.strip()
 			else:
 				stripped = v[st + 1:ind].strip()
+			defIndex += 1
 			retList.append(stripped)
 		self.generators = retList
 		self.printables = retPrintList
@@ -145,7 +148,7 @@ def main():
 			genFound = False
 			i = 0
 			if genStr == '':
-				gen = 0
+				gen = finder.defaultIndex
 				genFound = True
 			else:
 				for var in finder.generators:
@@ -159,7 +162,7 @@ def main():
 				print(ERR_COLOR + 'The specified generator', genStr, 'does not match those supported by cmake' + RESET)
 				sys.exit(2)
 		if osName == 'Linux':
-			vcpkgHome = '/home/'
+			vcpkgHome = '~/'
 		elif osName == 'Darwin':
 			vcpkgHome = '/Library/'
 		elif osName == 'Windows':

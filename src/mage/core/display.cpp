@@ -24,11 +24,12 @@
 #define SHOW_MOUSE 1
 #define VSYNC 0
 
-mage::Display::Display(const char* title, int width, int height) :
+mage::Display::Display(const char* title, int width, int height, mage::Input* input) :
 		m_pTitle(title),
 		m_width(width),
 		m_height(height),
-		m_pWindow(nullptr)
+		m_pWindow(nullptr),
+		m_input(input)
 {
 	if (!init())
 	{
@@ -85,6 +86,30 @@ void mage::errorCallback(int error, const char* desc)
 	print(console::RED, "Error ({}):\n{}\n", error, desc);
 }
 
+void mage::key_callback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
+{
+	auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
+	display->m_input->onKeyCallback(key, scancode, action, mods);
+}
+
+void mage::mouse_button_callback(GLFWwindow* pWindow, int button, int action, int mods)
+{
+	auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
+	display->m_input->onMouseButtonCallback(button, action, mods);
+}
+
+void mage::cursor_position_callback(GLFWwindow* pWindow, double xpos, double ypos)
+{
+	auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
+	display->m_input->setMousePos(xpos, ypos);
+}
+
+void mage::scroll_callback(GLFWwindow* pWindow, double xoffset, double yoffset)
+{
+	auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
+	display->m_input->setMouseScroll(xoffset, yoffset);
+}
+
 int mage::Display::init()
 {
 	println(console::BRIGHT_CYAN, "Initializing glfw");
@@ -110,6 +135,10 @@ int mage::Display::init()
 	glfwMakeContextCurrent(m_pWindow);
 	glfwSetWindowUserPointer(m_pWindow, this);
 	glfwSetErrorCallback(errorCallback);
+	glfwSetKeyCallback(m_pWindow, key_callback);
+	glfwSetMouseButtonCallback(m_pWindow, mouse_button_callback);
+	glfwSetCursorPosCallback(m_pWindow, cursor_position_callback);
+	glfwSetScrollCallback(m_pWindow, scroll_callback);
 	glfwSetWindowSizeCallback(m_pWindow, windowResize);
 
 
@@ -124,4 +153,9 @@ int mage::Display::init()
 	print(console::YELLOW, "OpenGL {}\n", glGetString(GL_VERSION));
 	return 1;
 }
+
+
+
+
+
 

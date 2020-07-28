@@ -48,14 +48,14 @@ void mage::Mesh::storeDataInAttribList(Vertex data[])
 {
 	glGenBuffers(1, &m_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	glBufferData(GL_ARRAY_BUFFER, 3 * sizeof(Vertex), data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(Vertex), data, GL_STATIC_DRAW);
 }
 
 
 void mage::Mesh::render()
 {
 	glBindVertexArray(m_vaoId);
-	glDrawArrays(GL_TRIANGLES, 0, 3);
+	glDrawArrays(GL_TRIANGLES, 0, 12);
 	glBindVertexArray(0);
 }
 

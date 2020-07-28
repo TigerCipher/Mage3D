@@ -20,23 +20,31 @@
 
 #include <string>
 #include <mage/mage.h>
+#include <glm/gtx/transform.hpp>
 
 int main(int argc, char** argv)
 {
-	mage::Vertex vert1;
-	mage::Vertex vert2;
-	mage::Vertex vert3;
-	vert1.setPos(-1, -1, 0);
-	vert1.setColor(1, 0, 0);
-	vert2.setPos(1, -1, 0);
-	vert2.setColor(0, 1, 0);
-	vert3.setPos(0, 1, 0);
-	vert3.setColor(0, 0, 1);
+
 	mage::Vertex data[] = {
-			vert1, vert2, vert3
+			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v0
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 1, 0), //v1
+			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1), //v2
+
+			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v0
+			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1), //v2
+			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0), //v3
+
+			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v0
+			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0), //v3
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1), //v4
+
+			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v0
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1), //v4
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 1, 0), //v1
 	};
-    mage::clearConsole(mage::console::WHITE);
-	const mage::Display display("Mage3D Testing", 1920, 1080);
+	mage::clearConsole(mage::console::WHITE);
+	mage::Input input;
+	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
 	auto* testMesh = new mage::Mesh(data);
 	mage::Renderer renderer;
 
@@ -45,21 +53,33 @@ int main(int argc, char** argv)
 
 	mage::Timer timer;
 	int frames = 0;
-
+	mage::Timer rotTimer;
 	while (!display.isClosed())
 	{
 		display.clear(0, 0, 0);
 		// Render
 		shader->enable();
-
+		glm::mat4 rot(1);
+		rot = glm::rotate((float) rotTimer.elapsed() * 0.5f, glm::vec3(0, 1, 0));
+		shader->setUniformMatf("rotation", rot);
 
 		renderer.draw(testMesh);
 
 
 		shader->disable();
 
+		//if(input.keyDown(GLFW_KEY_C))
+		//	mage::println(mage::console::BRIGHT_BLUE, "C key is down!");
+		//if(input.keyPressed(GLFW_KEY_C))
+		//	mage::println(mage::console::BRIGHT_BLUE, "C key was pressed!");
+		//if(input.keyReleased(GLFW_KEY_C))
+		//	mage::println(mage::console::BRIGHT_BLUE, "C key was released!");
+		if(input.mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+		{
+			mage::println(mage::console::BRIGHT_BLUE, "Mouse pos: ({}, {})", input.getMouseX(), input.getMouseY());
+		}
 
-
+		input.update();
 		display.update();
 
 		if (timer.elapsed() >= 1.0)
@@ -69,8 +89,7 @@ int main(int argc, char** argv)
 			// fmt::print(fg(fmt::terminal_color::bright_cyan), "FPS: {}\n", frames);
 			frames = 0;
 			timer.reset();
-		}
-		else frames++;
+		} else frames++;
 	}
 
 	delete testMesh;
