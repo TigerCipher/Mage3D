@@ -31,8 +31,7 @@ namespace mage
 	class Mesh
 	{
 	public:
-		mage3d_EXPORT Mesh(Vertex data[]);
-
+		mage3d_EXPORT Mesh(Vertex vertices[], uint verticesSize, uint indices[], uint indicesSize);
 		mage3d_EXPORT ~Mesh();
 
 		mage3d_EXPORT void render();
@@ -41,10 +40,18 @@ namespace mage
 	protected:
 	private:
 
-		void storeDataInAttribList(Vertex data[]);
+		void createBuffers(Vertex* data, uint* indices);
+		void enableAttribPointers();
+		void disableAttribPointers();
+		void enable();
+		void disable();
 
 		GLuint m_vaoId;
 		GLuint m_vbo;
+		GLuint m_ebo;
+
+		uint m_numVertices;
+		uint m_numIndices;
 	};
 
 }

@@ -42,11 +42,30 @@ int main(int argc, char** argv)
 			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1), //v4
 			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 1, 0), //v1
 	};
+
+	mage::Vertex vertices[] = {
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 1, 0), //v0
+			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1), //v1
+			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 1), //v2
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 1, 0, 1), //v3
+			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v4
+	};
+
+	uint indices[] = {
+			0, 4, 1,
+			1, 4, 2,
+			2, 4, 3,
+			3, 4, 0,
+			0, 3, 2,
+			2, 1, 0
+	};
 	mage::clearConsole(mage::console::WHITE);
+	int temp = *(&vertices + 1) - vertices;
+	mage::println(mage::console::BRIGHT_MAGENTA, "Temp size: {}", temp);
 	mage::Input input;
 	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
 	mage::Camera camera(&display);
-	auto* testMesh = new mage::Mesh(data);
+	auto* testMesh = new mage::Mesh(vertices, 5, indices, 18);
 	mage::Renderer renderer;
 
 	auto* shader = new mage::Shader("./assets/basic");

@@ -23,39 +23,76 @@
 #include "mage/graphics/mesh.h"
 #include "mage/core/stdcolor.h"
 
-#define NUM_COORDS 3
 
-mage::Mesh::Mesh(Vertex data[])
+mage::Mesh::Mesh(mage::Vertex vertices[], uint verticesSize, uint indices[], uint indicesSize) :
+		m_numVertices(verticesSize),
+		m_numIndices(indicesSize)
 {
 	glGenVertexArrays(1, &m_vaoId);
 	glBindVertexArray(m_vaoId);
-	storeDataInAttribList(data);
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, pos));
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, color));
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	createBuffers(vertices, indices);
+	disable();
 }
 
 mage::Mesh::~Mesh()
 {
 	glDeleteVertexArrays(1, &m_vaoId);
 	glDeleteBuffers(1, &m_vbo);
+	glDeleteBuffers(1, &m_ebo);
 }
 
-void mage::Mesh::storeDataInAttribList(Vertex data[])
+void mage::Mesh::createBuffers(Vertex data[], uint indices[])
 {
+	// Set up vertex buffer object
 	glGenBuffers(1, &m_vbo);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	glBufferData(GL_ARRAY_BUFFER, 12 * sizeof(Vertex), data, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(Vertex), data, GL_STATIC_DRAW);
+	// Set up element buffer object
+	glGenBuffers(1, &m_ebo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numIndices * sizeof(uint), indices, GL_STATIC_DRAW);
 }
 
+void mage::Mesh::enableAttribPointers()
+{
+	// Currently this requires attrib location 0 to be a vec3 and 1 to be a vec4
+	// Surely there is a way to generalize this?
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(1);
+	// vec3 pos
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, pos));
+	// vec4 color
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, color));
+}
+
+void mage::Mesh::disableAttribPointers()
+{
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+}
 
 void mage::Mesh::render()
 {
+	enable();
+	enableAttribPointers();
+	glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, 0);
+	disableAttribPointers();
+	disable();
+}
+
+void mage::Mesh::enable()
+{
 	glBindVertexArray(m_vaoId);
-	glDrawArrays(GL_TRIANGLES, 0, 12);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+}
+
+void mage::Mesh::disable()
+{
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
+
+
 
