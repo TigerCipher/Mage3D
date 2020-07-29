@@ -76,16 +76,41 @@ glm::vec4 mage::Vertex::colorVec()
 	return glm::vec4(color.r, color.g, color.b, color.a);
 }
 
-mage::Vertex::Vertex(glm::vec3 _pos, glm::vec4 _color) :
+mage::Vertex::Vertex(glm::vec3 _pos, glm::vec4 _color, glm::vec2 _coords) :
 pos(_pos),
-color(_color)
+color(_color),
+coords(_coords)
 {
 
 }
 
-mage::Vertex::Vertex(float x, float y, float z, float r, float g, float b, float a):
+mage::Vertex::Vertex(float x, float y, float z, float u, float v, float r, float g, float b, float a):
 pos(x, y, z),
-color(r, g, b, a)
+color(r, g, b, a),
+coords(u, v)
 {
 
+}
+
+void mage::Vertex::setTexCoords(float u, float v)
+{
+	coords.u = u;
+	coords.v = v;
+}
+
+glm::vec2 mage::Vertex::texCoords()
+{
+	return glm::vec2(coords.u, coords.v);
+}
+
+mage::TexCoords::TexCoords(float _u, float _v)
+{
+	u = _u;
+	v = _v;
+}
+
+mage::TexCoords::TexCoords(glm::vec2 coords)
+{
+	u = coords.x;
+	v = coords.y;
 }

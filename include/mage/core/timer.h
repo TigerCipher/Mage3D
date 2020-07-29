@@ -29,13 +29,15 @@ namespace mage
 		mage3d_EXPORT Timer();
 
 		mage3d_EXPORT void reset();
-
+		mage3d_EXPORT void update();
+		mage3d_EXPORT float delta() const { return m_delta; }
 		mage3d_EXPORT double elapsed();
-
 		mage3d_EXPORT double currentTime();
 
 	private:
 		double m_time;
+		double m_lastTime;
+		float m_delta;
 	};
 }
 #endif // MAGE3D_TIMER_H

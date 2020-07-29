@@ -19,6 +19,7 @@
 
 #include "mage/core/display.h"
 #include "mage/core/stdcolor.h"
+#include <iostream>
 
 #define FULLSCREEN_MODE 0
 #define VSYNC 0
@@ -48,7 +49,8 @@ void mage::Display::update() const
 {
 	const auto error = glGetError();
 	if (error != GL_NO_ERROR)
-		print(console::RED, "OpenGL Error: {}\n", glGetString(error));
+		//std::cout << "OpenGL Error: " << error << ": " << glGetString(error) << std::endl;
+		print(console::RED, "OpenGL Error: {}\n", error);
 
 	glfwSwapBuffers(m_pWindow);
 	glfwPollEvents();
@@ -56,6 +58,7 @@ void mage::Display::update() const
 
 void mage::Display::clear() const
 {
+	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

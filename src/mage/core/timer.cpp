@@ -4,7 +4,8 @@
 #include <GLFW/glfw3.h>
 
 mage::Timer::Timer() :
-m_time(glfwGetTime())
+		m_time(glfwGetTime()),
+		m_lastTime(0)
 {
 }
 
@@ -21,4 +22,11 @@ double mage::Timer::elapsed()
 double mage::Timer::currentTime()
 {
 	return glfwGetTime();
+}
+
+void mage::Timer::update()
+{
+	double current = currentTime();
+	m_delta = (float) (current - m_lastTime);
+	m_lastTime = current;
 }

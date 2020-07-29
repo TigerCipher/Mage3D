@@ -22,45 +22,6 @@
 #ifndef MAGE3D_PLATFORM_H
 #define MAGE3D_PLATFORM_H
 
-#include <stdint.h>
-
-// I hate having to add _t. What does the _t even stand for?
-// Rename the fixed width integer types
-typedef int8_t int8; // signed char
-typedef int16_t int16; // signed short
-typedef int32_t int32; // signed int
-typedef int64_t int64; // signed long long
-typedef uint8_t uint8; // unsigned char
-typedef uint16_t uint16; // unsigned short
-typedef uint32_t uint32; // unsigned int
-typedef uint64_t uint64; // unsigned long long
-
-typedef signed char sByte;
-typedef unsigned char uByte;
-
-typedef unsigned short ushort;
-typedef unsigned int uint;
-typedef unsigned long ulong;
-
-#define MIN_SBYTE -127
-#define MAX_SBYTE 127
-#define MIN_UBYTE 0
-#define MAX_UBYTE 255
-
-// Max/min values got with:
-/* (from stdint.h)
- * #define INT8_MIN         (-127i8 - 1)
-#define INT16_MIN        (-32767i16 - 1)
-#define INT32_MIN        (-2147483647i32 - 1)
-#define INT64_MIN        (-9223372036854775807i64 - 1)
-#define INT8_MAX         127i8
-#define INT16_MAX        32767i16
-#define INT32_MAX        2147483647i32
-#define INT64_MAX        9223372036854775807i64
-#define UINT8_MAX        0xffui8
-#define UINT16_MAX       0xffffui16
-#define UINT32_MAX       0xffffffffui32
-#define UINT64_MAX       0xffffffffffffffffui64*/
 
 #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64) || defined(_WINDOWS) || defined(__WIN32__) || defined(__WINDOWS__) || defined(__TOS_WIN__)
 #define OS_NAME "Windows"
@@ -77,7 +38,6 @@ typedef unsigned long ulong;
 #define OS_NAME "Other"
 #define OS_OTHER
 #endif // OS Check
-
 
 
 #endif //MAGE3D_PLATFORM_H

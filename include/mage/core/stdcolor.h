@@ -23,6 +23,7 @@
 #define MAGE3D_STDCOLOR_H
 
 #include "mage3d_exported.h"
+#include "mage/common.h"
 #include "mage/core/platform.h"
 
 #ifdef OS_WINDOWS

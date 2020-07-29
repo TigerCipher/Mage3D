@@ -24,79 +24,124 @@
 
 int main(int argc, char** argv)
 {
+	//std::vector<mage::Vertex> verts = {
+	//		mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 1, 0), //v0
+	//		mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1), //v1
+	//		mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 1), //v2
+	//		mage::Vertex(-0.5f, -0.5f, -0.5f, 1, 0, 1), //v3
+	//		mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v4
+	//};
+	//
+	//std::vector<uint> ints = {
+	//		0, 4, 1,
+	//		1, 4, 2,
+	//		2, 4, 3,
+	//		3, 4, 0,
+	//		0, 3, 2,
+	//		2, 1, 0
+	//};
 
-	mage::Vertex data[] = {
-			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v0
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 1, 0), //v1
-			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1), //v2
+	//TODO: Texture coords don't seem to map properly when using indices
+	std::vector<mage::Vertex> verts = {
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1, 0, 0),
+			mage::Vertex(0.5f, -0.5f, -0.5f, 1, 0, 0, 1, 0),
+			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 0, 1),
+			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 0, 1),
+			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 1, 1),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1, 0, 0),
 
-			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v0
-			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1), //v2
-			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0), //v3
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 0),
+			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 1, 0),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1, 0, 0, 1),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1, 0, 0, 1),
+			mage::Vertex(-0.5f, 0.5f, 0.5f, 0, 1, 1, 1, 1),
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 0),
 
-			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v0
-			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0), //v3
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1), //v4
+			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0),
+			mage::Vertex(-0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1),
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1),
+			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0),
 
-			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v0
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1), //v4
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 1, 0), //v1
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0),
+			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0),
+			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1),
+			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1),
+			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0),
+
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 1, 0, 0),
+			mage::Vertex(0.5f, -0.5f, -0.5f, 1, 1, 0, 1, 0),
+			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 1),
+			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 1),
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 1, 0, 0),
+
+			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 0, 0),
+			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 0, 0, 1),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 0, 0, 1),
+			mage::Vertex(-0.5f, 0.5f, 0.5f, 0, 0, 1, 1, 1),
+			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 0, 0),
 	};
 
-	mage::Vertex vertices[] = {
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 1, 0), //v0
-			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1), //v1
-			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 1), //v2
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 1, 0, 1), //v3
-			mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v4
-	};
+	std::vector<uint> ints = {
+			0, 1, 2,
+			3, 4, 5,
 
-	uint indices[] = {
-			0, 4, 1,
-			1, 4, 2,
-			2, 4, 3,
-			3, 4, 0,
-			0, 3, 2,
-			2, 1, 0
+			6, 7, 8,
+			9, 10, 11,
+
+			12, 13, 14,
+			15, 16, 17,
+
+			18, 19, 20,
+			21, 22, 23,
+
+			24, 25, 26,
+			27, 28, 29,
+
+			30, 31, 32,
+			33, 34, 35
 	};
-	mage::clearConsole(mage::console::WHITE);
-	int temp = *(&vertices + 1) - vertices;
-	mage::println(mage::console::BRIGHT_MAGENTA, "Temp size: {}", temp);
+	mage::clearConsole(mage::console::CYAN);
 	mage::Input input;
 	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
-	mage::Camera camera(&display);
-	auto* testMesh = new mage::Mesh(vertices, 5, indices, 18);
+	mage::Camera camera(&display, glm::vec3(0, 0, 5));
+	//auto* testMesh = new mage::Mesh(vertices, 5, indices, 18);
+	auto* testMesh = new mage::Mesh(verts, ints);
 	mage::Renderer renderer;
 
 	auto* shader = new mage::Shader("./assets/basic");
+	mage::Texture texture("./assets/default.png");
 
 
 	mage::Timer timer;
 	int frames = 0;
 	mage::Timer rotTimer;
-	double lastTime = 0;
 	while (!display.isClosed())
 	{
-		double currentTime = timer.currentTime();
-		float delta = (float)currentTime - (float)lastTime;
-		lastTime = currentTime;
+		timer.update();
 
-		if(input.keyPressed(GLFW_KEY_ESCAPE))
+		if (input.keyPressed(GLFW_KEY_ESCAPE))
 			display.toggleCursor();
 
-		camera.update(input, delta);
+		camera.update(input, timer.delta());
 		display.clear(0, 0, 0);
 		// Render
 		shader->enable();
+		texture.enable();
+		shader->setUniform1i("tex", texture.getId());
 		glm::mat4 rot(1);
-		rot = glm::rotate((float) rotTimer.elapsed() * 0.5f, glm::vec3(0, 1, 0));
+		rot = glm::rotate((float) rotTimer.elapsed() * 0.5f, glm::vec3(1, 1, 1));
 		shader->setUniformMatf("model", rot);
 		shader->setUniformMatf("projection", camera.getProjectionMatrix());
 		shader->setUniformMatf("view", camera.getViewMatrix());
 
 		renderer.draw(testMesh);
 
-
+		texture.disable();
 		shader->disable();
 
 		//if(input.keyDown(GLFW_KEY_C))
@@ -105,9 +150,10 @@ int main(int argc, char** argv)
 		//	mage::println(mage::console::BRIGHT_BLUE, "C key was pressed!");
 		//if(input.keyReleased(GLFW_KEY_C))
 		//	mage::println(mage::console::BRIGHT_BLUE, "C key was released!");
-		if(input.mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+		if (input.mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
 		{
-			mage::println(mage::console::BRIGHT_BLUE, "Mouse pos: ({}, {})", input.getMouseX(), input.getMouseY());
+			mage::println(mage::console::BRIGHT_BLUE, "Mouse pos: ({}, {})", input.getMouseX(),
+						  input.getMouseY());
 		}
 
 		input.update();

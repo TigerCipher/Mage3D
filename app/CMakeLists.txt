@@ -50,11 +50,12 @@ file(GLOB ASSETS CONFIGURE_DEPENDS
 	"${Mage3D_SOURCE_DIR}/assets/*.frag"
 	)
 
-# Copy_if_different doesnt seem to work
+# Copy_if_different doesnt seem to work, seems to always copy no matter what
 foreach(SHADER_ASSET IN LISTS ASSETS)
 	if(CMAKE_CONFIGURATION_TYPES)
 		add_custom_command(TARGET app PRE_BUILD
 				COMMAND "${CMAKE_COMMAND}" -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
+				COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SHADER_ASSET} ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
 				COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SHADER_ASSET} ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
 				COMMENT "Copying shader: ${SHADER_ASSET}")
 	else()

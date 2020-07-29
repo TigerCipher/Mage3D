@@ -21,10 +21,13 @@
 
 #ifndef MAGE3D_MESH_H
 #define MAGE3D_MESH_H
+
 #include <GL/glew.h>
 #include "mage3d_exported.h"
-#include "mage/core/platform.h"
+#include "mage/common.h"
 #include "vertex.h"
+
+#include <vector>
 
 namespace mage
 {
@@ -32,6 +35,7 @@ namespace mage
 	{
 	public:
 		mage3d_EXPORT Mesh(Vertex vertices[], uint verticesSize, uint indices[], uint indicesSize);
+		mage3d_EXPORT Mesh(std::vector<Vertex> vertices, std::vector<uint> indices);
 		mage3d_EXPORT ~Mesh();
 
 		mage3d_EXPORT void render();
@@ -40,7 +44,7 @@ namespace mage
 	protected:
 	private:
 
-		void createBuffers(Vertex* data, uint* indices);
+		void createBuffers(Vertex vertices[], uint indices[]);
 		void enableAttribPointers();
 		void disableAttribPointers();
 		void enable();
