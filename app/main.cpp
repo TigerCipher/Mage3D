@@ -42,7 +42,7 @@ int main(int argc, char** argv)
 	//};
 
 	//TODO: Texture coords don't seem to map properly when using indices
-	std::vector<mage::Vertex> verts = {
+	list<mage::Vertex> verts = {
 			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1, 0, 0),
 			mage::Vertex(0.5f, -0.5f, -0.5f, 1, 0, 0, 1, 0),
 			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 0, 1),
@@ -86,7 +86,7 @@ int main(int argc, char** argv)
 			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 0, 0),
 	};
 
-	std::vector<uint> ints = {
+	list<uint> ints = {
 			0, 1, 2,
 			3, 4, 5,
 
@@ -105,7 +105,8 @@ int main(int argc, char** argv)
 			30, 31, 32,
 			33, 34, 35
 	};
-	mage::clearConsole(mage::console::CYAN);
+
+	mage::clearConsole(mage::console::WHITE);
 	mage::Input input;
 	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
 	mage::Camera camera(&display, glm::vec3(0, 0, 5));
@@ -134,7 +135,7 @@ int main(int argc, char** argv)
 		texture.enable();
 		shader->setUniform1i("tex", texture.getId());
 		glm::mat4 rot(1);
-		rot = glm::rotate((float) rotTimer.elapsed() * 0.5f, glm::vec3(1, 1, 1));
+		rot = glm::rotate((float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
 		shader->setUniformMatf("model", rot);
 		shader->setUniformMatf("projection", camera.getProjectionMatrix());
 		shader->setUniformMatf("view", camera.getViewMatrix());

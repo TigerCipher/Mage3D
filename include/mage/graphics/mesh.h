@@ -35,7 +35,7 @@ namespace mage
 	{
 	public:
 		mage3d_EXPORT Mesh(Vertex vertices[], uint verticesSize, uint indices[], uint indicesSize);
-		mage3d_EXPORT Mesh(std::vector<Vertex> vertices, std::vector<uint> indices);
+		mage3d_EXPORT Mesh(list<Vertex> vertices, list<uint> indices);
 		mage3d_EXPORT ~Mesh();
 
 		mage3d_EXPORT void render();
@@ -45,14 +45,14 @@ namespace mage
 	private:
 
 		void createBuffers(Vertex vertices[], uint indices[]);
-		void enableAttribPointers();
-		void disableAttribPointers();
+		static void enableAttribPointers();
+		static void disableAttribPointers();
 		void enable();
 		void disable();
 
-		GLuint m_vaoId;
-		GLuint m_vbo;
-		GLuint m_ebo;
+		GLuint m_vaoId { };
+		GLuint m_vbo { };
+		GLuint m_ebo { };
 
 		uint m_numVertices;
 		uint m_numIndices;

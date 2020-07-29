@@ -28,13 +28,14 @@ mage::Mesh::Mesh(mage::Vertex vertices[], uint verticesSize, uint indices[], uin
 		m_numVertices(verticesSize),
 		m_numIndices(indicesSize)
 {
+	assert(m_numIndices % 3 == 0);
 	glGenVertexArrays(1, &m_vaoId);
 	glBindVertexArray(m_vaoId);
 	createBuffers(vertices, indices);
 	disable();
 }
 
-mage::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint> indices)
+mage::Mesh::Mesh(list<Vertex> vertices, list<uint> indices)
 {
 	m_numVertices = vertices.size();
 	m_numIndices = indices.size();

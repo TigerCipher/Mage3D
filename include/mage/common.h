@@ -23,7 +23,9 @@
 #define MAGE3D_COMMON_H
 
 #include <cstdint>
-//#include <vector>
+#include <vector>
+
+#include <glm/glm.hpp>
 
 // I hate having to add _t. What does the _t even stand for?
 // Rename the fixed width integer types
@@ -63,7 +65,21 @@ typedef unsigned long ulong;
 #define UINT32_MAX       0xffffffffui32
 #define UINT64_MAX       0xffffffffffffffffui64*/
 
-//template<typename T>
-//typedef std::vector<T> list;
+
+// Because I use "Lists" in Java more than I use vectors in C++,
+// this is just simply a small rewrite of the vector for quality of life sake
+template<class T>
+using list = std::vector<T>;
+
+// Rename some of the glm types, again for quality of life sake
+using vec2f = glm::vec2;
+using vec3f = glm::vec3;
+using vec4f = glm::vec4;
+using mat4f = glm::mat4;
+using vec2i = glm::ivec2;
+using vec3i = glm::ivec3;
+using vec4i = glm::ivec4;
+
+#define SIZE_OF_ARRAY(arr) (sizeof(arr) / sizeof(arr[0]))
 
 #endif //MAGE3D_COMMON_H

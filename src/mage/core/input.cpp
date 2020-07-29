@@ -20,7 +20,7 @@
  */
 
 #include "mage/core/input.h"
-#include "mage/core/stdcolor.h"
+#include <cctype>
 
 void mage::Input::onKeyCallback(int key, int scancode, int action, int mods)
 {
@@ -34,17 +34,17 @@ void mage::Input::onMouseButtonCallback(int button, int action, int mods)
 
 bool mage::Input::keyDown(int key)
 {
-	return m_keys[ key ];
+	return m_keys[ toupper(key) ];
 }
 
 bool mage::Input::keyPressed(int key)
 {
-	return m_keys[ key ] && !m_lastKeys[ key ];
+	return m_keys[ toupper(key) ] && !m_lastKeys[ toupper(key) ];
 }
 
 bool mage::Input::keyReleased(int key)
 {
-	return !m_keys[ key ] && m_lastKeys[ key ];
+	return !m_keys[ toupper(key) ] && m_lastKeys[ toupper(key) ];
 }
 
 bool mage::Input::mouseButtonDown(int button)

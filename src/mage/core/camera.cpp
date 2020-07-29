@@ -20,7 +20,6 @@
  */
 
 #include "mage/core/camera.h"
-#include "mage/core/stdcolor.h"
 
 mage::Camera::Camera(const mage::Display* display, glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
 		m_display(display),
@@ -52,13 +51,13 @@ void mage::Camera::updateVectors()
 void mage::Camera::update(mage::Input input, float delta)
 {
 	float velocity = m_speed * delta;
-	if (input.keyDown(GLFW_KEY_W))
+	if (input.keyDown(KEY_W))
 		m_position += m_front * velocity;
-	if (input.keyDown(GLFW_KEY_S))
+	if (input.keyDown(KEY_S))
 		m_position -= m_front * velocity;
-	if (input.keyDown(GLFW_KEY_A))
+	if (input.keyDown(KEY_A))
 		m_position -= m_right * velocity;
-	if (input.keyDown(GLFW_KEY_D))
+	if (input.keyDown(KEY_D))
 		m_position += m_right * velocity;
 
 	float xOff = input.getMouseOffsetX() * m_sensitivity;
