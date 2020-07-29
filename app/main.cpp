@@ -106,12 +106,58 @@ int main(int argc, char** argv)
 			33, 34, 35
 	};
 
+	// UV coords can't be shared between vertices, so textures don't work properly
+	list<mage::Vertex> testVerts = {
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0),
+			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1),
+			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 1),
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 1, 0),
+
+			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 0),
+			mage::Vertex(0.5f, 0.5f, -0.5f, 0, 1),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1),
+			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0),
+	};
+
+	list<uint> testInts = {
+			0, 1, 2,
+			2, 0, 3,
+
+			3, 7, 4,
+			4, 3, 0,
+
+			0, 4, 5,
+			5, 0, 1,
+
+			1, 5, 6,
+			6, 1, 2,
+
+			2, 6, 7,
+			7, 2, 3,
+
+			4, 7, 6,
+			6, 4, 5
+	};
+
+	list<mage::Vertex> planeVerts = {
+			mage::Vertex(-2, -2, -2, 0, 0),
+			mage::Vertex(2, -2, -2, 0, 1),
+			mage::Vertex(2, -2, 2, 1, 1),
+			mage::Vertex(-2, -2, 2, 1, 0),
+	};
+
+	list<uint> planeInts = {
+			0, 1, 2,
+			2, 0, 3
+	};
+
 	mage::clearConsole(mage::console::WHITE);
 	mage::Input input;
 	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
 	mage::Camera camera(&display, glm::vec3(0, 0, 5));
 	//auto* testMesh = new mage::Mesh(vertices, 5, indices, 18);
 	auto* testMesh = new mage::Mesh(verts, ints);
+	auto* planeMesh = new mage::Mesh(planeVerts, planeInts);
 	mage::Renderer renderer;
 
 	auto* shader = new mage::Shader("./assets/basic");
@@ -141,6 +187,19 @@ int main(int argc, char** argv)
 		shader->setUniformMatf("view", camera.getViewMatrix());
 
 		renderer.draw(testMesh);
+
+		texture.disable();
+		shader->disable();
+
+		shader->enable();
+		texture.enable();
+		shader->setUniform1i("tex", texture.getId());
+		glm::mat4 plane(1);
+		shader->setUniformMatf("model", plane);
+		shader->setUniformMatf("projection", camera.getProjectionMatrix());
+		shader->setUniformMatf("view", camera.getViewMatrix());
+
+		renderer.draw(planeMesh);
 
 		texture.disable();
 		shader->disable();
