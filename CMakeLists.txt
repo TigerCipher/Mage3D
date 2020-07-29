@@ -7,7 +7,7 @@ LANGUAGES CXX)
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE ON)
-set(LIB_TYPE "STATIC" CACHE STRING "The type of library to build")
+set(LIB_TYPE "SHARED" CACHE STRING "The type of library to build")
 set(MAGE3D_SHARED "mage3d")
 set(MAGE3D_STATIC "mage3ds")
 
