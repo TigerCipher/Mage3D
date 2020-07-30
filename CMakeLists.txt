@@ -54,12 +54,12 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   #include(CTest)
 
 # Will deal with doxygen and documentation much later
-#  find_package(Doxygen)
-#  if(Doxygen_FOUND)
-#    add_subdirectory(docs)
-#  else()
-#    message(STATUS "Doxygen not found, cannot build docs")
-#  endif()
+  find_package(Doxygen)
+  if(Doxygen_FOUND)
+    add_subdirectory(docs)
+  else()
+    message(STATUS "Doxygen not found, cannot build docs")
+  endif()
 endif()
 
 # Was using boost to test and learn cmake, don't think I will actually use it though
@@ -74,6 +74,8 @@ find_package(fmt CONFIG REQUIRED)
 
 #include(FetchContent) Only using this in tests/CMakeLists.txt which I currently have disabled while I still learn about Check2
 
+# Temporary, probably best to move common stuff to a separate project
+add_subdirectory(common)
 add_subdirectory(src)
 add_subdirectory(app)
 

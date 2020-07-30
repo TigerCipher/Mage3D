@@ -1,5 +1,5 @@
 /*
- * Mage3D
+ * Blutilities
  * Copyright (C) 2020 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,27 +14,14 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: common.h
- * Date File Created: 7/28/2020 at 8:44 PM
+ * File Name: strutil.h
+ * Date File Created: 7/30/2020 at 12:37 AM
  * Author: Matt
  */
 
-#ifndef MAGE3D_COMMON_H
-#define MAGE3D_COMMON_H
+#ifndef BMD_STRUTIL_H
+#define BMD_STRUTIL_H
 
-#include <bmd/types.h>
+extern void concatStr(char* orig, char* add);
 
-#include <glm/glm.hpp>
-
-// Rename some of the glm types, again for quality of life sake
-using vec2f = glm::vec2;
-using vec3f = glm::vec3;
-using vec4f = glm::vec4;
-using mat4f = glm::mat4;
-using vec2i = glm::ivec2;
-using vec3i = glm::ivec3;
-using vec4i = glm::ivec4;
-
-#define SIZE_OF_ARRAY(arr) (sizeof(arr) / sizeof(arr[0]))
-
-#endif //MAGE3D_COMMON_H
+#endif //BMD_STRUTIL_H

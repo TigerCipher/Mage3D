@@ -1,5 +1,5 @@
 /*
- * Mage3D
+ * Blutilities
  * Copyright (C) 2020 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,27 +14,28 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: common.h
- * Date File Created: 7/28/2020 at 8:44 PM
+ * File Name: platform.h
+ * Date File Created: 7/29/2020 at 10:26 PM
  * Author: Matt
  */
 
-#ifndef MAGE3D_COMMON_H
-#define MAGE3D_COMMON_H
+#ifndef BMD_PLATFORM_H
+#define BMD_PLATFORM_H
 
-#include <bmd/types.h>
+#if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64) || defined(_WINDOWS) || defined(__WIN32__) || defined(__WINDOWS__) || defined(__TOS_WIN__)
+#define OS_NAME "Windows"
+#define OS_WINDOWS
 
-#include <glm/glm.hpp>
+#elif defined(macintosh) || defined(Macintosh) || defined(__APPLE__) || defined(__MACH__)
+#define OS_NAME "Apple"
+#define OS_APPLE
 
-// Rename some of the glm types, again for quality of life sake
-using vec2f = glm::vec2;
-using vec3f = glm::vec3;
-using vec4f = glm::vec4;
-using mat4f = glm::mat4;
-using vec2i = glm::ivec2;
-using vec3i = glm::ivec3;
-using vec4i = glm::ivec4;
+#elif defined(__unix__) || defined(__unix) || defined(__linux__) || defined(linux) || defined(__linux)
+#define OS_NAME "Unix"
+#define OS_UNIX
+#else
+#define OS_NAME "Other"
+#define OS_OTHER
+#endif // OS Check
 
-#define SIZE_OF_ARRAY(arr) (sizeof(arr) / sizeof(arr[0]))
-
-#endif //MAGE3D_COMMON_H
+#endif //MAGE3D_PLATFORM_H

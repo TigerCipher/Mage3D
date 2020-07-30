@@ -20,7 +20,7 @@
 #ifndef MAGE3D_CORE_H
 #define MAGE3D_CORE_H
 
-#include "platform.h"
+
 #include "stdcolor.h"
 #include "display.h"
 #include "timer.h"

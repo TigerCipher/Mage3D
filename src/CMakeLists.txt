@@ -19,7 +19,7 @@ file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS
 include(GenerateExportHeader)
 include(filter)
 
-set(MAGE3D_LINKS PUBLIC fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL glm)
+set(MAGE3D_LINKS PUBLIC blutilities fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL glm)
 set(MAGE3D_INCLUDES "../include")
 
 

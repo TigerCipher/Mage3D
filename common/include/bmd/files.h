@@ -1,5 +1,5 @@
 /*
- * Mage3D
+ * Blutilities
  * Copyright (C) 2020 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  * Contact: team@bluemoondev.org
  * 
  * File Name: files.h
- * Date File Created: 7/29/2020 at 5:33 PM
+ * Date File Created: 7/29/2020 at 10:16 PM
  * Author: Matt
  */
 
@@ -25,15 +25,12 @@
 // More experienced in C++ than flat out C, so C++ only functionality might appear
 // Ultimate goal is ideally C only, but for quality of life sake that probably won't happen
 
-#ifndef MAGE3D_FILES_H
-#define MAGE3D_FILES_H
+#ifndef BMD_FILES_H
+#define BMD_FILES_H
 
-// If I do make this file its own small little library (maybe header only library even)
-// then these includes will either need to go (mage3d_exported related stuff completely)
-// or platform.h and common.h will need to be part of the small library, and changed to conform with C standards
-#include "mage3d_exported.h"
-#include "mage/common.h"
-#include "mage/core/platform.h"
+
+#include "types.h"
+#include "platform.h"
 
 
 #include <string.h> // deprecated in favor of cstring, but this will allow future portability to C
@@ -100,39 +97,65 @@ typedef fs_callback filesystem_callback;
 * @param file The file to capture the extension for
 * @return A pointer to the extension (file::ext)
 */
-extern mage3d_EXPORT const char* getExt(file_t* file);
+extern const char* getExt(file_t* file);
+
+/**
+* Checks if the given file extension matches the given extension
+* @param file The file to check
+* @param ext The extension to check against
+* @return zero if false, non-zero if true
+*/
+extern int doesFileHaveExt(file_t* file, const char* ext);
+
+/**
+* Checks if the file from the given path exists or not
+* @param path The path of the file to check
+* @return zero if false, non-zero if true
+*/
+extern int doesFileExist(const char* path);
 
 /**
 * Fills out the data in the fs_file struct, excluding fs_file::contents. To get the contents of the file,
-* use either readFileContents(dir_t* dir, file_t* file) or readFile(const char* file)
+* use either loadFileAndReadContents(dir_t* dir, file_t* file) readFile(const char* file) or readFileContents(file_t* file)
 * @param dir The fs_dir struct containing the file
 * @param file The file to have the data filled
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int readFile(dir_t* dir, file_t* file);
+extern int loadFile(dir_t* dir, file_t* file);
+
+/**
+* Fills out the data in the fs_file struct, excluding fs_file::contents. To get the contents of the file,
+* use either loadFileAndReadContents(dir_t* dir, file_t* file) readFile(const char* file) or readFileContents(file_t* file)
+*
+* @param dirPath The path of the directory to load to search for the file
+* @param fileName The name of the file to load
+* @param file The fs_file struct to load
+* @return zero if there was no error, non-zero if there was an error
+*/
+extern int loadFile(const char* dirPath, const char* fileName, file_t& file);
 
 /**
 * Fills out the data in the fs_file struct. For a more lightweight function,
-* see readFile(dir_t* dir, file_t* file)
+* see loadFile(dir_t* dir, file_t* file)
 * @param dir The fs_dir struct containing the file
 * @param file The file to have the data filled
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int readFileContents(dir_t* dir, file_t* file);
+extern int loadFileAndReadContents(dir_t* dir, file_t* file);
 
 /**
 * Takes an already filled out fs_file struct and reads the contents of the file
 * @param file The file to read the contents of and fill the file::contents
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int readFileContents(file_t* file);
+extern int readFileContents(file_t* file);
 
 /**
 * Reads the contents of a file
 * @param file The full path to the file to read
 * @return The contents of the file as a char pointer
 */
-extern mage3d_EXPORT const char* readFile(const char* file);
+extern char* readFile(const char* file);
 
 
 /**
@@ -141,21 +164,21 @@ extern mage3d_EXPORT const char* readFile(const char* file);
 * @param path The directory path to open
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int openDir(dir_t* dir, const char* path);
+extern int openDir(dir_t* dir, const char* path);
 
 /**
 * Closes the directory
 * @param dir The fs_dir struct to close
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int closeDir(dir_t* dir);
+extern int closeDir(dir_t* dir);
 
 /**
 * From an opened fs_dir, this grabs the next file
 * @param dir The opened fs_dir (see openDir(dir_t* dir) )
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int nextFile(dir_t* dir);
+extern int nextFile(dir_t* dir);
 
 /**
 * Retrieves the time when the file at the given path was created
@@ -163,7 +186,7 @@ extern mage3d_EXPORT int nextFile(dir_t* dir);
 * @param time A pointer to store the time in
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int getCreationTime(const char* path, fs_time* time);
+extern int getCreationTime(const char* path, fs_time* time);
 
 /**
 * Retrieves the time when the file was created
@@ -171,7 +194,7 @@ extern mage3d_EXPORT int getCreationTime(const char* path, fs_time* time);
 * @param time A pointer to store the time in
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int getCreationTime(file_t* file, fs_time* time);
+extern int getCreationTime(file_t* file, fs_time* time);
 
 /**
 * Retrieves the time when the file at the given path was last modified
@@ -179,7 +202,7 @@ extern mage3d_EXPORT int getCreationTime(file_t* file, fs_time* time);
 * @param time A pointer to store the time in
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int getLastModifiedTime(const char* path, fs_time* time);
+extern int getLastModifiedTime(const char* path, fs_time* time);
 
 /**
 * Retrieves the time when the file was last modified
@@ -187,7 +210,11 @@ extern mage3d_EXPORT int getLastModifiedTime(const char* path, fs_time* time);
 * @param time A pointer to store the time in
 * @return zero if there was no error, non-zero if there was an error
 */
-extern mage3d_EXPORT int getLastModifiedTime(file_t* file, fs_time* time);
+extern int getLastModifiedTime(file_t* file, fs_time* time);
+
+#define safeCopy(dest, src, n, max) safeCopy_internal(dest, src, n, max, __FILE__, __LINE__)
+extern int safeCopy_internal(char* dest, const char* src, int n, int max, const char* file, int line);
+
 
 // TODO: Add implementations
 // TODO: Add functions to compare times
@@ -197,14 +224,16 @@ extern mage3d_EXPORT int getLastModifiedTime(file_t* file, fs_time* time);
 // TODO: Add function to append to the file
 // TODO: Add function to clear the file
 // TODO: Add function to delete the file
-// TODO: On the readFile and readFileContents, maybe add callback so it can load the data as an image
+// TODO: On the loadFile and loadFileAndReadContents, maybe add callback so it can load the data as an image
 // Like, in Mage3D's case, callback(file_t* file, stuff) { file->contents = SOIL_load_image.... } ?
 // TODO: Make a callback wrapper so capture can be used? i.e [&](stuff) {} ? Might need static_cast and c++ however
 
 
 
 #ifdef OS_WINDOWS
+
 #include <Windows.h>
+
 struct FSFile
 {
 	char path[MAX_PATH_LENGTH];
@@ -218,16 +247,16 @@ struct FSFile
 
 struct FSDir
 {
-    char path[MAX_PATH_LENGTH];
-    int hasNext;
-    HANDLE handle;
-    WIN32_FIND_DATAA fdata;
+	char path[MAX_PATH_LENGTH];
+	int hasNext;
+	HANDLE handle;
+	WIN32_FIND_DATAA fdata;
 };
 
 struct FSTime
 {
 	FILETIME time;
-	// TODO: Store formatted char* of the time?
+	char* time_str;
 };
 
 #else
@@ -250,18 +279,18 @@ struct FSFile
 
 struct FSDir
 {
-    char path[MAX_PATH_LENGTH];
-    int hasNext;
-    DIR* dir;
-    struct dirent* entry;
+	char path[MAX_PATH_LENGTH];
+	int hasNext;
+	DIR* dir;
+	struct dirent* entry;
 };
 
 struct FSTime
 {
 	time_t time;
-	// TODO: Store formatted char* of the time?
+	char* time_str;
 };
 
 #endif // OS_WINDOWS
 
-#endif //MAGE3D_FILES_H
+#endif //BMD_FILES_H
