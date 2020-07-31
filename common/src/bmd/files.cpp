@@ -21,6 +21,7 @@
 
 #include "bmd/files.h"
 #include "bmd/errors.h"
+#include "bmd/common.h"
 #include "bmd/strutil.h"
 
 int safeCopy_internal(char* dest, const char* src, int n, int max, const char* file, int line)
@@ -69,6 +70,7 @@ int doesFileHaveExt(file_t* file, const char* ext)
 	return !strcmp(file->ext, ext);
 }
 
+
 int loadFile(const char* dirPath, const char* fileName, file_t& file)
 {
 	int error = BMD_NO_ERROR;
@@ -91,6 +93,28 @@ int loadFile(const char* dirPath, const char* fileName, file_t& file)
 	}
 	closeDir(&dir);
 	return BMD_ERROR_FILE_NOT_FOUND;
+}
+
+int loadFile(const char* filePath, file_t& file)
+{
+	const char* lastSlash = strrchr(filePath, '/');
+	int lastSlashIndex = 0;
+	if(lastSlash)
+		lastSlashIndex = lastSlash - filePath;
+	else
+	{
+		lastSlash = strrchr(filePath, '\\');
+		if(lastSlash)
+			lastSlashIndex = lastSlash - filePath;
+		else return BMD_ERROR_CHAR_NOT_FOUND;
+	}
+
+	if(lastSlashIndex)
+	{
+
+	} else return BMD_ERROR_CHAR_NOT_FOUND; // Just in case for some reason the previous checks didn't catch it
+
+	return BMD_NO_ERROR;
 }
 
 char* readFile(const char* file)
@@ -122,7 +146,11 @@ int readFileContents(file_t* file)
 {
 	if (!file) return BMD_ERROR_NULL_FILE;
 	if (!doesFileExist(file->path)) return BMD_ERROR_FILE_NOT_FOUND;
-	file->contents = readFile(file->path);
+	FILE* f;
+	fopen_s(&f, file->path, "rt");
+	char data[file->size + 1];
+	fread(data, 1, file->size, f);
+	file->contents = data;
 	if (!file->contents) return BMD_ERROR_READ_FILE;
 	return BMD_NO_ERROR;
 }
@@ -275,31 +303,36 @@ int getLastModifiedTime(const char* path, fs_time* time)
 	return BMD_ERROR_FILE_TIME;
 }
 
+int compareTimes(fs_time* a, fs_time* b)
+{
+	return CompareFileTime(&a->time, &b->time);
+}
+
 #else
 
 int doesFileExist(const char* path)
 {
-
+	return 0;
 }
 
-int readFile(dir_t* dir, file_t* file)
+int loadFile(dir_t* dir, file_t* file)
 {
-
+	return BMD_ERROR_NOT_YET_IMPLEMENTED;
 }
 
 int openDir(dir_t* dir, const char* path)
 {
-
+	return BMD_ERROR_NOT_YET_IMPLEMENTED;
 }
 
 int closeDir(dir_t* dir)
 {
-
+	return BMD_ERROR_NOT_YET_IMPLEMENTED;
 }
 
 int nextFile(dir_t* dir)
 {
-
+	return BMD_ERROR_NOT_YET_IMPLEMENTED;
 }
 
 int getCreationTime(const char* path, fs_time* time)
@@ -313,6 +346,11 @@ int getLastModifiedTime(const char* path, fs_time* time)
 	if(stat(path, &info)) return BMD_ERROR_FILE_TIME;
 	time->time = info.st_mtime;
 	time->time_str = ctime(time->time);
+}
+
+int compareTimes(fs_time* a, fs_time* b)
+{
+	return BMD_ERROR_NOT_YET_IMPLEMENTED;
 }
 
 #endif // OS Check

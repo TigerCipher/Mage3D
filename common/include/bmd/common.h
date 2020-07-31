@@ -14,27 +14,31 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: errors.h
- * Date File Created: 7/29/2020 at 11:03 PM
+ * File Name: common.h
+ * Date File Created: 7/30/2020 at 4:45 PM
  * Author: Matt
  */
 
-#ifndef BMD_ERRORS_H
-#define BMD_ERRORS_H
+#ifndef BMD_COMMON_H
+#define BMD_COMMON_H
 
-#define BMD_NO_ERROR 0
-#define BMD_OKAY BMD_NO_ERROR
-#define BMD_OK BMD_OKAY
-#define BMD_ERROR_NOT_YET_IMPLEMENTED -3
-#define BMD_ERROR_NOT_SUPPORTED_BY_PLATFORM -2
-#define BMD_ERROR_EXCEEDS_LENGTH -1
-#define BMD_ERROR_OPEN_DIR 1
-#define BMD_ERROR_CLOSE_DIR 2
-#define BMD_ERROR_NEXT_FILE 3
-#define BMD_ERROR_READ_FILE 4
-#define BMD_ERROR_NULL_FILE 5
-#define BMD_ERROR_FILE_NOT_FOUND 6
-#define BMD_ERROR_FILE_TIME 7
-#define BMD_ERROR_CHAR_NOT_FOUND 8
 
-#endif //BMD_ERRORS_H
+#ifndef DEBUGGING
+// prefer if(DEBUGGING) over #ifdef _DEBUG so that even after code is compiled the debug flag can be changed
+#define DEBUGGING 1
+#endif // DEBUGGING
+
+// If DEBUGGING is 1
+#if DEBUGGING
+
+#include <stdio.h>
+#include <assert.h>
+#include <errno.h>
+
+#define FILES_ASSERT assert
+#else
+// If DEBUGGING is disabled (not 1) then don't use assert
+#define FILES_ASSERT(...)
+#endif // DEBUGGING
+
+#endif //BMD_COMMON_H

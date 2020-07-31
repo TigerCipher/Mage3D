@@ -56,6 +56,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 # Will deal with doxygen and documentation much later
   find_package(Doxygen)
   if(Doxygen_FOUND)
+      message(STATUS "Found Doxygen")
     add_subdirectory(docs)
   else()
     message(STATUS "Doxygen not found, cannot build docs")

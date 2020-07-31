@@ -35,23 +35,6 @@
 
 #include <string.h> // deprecated in favor of cstring, but this will allow future portability to C
 
-#ifndef DEBUGGING
-// prefer if(DEBUGGING) over #ifdef _DEBUG so that even after code is compiled the debug flag can be changed
-#define DEBUGGING 1
-#endif // DEBUGGING
-
-// If DEBUGGING is 1
-#if DEBUGGING
-
-#include <stdio.h>
-#include <assert.h>
-#include <errno.h>
-
-#define FILES_ASSERT assert
-#else
-// If DEBUGGING is disabled (not 1) then don't use assert
-#define FILES_ASSERT(...)
-#endif // DEBUGGING
 
 // Max char array values
 // Might get rid of and support dynamic lengths later, but I think on the OS level there are limits to
@@ -135,6 +118,16 @@ extern int loadFile(dir_t* dir, file_t* file);
 extern int loadFile(const char* dirPath, const char* fileName, file_t& file);
 
 /**
+* Fills out the data in the fs_file struct, excluding fs_file::contents. To get the contents of the file,
+* use either loadFileAndReadContents(dir_t* dir, file_t* file) readFile(const char* file) or readFileContents(file_t* file)
+*
+* @param filePath The path of the file to load
+* @param file The fs_file struct to load
+* @return zero if there was no error, non-zero if there was an error
+*/
+extern int loadFile(const char* filePath, file_t& file);
+
+/**
 * Fills out the data in the fs_file struct. For a more lightweight function,
 * see loadFile(dir_t* dir, file_t* file)
 * @param dir The fs_dir struct containing the file
@@ -211,6 +204,17 @@ extern int getLastModifiedTime(const char* path, fs_time* time);
 * @return zero if there was no error, non-zero if there was an error
 */
 extern int getLastModifiedTime(file_t* file, fs_time* time);
+
+
+
+/**
+* Compares two given times
+* @param a The first time
+* @param b The second time
+* @return If a happened before b, -1. If b happened before a, 1. If they are equal, 0
+*/
+extern int compareTimes(fs_time* a, fs_time* b);
+
 
 #define safeCopy(dest, src, n, max) safeCopy_internal(dest, src, n, max, __FILE__, __LINE__)
 extern int safeCopy_internal(char* dest, const char* src, int n, int max, const char* file, int line);
