@@ -24,7 +24,6 @@
 #include "stdcolor.h"
 #include "display.h"
 #include "timer.h"
-#include "file.h"
 #include "input.h"
 #include "camera.h"
 

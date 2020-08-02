@@ -72,11 +72,10 @@ find_package(SOIL CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
 
 find_package(fmt CONFIG REQUIRED)
+include(find_bmd)
 
 #include(FetchContent) Only using this in tests/CMakeLists.txt which I currently have disabled while I still learn about Check2
 
-# Temporary, probably best to move common stuff to a separate project
-add_subdirectory(common)
 add_subdirectory(src)
 add_subdirectory(app)
 

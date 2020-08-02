@@ -1,5 +1,5 @@
 /*
- * Blutilities
+ * BMD
  * Copyright (C) 2020 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -115,7 +115,7 @@ extern int loadFile(dir_t* dir, file_t* file);
 * @param file The fs_file struct to load
 * @return zero if there was no error, non-zero if there was an error
 */
-extern int loadFile(const char* dirPath, const char* fileName, file_t& file);
+extern int loadFile(const char* dirPath, const char* fileName, file_t* file);
 
 /**
 * Fills out the data in the fs_file struct, excluding fs_file::contents. To get the contents of the file,
@@ -125,7 +125,7 @@ extern int loadFile(const char* dirPath, const char* fileName, file_t& file);
 * @param file The fs_file struct to load
 * @return zero if there was no error, non-zero if there was an error
 */
-extern int loadFile(const char* filePath, file_t& file);
+extern int loadFile(const char* filePath, file_t* file);
 
 /**
 * Fills out the data in the fs_file struct. For a more lightweight function,
@@ -137,6 +137,25 @@ extern int loadFile(const char* filePath, file_t& file);
 extern int loadFileAndReadContents(dir_t* dir, file_t* file);
 
 /**
+* Fills out the data in the fs_file struct. For a more lightweight function,
+* see loadFile(dir_t* dir, file_t* file)
+* @param dir The directory containing the file, i.e for ./dirA/dirB/test.txt it would be ./dirA/dirB
+* @param fileName The name of the file, i.e test.txt
+* @param file The fs_file struct to store the data in
+* @return 0 if no error, non zero if error
+*/
+extern int loadFileAndReadContents(const char* dir, const char* fileName, file_t* file);
+
+/**
+* Fills out the data in the fs_file struct. For a more lightweight function,
+* see loadFile(dir_t* dir, file_t* file)
+* @param filePath The path of the file, i.e ./dirA/dirB/test.txt
+* @param file The fs_file struct to store the data in
+* @return 0 if no error, non zero if error
+*/
+extern int loadFileAndReadContents(const char* filePath, file_t* file);
+
+/**
 * Takes an already filled out fs_file struct and reads the contents of the file
 * @param file The file to read the contents of and fill the file::contents
 * @return zero if there was no error, non-zero if there was an error
@@ -145,10 +164,12 @@ extern int readFileContents(file_t* file);
 
 /**
 * Reads the contents of a file
-* @param file The full path to the file to read
-* @return The contents of the file as a char pointer
+* @param file The path to the file to read
+* @param data A pointer to the char array to store the file contents in. The data will have memory allocated,
+*     so be sure to call free(data)
+* @return 0 if no error, non zero if error
 */
-extern char* readFile(const char* file);
+extern int readFile(const char* file, char** data);
 
 
 /**
@@ -216,9 +237,6 @@ extern int getLastModifiedTime(file_t* file, fs_time* time);
 extern int compareTimes(fs_time* a, fs_time* b);
 
 
-#define safeCopy(dest, src, n, max) safeCopy_internal(dest, src, n, max, __FILE__, __LINE__)
-extern int safeCopy_internal(char* dest, const char* src, int n, int max, const char* file, int line);
-
 
 // TODO: Add implementations
 // TODO: Add functions to compare times
@@ -260,7 +278,7 @@ struct FSDir
 struct FSTime
 {
 	FILETIME time;
-	char* time_str;
+	char time_str[50];
 };
 
 #else
@@ -292,7 +310,7 @@ struct FSDir
 struct FSTime
 {
 	time_t time;
-	char* time_str;
+	char time_str[50];
 };
 
 #endif // OS_WINDOWS

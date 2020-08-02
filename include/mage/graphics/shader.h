@@ -28,6 +28,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
+#include <bmd/files.h>
 
 
 namespace mage
@@ -35,7 +36,7 @@ namespace mage
 	class Shader
 	{
 	public:
-		mage3d_EXPORT Shader(const char* basePath);
+		mage3d_EXPORT explicit Shader(const char* basePath);
 		mage3d_EXPORT ~Shader();
 
 		mage3d_EXPORT void enable() const;
@@ -49,11 +50,12 @@ namespace mage
 		mage3d_EXPORT void setUniformMatf(const GLchar* name, const glm::mat4& value);
 	protected:
 	private:
-		GLuint load(const char* vertexFile, const char* fragmentFile);
+		GLuint load();
 		GLint getLocation(const GLchar* name);
 
 		GLuint m_id;
-		const char* m_basePath;
+		file_t m_vertFile{};
+		file_t m_fragFile{};
 	};
 
 }

@@ -43,8 +43,8 @@ namespace mage
 		struct Color
 		{
 			bool bright;
-			uByte fg;
-			uByte bg;
+			ubyte fg;
+			ubyte bg;
 			bool _default = false;
 		};
 		extern mage3d_EXPORT const Color BLACK;
@@ -69,7 +69,7 @@ namespace mage
 
 		extern mage3d_EXPORT const Color RED_ON_GREEN;
 	}
-	extern mage3d_EXPORT uByte background;
+	extern mage3d_EXPORT ubyte background;
 
 	extern mage3d_EXPORT void clearConsole(console::Color color);
 	extern MAGE3D_NO_EXPORT fmt::text_style getStyle(console::Color color);
@@ -80,9 +80,9 @@ namespace mage
 #ifdef OS_WINDOWS
 		CONSOLE_SCREEN_BUFFER_INFO csbi;
 		GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
-		uByte inUseBg = color.bg;
+		ubyte inUseBg = color.bg;
 		if (color._default) inUseBg = background;
-		uByte fg = color.bright ? color.fg + 8 : color.fg;
+		ubyte fg = color.bright ? color.fg + 8 : color.fg;
 		WORD attrib = fg + (inUseBg * 16);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), attrib);
 		fmt::print(format, args...);

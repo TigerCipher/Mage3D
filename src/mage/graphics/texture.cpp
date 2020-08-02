@@ -27,7 +27,7 @@
 mage::Texture::Texture(const char* filePath):
 m_filePath(filePath)
 {
-	uByte* image = SOIL_load_image(filePath, &m_width, &m_height, 0, SOIL_LOAD_RGB);
+	ubyte* image = SOIL_load_image(filePath, &m_width, &m_height, 0, SOIL_LOAD_RGB);
 	if(!image)
 	{
 		println(console::RED, "Image is null!");

@@ -69,7 +69,7 @@ endforeach()
 if(LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
 	message(STATUS "Building app with the shared build ${MAGE3D_WHICH_LIB}")
 	if(CMAKE_CONFIGURATION_TYPES)
-		add_custom_command(TARGET app POST_BUILD
+		add_custom_command(TARGET app PRE_BUILD
 			COMMAND "${CMAKE_COMMAND}"
 					"-DEXEPATH=$<TARGET_FILE:app>"
 					"-DDEST=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
@@ -77,7 +77,7 @@ if(LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
 					-P ${CMAKE_MODULE_PATH}/copydlls.cmake
 			)
 	else()
-		add_custom_command(TARGET app POST_BUILD
+		add_custom_command(TARGET app PRE_BUILD
 				COMMAND "${CMAKE_COMMAND}"
 				"-DEXEPATH=$<TARGET_FILE:app>"
 				"-DDEST=${CMAKE_CURRENT_BINARY_DIR}"

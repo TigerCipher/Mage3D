@@ -1,5 +1,5 @@
 /*
- * Blutilities
+ * BMD
  * Copyright (C) 2020 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,16 +25,19 @@
 #define BMD_NO_ERROR 0
 #define BMD_OKAY BMD_NO_ERROR
 #define BMD_OK BMD_OKAY
-#define BMD_ERROR_NOT_YET_IMPLEMENTED -3
+#define BMD_ERROR_NOT_YET_IMPLEMENTED -1
 #define BMD_ERROR_NOT_SUPPORTED_BY_PLATFORM -2
-#define BMD_ERROR_EXCEEDS_LENGTH -1
-#define BMD_ERROR_OPEN_DIR 1
-#define BMD_ERROR_CLOSE_DIR 2
-#define BMD_ERROR_NEXT_FILE 3
-#define BMD_ERROR_READ_FILE 4
-#define BMD_ERROR_NULL_FILE 5
-#define BMD_ERROR_FILE_NOT_FOUND 6
-#define BMD_ERROR_FILE_TIME 7
-#define BMD_ERROR_CHAR_NOT_FOUND 8
+#define BMD_ERROR_CHAR_NOT_IN_STRING -3
+#define BMD_ERROR_OPEN_DIR -4
+#define BMD_ERROR_CLOSE_DIR -5
+#define BMD_ERROR_NEXT_FILE -6
+#define BMD_ERROR_READ_FILE -7
+#define BMD_ERROR_NULL_FILE -8
+#define BMD_ERROR_FILE_NOT_FOUND -9
+#define BMD_ERROR_FILE_TIME -10
+#define BMD_ERROR_CHAR_NOT_FOUND -11
+#define BMD_ERROR_NULL_STRING -12
+#define BMD_ERROR_EXCEEDS_LENGTH -13
+#define BMD_ERROR_INVALID_MEMORY_ALLOCATION -14
 
 #endif //BMD_ERRORS_H

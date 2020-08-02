@@ -1,5 +1,5 @@
 /*
- * Blutilities
+ * BMD
  * Copyright (C) 2020 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,21 +24,25 @@
 
 
 #ifndef DEBUGGING
-// prefer if(DEBUGGING) over #ifdef _DEBUG so that even after code is compiled the debug flag can be changed
-#define DEBUGGING 1
+	#define DEBUGGING 1
 #endif // DEBUGGING
 
+
+#ifndef BMD_VERBOSE
+	#define BMD_VERBOSE 0
+#endif // BMD_VERBOSE
+
 // If DEBUGGING is 1
-#if DEBUGGING
+#if DEBUGGING || BMD_VERBOSE
 
 #include <stdio.h>
 #include <assert.h>
 #include <errno.h>
 
-#define FILES_ASSERT assert
+#define BMD_ASSERT assert
 #else
 // If DEBUGGING is disabled (not 1) then don't use assert
-#define FILES_ASSERT(...)
+#define BMD_ASSERT(...)
 #endif // DEBUGGING
 
 #endif //BMD_COMMON_H

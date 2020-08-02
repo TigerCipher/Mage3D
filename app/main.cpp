@@ -160,7 +160,7 @@ int main(int argc, char** argv)
 	auto* planeMesh = new mage::Mesh(planeVerts, planeInts);
 	mage::Renderer renderer;
 
-	auto* shader = new mage::Shader("./assets/basic");
+	mage::Shader shader("./assets/basic_color");
 	mage::Texture texture("./assets/default.png");
 
 
@@ -177,32 +177,32 @@ int main(int argc, char** argv)
 		camera.update(input, timer.delta());
 		display.clear(0, 0, 0);
 		// Render
-		shader->enable();
+		shader.enable();
 		texture.enable();
-		shader->setUniform1i("tex", texture.getId());
+		shader.setUniform1i("tex", texture.getId());
 		glm::mat4 rot(1);
 		rot = glm::rotate((float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
-		shader->setUniformMatf("model", rot);
-		shader->setUniformMatf("projection", camera.getProjectionMatrix());
-		shader->setUniformMatf("view", camera.getViewMatrix());
+		shader.setUniformMatf("model", rot);
+		shader.setUniformMatf("projection", camera.getProjectionMatrix());
+		shader.setUniformMatf("view", camera.getViewMatrix());
 
 		renderer.draw(testMesh);
 
 		texture.disable();
-		shader->disable();
+		shader.disable();
 
-		shader->enable();
+		shader.enable();
 		texture.enable();
-		shader->setUniform1i("tex", texture.getId());
+		shader.setUniform1i("tex", texture.getId());
 		glm::mat4 plane(1);
-		shader->setUniformMatf("model", plane);
-		shader->setUniformMatf("projection", camera.getProjectionMatrix());
-		shader->setUniformMatf("view", camera.getViewMatrix());
+		shader.setUniformMatf("model", plane);
+		shader.setUniformMatf("projection", camera.getProjectionMatrix());
+		shader.setUniformMatf("view", camera.getViewMatrix());
 
 		renderer.draw(planeMesh);
 
 		texture.disable();
-		shader->disable();
+		shader.disable();
 
 		//if(input.keyDown(GLFW_KEY_C))
 		//	mage::println(mage::console::BRIGHT_BLUE, "C key is down!");
@@ -238,6 +238,5 @@ int main(int argc, char** argv)
 	}
 
 	delete testMesh;
-	delete shader;
 	return 0;
 }

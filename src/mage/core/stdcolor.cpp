@@ -51,11 +51,11 @@ namespace mage
 		const Color BRIGHT_YELLOW = {true, 6, 0, true};
 		const Color BRIGHT_WHITE = {true, 7, 0, true};
 	}
-	uByte background = 0;
+	ubyte background = 0;
 
 	fmt::text_style getStyle(console::Color color)
 	{
-		uByte actualBg = color.bright ? color.bg + 8 : color.bg;
+		ubyte actualBg = color.bright ? color.bg + 8 : color.bg;
 		fmt::terminal_color bg;
 		if (actualBg == 0) bg = fmt::terminal_color::black;
 		else if (actualBg == 1) bg = fmt::terminal_color::blue;
@@ -74,7 +74,7 @@ namespace mage
 		else if (actualBg == 14) bg = fmt::terminal_color::bright_yellow;
 		else if (actualBg == 15) bg = fmt::terminal_color::bright_white;
 
-		uByte actualFg = color.bright ? color.fg + 8 : color.fg;
+		ubyte actualFg = color.bright ? color.fg + 8 : color.fg;
 		fmt::terminal_color fg;
 		if (actualFg == 0) fg = fmt::terminal_color::black;
 		else if (actualFg == 1) fg = fmt::terminal_color::blue;

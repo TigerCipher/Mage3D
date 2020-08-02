@@ -20,22 +20,24 @@
  */
 
 #include "mage/graphics/shader.h"
-#include "mage/core/file.h"
 #include "mage/core/stdcolor.h"
-#include <string>
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
-#include <iostream>
+#include <bmd/strutil.h>
 
-mage::Shader::Shader(const char* basePath) :
-		m_basePath(basePath)
+mage::Shader::Shader(const char* basePath)
 {
-	std::string vertex(basePath);
-	vertex.append(".vert");
-	std::string frag(basePath);
-	frag.append(".frag");
-
-	m_id = load(vertex.c_str(), frag.c_str());
+	char* fragPath;
+	char* vertPath;
+	copyStrDynamic(vertPath, basePath);
+	copyStrDynamic(fragPath, basePath);
+	concatStr(vertPath, ".vert");
+	concatStr(fragPath, ".frag");
+	loadFileAndReadContents(vertPath, &m_vertFile);
+	loadFileAndReadContents(fragPath, &m_fragFile);
+	//if(fragPath) free(fragPath);
+	//if(vertPath) free(vertPath);
+	m_id = load();
 }
 
 mage::Shader::~Shader()
@@ -43,21 +45,15 @@ mage::Shader::~Shader()
 	glDeleteProgram(m_id);
 }
 
-GLuint mage::Shader::load(const char* vertexFile, const char* fragmentFile)
+GLuint mage::Shader::load()
 {
 	GLuint program = glCreateProgram();
 	GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
-	File vert(vertexFile);
-	File frag(fragmentFile);
-	std::string vertSource = vert.read();
-	std::string fragSource = frag.read();
-	// Prevent dangling char pointers by separating this
-	const char* vertSrc = vertSource.c_str();
-	const char* fragSrc = fragSource.c_str();
 
 
-	glShaderSource(vertex, 1, &vertSrc, NULL);
+
+	glShaderSource(vertex, 1, &m_vertFile.contents, NULL);
 	glCompileShader(vertex);
 	GLint success;
 	glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
@@ -67,12 +63,12 @@ GLuint mage::Shader::load(const char* vertexFile, const char* fragmentFile)
 		glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetShaderInfoLog(vertex, len, &len, &error[ 0 ]);
-		print(console::RED, "Error while compiling vertex shader [{}]\nError: {}\n", vertexFile, &error[ 0 ]);
+		print(console::RED, "Error while compiling vertex shader [{}]\nError: {}\n", m_vertFile.path, &error[ 0 ]);
 		glDeleteShader(vertex);
 		return 0;
 	}
 
-	glShaderSource(fragment, 1, &fragSrc, NULL);
+	glShaderSource(fragment, 1, &m_fragFile.contents, NULL);
 	glCompileShader(fragment);
 	glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
 	if (!success)
@@ -81,7 +77,7 @@ GLuint mage::Shader::load(const char* vertexFile, const char* fragmentFile)
 		glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetShaderInfoLog(fragment, len, &len, &error[ 0 ]);
-		print(console::RED, "Error while compiling fragment shader [{}]\nError: {}\n", fragmentFile, &error[ 0 ]);
+		print(console::RED, "Error while compiling fragment shader [{}]\nError: {}\n", m_fragFile.path, &error[ 0 ]);
 		glDeleteShader(fragment);
 		return 0;
 	}
@@ -104,6 +100,9 @@ GLuint mage::Shader::load(const char* vertexFile, const char* fragmentFile)
 		glDeleteShader(fragment);
 		return 0;
 	}
+
+	if(m_vertFile.contents) free(m_vertFile.contents);
+	if(m_fragFile.contents) free(m_fragFile.contents);
 
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);

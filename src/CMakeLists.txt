@@ -19,8 +19,8 @@ file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS
 include(GenerateExportHeader)
 include(filter)
 
-set(MAGE3D_LINKS PUBLIC blutilities fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL glm)
-set(MAGE3D_INCLUDES "../include")
+set(MAGE3D_LINKS PUBLIC ${BMD_LIBRARIES} fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL glm)
+set(MAGE3D_INCLUDES "../include" ${BMD_INCLUDE_DIRS})
 
 
 message(STATUS "Lib type is ${LIB_TYPE}")
