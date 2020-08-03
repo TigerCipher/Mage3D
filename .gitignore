@@ -20,7 +20,7 @@
 *.lai
 *.la
 *.a
-*.lib
+#*.lib #include my bmd lib for now
 
 # Executables
 *.exe
@@ -35,7 +35,7 @@
 **/*Build*/
 
 /tests
-/.idea/
+#/.idea/
 
 mage.properties
 
