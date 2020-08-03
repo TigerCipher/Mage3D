@@ -43,47 +43,47 @@ int main(int argc, char** argv)
 
 	//TODO: Texture coords don't seem to map properly when using indices
 	list<mage::Vertex> verts = {
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1, 0, 0),
-			mage::Vertex(0.5f, -0.5f, -0.5f, 1, 0, 0, 1, 0),
-			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 0, 1),
-			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 0, 1),
-			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 1, 1),
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1, 0, 0),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1, 0, 0, 0, 0, -1),
+			mage::Vertex(0.5f, -0.5f, -0.5f, 1, 0, 0, 1, 0, 0, 0, -1),
+			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 0, 1, 0, 0, -1),
+			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 0, 1, 0, 0, -1),
+			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 1, 1, 0, 0, -1),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1, 0, 0, 0, 0, -1),
 
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 0),
-			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 1, 0),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1, 0, 0, 1),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1, 0, 0, 1),
-			mage::Vertex(-0.5f, 0.5f, 0.5f, 0, 1, 1, 1, 1),
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 0),
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 0, 0, 0, 1),
+			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 1, 0, 0, 0, 1),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1, 0, 0, 1, 0, 0, 1),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1, 0, 0, 1, 0, 0, 1),
+			mage::Vertex(-0.5f, 0.5f, 0.5f, 0, 1, 1, 1, 1, 0, 0, 1),
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 0, 0, 0, 1),
 
-			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0),
-			mage::Vertex(-0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0),
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1),
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1),
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1),
-			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0),
+			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0, -1, 0, 0),
+			mage::Vertex(-0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0, -1, 0, 0),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1, -1, 0, 0),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1, -1, 0, 0),
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1, -1, 0, 0),
+			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0, -1, 0, 0),
 
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0),
-			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0),
-			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1),
-			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1),
-			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0, 1, 0, 0),
+			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0, 1, 0, 0),
+			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1, 1, 0, 0),
+			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1, 1, 0, 0),
+			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1, 1, 0, 0),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0, 1, 0, 0),
 
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 1, 0, 0),
-			mage::Vertex(0.5f, -0.5f, -0.5f, 1, 1, 0, 1, 0),
-			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 1),
-			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 1),
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1),
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 1, 0, 0),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 1, 0, 0, 0, -1, 0),
+			mage::Vertex(0.5f, -0.5f, -0.5f, 1, 1, 0, 1, 0, 0, -1, 0),
+			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 1, 0, -1, 0),
+			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 1, 0, -1, 0),
+			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1, 0, -1, 0),
+			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 1, 0, 0, 0, -1, 0),
 
-			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 0, 0),
-			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 0, 0, 1),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 0, 0, 1),
-			mage::Vertex(-0.5f, 0.5f, 0.5f, 0, 0, 1, 1, 1),
-			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 0, 0),
+			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 0, 0, 0, 1, 0),
+			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0, 0, 1, 0),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 0, 0, 1, 0, 1, 0),
+			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 0, 0, 1, 0, 1, 0),
+			mage::Vertex(-0.5f, 0.5f, 0.5f, 0, 0, 1, 1, 1, 0, 1, 0),
+			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 0, 0, 0, 1, 0),
 	};
 
 	list<uint> ints = {
@@ -140,10 +140,10 @@ int main(int argc, char** argv)
 	};
 
 	list<mage::Vertex> planeVerts = {
-			mage::Vertex(-2, -2, -2, 0, 0),
-			mage::Vertex(2, -2, -2, 0, 1),
-			mage::Vertex(2, -2, 2, 1, 1),
-			mage::Vertex(-2, -2, 2, 1, 0),
+			mage::Vertex(-2, -2, -2, 0, 0, 1, 1, 1, 0, -0.5f, 0),
+			mage::Vertex(2, -2, -2, 0, 1, 1, 1, 1, 0, -0.5f, 0),
+			mage::Vertex(2, -2, 2, 1, 1, 1, 1, 1, 0, -0.5f, 0),
+			mage::Vertex(-2, -2, 2, 1, 0, 1, 1, 1, 0, -0.5f, 0),
 	};
 
 	list<uint> planeInts = {
@@ -156,13 +156,15 @@ int main(int argc, char** argv)
 	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
 	mage::Camera camera(&display, glm::vec3(0, 0, 5));
 	//auto* testMesh = new mage::Mesh(vertices, 5, indices, 18);
-	auto* testMesh = new mage::Mesh(verts, ints);
-	auto* planeMesh = new mage::Mesh(planeVerts, planeInts);
+	mage::Mesh testMesh(verts, ints);
+	mage::Mesh planeMesh(planeVerts, planeInts);
 	mage::Renderer renderer;
 
-	mage::Shader shader("./assets/shaders/basic_color");
+	mage::Shader shader("./assets/shaders/basic_lighting");
+	mage::Shader shaderLamp("./assets/shaders/basic_lighting.vert", "./assets/shaders/basic_color.frag");
 	mage::Texture texture("./assets/textures/default.png");
 
+	vec3f lightPos(1.2, -5, 2);
 
 	mage::Timer timer;
 	int frames = 0;
@@ -186,7 +188,11 @@ int main(int argc, char** argv)
 		shader.setUniformMatf("projection", camera.getProjectionMatrix());
 		shader.setUniformMatf("view", camera.getViewMatrix());
 
-		renderer.draw(testMesh);
+		shader.setUniform3f("lightColor", vec3f(1.0f, 0.5f, 0.7f));
+		shader.setUniform3f("lightPos", lightPos);
+		shader.setUniform3f("viewPos", camera.getPosition());
+
+		renderer.draw(&testMesh);
 
 		texture.disable();
 		shader.disable();
@@ -198,11 +204,28 @@ int main(int argc, char** argv)
 		shader.setUniformMatf("model", plane);
 		shader.setUniformMatf("projection", camera.getProjectionMatrix());
 		shader.setUniformMatf("view", camera.getViewMatrix());
+		shader.setUniform3f("lightColor", vec3f(1.0f, 0.5f, 0.7f));
+		shader.setUniform3f("lightPos", lightPos);
+		shader.setUniform3f("viewPos", camera.getPosition());
 
-		renderer.draw(planeMesh);
+		renderer.draw(&planeMesh);
 
 		texture.disable();
 		shader.disable();
+
+		shaderLamp.enable();
+		texture.enable();
+		shaderLamp.setUniform1i("tex", texture.getId());
+		glm::mat4 scale = glm::scale(mat4f(1.0), vec3f(0.15f));
+		scale = glm::translate(scale, lightPos);
+		shaderLamp.setUniformMatf("model", scale);
+		shaderLamp.setUniformMatf("projection", camera.getProjectionMatrix());
+		shaderLamp.setUniformMatf("view", camera.getViewMatrix());
+
+		renderer.draw(&testMesh);
+
+		texture.disable();
+		shaderLamp.disable();
 
 		//if(input.keyDown(GLFW_KEY_C))
 		//	mage::println(mage::console::BRIGHT_BLUE, "C key is down!");
@@ -237,6 +260,5 @@ int main(int argc, char** argv)
 
 	}
 
-	delete testMesh;
 	return 0;
 }

@@ -19,6 +19,7 @@
  * Author: Matt
  */
 
+#include <mage/common.h>
 #include "mage/graphics/vertex.h"
 
 mage::Position::Position(float _x, float _y, float _z)
@@ -76,18 +77,20 @@ glm::vec4 mage::Vertex::colorVec()
 	return glm::vec4(color.r, color.g, color.b, color.a);
 }
 
-mage::Vertex::Vertex(glm::vec3 _pos, glm::vec4 _color, glm::vec2 _coords) :
+mage::Vertex::Vertex(glm::vec3 _pos, glm::vec4 _color, glm::vec2 _coords, vec3f _normal) :
 pos(_pos),
 color(_color),
-coords(_coords)
+coords(_coords),
+normal(_normal.x, _normal.y, _normal.z)
 {
 
 }
 
-mage::Vertex::Vertex(float x, float y, float z, float u, float v, float r, float g, float b, float a):
+mage::Vertex::Vertex(float x, float y, float z, float u, float v, float r, float g, float b, float nx, float ny, float nz):
 pos(x, y, z),
-color(r, g, b, a),
-coords(u, v)
+color(r, g, b),
+coords(u, v),
+normal(nx, ny, nz)
 {
 
 }
@@ -113,4 +116,23 @@ mage::TexCoords::TexCoords(glm::vec2 coords)
 {
 	u = coords.x;
 	v = coords.y;
+}
+
+mage::Normal::Normal(float _x, float _y, float _z)
+{
+	x = _x;
+	y = _y;
+	z = _z;
+}
+
+void mage::Vertex::setNormalCoords(float x, float y, float z)
+{
+	normal.x = x;
+	normal.y = y;
+	normal.z = z;
+}
+
+vec3f mage::Vertex::normalVec()
+{
+	return vec3f(normal.x, normal.y, normal.z);
 }

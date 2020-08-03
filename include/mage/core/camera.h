@@ -54,6 +54,8 @@ namespace mage
 		mage3d_EXPORT glm::mat4 getViewMatrix();
 		mage3d_EXPORT glm::mat4 getProjectionMatrix();
 
+		mage3d_EXPORT vec3f getPosition() { return m_position; }
+
 		mage3d_EXPORT void constrainPitch(bool constrainPitch) { m_constrainPitch = constrainPitch; }
 
 	protected:

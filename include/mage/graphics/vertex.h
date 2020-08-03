@@ -58,26 +58,38 @@ namespace mage
 		mage3d_EXPORT TexCoords(glm::vec2 coords);
 	};
 
+	struct Normal
+	{
+	    float x;
+	    float y;
+	    float z;
+	    mage3d_EXPORT Normal(float _x, float _y, float _z);
+	};
+
 
 	struct Vertex
 	{
 		Position pos;
 		ColorRGB8 color;
 		TexCoords coords;
+		Normal normal;
 		mage3d_EXPORT Vertex(float x, float y, float z, float u, float v, float r = 1, float g = 1,
-							 float b = 1, float a = 1);
+							 float b = 1, float nx = 0, float ny = 0, float nz = 0);
 
 		mage3d_EXPORT explicit Vertex(glm::vec3 _pos = glm::vec3(0, 0, 0),
 									  glm::vec4 _color = glm::vec4(1, 1, 1, 1),
-									  glm::vec2 _coords = glm::vec2(0, 0));
+									  glm::vec2 _coords = glm::vec2(0, 0),
+									  vec3f _normal = vec3f(0, 0, 0));
 
 		mage3d_EXPORT void setPos(float x, float y, float z);
 		mage3d_EXPORT void setColor(float r, float g, float b, float a = 1.0f);
 		mage3d_EXPORT void setTexCoords(float u, float v);
+		mage3d_EXPORT void setNormalCoords(float x, float y, float z);
 
 		mage3d_EXPORT glm::vec3 posVec();
 		mage3d_EXPORT glm::vec4 colorVec();
 		mage3d_EXPORT glm::vec2 texCoords();
+		mage3d_EXPORT vec3f normalVec();
 
 	};
 }

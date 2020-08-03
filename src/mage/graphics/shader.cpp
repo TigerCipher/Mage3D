@@ -39,6 +39,13 @@ mage::Shader::Shader(const char* basePath)
 	m_id = load();
 }
 
+mage::Shader::Shader(const char* vertPath, const char* fragPath)
+{
+	loadFileAndReadContents(vertPath, &m_vertFile);
+	loadFileAndReadContents(fragPath, &m_fragFile);
+	m_id = load();
+}
+
 mage::Shader::~Shader()
 {
 	glDeleteProgram(m_id);
@@ -152,4 +159,6 @@ void mage::Shader::disable() const
 {
 	glUseProgram(0);
 }
+
+
 
