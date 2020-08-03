@@ -35,6 +35,7 @@ using vec2i = glm::ivec2;
 using vec3i = glm::ivec3;
 using vec4i = glm::ivec4;
 
+
 #define SIZE_OF_ARRAY(arr) (sizeof(arr) / sizeof(arr[0]))
 
 #endif //MAGE3D_COMMON_H

@@ -24,6 +24,7 @@
 
 #include "mage3d_exported.h"
 #include "mesh.h"
+#include "shader.h"
 
 namespace mage
 {
@@ -33,6 +34,8 @@ namespace mage
 		mage3d_EXPORT Renderer() { }
 
 		mage3d_EXPORT ~Renderer() { }
+
+		mage3d_EXPORT void render(Shader& shader, Mesh& mesh);
 
 		mage3d_EXPORT void draw(Mesh* mesh);
 

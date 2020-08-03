@@ -45,9 +45,9 @@ mage::Display::~Display()
 
 void mage::Display::update() const
 {
-	const auto error = glGetError();
-	if (error != GL_NO_ERROR)
-		println(console::RED, "OpenGL Error ({}): {}", error, glGetString(error));
+	//const auto error = glGetError();
+	////if (error != GL_NO_ERROR)
+	////	fprintf(stderr, "OpenGL Error (%i):\n%s\n", error, glGetString(error));
 
 	glfwSwapBuffers(m_pWindow);
 	glfwPollEvents();
@@ -110,6 +110,13 @@ void mage::scroll_callback(GLFWwindow* pWindow, double xoffset, double yoffset)
 	display->m_input->setMouseScroll(xoffset, yoffset);
 }
 
+void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+{
+	fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
+}
+
 int mage::Display::init()
 {
 	println(console::BRIGHT_CYAN, "Initializing glfw");
@@ -157,6 +164,8 @@ int mage::Display::init()
 	println(console::BRIGHT_CYAN, "Glew initialized");
 
 	print(console::YELLOW, "OpenGL {}\n", glGetString(GL_VERSION));
+	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback(debugCallback, 0);
 	return 1;
 }
 

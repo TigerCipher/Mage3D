@@ -40,6 +40,8 @@ namespace mage
 
 		mage3d_EXPORT void render();
 
+		mage3d_EXPORT void enable();
+		mage3d_EXPORT void disable();
 
 	protected:
 	private:
@@ -47,8 +49,7 @@ namespace mage
 		void createBuffers(Vertex vertices[], uint indices[]);
 		static void enableAttribPointers();
 		static void disableAttribPointers();
-		void enable();
-		void disable();
+
 
 		GLuint m_vaoId { };
 		GLuint m_vbo { };

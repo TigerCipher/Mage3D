@@ -34,3 +34,29 @@ void mage::Renderer::drawPrimitive()
 	glVertex2f(0, 0.5f);
 	glEnd();
 }
+
+void mage::Renderer::render(Shader& shader, Mesh& mesh)
+{
+	mesh.enable();
+	for(int i = 0; i < shader.getNumAttribs(); i++)
+	{
+		glEnableVertexAttribArray(i);
+		AttribInfo info;
+		if(shader.getAttribInfo(i, &info))
+		{
+			if(strcmp(info.name, "position") == 0)
+				glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, pos));
+			else if(strcmp(info.name, "color") == 0)
+				glVertexAttribPointer(i, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, color));
+			else if(strcmp(info.name, "texCoord") == 0)
+				glVertexAttribPointer(i, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, coords));
+			else if(strcmp(info.name, "normal") == 0)
+				glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, normal));
+			// TODO: Handle unknown/user defined attribs
+		}
+	}
+	mesh.render();
+	for(int i = 0; i < shader.getNumAttribs(); i++)
+		glDisableVertexAttribArray(i);
+	mesh.disable();
+}

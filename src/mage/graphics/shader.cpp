@@ -24,12 +24,13 @@
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
 #include <bmd/strutil.h>
+#include <algorithm>
 
 mage::Shader::Shader(const char* basePath)
 {
 	println(console::RED, "Loading shader file {}", basePath);
-	char fragPath[MAX_PATH_LENGTH] = {};
-	char vertPath[MAX_PATH_LENGTH] = {};
+	char fragPath[MAX_PATH_LENGTH] = { };
+	char vertPath[MAX_PATH_LENGTH] = { };
 	copyStr(vertPath, basePath);
 	copyStr(fragPath, basePath);
 	concatStr(vertPath, ".vert");
@@ -51,12 +52,16 @@ mage::Shader::~Shader()
 	glDeleteProgram(m_id);
 }
 
+bool sortAttribs(const mage::AttribInfo& a, const mage::AttribInfo& b)
+{
+	return a.location < b.location;
+}
+
 GLuint mage::Shader::load()
 {
 	GLuint program = glCreateProgram();
 	GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
 	GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
-
 
 
 	glShaderSource(vertex, 1, &m_vertFile.contents, NULL);
@@ -69,7 +74,8 @@ GLuint mage::Shader::load()
 		glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetShaderInfoLog(vertex, len, &len, &error[ 0 ]);
-		print(console::RED, "Error while compiling vertex shader [{}]\nError: {}\n", m_vertFile.path, &error[ 0 ]);
+		print(console::RED, "Error while compiling vertex shader [{}]\nError: {}\n", m_vertFile.path,
+			  &error[ 0 ]);
 		glDeleteShader(vertex);
 		return 0;
 	}
@@ -83,7 +89,8 @@ GLuint mage::Shader::load()
 		glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetShaderInfoLog(fragment, len, &len, &error[ 0 ]);
-		print(console::RED, "Error while compiling fragment shader [{}]\nError: {}\n", m_fragFile.path, &error[ 0 ]);
+		print(console::RED, "Error while compiling fragment shader [{}]\nError: {}\n", m_fragFile.path,
+			  &error[ 0 ]);
 		glDeleteShader(fragment);
 		return 0;
 	}
@@ -93,22 +100,46 @@ GLuint mage::Shader::load()
 	glLinkProgram(program);
 	glValidateProgram(program);
 
-	glGetProgramiv(program, GL_LINK_STATUS, (int*)&success);
-	if(!success)
+	glGetProgramiv(program, GL_LINK_STATUS, (int*) &success);
+	if (!success)
 	{
 		GLint len = 0;
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
-		glGetProgramInfoLog(program, len, &len, &error[0]);
-		print(console::RED, "Error while linking shader program\nError: {}\n", &error[0]);
+		glGetProgramInfoLog(program, len, &len, &error[ 0 ]);
+		print(console::RED, "Error while linking shader program\nError: {}\n", &error[ 0 ]);
 		glDeleteProgram(program);
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);
 		return 0;
 	}
 
-	if(m_vertFile.contents) free(m_vertFile.contents);
-	if(m_fragFile.contents) free(m_fragFile.contents);
+
+	//int attribNameLen;
+	//glGetProgramiv(program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &attribNameLen);
+	glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &m_numAttribs);
+	const GLsizei bufSize = 32;
+	GLsizei length;
+	GLint size; // size of the variable
+	GLenum type;
+	GLchar name[bufSize];
+	for (int i = 0; i < m_numAttribs; i++)
+	{
+		glGetActiveAttrib(program, i, bufSize, &length, &size, &type, name);
+		int loc = glGetAttribLocation(program, name);
+		AttribInfo info { };
+		copyStr(info.name, name);
+		info.location = loc;
+		info.type = type;
+		m_attribs.push_back(info);
+		//println(console::MAGENTA, "Attribute {} : Type = {} Name = {} Length: {} Size: {}", loc, type, name, length, size);
+		//println(console::BRIGHT_MAGENTA, "Attrib info: {} {} {}", name, m_attribMap[name].location, m_attribMap[name].type);
+	}
+
+	std::sort(m_attribs.begin(), m_attribs.end(), sortAttribs);
+
+	if (m_vertFile.contents) free(m_vertFile.contents);
+	if (m_fragFile.contents) free(m_fragFile.contents);
 
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
@@ -159,6 +190,79 @@ void mage::Shader::disable() const
 {
 	glUseProgram(0);
 }
+
+int mage::Shader::getAttribLocation(const char* attribName)
+{
+	for (const auto& info : m_attribs)
+	{
+		if (strcmp(info.name, attribName) == 0)
+			return info.location;
+	}
+
+	return -1;
+}
+
+GLenum mage::Shader::getAttribType(const char* attribName)
+{
+	for (const auto& info : m_attribs)
+	{
+		if (strcmp(info.name, attribName) == 0)
+			return info.type;
+	}
+
+	return 0;
+}
+
+const char* mage::Shader::getAttribName(int location)
+{
+	for (const auto& info : m_attribs)
+	{
+		if(info.location == location)
+			return info.name;
+	}
+
+	return nullptr;
+}
+
+GLenum mage::Shader::getAttribType(int location)
+{
+	for (const auto& info : m_attribs)
+	{
+		if(info.location == location)
+			return info.type;
+	}
+
+	return 0;
+}
+
+int mage::Shader::getAttribInfo(const char* attribName, AttribInfo* info)
+{
+	for (const auto& i : m_attribs)
+	{
+		if(strcmp(i.name, attribName) == 0)
+		{
+			*info = i;
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+int mage::Shader::getAttribInfo(int location, AttribInfo* info)
+{
+	for (const auto& i : m_attribs)
+	{
+		if(i.location == location)
+		{
+			*info = i;
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
 
 
 

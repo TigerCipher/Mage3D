@@ -28,11 +28,22 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
+#include <bmd/types.h>
 #include <bmd/files.h>
+#include <map>
+#include <string>
 
 
 namespace mage
 {
+
+	struct AttribInfo
+	{
+		char name[32];
+		int location;
+		GLenum type;
+	};
+
 	class Shader
 	{
 	public:
@@ -49,6 +60,16 @@ namespace mage
 		mage3d_EXPORT void setUniform3f(const GLchar* name, const glm::vec3& value);
 		mage3d_EXPORT void setUniform4f(const GLchar* name, const glm::vec4& value);
 		mage3d_EXPORT void setUniformMatf(const GLchar* name, const glm::mat4& value);
+
+		mage3d_EXPORT int getNumAttribs() { return m_numAttribs; }
+		mage3d_EXPORT int getAttribLocation(const char* attribName);
+		mage3d_EXPORT GLenum getAttribType(const char* attribName);
+		mage3d_EXPORT const char* getAttribName(int location);
+		mage3d_EXPORT GLenum getAttribType(int location);
+		mage3d_EXPORT int getAttribInfo(const char* attribName, AttribInfo* info);
+		mage3d_EXPORT int getAttribInfo(int location, AttribInfo* info);
+
+		//mage3d_EXPORT std::map<std::string, AttribInfo> getAttribMap() { return m_attribMap; }
 	protected:
 	private:
 		GLuint load();
@@ -57,6 +78,10 @@ namespace mage
 		GLuint m_id;
 		file_t m_vertFile{};
 		file_t m_fragFile{};
+
+		int m_numAttribs{};
+		//std::map<std::string, AttribInfo> m_attribMap;
+		list<AttribInfo> m_attribs;
 	};
 
 }

@@ -108,15 +108,15 @@ int main(int argc, char** argv)
 
 	// UV coords can't be shared between vertices, so textures don't work properly
 	list<mage::Vertex> testVerts = {
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0),
-			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1),
-			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 1),
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 1, 0),
+			mage::Vertex(-0.1f, -1, -0.1f, 0, 0),
+			mage::Vertex(0.1f, -1, -0.1f, 0, 1),
+			mage::Vertex(0.1f, -1, 0.1f, 1, 1),
+			mage::Vertex(-0.1f, -1, 0.1f, 1, 0),
 
-			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 0),
-			mage::Vertex(0.5f, 0.5f, -0.5f, 0, 1),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1),
-			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0),
+			mage::Vertex(-0.1f, -0.8f, -0.1f, 0, 0),
+			mage::Vertex(0.1f, -0.8f, -0.1f, 0, 1),
+			mage::Vertex(0.1f, -0.8f, 0.1f, 1, 1),
+			mage::Vertex(-0.1f, -0.8f, 0.1f, 1, 0),
 	};
 
 	list<uint> testInts = {
@@ -158,13 +158,14 @@ int main(int argc, char** argv)
 	//auto* testMesh = new mage::Mesh(vertices, 5, indices, 18);
 	mage::Mesh testMesh(verts, ints);
 	mage::Mesh planeMesh(planeVerts, planeInts);
+	mage::Mesh lampMesh(testVerts, testInts);
 	mage::Renderer renderer;
 
 	mage::Shader shader("./assets/shaders/basic_lighting");
-	mage::Shader shaderLamp("./assets/shaders/basic_lighting.vert", "./assets/shaders/basic_color.frag");
+	mage::Shader shaderLamp("./assets/shaders/basic");
 	mage::Texture texture("./assets/textures/default.png");
 
-	vec3f lightPos(1.2, -5, 2);
+	vec3f lightPos(0, -0.9f, 0);
 
 	mage::Timer timer;
 	int frames = 0;
@@ -192,8 +193,7 @@ int main(int argc, char** argv)
 		shader.setUniform3f("lightPos", lightPos);
 		shader.setUniform3f("viewPos", camera.getPosition());
 
-		renderer.draw(&testMesh);
-
+		renderer.render(shader, testMesh);
 		texture.disable();
 		shader.disable();
 
@@ -208,23 +208,19 @@ int main(int argc, char** argv)
 		shader.setUniform3f("lightPos", lightPos);
 		shader.setUniform3f("viewPos", camera.getPosition());
 
-		renderer.draw(&planeMesh);
+		renderer.render(shader, planeMesh);
 
 		texture.disable();
 		shader.disable();
 
 		shaderLamp.enable();
-		texture.enable();
-		shaderLamp.setUniform1i("tex", texture.getId());
-		glm::mat4 scale = glm::scale(mat4f(1.0), vec3f(0.15f));
-		scale = glm::translate(scale, lightPos);
-		shaderLamp.setUniformMatf("model", scale);
+		//glm::mat4 model = glm::translate(glm::mat4(1), lightPos);
+		shaderLamp.setUniformMatf("model", glm::mat4(1));
 		shaderLamp.setUniformMatf("projection", camera.getProjectionMatrix());
 		shaderLamp.setUniformMatf("view", camera.getViewMatrix());
 
-		renderer.draw(&testMesh);
+		renderer.render(shaderLamp, lampMesh);
 
-		texture.disable();
 		shaderLamp.disable();
 
 		//if(input.keyDown(GLFW_KEY_C))
