@@ -160,8 +160,8 @@ int main(int argc, char** argv)
 	auto* planeMesh = new mage::Mesh(planeVerts, planeInts);
 	mage::Renderer renderer;
 
-	mage::Shader shader("./assets/basic_color");
-	mage::Texture texture("./assets/default.png");
+	mage::Shader shader("./assets/shaders/basic_color");
+	mage::Texture texture("./assets/textures/default.png");
 
 
 	mage::Timer timer;

@@ -1,15 +1,15 @@
 # Get the source files for the executable (which is only used for testing the engine and not for production)
 file(GLOB_RECURSE APP_SRC_LIST CONFIGURE_DEPENDS
-	"${Mage3D_SOURCE_DIR}/app/*.cpp"
-	"${Mage3D_SOURCE_DIR}/app/*.cc"
-	"${Mage3D_SOURCE_DIR}/app/*.cxx"
-	"${Mage3D_SOURCE_DIR}/app/*.c"
-	)
+        "${Mage3D_SOURCE_DIR}/app/*.cpp"
+        "${Mage3D_SOURCE_DIR}/app/*.cc"
+        "${Mage3D_SOURCE_DIR}/app/*.cxx"
+        "${Mage3D_SOURCE_DIR}/app/*.c"
+        )
 
 file(GLOB_RECURSE APP_HEADER_LIST CONFIGURE_DEPENDS
-	"${Mage3D_SOURCE_DIR}/app/*.h"
-	"${Mage3D_SOURCE_DIR}/app/*.hpp"
-	)
+        "${Mage3D_SOURCE_DIR}/app/*.h"
+        "${Mage3D_SOURCE_DIR}/app/*.hpp"
+        )
 
 add_executable(app ${APP_SRC_LIST} ${APP_HEADER_LIST})
 
@@ -18,15 +18,15 @@ target_compile_features(app PRIVATE cxx_std_17)
 
 # mage3d = shared, mage3ds = static
 
-if(LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
-	message(Magenta "LIB_TYPE is set to ${LIB_TYPE} so the test app will be linked to the shared library ${MAGE3D_SHARED}")
-	message(Yellow "Note: As the test app is not part of the actual release project, this doesn't really matter")
-	set(MAGE3D_WHICH_LIB ${MAGE3D_SHARED})
-else()
-	message(Magenta "LIB_TYPE is set to ${LIB_TYPE} so the test app will be linked to the static library ${MAGE3D_STATIC}")
-	message(Yellow "Note: As the test app is not part of the actual release project, this doesn't really matter")
-	set(MAGE3D_WHICH_LIB ${MAGE3D_STATIC})
-endif()
+if (LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
+    message(Magenta "LIB_TYPE is set to ${LIB_TYPE} so the test app will be linked to the shared library ${MAGE3D_SHARED}")
+    message(Yellow "Note: As the test app is not part of the actual release project, this doesn't really matter")
+    set(MAGE3D_WHICH_LIB ${MAGE3D_SHARED})
+else ()
+    message(Magenta "LIB_TYPE is set to ${LIB_TYPE} so the test app will be linked to the static library ${MAGE3D_STATIC}")
+    message(Yellow "Note: As the test app is not part of the actual release project, this doesn't really matter")
+    set(MAGE3D_WHICH_LIB ${MAGE3D_STATIC})
+endif ()
 
 message(STATUS "Linking app libraries")
 # Link whichever mage3d library
@@ -45,54 +45,94 @@ target_link_libraries(app PRIVATE ${MAGE3D_WHICH_LIB})
 # In those cases, it's best to add here and add code to the app project to show case its usage and describe it's benefits
 #target_link_libraries(app PRIVATE fmt::fmt)
 
-file(GLOB ASSETS CONFIGURE_DEPENDS
-	"${Mage3D_SOURCE_DIR}/assets/*.vert"
-	"${Mage3D_SOURCE_DIR}/assets/*.frag"
-	)
+
+if (CMAKE_CONFIGURATION_TYPES)
+    set(APP_ASSETS_DIR ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets)
+
+    set(APP_EXE_PATH ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>)
+    set(MAGE_LIB_PATH ${CMAKE_BINARY_DIR}/$<CONFIG>/src)
+else ()
+    set(APP_ASSETS_DIR ${CMAKE_CURRENT_BINARY_DIR}/assets)
+
+    set(APP_EXE_PATH ${CMAKE_CURRENT_BINARY_DIR})
+    set(MAGE_LIB_PATH ${CMAKE_BINARY_DIR}/src)
+endif ()
+
+
+set(ASSETS_DIR "${Mage3D_SOURCE_DIR}/assets")
+
+message(Red "Shared lib Prefix: ${CMAKE_SHARED_LIBRARY_PREFIX}")
+message(Red "Shared lib Suffix: ${CMAKE_SHARED_LIBRARY_SUFFIX}")
+message(Red "Shared lib Prefix: ${CMAKE_STATIC_LIBRARY_PREFIX}")
+message(Red "Shared lib Suffix: ${CMAKE_STATIC_LIBRARY_SUFFIX}")
+
+
+if (LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
+    message(STATUS "Building app with the shared build ${MAGE3D_WHICH_LIB}")
+    file(GLOB APP_SHARED_LIB_FILES #CONFIGURE_DEPENDS
+            "${APP_EXE_PATH}/${CMAKE_SHARED_LIBRARY_PREFIX}*${CMAKE_SHARED_LIBRARY_SUFFIX}"
+            )
+    file(GLOB MAGE_SHARED_LIB_FILES #CONFIGURE_DEPENDS
+            "${MAGE_LIB_PATH}/${CMAKE_SHARED_LIBRARY_PREFIX}*${CMAKE_SHARED_LIBRARY_SUFFIX}"
+            )
+    add_custom_command(TARGET app POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E rm ${APP_SHARED_LIB_FILES}
+            COMMAND "${CMAKE_COMMAND}" -E copy ${MAGE_SHARED_LIB_FILES} "${APP_EXE_PATH}"
+            COMMENT "Cleaning and copying shared library files"
+            )
+else ()
+    message(STATUS "Building app with the static build ${MAGE3D_WHICH_LIB}")
+endif ()
+
+message(STATUS "Assets dir is ${APP_ASSETS_DIR}")
+add_custom_command(TARGET app POST_BUILD
+#        COMMAND "${CMAKE_COMMAND}" -E rm -r ${APP_ASSETS_DIR}
+        COMMAND "${CMAKE_COMMAND}" -E copy_directory ${ASSETS_DIR} ${APP_ASSETS_DIR}
+        COMMENT "Cleaning and copying asset files"
+        )
 
 # Copy_if_different doesnt seem to work, seems to always copy no matter what
-foreach(SHADER_ASSET IN LISTS ASSETS)
-	if(CMAKE_CONFIGURATION_TYPES)
-		add_custom_command(TARGET app PRE_BUILD
-				COMMAND "${CMAKE_COMMAND}" -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
-				COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SHADER_ASSET} ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
-				COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SHADER_ASSET} ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
-				COMMENT "Copying shader: ${SHADER_ASSET}")
-	else()
-		add_custom_command(TARGET app PRE_BUILD
-				COMMAND "${CMAKE_COMMAND}" -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/assets
-				COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SHADER_ASSET} ${CMAKE_CURRENT_BINARY_DIR}/assets
-				COMMENT "Copying shader: ${SHADER_ASSET}")
-	endif()
-endforeach()
+#foreach (SHADER_ASSET IN LISTS ASSETS)
+#    if (CMAKE_CONFIGURATION_TYPES)
+#        add_custom_command(TARGET app PRE_BUILD
+#                COMMAND "${CMAKE_COMMAND}" -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
+#                COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SHADER_ASSET} ${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/assets
+#                COMMENT "Copying shader: ${SHADER_ASSET}")
+#    else ()
+#        add_custom_command(TARGET app PRE_BUILD
+#                COMMAND "${CMAKE_COMMAND}" -E make_directory ${CMAKE_CURRENT_BINARY_DIR}/assets
+#                COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${SHADER_ASSET} ${CMAKE_CURRENT_BINARY_DIR}/assets
+#                COMMENT "Copying shader: ${SHADER_ASSET}")
+#    endif ()
+#endforeach ()
 
-if(LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
-	message(STATUS "Building app with the shared build ${MAGE3D_WHICH_LIB}")
-	if(CMAKE_CONFIGURATION_TYPES)
-		add_custom_command(TARGET app PRE_BUILD
-			COMMAND "${CMAKE_COMMAND}"
-					"-DEXEPATH=$<TARGET_FILE:app>"
-					"-DDEST=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
-					"-DDLL_PATH=${CMAKE_BINARY_DIR}/src/$<CONFIG>"
-					-P ${CMAKE_MODULE_PATH}/copydlls.cmake
-			)
-	else()
-		add_custom_command(TARGET app PRE_BUILD
-				COMMAND "${CMAKE_COMMAND}"
-				"-DEXEPATH=$<TARGET_FILE:app>"
-				"-DDEST=${CMAKE_CURRENT_BINARY_DIR}"
-				"-DDLL_PATH=${CMAKE_BINARY_DIR}/src"
-				-P ${CMAKE_MODULE_PATH}/copydlls.cmake
-				)
-	endif()
-else()
-	message(STATUS "Building app with the static build ${MAGE3D_WHICH_LIB}")
-endif()
+#if (LIB_TYPE STREQUAL "SHARED" OR LIB_TYPE STREQUAL "BOTH")
+#    message(STATUS "Building app with the shared build ${MAGE3D_WHICH_LIB}")
+#    if (CMAKE_CONFIGURATION_TYPES)
+#        add_custom_command(TARGET app PRE_BUILD
+#                COMMAND "${CMAKE_COMMAND}"
+#                "-DEXEPATH=$<TARGET_FILE:app>"
+#                "-DDEST=${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>"
+#                "-DDLL_PATH=${CMAKE_BINARY_DIR}/src/$<CONFIG>"
+#                -P ${CMAKE_MODULE_PATH}/copydlls.cmake
+#                )
+#    else ()
+#        add_custom_command(TARGET app PRE_BUILD
+#                COMMAND "${CMAKE_COMMAND}"
+#                "-DEXEPATH=$<TARGET_FILE:app>"
+#                "-DDEST=${CMAKE_CURRENT_BINARY_DIR}"
+#                "-DDLL_PATH=${CMAKE_BINARY_DIR}/src"
+#                -P ${CMAKE_MODULE_PATH}/copydlls.cmake
+#                )
+#    endif ()
+#else ()
+#    message(STATUS "Building app with the static build ${MAGE3D_WHICH_LIB}")
+#endif ()
 
-include(filter)
+#include(filter)
 
-source_group (
-TREE    "${Mage3D_SOURCE_DIR}/app"
-FILES   ${APP_HEADER_LIST}
-PREFIX  "Header Files"
+source_group(
+        TREE "${Mage3D_SOURCE_DIR}/app"
+        FILES ${APP_HEADER_LIST}
+        PREFIX "Header Files "
 )

@@ -27,16 +27,15 @@
 
 mage::Shader::Shader(const char* basePath)
 {
-	char* fragPath;
-	char* vertPath;
-	copyStrDynamic(vertPath, basePath);
-	copyStrDynamic(fragPath, basePath);
+	println(console::RED, "Loading shader file {}", basePath);
+	char fragPath[MAX_PATH_LENGTH] = {};
+	char vertPath[MAX_PATH_LENGTH] = {};
+	copyStr(vertPath, basePath);
+	copyStr(fragPath, basePath);
 	concatStr(vertPath, ".vert");
 	concatStr(fragPath, ".frag");
 	loadFileAndReadContents(vertPath, &m_vertFile);
 	loadFileAndReadContents(fragPath, &m_fragFile);
-	//if(fragPath) free(fragPath);
-	//if(vertPath) free(vertPath);
 	m_id = load();
 }
 
