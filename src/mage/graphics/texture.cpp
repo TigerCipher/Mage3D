@@ -21,49 +21,139 @@
 
 #include "mage/graphics/texture.h"
 #include "mage/core/stdcolor.h"
+#include "mage/errors/textureexception.h"
 #include <SOIL/SOIL.h>
 #include <cassert>
 
-mage::Texture::Texture(const char* filePath):
-m_filePath(filePath)
+std::map<std::string, mage::TextureData*> mage::Texture::textureMap;
+
+mage::Texture::Texture():
+m_filePath("./assets/textures/default.png"),
+m_type("diffuse")
 {
-	println(console::RED, "Loading image file {}", filePath);
-	ubyte* image = SOIL_load_image(filePath, &m_width, &m_height, 0, SOIL_LOAD_RGB);
-	if(!image)
+	load(m_filePath.c_str());
+}
+
+mage::Texture::Texture(const char* filePath) :
+		m_filePath(filePath),
+		m_type("diffuse")
+{
+	fprintf(stderr, "Loading default diffuse texture\n");
+	load(filePath);
+}
+
+mage::Texture::Texture(const char* filePath, const char* type) :
+		m_filePath(filePath),
+		m_type(type)
+{
+	if (strcmp(type, TEXTURE_DIFFUSE) != 0 && strcmp(type, TEXTURE_SPECULAR) != 0)
 	{
-		println(console::RED, "Image is null!");
+		fprintf(stderr, "Texture type %s is unknown to the Mage3D engine\n", type);
+		//throw TexException("Invalid texture type",
+		//				   fmt::format("Supplied type: {} - Expected {} or {}", type, TEXTURE_DIFFUSE,
+		//							   TEXTURE_SPECULAR).c_str());
 	}
-	glGenTextures(1, &m_id);
-	if(!m_id)
-	{
-		println(console::RED, "Tex id is null!");
-	}
-	glBindTexture(GL_TEXTURE_2D, m_id);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_width, m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	SOIL_free_image_data(image);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	fprintf(stderr, "Loading file %s of type %s\n", filePath, type);
+	load(filePath);
 }
 
 mage::Texture::~Texture()
 {
-	glDeleteTextures(1, &m_id);
+	if(m_textureData && m_textureData->removeReference())
+	{
+		if(m_filePath.length() > 0)
+			textureMap.erase(m_filePath);
+		delete m_textureData;
+	}
 }
 
-void mage::Texture::enable()
+void mage::Texture::enable(uint slot)
 {
-	assert(m_id < 31 && m_id >= 0);
-	glActiveTexture(GL_TEXTURE0 + m_id);
-	glBindTexture(GL_TEXTURE_2D, m_id);
+	assert(slot < 31 && slot >= 0);
+	glActiveTexture(GL_TEXTURE0 + slot);
+	m_textureData->bind(0);
 }
 
-void mage::Texture::disable()
+void mage::Texture::disable(uint slot)
 {
-	assert(m_id < 31 && m_id >= 0);
-	glActiveTexture(GL_TEXTURE0 + m_id);
+	assert(slot < 31 && slot >= 0);
+	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void mage::Texture::load(const char* filePath)
+{
+	std::map<std::string, TextureData*>::const_iterator it = textureMap.find(filePath);
+	if(it != textureMap.end())
+	{
+		m_textureData = it->second;
+		m_textureData->addReference();
+	}else
+	{
+		int width, height;
+		ubyte* image = SOIL_load_image(filePath, &width, &height, 0, SOIL_LOAD_RGBA);
+		if (!image)
+		{
+			println(console::RED, "Image is null!");
+		}
+		m_textureData = new TextureData(GL_TEXTURE_2D, width, height, 1, &image, true);
+		SOIL_free_image_data(image);
+		textureMap.insert(std::pair<std::string, TextureData*>(filePath, m_textureData));
+	}
+}
+
+std::ostream& mage::operator<<(std::ostream& os, const mage::Texture& texture)
+{
+	os << "m_filePath: " << texture.m_filePath << " m_type: " << texture.m_type << " m_textureData: "
+	   << *(texture.m_textureData);
+	return os;
+}
+
+
+mage::TextureData::TextureData(GLenum textureTarget, int width, int height, int numTextures, ubyte** data, bool clamp)
+{
+	m_id = new uint[numTextures];
+	m_numTextures = numTextures;
+	m_textureTarget = textureTarget;
+	m_width = width;
+	m_height = height;
+
+	glGenTextures(m_numTextures, m_id);
+	for(int i = 0; i < m_numTextures; i++)
+	{
+		glBindTexture(m_textureTarget, m_id[i]);
+		glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        if(clamp)
+		{
+        	glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
+            glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
+		}
+
+        glTexParameteri(m_textureTarget, GL_TEXTURE_BASE_LEVEL, 0);
+        glTexParameteri(m_textureTarget, GL_TEXTURE_MAX_LEVEL, 0);
+
+        glTexImage2D(m_textureTarget, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data[i]);
+	}
+}
+
+mage::TextureData::~TextureData()
+{
+	if(*m_id) glDeleteTextures(m_numTextures, m_id);
+	if(m_id) delete[] m_id;
+}
+
+#include <iostream>
+void mage::TextureData::bind(int textureNum)
+{
+	glBindTexture(m_textureTarget, m_id[textureNum]);
+}
+
+std::ostream& mage::operator<<(std::ostream& os, const mage::TextureData& data)
+{
+	os << " m_textureTarget: " << data.m_textureTarget
+	   << " m_id: " << data.m_id[0] << " m_numTextures: " << data.m_numTextures << " m_width: " << data.m_width
+	   << " m_height: " << data.m_height;
+	return os;
 }

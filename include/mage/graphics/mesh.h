@@ -26,8 +26,10 @@
 #include "mage3d_exported.h"
 #include "mage/common.h"
 #include "vertex.h"
+#include "texture.h"
 
 #include <vector>
+#include <ostream>
 
 namespace mage
 {
@@ -36,12 +38,20 @@ namespace mage
 	public:
 		mage3d_EXPORT Mesh(Vertex vertices[], uint verticesSize, uint indices[], uint indicesSize);
 		mage3d_EXPORT Mesh(list<Vertex> vertices, list<uint> indices);
+		mage3d_EXPORT Mesh(list<Vertex> vertices, list<uint> indices, const list<Texture>& textures);
 		mage3d_EXPORT ~Mesh();
 
 		mage3d_EXPORT void render();
 
 		mage3d_EXPORT void enable();
 		mage3d_EXPORT void disable();
+
+		mage3d_EXPORT list<Texture> getTextures() { return m_textures; }
+		mage3d_EXPORT list<Vertex> getVertices() { return m_vertices; }
+		mage3d_EXPORT list<uint> getIndices() { return m_indices; }
+		mage3d_EXPORT int getNumVertices() { return m_numVertices; }
+
+		mage3d_EXPORT friend std::ostream& operator<<(std::ostream& os, const Mesh& mesh);
 
 	protected:
 	private:
@@ -57,6 +67,10 @@ namespace mage
 
 		uint m_numVertices;
 		uint m_numIndices;
+
+		list<Vertex> m_vertices;
+		list<uint> m_indices;
+		list<Texture> m_textures;
 	};
 
 }

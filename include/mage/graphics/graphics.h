@@ -27,5 +27,6 @@
 #include "renderer.h"
 #include "vertex.h"
 #include "texture.h"
+#include "model.h"
 
 #endif //MAGE3D_GRAPHICS_H

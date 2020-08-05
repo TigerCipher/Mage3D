@@ -70,6 +70,7 @@ find_package(GLEW REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
 find_package(SOIL CONFIG REQUIRED)
 find_package(glm CONFIG REQUIRED)
+find_package(assimp CONFIG REQUIRED)
 
 find_package(fmt CONFIG REQUIRED)
 include(find_bmd)

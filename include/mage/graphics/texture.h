@@ -25,28 +25,66 @@
 
 #include "mage3d_exported.h"
 #include "mage/common.h"
+#include "mage/core/resourcemanager.h"
 #include <GL/glew.h>
+#include <string>
+#include <ostream>
+#include <map>
+
+#define TEXTURE_DIFFUSE "diffuse"
+#define TEXTURE_SPECULAR "specular"
 
 namespace mage
 {
+
+	class TextureData : public ResourceManager
+	{
+	public:
+		mage3d_EXPORT TextureData(GLenum textureTarget, int width, int height, int numTextures, ubyte** data, bool clamp);
+		mage3d_EXPORT virtual ~TextureData();
+
+		mage3d_EXPORT void bind(int textureNum);
+		mage3d_EXPORT int getWidth() { return m_width; }
+		mage3d_EXPORT int getHeight() { return m_height; }
+
+		friend std::ostream& operator<<(std::ostream& os, const TextureData& data);
+
+	private:
+		TextureData(TextureData& other) { }
+		void operator=(TextureData& other) { }
+
+		GLenum m_textureTarget;
+		uint* m_id;
+		int m_numTextures;
+		int m_width;
+		int m_height;
+	};
+
 	class Texture
 	{
 	public:
+		mage3d_EXPORT Texture();
 		mage3d_EXPORT Texture(const char* filePath);
-
+		mage3d_EXPORT Texture(const char* filePath, const char* type);
 		mage3d_EXPORT ~Texture();
 
-		mage3d_EXPORT void enable();
-		mage3d_EXPORT void disable();
+		mage3d_EXPORT void enable(uint slot);
+		mage3d_EXPORT void disable(uint slot);
 
-		mage3d_EXPORT GLuint getId() const { return m_id; }
+		mage3d_EXPORT const std::string getType() { return m_type; }
+
+		friend std::ostream& operator<<(std::ostream& os, const Texture& texture);
 
 	protected:
 	private:
-		GLuint m_id;
-		const char* m_filePath;
-		int m_width;
-		int m_height;
+
+		void load(const char* filePath);
+		const std::string m_filePath;
+		const std::string m_type;
+
+		TextureData* m_textureData;
+
+		static std::map<std::string, TextureData*> textureMap;
 	};
 
 }

@@ -21,6 +21,8 @@
 
 
 #include "mage/graphics/mesh.h"
+
+#include <utility>
 #include "mage/core/stdcolor.h"
 
 
@@ -46,8 +48,23 @@ mage::Mesh::Mesh(list<Vertex> vertices, list<uint> indices)
 	disable();
 }
 
+mage::Mesh::Mesh(list<mage::Vertex> vertices, list<uint> indices, const list<mage::Texture>& textures):
+m_textures(textures),
+m_vertices(vertices),
+m_indices(indices)
+{
+	m_numVertices = vertices.size();
+	m_numIndices = indices.size();
+	assert(m_numIndices % 3 == 0);
+	glGenVertexArrays(1, &m_vaoId);
+	glBindVertexArray(m_vaoId);
+	createBuffers(vertices.data(), indices.data());
+	disable();
+}
+
 mage::Mesh::~Mesh()
 {
+	printf("DELETING MESH ID %i\n", m_vaoId);
 	glDeleteVertexArrays(1, &m_vaoId);
 	glDeleteBuffers(1, &m_vbo);
 	glDeleteBuffers(1, &m_ebo);
@@ -102,15 +119,17 @@ void mage::Mesh::disableAttribPointers()
 
 void mage::Mesh::render()
 {
-	enable();
-	enableAttribPointers();
+	//enable();
+	//enableAttribPointers();
 	glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, 0);
-	disableAttribPointers();
-	disable();
+	//disableAttribPointers();
+	//disable();
 }
 
 void mage::Mesh::enable()
 {
+	if (m_numVertices == 24 || m_numVertices == 6)
+		printf("ID: %i (verts %i)\n", m_vaoId, m_numVertices);
 	glBindVertexArray(m_vaoId);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
@@ -122,6 +141,15 @@ void mage::Mesh::disable()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
+
+std::ostream& mage::operator<<(std::ostream& os, const mage::Mesh& mesh)
+{
+	os << "m_vaoId: " << mesh.m_vaoId << " m_vbo: " << mesh.m_vbo << " m_ebo: " << mesh.m_ebo
+	   << " m_numVertices: " << mesh.m_numVertices << " m_numIndices: " << mesh.m_numIndices;
+	return os;
+}
+
+
 
 
 

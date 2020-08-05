@@ -23,7 +23,9 @@
 #define MAGE3D_VERTEX_H
 
 #include "mage3d_exported.h"
+#include <bmd/types.h>
 #include <glm/glm.hpp>
+#include <ostream>
 
 namespace mage
 {
@@ -34,10 +36,19 @@ namespace mage
 		float y;
 		float z;
 
-		mage3d_EXPORT Position(float _x, float _y, float _z);
-		mage3d_EXPORT Position(glm::vec3 pos);
+		Position(float _x, float _y, float _z) :
+				x(_x),
+				y(_y),
+				z(_z) { }
+
+		friend std::ostream& operator<<(std::ostream& os, const Position& position)
+		{
+			os << "x: " << position.x << " y: " << position.y << " z: " << position.z;
+			return os;
+		}
 	};
 
+	// Keeping for now, but might get rid of. If color overlays are really needed, they can just be a uniform in the shader
 	struct ColorRGB8
 	{
 		float r;
@@ -45,8 +56,17 @@ namespace mage
 		float b;
 		float a;
 
-		mage3d_EXPORT ColorRGB8(float _r, float _g, float _b, float _a = 1.0f);
-		mage3d_EXPORT explicit ColorRGB8(glm::vec4 color);
+		ColorRGB8(float _r, float _g, float _b, float _a = 1.0f) :
+				r(_r),
+				g(_g),
+				b(_b),
+				a(_a) { }
+
+		friend std::ostream& operator<<(std::ostream& os, const ColorRGB8& rgb8)
+		{
+			os << "r: " << rgb8.r << " g: " << rgb8.g << " b: " << rgb8.b << " a: " << rgb8.a;
+			return os;
+		}
 	};
 
 	struct TexCoords
@@ -54,43 +74,82 @@ namespace mage
 		float u;
 		float v;
 
-		mage3d_EXPORT TexCoords(float _u, float _v);
-		mage3d_EXPORT TexCoords(glm::vec2 coords);
+		TexCoords(float _u, float _v) :
+				u(_u),
+				v(_v) { }
+
+		friend std::ostream& operator<<(std::ostream& os, const TexCoords& coords)
+		{
+			os << "u: " << coords.u << " v: " << coords.v;
+			return os;
+		}
 	};
 
 	struct Normal
 	{
-	    float x;
-	    float y;
-	    float z;
-	    mage3d_EXPORT Normal(float _x, float _y, float _z);
+		float x;
+		float y;
+		float z;
+
+		Normal(float _x, float _y, float _z) :
+				x(_x),
+				y(_y),
+				z(_z) { }
+
+		friend std::ostream& operator<<(std::ostream& os, const Normal& normal)
+		{
+			os << "x: " << normal.x << " y: " << normal.y << " z: " << normal.z;
+			return os;
+		}
 	};
 
 
 	struct Vertex
 	{
 		Position pos;
-		ColorRGB8 color;
-		TexCoords coords;
 		Normal normal;
-		mage3d_EXPORT Vertex(float x, float y, float z, float u, float v, float r = 1, float g = 1,
-							 float b = 1, float nx = 0, float ny = 0, float nz = 0);
+		TexCoords coords;
+		ColorRGB8 color;
 
-		mage3d_EXPORT explicit Vertex(glm::vec3 _pos = glm::vec3(0, 0, 0),
-									  glm::vec4 _color = glm::vec4(1, 1, 1, 1),
-									  glm::vec2 _coords = glm::vec2(0, 0),
-									  vec3f _normal = vec3f(0, 0, 0));
+		explicit Vertex(Position _pos, Normal _normal = Normal(0, 0, 0), TexCoords _texCoords = TexCoords(0, 0),
+			   ColorRGB8 _color = ColorRGB8(1, 1, 1)) :
+				pos(_pos),
+				normal(_normal),
+				coords(_texCoords),
+				color(_color) { }
 
-		mage3d_EXPORT void setPos(float x, float y, float z);
-		mage3d_EXPORT void setColor(float r, float g, float b, float a = 1.0f);
-		mage3d_EXPORT void setTexCoords(float u, float v);
-		mage3d_EXPORT void setNormalCoords(float x, float y, float z);
+		void setPos(float x, float y, float z)
+		{
+			pos.x = x;
+			pos.y = y;
+			pos.z = z;
+		}
+		void setColor(float r, float g, float b, float a = 1.0f)
+		{
+			color.r = r;
+			color.g = g;
+			color.b = b;
+			color.a = a;
+		}
+		void setTexCoords(float u, float v)
+		{
+			coords.u = u;
+			coords.v = v;
+		}
+		void setNormalCoords(float x, float y, float z)
+		{
+			normal.x = x;
+			normal.y = y;
+			normal.z = z;
+		}
 
-		mage3d_EXPORT glm::vec3 posVec();
-		mage3d_EXPORT glm::vec4 colorVec();
-		mage3d_EXPORT glm::vec2 texCoords();
-		mage3d_EXPORT vec3f normalVec();
 
+		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex)
+		{
+			os << "pos: " << vertex.pos << " normal: " << vertex.normal << " coords: " << vertex.coords
+			   << " color: " << vertex.color;
+			return os;
+		}
 	};
 }
 

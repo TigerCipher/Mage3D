@@ -11,7 +11,7 @@ uniform vec3 lightColor;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 
-uniform sampler2D tex;
+uniform sampler2D texture_diffuse1;
 
 void main()
 {
@@ -30,5 +30,5 @@ void main()
     vec3 specular = specularIntensity * spec * lightColor;
 
     vec3 finalLight = (ambient + diffuse + specular);
-    color = texture(tex, fragTexCoord) * vec4(finalLight, 1.0) * fragColor;
+    color = texture(texture_diffuse1, fragTexCoord) * vec4(finalLight, 1.0) * fragColor;
 }

@@ -21,102 +21,22 @@
 #include <string>
 #include <mage/mage.h>
 #include <glm/gtx/transform.hpp>
+#include <iostream>
 
 int main(int argc, char** argv)
 {
-	//std::vector<mage::Vertex> verts = {
-	//		mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 1, 0), //v0
-	//		mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1), //v1
-	//		mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 1), //v2
-	//		mage::Vertex(-0.5f, -0.5f, -0.5f, 1, 0, 1), //v3
-	//		mage::Vertex(0, 0.5f, 0, 1, 0, 0), //v4
-	//};
-	//
-	//std::vector<uint> ints = {
-	//		0, 4, 1,
-	//		1, 4, 2,
-	//		2, 4, 3,
-	//		3, 4, 0,
-	//		0, 3, 2,
-	//		2, 1, 0
-	//};
-
-	//TODO: Texture coords don't seem to map properly when using indices
-	list<mage::Vertex> verts = {
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1, 0, 0, 0, 0, -1),
-			mage::Vertex(0.5f, -0.5f, -0.5f, 1, 0, 0, 1, 0, 0, 0, -1),
-			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 0, 1, 0, 0, -1),
-			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 0, 1, 0, 0, -1),
-			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 1, 1, 0, 0, -1),
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 0, 1, 0, 0, 0, 0, -1),
-
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 0, 0, 0, 1),
-			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 1, 0, 0, 0, 1),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1, 0, 0, 1, 0, 0, 1),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 1, 0, 0, 1, 0, 0, 1),
-			mage::Vertex(-0.5f, 0.5f, 0.5f, 0, 1, 1, 1, 1, 0, 0, 1),
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 0, 0, 0, 0, 1),
-
-			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0, -1, 0, 0),
-			mage::Vertex(-0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0, -1, 0, 0),
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1, -1, 0, 0),
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1, -1, 0, 0),
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1, -1, 0, 0),
-			mage::Vertex(-0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0, -1, 0, 0),
-
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0, 1, 0, 0),
-			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0, 1, 0, 0),
-			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1, 1, 0, 0),
-			mage::Vertex(0.5f, -0.5f, -0.5f, 0, 1, 0, 0, 1, 1, 0, 0),
-			mage::Vertex(0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1, 1, 0, 0),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 1, 0, 0, 1, 0, 0),
-
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 1, 0, 0, 0, -1, 0),
-			mage::Vertex(0.5f, -0.5f, -0.5f, 1, 1, 0, 1, 0, 0, -1, 0),
-			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 1, 0, -1, 0),
-			mage::Vertex(0.5f, -0.5f, 0.5f, 1, 0, 0, 0, 1, 0, -1, 0),
-			mage::Vertex(-0.5f, -0.5f, 0.5f, 0, 0, 1, 1, 1, 0, -1, 0),
-			mage::Vertex(-0.5f, -0.5f, -0.5f, 0, 1, 1, 0, 0, 0, -1, 0),
-
-			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 0, 0, 0, 1, 0),
-			mage::Vertex(0.5f, 0.5f, -0.5f, 1, 1, 0, 1, 0, 0, 1, 0),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 0, 0, 1, 0, 1, 0),
-			mage::Vertex(0.5f, 0.5f, 0.5f, 1, 0, 0, 0, 1, 0, 1, 0),
-			mage::Vertex(-0.5f, 0.5f, 0.5f, 0, 0, 1, 1, 1, 0, 1, 0),
-			mage::Vertex(-0.5f, 0.5f, -0.5f, 0, 1, 1, 0, 0, 0, 1, 0),
-	};
-
-	list<uint> ints = {
-			0, 1, 2,
-			3, 4, 5,
-
-			6, 7, 8,
-			9, 10, 11,
-
-			12, 13, 14,
-			15, 16, 17,
-
-			18, 19, 20,
-			21, 22, 23,
-
-			24, 25, 26,
-			27, 28, 29,
-
-			30, 31, 32,
-			33, 34, 35
-	};
 
 	// UV coords can't be shared between vertices, so textures don't work properly
 	list<mage::Vertex> testVerts = {
-			mage::Vertex(-0.1f, -1, -0.1f, 0, 0),
-			mage::Vertex(0.1f, -1, -0.1f, 0, 1),
-			mage::Vertex(0.1f, -1, 0.1f, 1, 1),
-			mage::Vertex(-0.1f, -1, 0.1f, 1, 0),
+			mage::Vertex(mage::Position(-0.1f, -1, -0.1f)),
+			mage::Vertex(mage::Position(0.1f, -1, -0.1f)),
+			mage::Vertex(mage::Position(0.1f, -1, 0.1f)),
+			mage::Vertex(mage::Position(-0.1f, -1, 0.1f)),
 
-			mage::Vertex(-0.1f, -0.8f, -0.1f, 0, 0),
-			mage::Vertex(0.1f, -0.8f, -0.1f, 0, 1),
-			mage::Vertex(0.1f, -0.8f, 0.1f, 1, 1),
-			mage::Vertex(-0.1f, -0.8f, 0.1f, 1, 0),
+			mage::Vertex(mage::Position(-0.1f, -0.8f, -0.1f)),
+			mage::Vertex(mage::Position(0.1f, -0.8f, -0.1f)),
+			mage::Vertex(mage::Position(0.1f, -0.8f, 0.1f)),
+			mage::Vertex(mage::Position(-0.1f, -0.8f, 0.1f)),
 	};
 
 	list<uint> testInts = {
@@ -140,10 +60,10 @@ int main(int argc, char** argv)
 	};
 
 	list<mage::Vertex> planeVerts = {
-			mage::Vertex(-2, -2, -2, 0, 0, 1, 1, 1, 0, -0.5f, 0),
-			mage::Vertex(2, -2, -2, 0, 1, 1, 1, 1, 0, -0.5f, 0),
-			mage::Vertex(2, -2, 2, 1, 1, 1, 1, 1, 0, -0.5f, 0),
-			mage::Vertex(-2, -2, 2, 1, 0, 1, 1, 1, 0, -0.5f, 0),
+			mage::Vertex(mage::Position(-2, -2, -2), mage::Normal(0, -0.5f, 0), mage::TexCoords(0, 0)),
+			mage::Vertex(mage::Position(2, -2, -2), mage::Normal(0, -0.5f, 0), mage::TexCoords(0, 1)),
+			mage::Vertex(mage::Position(2, -2, 2), mage::Normal(0, -0.5f, 0), mage::TexCoords(1, 1)),
+			mage::Vertex(mage::Position(-2, -2, 2), mage::Normal(0, -0.5f, 0), mage::TexCoords(1, 0)),
 	};
 
 	list<uint> planeInts = {
@@ -151,19 +71,106 @@ int main(int argc, char** argv)
 			2, 0, 3
 	};
 
+	list<mage::Vertex> verts = {
+			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(0, 0)),
+			mage::Vertex(mage::Position(0.5f, -0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(1, 0)),
+			mage::Vertex(mage::Position(0.5f, 0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(1, 1)),
+			mage::Vertex(mage::Position(0.5f, 0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(1, 1)),
+			mage::Vertex(mage::Position(-0.5f, 0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(0, 1)),
+			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(0, 0)),
+
+			mage::Vertex(mage::Position(-0.5f, -0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(0, 0)),
+			mage::Vertex(mage::Position(0.5f, -0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(1, 0)),
+			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(1, 1)),
+			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(1, 1)),
+			mage::Vertex(mage::Position(-0.5f, 0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(0, 1)),
+			mage::Vertex(mage::Position(-0.5f, -0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(0, 0)),
+
+			mage::Vertex(mage::Position(-0.5f, 0.5f, 0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(1, 0)),
+			mage::Vertex(mage::Position(-0.5f, 0.5f, -0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(1, 1)),
+			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(0, 1)),
+			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(0, 1)),
+			mage::Vertex(mage::Position(-0.5f, -0.5f, 0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(0, 0)),
+			mage::Vertex(mage::Position(-0.5f, 0.5f, 0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(1, 0)),
+
+			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(1, 0, 0), mage::TexCoords(1, 0)),
+			mage::Vertex(mage::Position(0.5f, 0.5f, -0.5f), mage::Normal(1, 0, 0), mage::TexCoords(1, 1)),
+			mage::Vertex(mage::Position(0.5f, -0.5f, -0.5f), mage::Normal(1, 0, 0), mage::TexCoords(0, 1)),
+			mage::Vertex(mage::Position(0.5f, -0.5f, -0.5f), mage::Normal(1, 0, 0), mage::TexCoords(0, 1)),
+			mage::Vertex(mage::Position(0.5f, -0.5f, 0.5f), mage::Normal(1, 0, 0), mage::TexCoords(0, 0)),
+			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(1, 0, 0), mage::TexCoords(1, 0)),
+
+			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(0, -1, 0), mage::TexCoords(0, 1)),
+			mage::Vertex(mage::Position(0.5f, -0.5f, -0.5f), mage::Normal(0, -1, 0), mage::TexCoords(1, 1)),
+			mage::Vertex(mage::Position(0.5f, -0.5f, 0.5f), mage::Normal(0, -1, 0), mage::TexCoords(1, 0)),
+			mage::Vertex(mage::Position(0.5f, -0.5f, 0.5f), mage::Normal(0, -1, 0), mage::TexCoords(1, 0)),
+			mage::Vertex(mage::Position(-0.5f, -0.5f, 0.5f), mage::Normal(0, -1, 0), mage::TexCoords(0, 0)),
+			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(0, -1, 0), mage::TexCoords(0, 1)),
+
+			mage::Vertex(mage::Position(-0.5f, 0.5f, -0.5f), mage::Normal(0, 1, 0), mage::TexCoords(0, 1)),
+			mage::Vertex(mage::Position(0.5f, 0.5f, -0.5f), mage::Normal(0, 1, 0), mage::TexCoords(1, 1)),
+			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(0, 1, 0), mage::TexCoords(1, 0)),
+			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(0, 1, 0), mage::TexCoords(1, 0)),
+			mage::Vertex(mage::Position(-0.5f, 0.5f, 0.5f), mage::Normal(0, 1, 0), mage::TexCoords(0, 0)),
+			mage::Vertex(mage::Position(-0.5f, 0.5f, -0.5f), mage::Normal(0, 1, 0), mage::TexCoords(0, 1)),
+	};
+
+	list<uint> ints = {
+			0, 1, 2,
+			3, 4, 5,
+
+			6, 7, 8,
+			9, 10, 11,
+
+			12, 13, 14,
+			15, 16, 17,
+
+			18, 19, 20,
+			21, 22, 23,
+
+			24, 25, 26,
+			27, 28, 29,
+
+			30, 31, 32,
+			33, 34, 35
+	};
+
 	mage::clearConsole(mage::console::WHITE);
 	mage::Input input;
 	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
 	mage::Camera camera(&display, glm::vec3(0, 0, 5));
 	//auto* testMesh = new mage::Mesh(vertices, 5, indices, 18);
-	mage::Mesh testMesh(verts, ints);
-	mage::Mesh planeMesh(planeVerts, planeInts);
+
 	mage::Mesh lampMesh(testVerts, testInts);
+
+
 	mage::Renderer renderer;
 
 	mage::Shader shader("./assets/shaders/basic_lighting");
+	mage::Shader shader2("./assets/shaders/basic_lighting.vert", "./assets/shaders/basic_model.frag");
 	mage::Shader shaderLamp("./assets/shaders/basic");
 	mage::Texture texture("./assets/textures/default.png");
+	list<mage::Texture> planeTextures = { texture };
+	//mage::Mesh planeMesh(planeVerts, planeInts, planeTextures);
+	mage::Mesh cubeMesh(verts, ints, planeTextures);
+	mage::Model backpack("./assets/models/untitled.obj");
+	mage::Model backpackActual("./assets/models/backpack.obj");
+	mage::Mesh testModelMesh(backpack.getMeshes()[ 0 ]->getVertices(), backpack.getMeshes()[ 0 ]->getIndices(),
+							 backpack.getMeshes()[ 0 ]->getTextures());
+	std::cout << testModelMesh << std::endl; // 4
+	std::cout << cubeMesh << std::endl; // 3
+	//std::cout << planeMesh << std::endl; // 2
+	std::cout << lampMesh << std::endl; // 1
+	std::cout << backpack.getMeshes()[0] << std::endl; // 2
+	//for (int i = 0; i < backpack.getMeshes().size(); i++)
+	//{
+	//	for (int j = 0; j < backpack.getMeshes()[ i ].getVertices().size(); j++)
+	//	{
+	//		std::cout << i << " : " << j << "  ->   " << backpack.getMeshes()[ i ].getVertices()[ j ]
+	//				  << std::endl;
+	//	}
+	//}
+
 
 	vec3f lightPos(0, -0.9f, 0);
 
@@ -180,9 +187,9 @@ int main(int argc, char** argv)
 		camera.update(input, timer.delta());
 		display.clear(0, 0, 0);
 		// Render
+
 		shader.enable();
-		texture.enable();
-		shader.setUniform1i("tex", texture.getId());
+
 		glm::mat4 rot(1);
 		rot = glm::rotate((float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
 		shader.setUniformMatf("model", rot);
@@ -193,25 +200,47 @@ int main(int argc, char** argv)
 		shader.setUniform3f("lightPos", lightPos);
 		shader.setUniform3f("viewPos", camera.getPosition());
 
-		renderer.render(shader, testMesh);
-		texture.disable();
+		renderer.render(shader, cubeMesh);
+
 		shader.disable();
 
+		//shader.enable();
+		//glm::mat4 plane(1);
+		//shader.setUniformMatf("model", plane);
+		//shader.setUniformMatf("projection", camera.getProjectionMatrix());
+		//shader.setUniformMatf("view", camera.getViewMatrix());
+		//shader.setUniform3f("lightColor", vec3f(1.0f, 0.5f, 0.7f));
+		//shader.setUniform3f("lightPos", lightPos);
+		//shader.setUniform3f("viewPos", camera.getPosition());
+		//
+		//renderer.render(shader, planeMesh);
+		//shader.disable();
+
+
 		shader.enable();
-		texture.enable();
-		shader.setUniform1i("tex", texture.getId());
-		glm::mat4 plane(1);
-		shader.setUniformMatf("model", plane);
+
+		glm::mat4 bp = glm::scale(glm::mat4(1), glm::vec3(1));
+		bp = glm::translate(bp, vec3f(0, 0, -4));
+		//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
+		shader.setUniformMatf("model", bp);
 		shader.setUniformMatf("projection", camera.getProjectionMatrix());
 		shader.setUniformMatf("view", camera.getViewMatrix());
 		shader.setUniform3f("lightColor", vec3f(1.0f, 0.5f, 0.7f));
 		shader.setUniform3f("lightPos", lightPos);
 		shader.setUniform3f("viewPos", camera.getPosition());
 
-		renderer.render(shader, planeMesh);
+		//for (int i = 0; i < backpack.getMeshes().size(); i++)
+		//{
+		//	renderer.render(shader, backpack.getMeshes()[i]);
+		//}
+		//renderer.render(shader, backpack.getMeshes()[0]);
+		// This \/ works...
+		//renderer.render(shader, testModelMesh);
+		renderer.render(shader, backpackActual);
+		// rendering the backpack doesnt work, despite it rendering the same mesh.. hmmm
 
-		texture.disable();
 		shader.disable();
+		// Currently doesnt work ;-; makes the plane texture not render either
 
 		shaderLamp.enable();
 		//glm::mat4 model = glm::translate(glm::mat4(1), lightPos);

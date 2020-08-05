@@ -20,6 +20,8 @@
  */
 
 #include "mage/graphics/renderer.h"
+#include <string>
+#include <bmd/strutil.h>
 
 void mage::Renderer::draw(mage::Mesh* mesh)
 {
@@ -35,28 +37,74 @@ void mage::Renderer::drawPrimitive()
 	glEnd();
 }
 
+#include <iostream>
+
 void mage::Renderer::render(Shader& shader, Mesh& mesh)
 {
+	//if(mesh.getNumVertices() == 24) std::cout << "Rendering mesh " << mesh << " textures: " << mesh.getTextures().size() << std::endl;
+	// Bind textures
+	int diffuseTex = 1;
 	mesh.enable();
-	for(int i = 0; i < shader.getNumAttribs(); i++)
+	if (!mesh.getTextures().empty())
+	{
+		for (int i = 0; i < mesh.getTextures().size(); ++i)
+		{
+			Texture tex = mesh.getTextures()[i];
+			//std::cout << tex << std::endl;
+			tex.enable(i);
+			std::string number;
+			if(tex.getType() == TEXTURE_DIFFUSE)
+				number = std::to_string(diffuseTex++);
+
+			//char uniformName[128] = {"material."};
+			char uniformName[128] = {"texture_"};
+			concatStr(uniformName, tex.getType().c_str());
+			concatStr(uniformName, number.c_str());
+			shader.setUniform1i(uniformName, i);
+		}
+
+	}
+
+	//int whichId;
+	//glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &whichId);
+	//std::cout << whichId << std::endl;
+	for (int i = 0; i < shader.getNumAttribs(); i++)
 	{
 		glEnableVertexAttribArray(i);
 		AttribInfo info;
-		if(shader.getAttribInfo(i, &info))
+		if (shader.getAttribInfo(i, &info))
 		{
-			if(strcmp(info.name, "position") == 0)
-				glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, pos));
-			else if(strcmp(info.name, "color") == 0)
-				glVertexAttribPointer(i, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, color));
-			else if(strcmp(info.name, "texCoord") == 0)
-				glVertexAttribPointer(i, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, coords));
-			else if(strcmp(info.name, "normal") == 0)
-				glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, normal));
+			if (strcmp(info.name, "position") == 0)
+				glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+									  (void*) offsetof(Vertex, pos));
+			else if (strcmp(info.name, "color") == 0)
+				glVertexAttribPointer(i, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+									  (void*) offsetof(Vertex, color));
+			else if (strcmp(info.name, "texCoord") == 0)
+				glVertexAttribPointer(i, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+									  (void*) offsetof(Vertex, coords));
+			else if (strcmp(info.name, "normal") == 0)
+				glVertexAttribPointer(i, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+									  (void*) offsetof(Vertex, normal));
 			// TODO: Handle unknown/user defined attribs
 		}
 	}
+
 	mesh.render();
-	for(int i = 0; i < shader.getNumAttribs(); i++)
+	for (int i = 0; i < shader.getNumAttribs(); i++)
 		glDisableVertexAttribArray(i);
 	mesh.disable();
+	//if (!mesh.getTextures().empty())
+	//{
+	//	glActiveTexture(GL_TEXTURE0);
+	//	glBindTexture(GL_TEXTURE_2D, 0);
+	//}
+}
+
+void mage::Renderer::render(mage::Shader& shader, mage::Model& model)
+{
+	for(int i = 0; i < model.getMeshes().size(); i++)
+	{
+		render(shader, *model.getMeshes()[i]);
+	}
 }

@@ -38,4 +38,8 @@ using vec4i = glm::ivec4;
 
 #define SIZE_OF_ARRAY(arr) (sizeof(arr) / sizeof(arr[0]))
 
+
+#define checkGlError() if(glGetError() != GL_NO_ERROR) \
+fprintf(stderr, "OpenGL Error (%i):\n%s\nOccured in %s at line %i\n", glGetError(), glGetString(glGetError()), __FILE__, __LINE__);
+
 #endif //MAGE3D_COMMON_H

@@ -26,6 +26,7 @@
 #include "timer.h"
 #include "input.h"
 #include "camera.h"
+#include "resourcemanager.h"
 
 
 #endif // MAGE3D_CORE_H

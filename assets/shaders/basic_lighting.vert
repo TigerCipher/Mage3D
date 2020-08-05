@@ -21,5 +21,6 @@ void main()
     fragPos = vec3(model * vert);
     fragNormal = mat3(transpose(inverse(model))) * normal;
     fragColor = color;
-    fragTexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
+   fragTexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
+    // fragTexCoord = texCoord;
 }
