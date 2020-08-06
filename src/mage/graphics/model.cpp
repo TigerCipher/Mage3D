@@ -33,7 +33,7 @@ mage::Model::Model(const char* path)
 void mage::Model::loadModel(const char* path)
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate/* | aiProcess_FlipUVs*/);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
 		println(console::RED, "Error while loading model {} -> {}", path, importer.GetErrorString());
@@ -47,9 +47,7 @@ void mage::Model::processNode(aiNode* node, const aiScene* scene)
 	for (uint i = 0; i < node->mNumMeshes; i++)
 	{
 		aiMesh* mesh = scene->mMeshes[ node->mMeshes[ i ] ];
-		std::cout << "Mage mesh creating\n";
 		m_meshes.push_back(processMesh(mesh, scene));
-		std::cout << "Mage mesh added to vector\n";
 	}
 
 	// Rinse and repeat for any child nodes
@@ -124,9 +122,10 @@ mage::Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const cha
 
 mage::Model::~Model()
 {
-	for(int i = 0; i < m_meshes.size(); i++)
+	for(auto & mesh : m_meshes)
 	{
-		if(m_meshes[i]) delete m_meshes[i];
+		// if(mesh) delete mesh; -> according to clang-tidy deleting null ptr has no effect unlike free?
+		delete mesh;
 	}
 }
 

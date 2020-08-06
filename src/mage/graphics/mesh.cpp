@@ -92,8 +92,6 @@ void mage::Mesh::render()
 
 void mage::Mesh::enable()
 {
-	if (m_numVertices == 24 || m_numVertices == 6)
-		printf("ID: %i (verts %i)\n", m_vaoId, m_numVertices);
 	glBindVertexArray(m_vaoId);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);

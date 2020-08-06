@@ -42,7 +42,8 @@ void main()
     vec4 vert = vec4(position, 1.0);
     gl_Position = projection * view * model * vert;
     fragPos = vec3(view * model * vert);
-    fragTexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
+    fragTexCoord = texCoord;
+//    fragTexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
     fragNormal = mat3(normalMatrix) * normal;
     fragLightPos = vec3(view * vec4(lightPos, 1));
 //    fragNormal = normal;

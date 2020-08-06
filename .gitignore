@@ -2,7 +2,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+# *.obj # allow model files. So far obj is the only format ive found that exports at least some texture maps with the mtl file (at least when using blender)
 
 # Precompiled Headers
 *.gch

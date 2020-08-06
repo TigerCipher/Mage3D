@@ -28,15 +28,15 @@ int main(int argc, char** argv)
 
 	// UV coords can't be shared between vertices, so textures don't work properly
 	list<mage::Vertex> testVerts = {
-			mage::Vertex(mage::Position(-0.1f, -1, -0.1f)),
-			mage::Vertex(mage::Position(0.1f, -1, -0.1f)),
-			mage::Vertex(mage::Position(0.1f, -1, 0.1f)),
-			mage::Vertex(mage::Position(-0.1f, -1, 0.1f)),
+			mage::Vertex(mage::Position(-0.1f, -0.1f, -1.1f)),
+			mage::Vertex(mage::Position(0.1f, -0.1f, -1.1f)),
+			mage::Vertex(mage::Position(0.1f, -0.1f, -0.9f)),
+			mage::Vertex(mage::Position(-0.1f, -0.1f, -0.9f)),
 
-			mage::Vertex(mage::Position(-0.1f, -0.8f, -0.1f)),
-			mage::Vertex(mage::Position(0.1f, -0.8f, -0.1f)),
-			mage::Vertex(mage::Position(0.1f, -0.8f, 0.1f)),
-			mage::Vertex(mage::Position(-0.1f, -0.8f, 0.1f)),
+			mage::Vertex(mage::Position(-0.1f, 0.1f, -1.1f)),
+			mage::Vertex(mage::Position(0.1f, 0.1f, -1.1f)),
+			mage::Vertex(mage::Position(0.1f, 0.1f, -0.9f)),
+			mage::Vertex(mage::Position(-0.1f, 0.1f, -0.9f)),
 	};
 
 	list<uint> testInts = {
@@ -156,6 +156,7 @@ int main(int argc, char** argv)
 	mage::Mesh cubeMesh(verts, ints, planeTextures);
 	mage::Model backpack("./assets/models/untitled.obj");
 	mage::Model backpackActual("./assets/models/backpack.obj");
+	mage::Model bricks("./assets/models/bricks.obj");
 
 	vec3f lightPos(0, -0.9f, 0);
 
@@ -175,21 +176,21 @@ int main(int argc, char** argv)
 		display.clear(0, 0, 0);
 		// Render
 
-		shader.enable();
-
-		glm::mat4 rot(1);
-		rot = glm::rotate((float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
-		shader.setUniformMatf("model", rot);
-		shader.setUniformMatf("projection", camera.getProjectionMatrix());
-		shader.setUniformMatf("view", camera.getViewMatrix());
-
-		shader.setUniform3f("lightColor", vec3f(1.0f, 0.5f, 0.7f));
-		shader.setUniform3f("lightPos", lightPos);
-		shader.setUniform3f("viewPos", camera.getPosition());
-
-		renderer.render(shader, cubeMesh);
-
-		shader.disable();
+		//shader.enable();
+		//
+		//glm::mat4 rot(1);
+		//rot = glm::rotate((float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
+		//shader.setUniformMatf("model", rot);
+		//shader.setUniformMatf("projection", camera.getProjectionMatrix());
+		//shader.setUniformMatf("view", camera.getViewMatrix());
+		//
+		//shader.setUniform3f("lightColor", vec3f(1.0f, 0.5f, 0.7f));
+		//shader.setUniform3f("lightPos", lightPos);
+		//shader.setUniform3f("viewPos", camera.getPosition());
+		//
+		//renderer.render(shader, cubeMesh);
+		//
+		//shader.disable();
 
 		//shader.enable();
 		//glm::mat4 plane(1);
@@ -224,18 +225,34 @@ int main(int argc, char** argv)
 		shader3.setUniform3f("lightPos", vec3f(0, 0, -1));
 
 
-		//for (int i = 0; i < backpack.getMeshes().size(); i++)
-		//{
-		//	renderer.render(shader, backpack.getMeshes()[i]);
-		//}
-		//renderer.render(shader, backpack.getMeshes()[0]);
-		// This \/ works...
-		//renderer.render(shader, testModelMesh);
 		renderer.render(shader3, backpackActual);
-		// rendering the backpack doesnt work, despite it rendering the same mesh.. hmmm
 
 		shader3.disable();
-		// Currently doesnt work ;-; makes the plane texture not render either
+
+		shader3.enable();
+
+		glm::mat4 br = glm::translate(glm::mat4(1), vec3f(-4, 0, 0));
+		br = glm::scale(br, glm::vec3(0.5f));
+		//br = glm::rotate(br, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
+		glm::mat4 v2 = glm::transpose(glm::inverse(br * camera.getViewMatrix()));
+		//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
+		shader3.setUniformMatf("model", br);
+		shader3.setUniformMatf("projection", camera.getProjectionMatrix());
+		shader3.setUniformMatf("view", camera.getViewMatrix());
+		shader3.setUniformMatf("normalMatrix", v2);
+		//shader3.setUniform3f("material.ambient", vec3f(1, 0.5f, 0.31f));
+		//shader3.setUniform3f("material.diffuse", vec3f(1, 0.5f, 0.31f));
+		//shader3.setUniform3f("material.specular", vec3f(0.5f, 0.5f, 0.5f));
+		shader3.setUniform1f("material.shininess", 32.0f);
+		shader3.setUniform3f("light.ambient", vec3f(0.1f));
+		shader3.setUniform3f("light.diffuse", vec3f(0.5f));
+		shader3.setUniform3f("light.specular", vec3f(1));
+		shader3.setUniform3f("lightPos", vec3f(0, 0, -1));
+
+
+		renderer.render(shader3, bricks);
+
+		shader3.disable();
 
 		shaderLamp.enable();
 		//glm::mat4 model = glm::translate(glm::mat4(1), lightPos);

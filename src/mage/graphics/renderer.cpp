@@ -97,11 +97,11 @@ void mage::Renderer::render(Shader& shader, Mesh& mesh)
 	for (int i = 0; i < shader.getNumAttribs(); i++)
 		glDisableVertexAttribArray(i);
 	mesh.disable();
-	//if (!mesh.getTextures().empty())
-	//{
-	//	glActiveTexture(GL_TEXTURE0);
-	//	glBindTexture(GL_TEXTURE_2D, 0);
-	//}
+	if (!mesh.getTextures().empty())
+	{
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 }
 
 void mage::Renderer::render(mage::Shader& shader, mage::Model& model)
