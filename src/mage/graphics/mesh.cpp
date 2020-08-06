@@ -48,7 +48,7 @@ mage::Mesh::Mesh(list<Vertex> vertices, list<uint> indices)
 	disable();
 }
 
-mage::Mesh::Mesh(list<mage::Vertex> vertices, list<uint> indices, const list<mage::Texture>& textures):
+mage::Mesh::Mesh(list<mage::Vertex>& vertices, list<uint>& indices, const list<mage::Texture>& textures):
 m_textures(textures),
 m_vertices(vertices),
 m_indices(indices)
@@ -64,7 +64,6 @@ m_indices(indices)
 
 mage::Mesh::~Mesh()
 {
-	printf("DELETING MESH ID %i\n", m_vaoId);
 	glDeleteVertexArrays(1, &m_vaoId);
 	glDeleteBuffers(1, &m_vbo);
 	glDeleteBuffers(1, &m_ebo);
@@ -80,41 +79,6 @@ void mage::Mesh::createBuffers(Vertex vertices[], uint indices[])
 	glGenBuffers(1, &m_ebo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numIndices * sizeof(uint), indices, GL_STATIC_DRAW);
-}
-
-void mage::Mesh::enableAttribPointers()
-{
-	// Currently this requires attrib location 0 to be a vec3 and 1 to be a vec4
-	// Surely there is a way to generalize this?
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(1);
-	glEnableVertexAttribArray(2);
-	glEnableVertexAttribArray(3);
-	// vec3 pos
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, pos));
-	// vec4 color
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, color));
-	// vec2 tex coords
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, coords));
-	// vec3 normal coords
-	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*) offsetof(Vertex, normal));
-
-	// TODO: Perhaps make Mesh a general class, with derived classes for more simple meshes and more advanced?
-	// Not every mesh would need a color or texture or etc. Would also allow the use of shaders that dont require the same input attribs as every other
-	// In fact, the attrib handling is dealt with during rendering, maybe have renderer class take care of it?
-	// Mesh could have some sort of type flag (i.e SIMPLE, NO_TEXTURE, etc etc)
-	// Or maybe it should depend on the shader being used?
-	// i.e could be renderer.render(shader, mesh)
-	// Shader could parse through the glsl code and find the number of "in" types for the vertex shader?
-	// Could also get their name, i.e if the "in" is called 'normal' or 'normalCoords' then we know to use Vertex.normal attrib
-}
-
-void mage::Mesh::disableAttribPointers()
-{
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
-	glDisableVertexAttribArray(2);
-	glDisableVertexAttribArray(3);
 }
 
 void mage::Mesh::render()

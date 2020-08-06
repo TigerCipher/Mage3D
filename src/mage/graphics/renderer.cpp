@@ -44,6 +44,7 @@ void mage::Renderer::render(Shader& shader, Mesh& mesh)
 	//if(mesh.getNumVertices() == 24) std::cout << "Rendering mesh " << mesh << " textures: " << mesh.getTextures().size() << std::endl;
 	// Bind textures
 	int diffuseTex = 1;
+	int specularTex = 1;
 	mesh.enable();
 	if (!mesh.getTextures().empty())
 	{
@@ -55,6 +56,8 @@ void mage::Renderer::render(Shader& shader, Mesh& mesh)
 			std::string number;
 			if(tex.getType() == TEXTURE_DIFFUSE)
 				number = std::to_string(diffuseTex++);
+			if(tex.getType() == TEXTURE_SPECULAR);
+			number = std::to_string(specularTex++);
 
 			//char uniformName[128] = {"material."};
 			char uniformName[128] = {"texture_"};

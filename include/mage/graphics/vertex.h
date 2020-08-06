@@ -143,6 +143,10 @@ namespace mage
 			normal.z = z;
 		}
 
+		vec3f posVec() { return vec3f(pos.x, pos.y, pos.z); }
+		vec2f texCoordsVec() { return vec2f(coords.u, coords.v); }
+		vec3f normalVec() { return vec3f(normal.x, normal.y, normal.z); }
+
 
 		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex)
 		{

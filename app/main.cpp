@@ -148,6 +148,7 @@ int main(int argc, char** argv)
 
 	mage::Shader shader("./assets/shaders/basic_lighting");
 	mage::Shader shader2("./assets/shaders/basic_lighting.vert", "./assets/shaders/basic_model.frag");
+	mage::Shader shader3("./assets/shaders/lighting");
 	mage::Shader shaderLamp("./assets/shaders/basic");
 	mage::Texture texture("./assets/textures/default.png");
 	list<mage::Texture> planeTextures = { texture };
@@ -155,24 +156,10 @@ int main(int argc, char** argv)
 	mage::Mesh cubeMesh(verts, ints, planeTextures);
 	mage::Model backpack("./assets/models/untitled.obj");
 	mage::Model backpackActual("./assets/models/backpack.obj");
-	mage::Mesh testModelMesh(backpack.getMeshes()[ 0 ]->getVertices(), backpack.getMeshes()[ 0 ]->getIndices(),
-							 backpack.getMeshes()[ 0 ]->getTextures());
-	std::cout << testModelMesh << std::endl; // 4
-	std::cout << cubeMesh << std::endl; // 3
-	//std::cout << planeMesh << std::endl; // 2
-	std::cout << lampMesh << std::endl; // 1
-	std::cout << backpack.getMeshes()[0] << std::endl; // 2
-	//for (int i = 0; i < backpack.getMeshes().size(); i++)
-	//{
-	//	for (int j = 0; j < backpack.getMeshes()[ i ].getVertices().size(); j++)
-	//	{
-	//		std::cout << i << " : " << j << "  ->   " << backpack.getMeshes()[ i ].getVertices()[ j ]
-	//				  << std::endl;
-	//	}
-	//}
-
 
 	vec3f lightPos(0, -0.9f, 0);
+
+
 
 	mage::Timer timer;
 	int frames = 0;
@@ -217,17 +204,25 @@ int main(int argc, char** argv)
 		//shader.disable();
 
 
-		shader.enable();
+		shader3.enable();
 
 		glm::mat4 bp = glm::scale(glm::mat4(1), glm::vec3(1));
 		bp = glm::translate(bp, vec3f(0, 0, -4));
+		glm::mat4 v = glm::transpose(glm::inverse(bp * camera.getViewMatrix()));
 		//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
-		shader.setUniformMatf("model", bp);
-		shader.setUniformMatf("projection", camera.getProjectionMatrix());
-		shader.setUniformMatf("view", camera.getViewMatrix());
-		shader.setUniform3f("lightColor", vec3f(1.0f, 0.5f, 0.7f));
-		shader.setUniform3f("lightPos", lightPos);
-		shader.setUniform3f("viewPos", camera.getPosition());
+		shader3.setUniformMatf("model", bp);
+		shader3.setUniformMatf("projection", camera.getProjectionMatrix());
+		shader3.setUniformMatf("view", camera.getViewMatrix());
+		shader3.setUniformMatf("normalMatrix", v);
+		shader3.setUniform3f("material.ambient", vec3f(1, 0.5f, 0.31f));
+		shader3.setUniform3f("material.diffuse", vec3f(1, 0.5f, 0.31f));
+		shader3.setUniform3f("material.specular", vec3f(0.5f, 0.5f, 0.5f));
+		shader3.setUniform1f("material.shininess", 32.0f);
+		shader3.setUniform3f("light.ambient", vec3f(0.2f));
+		shader3.setUniform3f("light.diffuse", vec3f(0.5f));
+		shader3.setUniform3f("light.specular", vec3f(1));
+		shader3.setUniform3f("lightPos", vec3f(0, 0, -1));
+
 
 		//for (int i = 0; i < backpack.getMeshes().size(); i++)
 		//{
@@ -236,10 +231,10 @@ int main(int argc, char** argv)
 		//renderer.render(shader, backpack.getMeshes()[0]);
 		// This \/ works...
 		//renderer.render(shader, testModelMesh);
-		renderer.render(shader, backpackActual);
+		renderer.render(shader3, backpackActual);
 		// rendering the backpack doesnt work, despite it rendering the same mesh.. hmmm
 
-		shader.disable();
+		shader3.disable();
 		// Currently doesnt work ;-; makes the plane texture not render either
 
 		shaderLamp.enable();
