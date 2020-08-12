@@ -26,6 +26,7 @@
 #include "mesh.h"
 #include "model.h"
 #include "shader.h"
+#include "material.h"
 
 namespace mage
 {
@@ -37,7 +38,9 @@ namespace mage
 		mage3d_EXPORT ~Renderer() { }
 
 		mage3d_EXPORT void render(Shader& shader, Mesh& mesh);
+		mage3d_EXPORT void render(Shader& shader, Mesh& mesh, const Material& material);
 		mage3d_EXPORT void render(Shader& shader, Model& model);
+		mage3d_EXPORT void render(Shader& shader, Model& model, const Material& material);
 
 		mage3d_EXPORT void draw(Mesh* mesh);
 

@@ -39,7 +39,7 @@
 #define BMD_TYPES_H
 
 #include <stdint.h>
-#include <vector>
+
 // A lot of stuff is currently only functional for C++ so might as well add some of my common
 // C++ typedefs and whatnot until I have time to make everything compatible for C
 
@@ -60,8 +60,6 @@ typedef uint16_t uint16_f; // unsigned short
 typedef uint32_t uint32_f; // unsigned int
 typedef uint64_t uint64_f; // unsigned long long
 
-// A byte is traditionally 0-255, but there is no byte type in C/C++. Closest thing is char which goes to 127
-//typedef char byte;
 typedef unsigned char ubyte;
 typedef signed char sbyte;
 
@@ -70,7 +68,7 @@ typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef unsigned long ulong;
 typedef unsigned long long ulonglong;
-// TODO: Need to check, but 'long long' might be C++ only and not C?
+
 
 // If my understanding is correct, these aren't necessarily fixed like uint#_t
 typedef unsigned char uint8;
@@ -103,8 +101,11 @@ typedef long double flt96;
 
 // Because I use "Lists" in Java more than I use vectors in C++,
 // this is just simply a small rewrite of the vector for quality of life sake
+#ifdef __cplusplus
+#include <vector>
  template<class T>
  using list = std::vector<T>;
+#endif // __cplusplus
 // ignoring this for now unless it happens that functions I really want in this library just aren't possible in C
 
 #endif //BMD_TYPES_H

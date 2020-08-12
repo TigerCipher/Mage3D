@@ -22,27 +22,44 @@
 #ifndef BMD_COMMON_H
 #define BMD_COMMON_H
 
+#include <stdio.h>
+#include <assert.h>
+#include <errno.h>
 
-#ifndef DEBUGGING
-	#define DEBUGGING 1
-#endif // DEBUGGING
+#ifndef BMD_DEBUGGING
+	#define BMD_DEBUGGING 0
+#endif // BMD_DEBUGGING
 
 
 #ifndef BMD_VERBOSE
 	#define BMD_VERBOSE 0
 #endif // BMD_VERBOSE
 
-// If DEBUGGING is 1
-#if DEBUGGING || BMD_VERBOSE
 
-#include <stdio.h>
-#include <assert.h>
-#include <errno.h>
-
+#if BMD_DEBUGGING || BMD_VERBOSE
 #define BMD_ASSERT assert
 #else
-// If DEBUGGING is disabled (not 1) then don't use assert
+// If BMD_DEBUGGING is disabled (not 1) then don't use assert
 #define BMD_ASSERT(...)
-#endif // DEBUGGING
+#endif // BMD_DEBUGGING || BMD_VERBOSE
+
+
+#if BMD_DEBUGGING
+	#define dbgprintln(fmt_, ...) printf(fmt_"\n", ##__VA_ARGS__)
+	#define dbgprint(fmt_, ...) printf(fmt_, ##__VA_ARGS__)
+	#define dbgprinterr(fmt_, ...) fprintf(stderr, fmt_, ##__VA_ARGS__)
+#else
+	#define dbgprintln(...)
+	#define dbgprint(...)
+	#define dbgprinterr(...)
+#endif
+
+#ifdef __cplusplus
+	#define VOID_TO_CHAR (char*)
+	#define VOID_TO_INT (int*)
+#else
+	#define VOID_TO_CHAR
+	#define VOID_TO_INT
+#endif
 
 #endif //BMD_COMMON_H

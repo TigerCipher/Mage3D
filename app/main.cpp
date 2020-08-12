@@ -23,6 +23,10 @@
 #include <glm/gtx/transform.hpp>
 #include <iostream>
 
+#define BMD_PROFILE 1
+
+#include <bmd/profiler.h>
+
 int main(int argc, char** argv)
 {
 
@@ -155,11 +159,51 @@ int main(int argc, char** argv)
 	//mage::Mesh planeMesh(planeVerts, planeInts, planeTextures);
 	mage::Mesh cubeMesh(verts, ints, planeTextures);
 	mage::Model backpack("./assets/models/untitled.obj");
+	PROFILER_START("backpack loading");
 	mage::Model backpackActual("./assets/models/backpack.obj");
+	PROFILER_END;
+
+	PROFILER_START("printf");
+	printf("This is a %s formatted string with %f floats %i ints and even %p pointers!\n", "test", 34.03f, 3,
+		   &texture);
+	PROFILER_END;
+
+	PROFILER_START("fmt::print");
+	fmt::print("This is a {} formatted string with {} floats {} ints and even {} pointers!\n", "test", 34.03f,
+			   3, "ptrs dnt work with fmt sadly");
+	PROFILER_END;
+
+	PROFILER_START("std::cout no endl");
+	std::cout << "This is a " << "test" << " formatted string with " << 34.03f << " floats " << 3 << " ints and even " << &texture << " pointers!\n";
+	PROFILER_END;
+
+	PROFILER_START("mage::println");
+	mage::println(mage::console::CYAN, "This is a {} formatted string with {} floats {} ints and even {} pointers!\n", "test", 34.03f,
+			   3, "ptrs dnt work with fmt sadly");
+	PROFILER_END;
+
+	// printf > fmt::print > fmt/mage println with color > cout
+
+
+	mage::Material brickMaterial = {
+			new mage::Texture("./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE),
+			new mage::Texture("./assets/textures/bricks_specular.png", TEXTURE_SPECULAR),
+			nullptr,
+			//new mage::Texture("./assets/textures/bricks_emission.png", "emission"),
+			32.0f
+	};
+
+	mage::Material backpackMat = {
+			new mage::Texture("./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE),
+			new mage::Texture("./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR),
+			nullptr,
+			32.0f
+	};
+
+
 	mage::Model bricks("./assets/models/bricks.obj");
 
 	vec3f lightPos(0, -0.9f, 0);
-
 
 
 	mage::Timer timer;
@@ -169,7 +213,7 @@ int main(int argc, char** argv)
 	{
 		timer.update();
 
-		if (input.keyPressed(GLFW_KEY_ESCAPE))
+		if (input.keyPressed(KEY_ESCAPE))
 			display.toggleCursor();
 
 		camera.update(input, timer.delta());
@@ -204,29 +248,27 @@ int main(int argc, char** argv)
 		//renderer.render(shader, planeMesh);
 		//shader.disable();
 
-
 		shader3.enable();
 
-		glm::mat4 bp = glm::scale(glm::mat4(1), glm::vec3(1));
-		bp = glm::translate(bp, vec3f(0, 0, -4));
-		glm::mat4 v = glm::transpose(glm::inverse(bp * camera.getViewMatrix()));
-		//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
-		shader3.setUniformMatf("model", bp);
-		shader3.setUniformMatf("projection", camera.getProjectionMatrix());
-		shader3.setUniformMatf("view", camera.getViewMatrix());
-		shader3.setUniformMatf("normalMatrix", v);
-		shader3.setUniform3f("material.ambient", vec3f(1, 0.5f, 0.31f));
-		shader3.setUniform3f("material.diffuse", vec3f(1, 0.5f, 0.31f));
-		shader3.setUniform3f("material.specular", vec3f(0.5f, 0.5f, 0.5f));
-		shader3.setUniform1f("material.shininess", 32.0f);
-		shader3.setUniform3f("light.ambient", vec3f(0.2f));
-		shader3.setUniform3f("light.diffuse", vec3f(0.5f));
-		shader3.setUniform3f("light.specular", vec3f(1));
-		shader3.setUniform3f("lightPos", vec3f(0, 0, -1));
+		for (int i = 0; i < 20; i++)
+		{
+			glm::mat4 bp = glm::scale(glm::mat4(1), glm::vec3(1));
+			float x = (float) i * 3.5f;
+			bp = glm::translate(bp, vec3f(x, 0, -4));
+			glm::mat4 v = glm::transpose(glm::inverse(bp * camera.getViewMatrix()));
+			//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
+			shader3.setUniformMatf("model", bp);
+			shader3.setUniformMatf("projection", camera.getProjectionMatrix());
+			shader3.setUniformMatf("view", camera.getViewMatrix());
+			shader3.setUniformMatf("normalMatrix", v);
+			shader3.setUniform3f("light.ambient", vec3f(0.1f));
+			shader3.setUniform3f("light.diffuse", vec3f(0.5f));
+			shader3.setUniform3f("light.specular", vec3f(1));
+			shader3.setUniform3f("lightPos", vec3f(0, 0, -1));
 
 
-		renderer.render(shader3, backpackActual);
-
+			renderer.render(shader3, backpackActual, backpackMat);
+		}
 		shader3.disable();
 
 		shader3.enable();
@@ -236,6 +278,8 @@ int main(int argc, char** argv)
 		//br = glm::rotate(br, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
 		glm::mat4 v2 = glm::transpose(glm::inverse(br * camera.getViewMatrix()));
 		//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
+
+		//TODO This can probably be put under some form a transformation class/struct
 		shader3.setUniformMatf("model", br);
 		shader3.setUniformMatf("projection", camera.getProjectionMatrix());
 		shader3.setUniformMatf("view", camera.getViewMatrix());
@@ -243,24 +287,25 @@ int main(int argc, char** argv)
 		//shader3.setUniform3f("material.ambient", vec3f(1, 0.5f, 0.31f));
 		//shader3.setUniform3f("material.diffuse", vec3f(1, 0.5f, 0.31f));
 		//shader3.setUniform3f("material.specular", vec3f(0.5f, 0.5f, 0.5f));
-		shader3.setUniform1f("material.shininess", 32.0f);
+		//shader3.setUniform1f("material.shininess", 32.0f);
+		// TODO This should be under a light struct/class
 		shader3.setUniform3f("light.ambient", vec3f(0.1f));
 		shader3.setUniform3f("light.diffuse", vec3f(0.5f));
 		shader3.setUniform3f("light.specular", vec3f(1));
 		shader3.setUniform3f("lightPos", vec3f(0, 0, -1));
 
 
-		renderer.render(shader3, bricks);
+		renderer.render(shader3, bricks, brickMaterial);
 
 		shader3.disable();
 
 		shaderLamp.enable();
-		//glm::mat4 model = glm::translate(glm::mat4(1), lightPos);
-		shaderLamp.setUniformMatf("model", glm::mat4(1));
+		glm::mat4 lampModel = glm::scale(glm::mat4(1), vec3f(0.1f));
+		shaderLamp.setUniformMatf("model", lampModel);
 		shaderLamp.setUniformMatf("projection", camera.getProjectionMatrix());
 		shaderLamp.setUniformMatf("view", camera.getViewMatrix());
 
-		renderer.render(shaderLamp, lampMesh);
+		renderer.render(shaderLamp, bricks);
 
 		shaderLamp.disable();
 
@@ -270,7 +315,7 @@ int main(int argc, char** argv)
 		//	mage::println(mage::console::BRIGHT_BLUE, "C key was pressed!");
 		//if(input.keyReleased(GLFW_KEY_C))
 		//	mage::println(mage::console::BRIGHT_BLUE, "C key was released!");
-		if (input.mouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+		if (input.mouseButtonPressed(MOUSE_BUTTON_LEFT))
 		{
 			mage::println(mage::console::BRIGHT_BLUE, "Mouse pos: ({}, {})", input.getMouseX(),
 						  input.getMouseY());
@@ -288,7 +333,8 @@ int main(int argc, char** argv)
 		{
 			double fps = frames / elapsed;
 			mage::println(mage::console::BRIGHT_YELLOW, "Average FPS: {} | Precise: {}", frames, fps);
-			std::string newTitle = fmt::format("{}{:.{}f}", "Mage3D Testing -- FPS: ", fps, 4);
+			mage::println(mage::console::BRIGHT_CYAN, "Delta: {}", timer.delta());
+			std::string newTitle = fmt::format("{}{:.4f}", "Mage3D Testing -- FPS: ", fps);
 			const char* newTitleCstr = newTitle.c_str();
 			display.setTitle(newTitleCstr);
 			frames = 0;

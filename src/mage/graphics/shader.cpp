@@ -77,6 +77,7 @@ GLuint mage::Shader::load()
 		print(console::RED, "Error while compiling vertex shader [{}]\nError: {}\n", m_vertFile.path,
 			  &error[ 0 ]);
 		glDeleteShader(vertex);
+		exit(-1);
 		return 0;
 	}
 
@@ -92,6 +93,7 @@ GLuint mage::Shader::load()
 		print(console::RED, "Error while compiling fragment shader [{}]\nError: {}\n", m_fragFile.path,
 			  &error[ 0 ]);
 		glDeleteShader(fragment);
+		exit(-1);
 		return 0;
 	}
 
@@ -111,6 +113,7 @@ GLuint mage::Shader::load()
 		glDeleteProgram(program);
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);
+		exit(-1);
 		return 0;
 	}
 

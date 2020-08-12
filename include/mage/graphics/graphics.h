@@ -28,5 +28,6 @@
 #include "vertex.h"
 #include "texture.h"
 #include "model.h"
+#include "material.h"
 
 #endif //MAGE3D_GRAPHICS_H

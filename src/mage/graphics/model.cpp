@@ -61,7 +61,7 @@ mage::Mesh* mage::Model::processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	list<Vertex> vertices;
 	list<uint> indices;
-	list<Texture> textures;
+	//list<Texture> textures;
 
 	// Fill out Vertex struct
 	for (uint i = 0; i < mesh->mNumVertices; i++)
@@ -85,21 +85,21 @@ mage::Mesh* mage::Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 
 	// Get the material/textures
-	if (mesh->mMaterialIndex >= 0)
-	{
-		aiMaterial* mat = scene->mMaterials[ mesh->mMaterialIndex ];
-		list<Texture> diffuseMaps = loadMaterialTextures(mat, aiTextureType_DIFFUSE, TEXTURE_DIFFUSE);
-		for (const auto& item : diffuseMaps)
-		{
-			textures.push_back(item);
-		}
-		list<Texture> specularMaps = loadMaterialTextures(mat, aiTextureType_SPECULAR, TEXTURE_SPECULAR);
-		for (const auto& item : specularMaps)
-		{
-			textures.push_back(item);
-		}
-	}
-	return new Mesh(vertices, indices, textures);
+	//if (mesh->mMaterialIndex >= 0)
+	//{
+	//	aiMaterial* mat = scene->mMaterials[ mesh->mMaterialIndex ];
+	//	list<Texture> diffuseMaps = loadMaterialTextures(mat, aiTextureType_DIFFUSE, TEXTURE_DIFFUSE);
+	//	for (const auto& item : diffuseMaps)
+	//	{
+	//		textures.push_back(item);
+	//	}
+	//	list<Texture> specularMaps = loadMaterialTextures(mat, aiTextureType_SPECULAR, TEXTURE_SPECULAR);
+	//	for (const auto& item : specularMaps)
+	//	{
+	//		textures.push_back(item);
+	//	}
+	//}
+	return new Mesh(vertices, indices);
 }
 
 #include <iostream>
@@ -122,7 +122,7 @@ mage::Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const cha
 
 mage::Model::~Model()
 {
-	for(auto & mesh : m_meshes)
+	for (auto& mesh : m_meshes)
 	{
 		// if(mesh) delete mesh; -> according to clang-tidy deleting null ptr has no effect unlike free?
 		delete mesh;

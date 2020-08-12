@@ -32,17 +32,8 @@
 * With the exception of NULL_TERMINATING_CHAR as \0 marks the end of a char array regardless of OS/compiler
 */
 
-#include "bmd/types.h"
-
-
-/**
-* The callback function pointer of type T that gets called by getLength to determine if the value
-* has reached a null terminating point
-*/
-template<typename T>
-using length_callback = int (const T* arr);
-
-
+#include "types.h"
+#include <math.h>
 
 /**
 * A proper char array is ended by the null character \0 (int 0).
@@ -142,18 +133,9 @@ using length_callback = int (const T* arr);
 // so doesn't look like we can support that
 // Though at some point it reaches '-nan' maybe that can be detected and return -1 as the size?
 
-/**
-* Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
-*
-* It should be noted that this is not 100% foolproof and only works if the defined null terminating values are not values in the array.
-* In addition, compilers allocate memory in different ways, so the default null terminating values may not be correct for your compiler
-* @tparam T The type of data stored in the array
-* @param arr The array
-* @param lcb The length_callback function pointer to be called when checking for the null terminating value
-* @return The possible length of the array, or -1 if it could not be estimated or if the array was null
-*/
-template<typename T>
-extern int getLength(const T* arr, length_callback<T> lcb);
+#ifdef __cplusplus
+extern "C" {
+#endif // __cplusplus
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -163,7 +145,7 @@ extern int getLength(const T* arr, length_callback<T> lcb);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const char* arr);
+int getLength_c(const char* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -173,7 +155,7 @@ extern int getLength(const char* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const short* arr);
+int getLength_s(const short* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -183,7 +165,7 @@ extern int getLength(const short* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const int* arr);
+int getLength_i(const int* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -193,7 +175,7 @@ extern int getLength(const int* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const long* arr);
+int getLength_l(const long* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -203,7 +185,7 @@ extern int getLength(const long* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const long long* arr);
+int getLength_ll(const long long* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -213,7 +195,7 @@ extern int getLength(const long long* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const uchar* arr);
+int getLength_uc(const uchar* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -223,7 +205,7 @@ extern int getLength(const uchar* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const ushort* arr);
+int getLength_us(const ushort* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -233,7 +215,7 @@ extern int getLength(const ushort* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const uint* arr);
+int getLength_ui(const uint* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -243,7 +225,7 @@ extern int getLength(const uint* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const ulong* arr);
+int getLength_ul(const ulong* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -253,7 +235,7 @@ extern int getLength(const ulong* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const ulonglong* arr);
+int getLength_ull(const ulonglong* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -263,7 +245,7 @@ extern int getLength(const ulonglong* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const flt32* arr);
+int getLength_f(const flt32* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -273,7 +255,7 @@ extern int getLength(const flt32* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const flt64* arr);
+int getLength_d(const flt64* arr);
 
 /**
 * Attempts to retrieve the length of an array, even if its been decayed to a pointer by being passed as a function parameter.
@@ -283,7 +265,201 @@ extern int getLength(const flt64* arr);
 * @param arr The array
 * @return The possible length of the array, or -1 if it could not be estimated or if the array was null
 */
-extern int getLength(const flt96* arr);
+int getLength_ld(const flt96* arr);
+
+#ifdef __cplusplus
+};
+#endif // __cplusplus
+
+
+#ifdef BMD_HEADERS_ONLY
+	#ifndef BMD_ARRAYS_IMPL
+		#define BMD_ARRAYS_IMPL
+#include <math.h>
+
+int getLength_c(const char* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_s(const short* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr != NULL_TERMINATING_SHORT && *arr != NULL_TERMINATING_SHORT_NEW)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_i(const int* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr != NULL_TERMINATING_INT && *arr != NULL_TERMINATING_INT_NEW)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_l(const long* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr != NULL_TERMINATING_LONG && *arr != NULL_TERMINATING_LONG_NEW)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_ll(const long long* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr != NULL_TERMINATING_LONG_LONG && *arr != NULL_TERMINATING_LONG_LONG_NEW)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_uc(const uchar* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_us(const ushort* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr > 0)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_ui(const uint* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr > 0)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_ul(const ulong* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr > 0)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_ull(const ulonglong* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr > 0)
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_f(const flt32* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr != NULL_TERMINATING_FLOAT && *arr != NULL_TERMINATING_FLOAT_NEW && !isnan(*arr))
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_d(const flt64* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr != NULL_TERMINATING_DOUBLE && !isnan(*arr))
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+
+int getLength_ld(const flt96* arr)
+{
+	if (!arr) return -1;
+	int n = 0;
+
+	while (*arr != NULL_TERMINATING_LONG_DOUBLE && !isnan(*arr))
+	{
+		arr++;
+		n++;
+	}
+
+	return n;
+}
+	#endif
+#endif
 
 
 #endif //BMD_ARRAYS_H

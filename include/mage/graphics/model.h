@@ -26,6 +26,7 @@
 #include "mage3d_exported.h"
 #include "mage/common.h"
 #include "mesh.h"
+#include "material.h"
 
 #include <string>
 #include <assimp/Importer.hpp>
@@ -38,11 +39,13 @@ namespace mage
 	class Model
 	{
 	public:
-		mage3d_EXPORT Model(const char* path);
+		mage3d_EXPORT explicit Model(const char* path);
 
 		mage3d_EXPORT ~Model();
 
 		list<Mesh*> getMeshes() { return m_meshes; }
+
+		//list<Material> getMaterials() { return m_materials; }
 
 	private:
 
@@ -52,6 +55,7 @@ namespace mage
 		list<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const char* typeName);
 
 		list<Mesh*> m_meshes;
+		//list<Material> m_materials;
 	};
 
 }

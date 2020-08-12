@@ -30,16 +30,15 @@ in vec3 fragLightPos;
 
 struct Material
 {
-    // just keeping these here for now cuz im too lazy and tired rn to remove the uniform setting in main.cpp
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
+    sampler2D texture_diffuse;
+    sampler2D texture_specular;
+    sampler2D texture_emission;
     float shininess;
 };
 
 struct Light
 {
-    //vec3 position;
+//vec3 position;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -48,25 +47,25 @@ struct Light
 uniform Material material;
 uniform Light light;
 
-// Might make more sense to make texture maps part of the material?
-uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_specular1;
 
 void main()
 {
-    vec3 ambient = light.ambient * vec3(texture(texture_diffuse1, fragTexCoord));
+    vec3 emission = vec3(texture(material.texture_emission, fragTexCoord));
+    vec3 ambient = vec3(texture(material.texture_diffuse, fragTexCoord)) * light.ambient;
 
     vec3 norm = normalize(fragNormal);
     vec3 lightToObj = normalize(fragLightPos - fragPos);
 
     float diff = max(dot(norm, lightToObj), 0);
-    vec3 diffuse = light.diffuse * diff * vec3(texture(texture_diffuse1, fragTexCoord));
+    vec3 diffuse = light.diffuse * vec3(texture(material.texture_diffuse, fragTexCoord)) * diff;
 
     vec3 viewDir = normalize(-fragPos);
     vec3 reflectDir = reflect(-lightToObj, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0), material.shininess);
-    vec3 specular = light.specular * spec * vec3(texture(texture_specular1, fragTexCoord));
+    vec3 specular = light.specular * spec * vec3(texture(material.texture_specular, fragTexCoord));
 
-    vec3 result = (ambient + diffuse + specular);
+
+
+    vec3 result = (ambient + diffuse + specular + emission);
     color = vec4(result, 1.0);
 }

@@ -14,31 +14,24 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: platform.h
- * Date File Created: 7/29/2020 at 10:26 PM
+ * File Name: core.h
+ * Date File Created: 8/10/2020 at 11:07 PM
  * Author: Matt
  */
 
-#ifndef BMD_PLATFORM_H
-#define BMD_PLATFORM_H
+#ifndef BMD_CORE_H
+#define BMD_CORE_H
 
-#if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64) || defined(_WINDOWS) || defined(__WIN32__) || defined(__WINDOWS__) || defined(__TOS_WIN__)
-#define OS_NAME "Windows"
-	#if defined(WIN64) || defined(_WIN64)
-		#define OS_WINDOWS_64
-	#endif
-#define OS_WINDOWS
 
-#elif defined(macintosh) || defined(Macintosh) || defined(__APPLE__) || defined(__MACH__)
-#define OS_NAME "Apple"
-#define OS_APPLE
+#include "platform.h"
+#include "common.h"
+#include "types.h"
+#include "arrays.h"
+#include "errors.h"
+#include "logger.h"
+#include "files.h"
+#include "strutil.h"
+#include "timer.h"
+#include "profiler.h"
 
-#elif defined(__unix__) || defined(__unix) || defined(__linux__) || defined(linux) || defined(__linux)
-#define OS_NAME "Unix"
-#define OS_UNIX
-#else
-#define OS_NAME "Other"
-#define OS_OTHER
-#endif // OS Check
-
-#endif //MAGE3D_PLATFORM_H
+#endif //BMD_CORE_H

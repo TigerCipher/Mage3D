@@ -33,6 +33,11 @@
 
 #define TEXTURE_DIFFUSE "diffuse"
 #define TEXTURE_SPECULAR "specular"
+#define TEXTURE_EMISSION "emission"
+
+#define TEXTURE_DEFAULT_DIFFUSE "./assets/textures/defaults/default_diffuse.png"
+#define TEXTURE_DEFAULT_SPECULAR "./assets/textures/defaults/default_specular.png"
+#define TEXTURE_DEFAULT_EMISSION "./assets/textures/defaults/default_emission.png"
 
 namespace mage
 {
@@ -44,13 +49,13 @@ namespace mage
 		mage3d_EXPORT virtual ~TextureData();
 
 		mage3d_EXPORT void bind(int textureNum);
-		mage3d_EXPORT int getWidth() { return m_width; }
-		mage3d_EXPORT int getHeight() { return m_height; }
+		mage3d_EXPORT int getWidth() const { return m_width; }
+		mage3d_EXPORT int getHeight() const { return m_height; }
 
 		friend std::ostream& operator<<(std::ostream& os, const TextureData& data);
 
 	private:
-		TextureData(TextureData& other) { }
+		TextureData(TextureData& other)  : ResourceManager(other) { }
 		void operator=(TextureData& other) { }
 
 		GLenum m_textureTarget;
@@ -64,14 +69,14 @@ namespace mage
 	{
 	public:
 		mage3d_EXPORT Texture();
-		mage3d_EXPORT Texture(const char* filePath);
+		mage3d_EXPORT explicit Texture(const char* filePath);
 		mage3d_EXPORT Texture(const char* filePath, const char* type);
 		mage3d_EXPORT ~Texture();
 
 		mage3d_EXPORT void enable(uint slot);
 		mage3d_EXPORT void disable(uint slot);
 
-		mage3d_EXPORT const std::string getType() { return m_type; }
+		mage3d_EXPORT std::string getType() { return m_type; }
 
 		friend std::ostream& operator<<(std::ostream& os, const Texture& texture);
 
@@ -79,8 +84,8 @@ namespace mage
 	private:
 
 		void load(const char* filePath);
-		const std::string m_filePath;
-		const std::string m_type;
+		std::string m_filePath;
+		std::string m_type;
 
 		TextureData* m_textureData;
 

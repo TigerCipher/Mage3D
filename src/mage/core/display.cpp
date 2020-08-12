@@ -55,7 +55,6 @@ void mage::Display::update() const
 
 void mage::Display::clear() const
 {
-	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
@@ -165,6 +164,14 @@ int mage::Display::init()
 
 	print(console::YELLOW, "OpenGL {}\n", glGetString(GL_VERSION));
 	glEnable(GL_DEBUG_OUTPUT);
+	// TODO some models might need different culling
+	glFrontFace(GL_CW);
+	glCullFace(GL_FRONT);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_CLAMP);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glDebugMessageCallback(debugCallback, 0);
 	return 1;
 }
