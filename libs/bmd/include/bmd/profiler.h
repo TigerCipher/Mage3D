@@ -28,8 +28,16 @@
 
 #include "timer.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 void start_profiler_internal(const char* name);
 void stop_profiler_internal();
+
+#ifdef __cplusplus
+};
+#endif
 
 #ifdef __cplusplus
 

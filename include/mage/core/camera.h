@@ -28,6 +28,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <mage/common.h>
 
 #define YAW -90.0f
 #define PITCH 0.0f

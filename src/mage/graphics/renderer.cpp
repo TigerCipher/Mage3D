@@ -123,8 +123,7 @@ void mage::Renderer::render(mage::Shader& shader, mage::Mesh& mesh, const mage::
 		diffuse = material.diffuse;
 		material.diffuse->enable(0);
 	}else{
-		Texture dif(TEXTURE_DEFAULT_DIFFUSE, TEXTURE_DIFFUSE);
-		diffuse = &dif;
+		diffuse = m_defaultDiffuse;
 		diffuse->enable(0);
 	}
 	shader.setUniform1i("material.texture_diffuse", 0);
@@ -134,8 +133,7 @@ void mage::Renderer::render(mage::Shader& shader, mage::Mesh& mesh, const mage::
 		specular = material.specular;
 		material.specular->enable(1);
 	}else{
-		Texture spec(TEXTURE_DEFAULT_SPECULAR, TEXTURE_SPECULAR);
-		specular = &spec;
+		specular = m_defaultSpecular;
 		specular->enable(1);
 	}
 	shader.setUniform1i("material.texture_specular", 1);
@@ -145,8 +143,7 @@ void mage::Renderer::render(mage::Shader& shader, mage::Mesh& mesh, const mage::
 		emission = material.emission;
 		material.emission->enable(2);
 	}else{
-		Texture emis(TEXTURE_DEFAULT_EMISSION, TEXTURE_EMISSION);
-		emission = &emis;
+		emission = m_defaultEmission;
 		emission->enable(2);
 	}
 	shader.setUniform1i("material.texture_emission", 2);

@@ -20,15 +20,14 @@
  */
 
 #include "mage/graphics/shader.h"
-#include "mage/core/stdcolor.h"
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
 #include <bmd/strutil.h>
 #include <algorithm>
+#include <mage/common.h>
 
 mage::Shader::Shader(const char* basePath)
 {
-	println(console::RED, "Loading shader file {}", basePath);
 	char fragPath[MAX_PATH_LENGTH] = { };
 	char vertPath[MAX_PATH_LENGTH] = { };
 	copyStr(vertPath, basePath);
@@ -49,6 +48,8 @@ mage::Shader::Shader(const char* vertPath, const char* fragPath)
 
 mage::Shader::~Shader()
 {
+	DBGPRINT("Unloading shader file %s", m_vertFile.path);
+	DBGPRINT("Unloading shader file %s", m_fragFile.path);
 	glDeleteProgram(m_id);
 }
 
@@ -64,6 +65,7 @@ GLuint mage::Shader::load()
 	GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
 
 
+	DBGPRINT("Loading shader file %s", m_vertFile.path);
 	glShaderSource(vertex, 1, &m_vertFile.contents, NULL);
 	glCompileShader(vertex);
 	GLint success;
@@ -74,13 +76,14 @@ GLuint mage::Shader::load()
 		glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetShaderInfoLog(vertex, len, &len, &error[ 0 ]);
-		print(console::RED, "Error while compiling vertex shader [{}]\nError: {}\n", m_vertFile.path,
+		DBGPRINT_ERR("Error while compiling vertex shader [%s]\nError: %s", m_vertFile.path,
 			  &error[ 0 ]);
 		glDeleteShader(vertex);
 		exit(-1);
 		return 0;
 	}
 
+	DBGPRINT("Loading shader file %s", m_fragFile.path);
 	glShaderSource(fragment, 1, &m_fragFile.contents, NULL);
 	glCompileShader(fragment);
 	glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
@@ -90,7 +93,7 @@ GLuint mage::Shader::load()
 		glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetShaderInfoLog(fragment, len, &len, &error[ 0 ]);
-		print(console::RED, "Error while compiling fragment shader [{}]\nError: {}\n", m_fragFile.path,
+		DBGPRINT_ERR("Error while compiling fragment shader [%s]\nError: %s", m_fragFile.path,
 			  &error[ 0 ]);
 		glDeleteShader(fragment);
 		exit(-1);
@@ -109,7 +112,7 @@ GLuint mage::Shader::load()
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
 		std::vector<char> error(len);
 		glGetProgramInfoLog(program, len, &len, &error[ 0 ]);
-		print(console::RED, "Error while linking shader program\nError: {}\n", &error[ 0 ]);
+		DBGPRINT_ERR("Error while linking shader program\nError: %s\n", &error[ 0 ]);
 		glDeleteProgram(program);
 		glDeleteShader(vertex);
 		glDeleteShader(fragment);

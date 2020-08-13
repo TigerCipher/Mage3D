@@ -37,24 +37,24 @@ namespace mage
 	{
 	public:
 		ResourceManager() :
-				m_count(0) { }
+				m_count(1) { }
 
 		~ResourceManager() = default;
 
 
-		void addReference()
+		inline void addReference()
 		{
 			m_count++;
 		}
 
-		bool removeReference()
+		inline bool removeReference()
 		{
 			m_count--;
 			return m_count == 0;
 		}
 
 
-		uint getResourceCount() const { return m_count; }
+		inline uint getResourceCount() const { return m_count; }
 
 	protected:
 	private:

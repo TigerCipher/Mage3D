@@ -36,12 +36,12 @@ namespace mage
 	    Texture* emission;
 	    float shininess;
 
-	    ~Material()
-		{
-	    	delete diffuse;
-	    	delete specular;
-	    	delete emission;
-		}
+	    //~Material()
+		//{
+	    //	delete diffuse;
+	    //	delete specular;
+	    //	delete emission;
+		//}
 	};
 
 }

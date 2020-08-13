@@ -55,6 +55,7 @@ namespace mage
 		list<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const char* typeName);
 
 		list<Mesh*> m_meshes;
+		std::string m_fileName;
 		//list<Material> m_materials;
 	};
 

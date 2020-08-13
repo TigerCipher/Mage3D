@@ -23,7 +23,6 @@
 #include "mage/graphics/mesh.h"
 
 #include <utility>
-#include "mage/core/stdcolor.h"
 
 
 mage::Mesh::Mesh(mage::Vertex vertices[], uint verticesSize, uint indices[], uint indicesSize) :

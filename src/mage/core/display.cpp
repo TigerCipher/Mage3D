@@ -19,6 +19,8 @@
 
 #include "mage/core/display.h"
 
+#include "mage/common.h"
+
 #define FULLSCREEN_MODE 0
 #define VSYNC 0
 
@@ -38,7 +40,7 @@ mage::Display::Display(const char* title, int width, int height, mage::Input* in
 
 mage::Display::~Display()
 {
-	println(console::BRIGHT_MAGENTA, "Closing display");
+	DBGPRINT("Closing display");
 	glfwDestroyWindow(m_pWindow);
 	glfwTerminate();
 }
@@ -81,7 +83,7 @@ void mage::windowResize(GLFWwindow* pWindow, int width, int height)
 
 void mage::errorCallback(int error, const char* desc)
 {
-	print(console::RED, "Error ({}):\n{}\n", error, desc);
+	DBGPRINT_ERR("Error (%i):\n%s", error, desc);
 }
 
 void mage::key_callback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
@@ -111,17 +113,21 @@ void mage::scroll_callback(GLFWwindow* pWindow, double xoffset, double yoffset)
 
 void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
 {
-	//fprintf( stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-    //       ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-    //        type, severity, message );
+	VERBOSE_PRINT_ERR("GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s",
+           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
+            type, severity, message );
 }
 
 int mage::Display::init()
 {
-	println(console::BRIGHT_CYAN, "Initializing glfw");
-	const auto glfwError = glfwInit();
-	if (!glfwError) return glfwError;
-	println(console::BRIGHT_CYAN, "glfw initialized\nCreating window");
+	DBGPRINT("Initializing glfw");
+	int glfwStatus = glfwInit();
+	if (!glfwStatus)
+	{
+		DBGPRINT_ERR("Failed to initialize GLFW with error %i", glfwStatus);
+		return glfwStatus;
+	}
+	DBGPRINT("glfw initialized\nCreating window");
 	//glfwWindowHint(GLFW_SAMPLES, 4); // 4x AA
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4); // OpenGL 4+
 	//glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3); // OpenGL 4.3+
@@ -135,7 +141,7 @@ int mage::Display::init()
 	glfwSetWindowPos(m_pWindow, centerX, centerY);
 
 	if (!m_pWindow) return -1;
-	println(console::BRIGHT_CYAN, "Window created at position ({}, {}) with dimensions ({}, {})", centerX,
+	DBGPRINT("Window created at position (%i, %i) with dimensions (%i, %i)", centerX,
 			centerY, m_width, m_height);
 	//TODO: Set up callbacks and whatnot
 	glfwMakeContextCurrent(m_pWindow);
@@ -157,13 +163,20 @@ int mage::Display::init()
 	// VSYNC must be either 1 or 0
 	glfwSwapInterval(VSYNC);
 
-	println(console::BRIGHT_CYAN, "Initializing glew");
-	const int glError = glewInit();
-	if (glError != GLEW_OK) return glError;
-	println(console::BRIGHT_CYAN, "Glew initialized");
+	DBGPRINT("Initializing glew");
+	const int glewError = glewInit();
+	if (glewError)
+	{
+		DBGPRINT_ERR("Error while initializing glew. Error: %i", glewError);
+		return glewError;
+	}
+	DBGPRINT("Glew initialized");
 
-	print(console::YELLOW, "OpenGL {}\n", glGetString(GL_VERSION));
+	DBGPRINT("OpenGL %s", glGetString(GL_VERSION));
+#ifdef MAGE_DEBUG
 	glEnable(GL_DEBUG_OUTPUT);
+	glDebugMessageCallback(debugCallback, 0);
+#endif
 	// TODO some models might need different culling
 	glFrontFace(GL_CW);
 	glCullFace(GL_FRONT);
@@ -172,7 +185,6 @@ int mage::Display::init()
 	glEnable(GL_DEPTH_CLAMP);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glDebugMessageCallback(debugCallback, 0);
 	return 1;
 }
 

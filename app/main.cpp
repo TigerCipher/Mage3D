@@ -26,6 +26,7 @@
 #define BMD_PROFILE 1
 
 #include <bmd/profiler.h>
+#include <fmt/format.h>
 
 int main(int argc, char** argv)
 {
@@ -139,7 +140,6 @@ int main(int argc, char** argv)
 			33, 34, 35
 	};
 
-	mage::clearConsole(mage::console::WHITE);
 	mage::Input input;
 	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
 	mage::Camera camera(&display, glm::vec3(0, 0, 5));
@@ -154,48 +154,30 @@ int main(int argc, char** argv)
 	mage::Shader shader2("./assets/shaders/basic_lighting.vert", "./assets/shaders/basic_model.frag");
 	mage::Shader shader3("./assets/shaders/lighting");
 	mage::Shader shaderLamp("./assets/shaders/basic");
-	mage::Texture texture("./assets/textures/default.png");
-	list<mage::Texture> planeTextures = { texture };
-	//mage::Mesh planeMesh(planeVerts, planeInts, planeTextures);
-	mage::Mesh cubeMesh(verts, ints, planeTextures);
 	mage::Model backpack("./assets/models/untitled.obj");
 	PROFILER_START("backpack loading");
 	mage::Model backpackActual("./assets/models/backpack.obj");
 	PROFILER_END;
 
-	PROFILER_START("printf");
-	printf("This is a %s formatted string with %f floats %i ints and even %p pointers!\n", "test", 34.03f, 3,
-		   &texture);
-	PROFILER_END;
-
-	PROFILER_START("fmt::print");
-	fmt::print("This is a {} formatted string with {} floats {} ints and even {} pointers!\n", "test", 34.03f,
-			   3, "ptrs dnt work with fmt sadly");
-	PROFILER_END;
-
-	PROFILER_START("std::cout no endl");
-	std::cout << "This is a " << "test" << " formatted string with " << 34.03f << " floats " << 3 << " ints and even " << &texture << " pointers!\n";
-	PROFILER_END;
-
-	PROFILER_START("mage::println");
-	mage::println(mage::console::CYAN, "This is a {} formatted string with {} floats {} ints and even {} pointers!\n", "test", 34.03f,
-			   3, "ptrs dnt work with fmt sadly");
-	PROFILER_END;
-
 	// printf > fmt::print > fmt/mage println with color > cout
 
+	auto* brickDif = new mage::Texture("./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
+	auto* brickSpec = new mage::Texture("./assets/textures/bricks_specular.png", TEXTURE_SPECULAR);
+	auto* backDif = new mage::Texture("./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE);
+	auto* backSpec = new mage::Texture("./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR);
 
+	auto* testRef = new mage::Texture("./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
 	mage::Material brickMaterial = {
-			new mage::Texture("./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE),
-			new mage::Texture("./assets/textures/bricks_specular.png", TEXTURE_SPECULAR),
+			brickDif,
+			brickSpec,
 			nullptr,
 			//new mage::Texture("./assets/textures/bricks_emission.png", "emission"),
 			32.0f
 	};
 
 	mage::Material backpackMat = {
-			new mage::Texture("./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE),
-			new mage::Texture("./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR),
+			backDif,
+			backSpec,
 			nullptr,
 			32.0f
 	};
@@ -309,17 +291,6 @@ int main(int argc, char** argv)
 
 		shaderLamp.disable();
 
-		//if(input.keyDown(GLFW_KEY_C))
-		//	mage::println(mage::console::BRIGHT_BLUE, "C key is down!");
-		//if(input.keyPressed(GLFW_KEY_C))
-		//	mage::println(mage::console::BRIGHT_BLUE, "C key was pressed!");
-		//if(input.keyReleased(GLFW_KEY_C))
-		//	mage::println(mage::console::BRIGHT_BLUE, "C key was released!");
-		if (input.mouseButtonPressed(MOUSE_BUTTON_LEFT))
-		{
-			mage::println(mage::console::BRIGHT_BLUE, "Mouse pos: ({}, {})", input.getMouseX(),
-						  input.getMouseY());
-		}
 
 		input.update();
 		display.update();
@@ -332,16 +303,21 @@ int main(int argc, char** argv)
 		if (elapsed >= 1.0)
 		{
 			double fps = frames / elapsed;
-			mage::println(mage::console::BRIGHT_YELLOW, "Average FPS: {} | Precise: {}", frames, fps);
-			mage::println(mage::console::BRIGHT_CYAN, "Delta: {}", timer.delta());
-			std::string newTitle = fmt::format("{}{:.4f}", "Mage3D Testing -- FPS: ", fps);
-			const char* newTitleCstr = newTitle.c_str();
-			display.setTitle(newTitleCstr);
+			DBGPRINT("Average FPS: %i | Precise: %f", frames, fps);
+			//std::string newTitle = fmt::format("{}{:.4f}", "Mage3D Testing -- FPS: ", fps);
+			//const char* newTitleCstr = newTitle.c_str();
+			//display.setTitle(newTitleCstr);
 			frames = 0;
 			timer.reset();
 		} else frames++;
 
 	}
+
+	delete brickDif;
+	delete brickSpec;
+	delete backDif;
+	delete backSpec;
+	delete testRef;
 
 	return 0;
 }

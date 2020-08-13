@@ -42,4 +42,12 @@ using vec4i = glm::ivec4;
 #define checkGlError() if(glGetError() != GL_NO_ERROR) \
 fprintf(stderr, "OpenGL Error (%i):\n%s\nOccured in %s at line %i\n", glGetError(), glGetString(glGetError()), __FILE__, __LINE__);
 
+#define DBGPRINT(fmt_, ...) printf(fmt_"\n", ##__VA_ARGS__)
+#define DBGPRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", ##__VA_ARGS__)
+#ifdef MAGE_VERBOSE
+	#define VERBOSE_PRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", ##__VA_ARGS__)
+#else
+	#define VERBOSE_PRINT_ERR(...)
+#endif // MAGE_VERBOSE
+
 #endif //MAGE3D_COMMON_H

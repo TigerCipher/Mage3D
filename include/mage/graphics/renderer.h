@@ -33,9 +33,19 @@ namespace mage
 	class Renderer
 	{
 	public:
-		mage3d_EXPORT Renderer() { }
+		mage3d_EXPORT Renderer()
+		{
+			m_defaultDiffuse = new Texture(TEXTURE_DEFAULT_DIFFUSE, TEXTURE_DIFFUSE);
+			m_defaultSpecular = new Texture(TEXTURE_DEFAULT_SPECULAR, TEXTURE_SPECULAR);
+			m_defaultEmission = new Texture(TEXTURE_DEFAULT_EMISSION, TEXTURE_EMISSION);
+		}
 
-		mage3d_EXPORT ~Renderer() { }
+		mage3d_EXPORT ~Renderer()
+		{
+			delete m_defaultDiffuse;
+			delete m_defaultSpecular;
+			delete m_defaultEmission;
+		}
 
 		mage3d_EXPORT void render(Shader& shader, Mesh& mesh);
 		mage3d_EXPORT void render(Shader& shader, Mesh& mesh, const Material& material);
@@ -48,6 +58,9 @@ namespace mage
 
 	protected:
 	private:
+		Texture* m_defaultDiffuse;
+		Texture* m_defaultSpecular;
+		Texture* m_defaultEmission;
 	};
 }
 

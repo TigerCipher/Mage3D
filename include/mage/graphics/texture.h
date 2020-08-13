@@ -92,6 +92,7 @@ namespace mage
 		static std::map<std::string, TextureData*> textureMap;
 	};
 
+
 }
 
 

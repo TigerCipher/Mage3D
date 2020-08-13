@@ -20,10 +20,10 @@
  */
 
 #include "mage/graphics/texture.h"
-#include "mage/core/stdcolor.h"
 #include "mage/errors/textureexception.h"
 #include <SOIL/SOIL.h>
 #include <cassert>
+#include <fmt/format.h>
 
 std::map<std::string, mage::TextureData*> mage::Texture::textureMap;
 
@@ -48,9 +48,7 @@ mage::Texture::Texture(const char* filePath, const char* type) :
 	if (strcmp(type, TEXTURE_DIFFUSE) != 0 && strcmp(type, TEXTURE_SPECULAR) != 0 &&
 		strcmp(type, TEXTURE_EMISSION) != 0)
 	{
-		fprintf(stderr,
-				"Texture type \'%s\' is unknown to the Mage3D engine\nReverting to default type \'diffuse\'",
-				type);
+		DBGPRINT_ERR("Texture type \'%s\' is unknown to the Mage3D engine\nReverting to default type \'diffuse\'", type);
 		m_type = TEXTURE_DIFFUSE;
 	}
 	load(filePath);
@@ -62,6 +60,7 @@ mage::Texture::~Texture()
 	{
 		if (m_filePath.length() > 0)
 			textureMap.erase(m_filePath);
+		DBGPRINT("Unloading texture %s", m_filePath.c_str());
 		delete m_textureData;
 	}
 }
@@ -87,14 +86,16 @@ void mage::Texture::load(const char* filePath)
 	{
 		m_textureData = it->second;
 		m_textureData->addReference();
+		//DBGPRINT("Ref count %i", m_textureData->getResourceCount());
 	} else
 	{
+		DBGPRINT("Loading texture %s", filePath);
 		int width, height;
 		//TODO Try updating to SOIL2 to see if that better supports DDS files
 		ubyte* image = SOIL_load_image(filePath, &width, &height, nullptr, SOIL_LOAD_RGBA);
 		if (!image)
 		{
-			println(console::RED, "Texture ({}) cannot be loaded, reverting to default texture", filePath);
+			DBGPRINT_ERR("Texture (%s) cannot be loaded, reverting to default texture", filePath);
 			m_filePath = fmt::format("./assets/textures/defaults/default_{}.png", m_type);
 			const char* newPath = m_filePath.c_str();
 			image = SOIL_load_image(newPath, &width, &height, nullptr, SOIL_LOAD_RGBA);
@@ -144,8 +145,9 @@ mage::TextureData::TextureData(GLenum textureTarget, int width, int height, int 
 
 mage::TextureData::~TextureData()
 {
+	DBGPRINT("Deleting texture id %i", *m_id);
 	if (*m_id) glDeleteTextures(m_numTextures, m_id);
-	if (m_id) delete[] m_id;
+	delete[] m_id;
 }
 
 #include <iostream>

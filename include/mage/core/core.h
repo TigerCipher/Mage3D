@@ -21,7 +21,6 @@
 #define MAGE3D_CORE_H
 
 
-#include "stdcolor.h"
 #include "display.h"
 #include "timer.h"
 #include "input.h"
