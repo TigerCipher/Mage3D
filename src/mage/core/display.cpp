@@ -24,13 +24,18 @@
 #define FULLSCREEN_MODE 0
 #define VSYNC 0
 
-mage::Display::Display(const char* title, int width, int height, mage::Input* input) :
-		m_pTitle(title),
-		m_width(width),
-		m_height(height),
-		m_pWindow(nullptr),
-		m_input(input)
+const char* mage::Display::m_pTitle;
+int mage::Display::m_width, mage::Display::m_height;
+GLFWwindow* mage::Display::m_pWindow;
+mage::Input* mage::Display::m_input;
+
+void mage::Display::create(const char* title, int width, int height, mage::Input* input)
 {
+	m_pWindow = nullptr;
+	m_input = input;
+	m_pTitle = title;
+	m_width = width;
+	m_height = height;
 	if (!init())
 	{
 		glfwDestroyWindow(m_pWindow);
@@ -38,14 +43,14 @@ mage::Display::Display(const char* title, int width, int height, mage::Input* in
 	}
 }
 
-mage::Display::~Display()
+void mage::Display::destroy()
 {
 	DBGPRINT("Closing display");
 	glfwDestroyWindow(m_pWindow);
 	glfwTerminate();
 }
 
-void mage::Display::update() const
+void mage::Display::update()
 {
 	//const auto error = glGetError();
 	////if (error != GL_NO_ERROR)
@@ -55,18 +60,18 @@ void mage::Display::update() const
 	glfwPollEvents();
 }
 
-void mage::Display::clear() const
+void mage::Display::clear()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void mage::Display::clear(int red, int green, int blue) const
+void mage::Display::clear(int red, int green, int blue)
 {
 	glClearColor(red, green, blue, 255);
 	clear();
 }
 
-bool mage::Display::isClosed() const
+bool mage::Display::isClosed()
 {
 	return glfwWindowShouldClose(m_pWindow);
 }
@@ -74,9 +79,9 @@ bool mage::Display::isClosed() const
 
 void mage::windowResize(GLFWwindow* pWindow, int width, int height)
 {
-	auto* const display = static_cast<mage::Display*>(glfwGetWindowUserPointer(pWindow));
-	display->m_width = width;
-	display->m_height = height;
+	//auto* const display = static_cast<mage::Display*>(glfwGetWindowUserPointer(pWindow));
+	Display::m_width = width;
+	Display::m_height = height;
 	glViewport(0, 0, width, height);
 }
 
@@ -88,34 +93,36 @@ void mage::errorCallback(int error, const char* desc)
 
 void mage::key_callback(GLFWwindow* pWindow, int key, int scancode, int action, int mods)
 {
-	auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
-	display->m_input->onKeyCallback(key, scancode, action, mods);
+	//auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
+	Display::m_input->onKeyCallback(key, scancode, action, mods);
 }
 
 void mage::mouse_button_callback(GLFWwindow* pWindow, int button, int action, int mods)
 {
-	auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
-	display->m_input->onMouseButtonCallback(button, action, mods);
+	//auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
+	Display::m_input->onMouseButtonCallback(button, action, mods);
 }
 
 void mage::cursor_position_callback(GLFWwindow* pWindow, double xpos, double ypos)
 {
 	//if(glfwGetInputMode(pWindow, GLFW_CURSOR) != GLFW_CURSOR_DISABLED) return;
-	auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
-	display->m_input->setMousePos(xpos, ypos);
+	//auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
+	Display::m_input->setMousePos(xpos, ypos);
 }
 
 void mage::scroll_callback(GLFWwindow* pWindow, double xoffset, double yoffset)
 {
-	auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
-	display->m_input->setMouseScroll(xoffset, yoffset);
+	//auto* display = (mage::Display*)glfwGetWindowUserPointer(pWindow);
+	Display::m_input->setMouseScroll(xoffset, yoffset);
 }
 
-void debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+void
+debugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message,
+              const void* userParam)
 {
 	VERBOSE_PRINT_ERR("GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s",
-           ( type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : "" ),
-            type, severity, message );
+	                  (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+	                  type, severity, message);
 }
 
 int mage::Display::init()
@@ -142,10 +149,10 @@ int mage::Display::init()
 
 	if (!m_pWindow) return -1;
 	DBGPRINT("Window created at position (%i, %i) with dimensions (%i, %i)", centerX,
-			centerY, m_width, m_height);
+	         centerY, m_width, m_height);
 	//TODO: Set up callbacks and whatnot
 	glfwMakeContextCurrent(m_pWindow);
-	glfwSetWindowUserPointer(m_pWindow, this);
+	//glfwSetWindowUserPointer(m_pWindow, this);
 	glfwSetErrorCallback(errorCallback);
 	glfwSetKeyCallback(m_pWindow, key_callback);
 	glfwSetMouseButtonCallback(m_pWindow, mouse_button_callback);
@@ -154,7 +161,7 @@ int mage::Display::init()
 	glfwSetWindowSizeCallback(m_pWindow, windowResize);
 
 	glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	if(glfwRawMouseMotionSupported())
+	if (glfwRawMouseMotionSupported())
 		glfwSetInputMode(m_pWindow, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
 
 	glfwSetCursorPos(m_pWindow, 0, 0);
@@ -188,29 +195,28 @@ int mage::Display::init()
 	return 1;
 }
 
-void mage::Display::setTitle(const char* title) const
+void mage::Display::setTitle(const char* title)
 {
 	glfwSetWindowTitle(m_pWindow, title);
 }
 
-void mage::Display::toggleCursor() const
+void mage::Display::toggleCursor()
 {
 	int mode = glfwGetInputMode(m_pWindow, GLFW_CURSOR);
-	if(mode == GLFW_CURSOR_DISABLED)
+	if (mode == GLFW_CURSOR_DISABLED)
 	{
 		glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 		double x, y;
 		glfwGetCursorPos(m_pWindow, &x, &y);
 		m_input->setMousePos(x, y);
-	}
-	else
+	} else
 	{
 		glfwSetInputMode(m_pWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		glfwSetCursorPos(m_pWindow, m_input->getMouseX(), m_input->getMouseY());
 	}
 }
 
-bool mage::Display::isCursorLocked() const
+bool mage::Display::isCursorLocked()
 {
 	return glfwGetInputMode(m_pWindow, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
 }

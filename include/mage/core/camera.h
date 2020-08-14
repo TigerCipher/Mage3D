@@ -23,7 +23,6 @@
 #define MAGE3D_CAMERA_H
 
 #include "mage3d_exported.h"
-#include "display.h"
 #include "input.h"
 
 #include <glm/glm.hpp>
@@ -44,7 +43,7 @@ namespace mage
 	class Camera
 	{
 	public:
-		mage3d_EXPORT explicit Camera(const Display* display, glm::vec3 position = glm::vec3(0, 0, 0),
+		mage3d_EXPORT explicit Camera(glm::vec3 position = glm::vec3(0, 0, 0),
 									  glm::vec3 up = glm::vec3(0, 1, 0), float yaw = YAW,
 									  float pitch = PITCH);
 
@@ -64,8 +63,6 @@ namespace mage
 
 		void updateVectors();
 		void clampPitch();
-
-		const Display* m_display;
 
 		glm::vec3 m_position;
 		glm::vec3 m_front;

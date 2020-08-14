@@ -14,53 +14,49 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: model.h
- * Date File Created: 8/4/2020 at 7:16 PM
+ * File Name: game.h
+ * Date File Created: 8/12/2020 at 11:24 PM
  * Author: Matt
  */
 
-#ifndef MAGE3D_MODEL_H
-#define MAGE3D_MODEL_H
+#ifndef MAGE3D_GAME_H
+#define MAGE3D_GAME_H
 
 
 #include "mage3d_exported.h"
 #include "mage/common.h"
-#include "mesh.h"
-#include "material.h"
-
-#include <string>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "input.h"
 
 
 namespace mage
 {
-	class Model
+	class Game
 	{
 	public:
-		mage3d_EXPORT Model() = default;
-		mage3d_EXPORT explicit Model(const char* path);
+		mage3d_EXPORT Game() = default;
+		mage3d_EXPORT virtual void init() {}
+		mage3d_EXPORT virtual void processInput(Input* input, float delta) {}
+		mage3d_EXPORT virtual void update(float delta) {}
+		mage3d_EXPORT virtual void render() {}
+		mage3d_EXPORT virtual void destroy() {}
 
-		mage3d_EXPORT ~Model();
+		mage3d_EXPORT inline void setPaused(bool paused)
+		{
+			m_paused = paused;
+		}
 
-		list<Mesh*> getMeshes() { return m_meshes; }
-
-		//list<Material> getMaterials() { return m_materials; }
-
+		mage3d_EXPORT inline bool isPaused()
+		{
+			return m_paused;
+		}
+	protected:
 	private:
-
-		void loadModel(const char* path);
-		void processNode(aiNode* node, const aiScene* scene);
-		Mesh* processMesh(aiMesh* mesh, const aiScene* scene);
-		list<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const char* typeName);
-
-		list<Mesh*> m_meshes;
-		std::string m_fileName;
-		//list<Material> m_materials;
+		Game(Game& game) = default;
+        void operator=(Game& game) {}
+        bool m_paused = false;
 	};
 
 }
 
 
-#endif //MAGE3D_MODEL_H
+#endif //MAGE3D_GAME_H

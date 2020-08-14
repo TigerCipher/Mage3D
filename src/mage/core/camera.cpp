@@ -19,10 +19,10 @@
  * Author: Matt
  */
 
+#include "mage/core/display.h"
 #include "mage/core/camera.h"
 
-mage::Camera::Camera(const mage::Display* display, glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
-		m_display(display),
+mage::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
 		m_position(position),
 		m_worldUp(up),
 		m_yaw(yaw),
@@ -63,7 +63,7 @@ void mage::Camera::update(mage::Input input, float delta)
 	float xOff = input.getMouseOffsetX() * m_sensitivity;
 	float yOff = input.getMouseOffsetY() * m_sensitivity;
 
-	if (m_display->isCursorLocked())
+	if (Display::isCursorLocked())
 	{
 		m_yaw += xOff;
 		m_pitch += yOff;
@@ -82,7 +82,7 @@ glm::mat4 mage::Camera::getViewMatrix()
 glm::mat4 mage::Camera::getProjectionMatrix()
 {
 	return glm::perspective(glm::radians(m_fov),
-							(float) m_display->getWidth() / (float) m_display->getHeight(), m_zNear, m_zFar);
+							(float) Display::getWidth() / (float) Display::getHeight(), m_zNear, m_zFar);
 }
 
 void mage::Camera::clampPitch()

@@ -1,9 +1,12 @@
 <component name="ProjectCodeStyleConfiguration">
   <code_scheme name="Project" version="173">
+    <option name="AUTODETECT_INDENTS" value="false" />
     <option name="RIGHT_MARGIN" value="110" />
     <option name="FORMATTER_TAGS_ENABLED" value="true" />
     <Objective-C>
       <option name="INDENT_BLOCK_COMMENT" value="false" />
+      <option name="INDENT_PREPROCESSOR_DIRECTIVE" value="4" />
+      <option name="INDENT_DIRECTIVE_AS_CODE" value="true" />
       <option name="KEEP_STRUCTURES_IN_ONE_LINE" value="true" />
       <option name="KEEP_NESTED_NAMESPACES_IN_ONE_LINE" value="true" />
       <option name="NAMESPACE_BRACE_PLACEMENT" value="2" />
@@ -76,7 +79,10 @@
       <option name="FOR_BRACE_FORCE" value="1" />
       <option name="ENUM_CONSTANTS_WRAP" value="2" />
       <indentOptions>
+        <option name="CONTINUATION_INDENT_SIZE" value="4" />
         <option name="USE_TAB_CHARACTER" value="true" />
+        <option name="SMART_TABS" value="true" />
+        <option name="LABEL_INDENT_ABSOLUTE" value="true" />
       </indentOptions>
     </codeStyleSettings>
   </code_scheme>

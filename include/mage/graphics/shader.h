@@ -47,6 +47,7 @@ namespace mage
 	class Shader
 	{
 	public:
+		mage3d_EXPORT Shader() = default;
 		mage3d_EXPORT explicit Shader(const char* basePath);
 		mage3d_EXPORT Shader(const char* vertPath, const char* fragPath);
 		mage3d_EXPORT ~Shader();

@@ -62,12 +62,12 @@ namespace mage
 		GLuint m_vbo { };
 		GLuint m_ebo { };
 
-		uint m_numVertices;
-		uint m_numIndices;
+		uint m_numVertices{};
+		uint m_numIndices{};
 
-		list<Vertex> m_vertices;
-		list<uint> m_indices;
-		list<Texture> m_textures;
+		list<Vertex> m_vertices{};
+		list<uint> m_indices{};
+		list<Texture> m_textures{};
 	};
 
 }

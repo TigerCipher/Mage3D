@@ -14,53 +14,48 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: model.h
- * Date File Created: 8/4/2020 at 7:16 PM
+ * File Name: engine.h
+ * Date File Created: 8/12/2020 at 11:22 PM
  * Author: Matt
  */
 
-#ifndef MAGE3D_MODEL_H
-#define MAGE3D_MODEL_H
+#ifndef MAGE3D_ENGINE_H
+#define MAGE3D_ENGINE_H
 
 
 #include "mage3d_exported.h"
 #include "mage/common.h"
-#include "mesh.h"
-#include "material.h"
-
-#include <string>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
-
+#include "display.h"
+#include "game.h"
+#include "input.h"
+#include "mage/events/eventdispatcher.h"
 
 namespace mage
 {
-	class Model
+	class Engine
 	{
 	public:
-		mage3d_EXPORT Model() = default;
-		mage3d_EXPORT explicit Model(const char* path);
+		mage3d_EXPORT Engine(Game* game, const char* title, int width, int height, float ticksPerSecond = 120.0f, bool limitFrames = false);
 
-		mage3d_EXPORT ~Model();
+		mage3d_EXPORT virtual ~Engine();
 
-		list<Mesh*> getMeshes() { return m_meshes; }
+		mage3d_EXPORT void start();
+		mage3d_EXPORT void stop();
 
-		//list<Material> getMaterials() { return m_materials; }
-
+	protected:
 	private:
 
-		void loadModel(const char* path);
-		void processNode(aiNode* node, const aiScene* scene);
-		Mesh* processMesh(aiMesh* mesh, const aiScene* scene);
-		list<Texture> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const char* typeName);
-
-		list<Mesh*> m_meshes;
-		std::string m_fileName;
-		//list<Material> m_materials;
+		void run();
+		static void calculateFrameStatistics(float& elapsed, int& ticks);
+		bool m_running;
+		Game* m_game;
+		Input m_input;
+		float m_msPerUpdate;
+		bool m_limitFrames;
+		UniquePtr<EventDispatcher> m_dispatcher;
 	};
 
 }
 
 
-#endif //MAGE3D_MODEL_H
+#endif //MAGE3D_ENGINE_H

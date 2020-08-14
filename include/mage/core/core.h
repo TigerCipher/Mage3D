@@ -26,6 +26,8 @@
 #include "input.h"
 #include "camera.h"
 #include "resourcemanager.h"
+#include "game.h"
+#include "engine.h"
 
 
 #endif // MAGE3D_CORE_H

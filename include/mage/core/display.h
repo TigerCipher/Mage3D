@@ -33,32 +33,29 @@ namespace mage
 	{
 	public:
 
-		mage3d_EXPORT Display(const char* title, int width, int height, Input* input);
-		mage3d_EXPORT ~Display();
+		mage3d_EXPORT static void create(const char* title, int width, int height, Input* input);
+		mage3d_EXPORT static void destroy();
 
-		// Display should never be created with no arguments
-		Display() = delete;
+		mage3d_EXPORT static void update();
+		mage3d_EXPORT static void clear();
+		mage3d_EXPORT static void clear(int red, int green, int blue);
+		mage3d_EXPORT static bool isClosed();
+		mage3d_EXPORT static void setTitle(const char* title);
+		mage3d_EXPORT static void toggleCursor();
+		mage3d_EXPORT static bool isCursorLocked();
 
-		mage3d_EXPORT void update() const;
-		mage3d_EXPORT void clear() const;
-		mage3d_EXPORT void clear(int red, int green, int blue) const;
-		mage3d_EXPORT bool isClosed() const;
-		mage3d_EXPORT void setTitle(const char* title) const;
-		mage3d_EXPORT void toggleCursor() const;
-		mage3d_EXPORT bool isCursorLocked() const;
+		mage3d_EXPORT static int getWidth() { return m_width; }
 
-		mage3d_EXPORT int getWidth() const { return m_width; }
-
-		mage3d_EXPORT int getHeight() const { return m_height; }
+		mage3d_EXPORT static int getHeight() { return m_height; }
 
 	private:
 
-		const char* m_pTitle;
-		int m_width, m_height;
-		GLFWwindow* m_pWindow;
-		Input* m_input;
+		static const char* m_pTitle;
+		static int m_width, m_height;
+		static GLFWwindow* m_pWindow;
+		static Input* m_input;
 
-		int init();
+		static int init();
 
 		friend void windowResize(GLFWwindow* pWindow, int width, int height);
 		friend void errorCallback(int error, const char* desc);

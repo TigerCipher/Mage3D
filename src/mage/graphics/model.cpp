@@ -102,7 +102,6 @@ mage::Mesh* mage::Model::processMesh(aiMesh* mesh, const aiScene* scene)
 	return new Mesh(vertices, indices);
 }
 
-#include <iostream>
 
 list<mage::Texture>
 mage::Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const char* typeName)

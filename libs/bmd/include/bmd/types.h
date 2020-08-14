@@ -102,10 +102,50 @@ typedef long double flt96;
 // Because I use "Lists" in Java more than I use vectors in C++,
 // this is just simply a small rewrite of the vector for quality of life sake
 #ifdef __cplusplus
+
 #include <vector>
- template<class T>
- using list = std::vector<T>;
+#include <memory>
+
+template<typename T>
+using list = std::vector<T>;
+
+template <typename T>
+using UniquePtr = std::unique_ptr<T>;
+template <typename T>
+using uptr = std::unique_ptr<T>;
+// If my understanding is correct, a unique pointer only exists in a single scope and not referenced else where
+// So the following are naming conventions just to help myself remember that, as I've only recently begun using smart pointers in C++
+// instead of raw pointers
+template <typename T>
+using scope = std::unique_ptr<T>;
+template <typename T>
+using Scope = std::unique_ptr<T>;
+
+template<typename T>
+using SharedPtr = std::shared_ptr<T>;
+template<typename T>
+using sptr = std::shared_ptr<T>;
+// If my understanding is correct, a shared pointer can be "owned" by multiple sources and has a reference counter
+// So the following are naming conventions just to help myself remember that, as I've only recently begun using smart pointers in C++
+// instead of raw pointers
+template<typename T>
+using ref = std::shared_ptr<T>;
+template<typename T>
+using Ref = std::shared_ptr<T>;
+
+template<typename T, typename... Args>
+constexpr UniquePtr<T> createScope(Args&& ...args)
+{
+	return std::make_unique<T>(std::forward<Args>(args)...);
+}
+
+template <typename T, typename... Args>
+constexpr SharedPtr<T> createRef(Args&& ...args)
+{
+	return std::make_shared<T>(std::forward<Args>(args)...);
+}
+
+
 #endif // __cplusplus
-// ignoring this for now unless it happens that functions I really want in this library just aren't possible in C
 
 #endif //BMD_TYPES_H

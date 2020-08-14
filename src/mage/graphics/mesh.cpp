@@ -41,6 +41,11 @@ mage::Mesh::Mesh(list<Vertex> vertices, list<uint> indices)
 	m_numVertices = vertices.size();
 	m_numIndices = indices.size();
 	assert(m_numIndices % 3 == 0);
+	// TODO Perhaps only create the buffers in a separate 'init' function
+	// So that models and other mesh using resources can be loaded before the display is shown?
+	// Same with things like textures
+	// That or have the engine render a splashscreen while things load?
+	// Though if we wanted a traditional animated splashscreen or anything, might have to introduce multi threading
 	glGenVertexArrays(1, &m_vaoId);
 	glBindVertexArray(m_vaoId);
 	createBuffers(vertices.data(), indices.data());

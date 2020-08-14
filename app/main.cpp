@@ -28,296 +28,140 @@
 #include <bmd/profiler.h>
 #include <fmt/format.h>
 
-int main(int argc, char** argv)
+class TestGame : public mage::Game
 {
+public:
+	TestGame() : Game() {}
 
-	// UV coords can't be shared between vertices, so textures don't work properly
-	list<mage::Vertex> testVerts = {
-			mage::Vertex(mage::Position(-0.1f, -0.1f, -1.1f)),
-			mage::Vertex(mage::Position(0.1f, -0.1f, -1.1f)),
-			mage::Vertex(mage::Position(0.1f, -0.1f, -0.9f)),
-			mage::Vertex(mage::Position(-0.1f, -0.1f, -0.9f)),
-
-			mage::Vertex(mage::Position(-0.1f, 0.1f, -1.1f)),
-			mage::Vertex(mage::Position(0.1f, 0.1f, -1.1f)),
-			mage::Vertex(mage::Position(0.1f, 0.1f, -0.9f)),
-			mage::Vertex(mage::Position(-0.1f, 0.1f, -0.9f)),
-	};
-
-	list<uint> testInts = {
-			0, 1, 2,
-			2, 0, 3,
-
-			3, 7, 4,
-			4, 3, 0,
-
-			0, 4, 5,
-			5, 0, 1,
-
-			1, 5, 6,
-			6, 1, 2,
-
-			2, 6, 7,
-			7, 2, 3,
-
-			4, 7, 6,
-			6, 4, 5
-	};
-
-	list<mage::Vertex> planeVerts = {
-			mage::Vertex(mage::Position(-2, -2, -2), mage::Normal(0, -0.5f, 0), mage::TexCoords(0, 0)),
-			mage::Vertex(mage::Position(2, -2, -2), mage::Normal(0, -0.5f, 0), mage::TexCoords(0, 1)),
-			mage::Vertex(mage::Position(2, -2, 2), mage::Normal(0, -0.5f, 0), mage::TexCoords(1, 1)),
-			mage::Vertex(mage::Position(-2, -2, 2), mage::Normal(0, -0.5f, 0), mage::TexCoords(1, 0)),
-	};
-
-	list<uint> planeInts = {
-			0, 1, 2,
-			2, 0, 3
-	};
-
-	list<mage::Vertex> verts = {
-			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(0, 0)),
-			mage::Vertex(mage::Position(0.5f, -0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(1, 0)),
-			mage::Vertex(mage::Position(0.5f, 0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(1, 1)),
-			mage::Vertex(mage::Position(0.5f, 0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(1, 1)),
-			mage::Vertex(mage::Position(-0.5f, 0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(0, 1)),
-			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(0, 0, -1), mage::TexCoords(0, 0)),
-
-			mage::Vertex(mage::Position(-0.5f, -0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(0, 0)),
-			mage::Vertex(mage::Position(0.5f, -0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(1, 0)),
-			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(1, 1)),
-			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(1, 1)),
-			mage::Vertex(mage::Position(-0.5f, 0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(0, 1)),
-			mage::Vertex(mage::Position(-0.5f, -0.5f, 0.5f), mage::Normal(0, 0, 1), mage::TexCoords(0, 0)),
-
-			mage::Vertex(mage::Position(-0.5f, 0.5f, 0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(1, 0)),
-			mage::Vertex(mage::Position(-0.5f, 0.5f, -0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(1, 1)),
-			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(0, 1)),
-			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(0, 1)),
-			mage::Vertex(mage::Position(-0.5f, -0.5f, 0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(0, 0)),
-			mage::Vertex(mage::Position(-0.5f, 0.5f, 0.5f), mage::Normal(-1, 0, 0), mage::TexCoords(1, 0)),
-
-			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(1, 0, 0), mage::TexCoords(1, 0)),
-			mage::Vertex(mage::Position(0.5f, 0.5f, -0.5f), mage::Normal(1, 0, 0), mage::TexCoords(1, 1)),
-			mage::Vertex(mage::Position(0.5f, -0.5f, -0.5f), mage::Normal(1, 0, 0), mage::TexCoords(0, 1)),
-			mage::Vertex(mage::Position(0.5f, -0.5f, -0.5f), mage::Normal(1, 0, 0), mage::TexCoords(0, 1)),
-			mage::Vertex(mage::Position(0.5f, -0.5f, 0.5f), mage::Normal(1, 0, 0), mage::TexCoords(0, 0)),
-			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(1, 0, 0), mage::TexCoords(1, 0)),
-
-			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(0, -1, 0), mage::TexCoords(0, 1)),
-			mage::Vertex(mage::Position(0.5f, -0.5f, -0.5f), mage::Normal(0, -1, 0), mage::TexCoords(1, 1)),
-			mage::Vertex(mage::Position(0.5f, -0.5f, 0.5f), mage::Normal(0, -1, 0), mage::TexCoords(1, 0)),
-			mage::Vertex(mage::Position(0.5f, -0.5f, 0.5f), mage::Normal(0, -1, 0), mage::TexCoords(1, 0)),
-			mage::Vertex(mage::Position(-0.5f, -0.5f, 0.5f), mage::Normal(0, -1, 0), mage::TexCoords(0, 0)),
-			mage::Vertex(mage::Position(-0.5f, -0.5f, -0.5f), mage::Normal(0, -1, 0), mage::TexCoords(0, 1)),
-
-			mage::Vertex(mage::Position(-0.5f, 0.5f, -0.5f), mage::Normal(0, 1, 0), mage::TexCoords(0, 1)),
-			mage::Vertex(mage::Position(0.5f, 0.5f, -0.5f), mage::Normal(0, 1, 0), mage::TexCoords(1, 1)),
-			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(0, 1, 0), mage::TexCoords(1, 0)),
-			mage::Vertex(mage::Position(0.5f, 0.5f, 0.5f), mage::Normal(0, 1, 0), mage::TexCoords(1, 0)),
-			mage::Vertex(mage::Position(-0.5f, 0.5f, 0.5f), mage::Normal(0, 1, 0), mage::TexCoords(0, 0)),
-			mage::Vertex(mage::Position(-0.5f, 0.5f, -0.5f), mage::Normal(0, 1, 0), mage::TexCoords(0, 1)),
-	};
-
-	list<uint> ints = {
-			0, 1, 2,
-			3, 4, 5,
-
-			6, 7, 8,
-			9, 10, 11,
-
-			12, 13, 14,
-			15, 16, 17,
-
-			18, 19, 20,
-			21, 22, 23,
-
-			24, 25, 26,
-			27, 28, 29,
-
-			30, 31, 32,
-			33, 34, 35
-	};
-
-	mage::Input input;
-	const mage::Display display("Mage3D Testing", 1920, 1080, &input);
-	mage::Camera camera(&display, glm::vec3(0, 0, 5));
-	//auto* testMesh = new mage::Mesh(vertices, 5, indices, 18);
-
-	mage::Mesh lampMesh(testVerts, testInts);
-
-
-	mage::Renderer renderer;
-
-	mage::Shader shader("./assets/shaders/basic_lighting");
-	mage::Shader shader2("./assets/shaders/basic_lighting.vert", "./assets/shaders/basic_model.frag");
-	mage::Shader shader3("./assets/shaders/lighting");
-	mage::Shader shaderLamp("./assets/shaders/basic");
-	mage::Model backpack("./assets/models/untitled.obj");
-	PROFILER_START("backpack loading");
-	mage::Model backpackActual("./assets/models/backpack.obj");
-	PROFILER_END;
-
-	// printf > fmt::print > fmt/mage println with color > cout
-
-	auto* brickDif = new mage::Texture("./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
-	auto* brickSpec = new mage::Texture("./assets/textures/bricks_specular.png", TEXTURE_SPECULAR);
-	auto* backDif = new mage::Texture("./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE);
-	auto* backSpec = new mage::Texture("./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR);
-
-	auto* testRef = new mage::Texture("./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
-	mage::Material brickMaterial = {
-			brickDif,
-			brickSpec,
-			nullptr,
-			//new mage::Texture("./assets/textures/bricks_emission.png", "emission"),
-			32.0f
-	};
-
-	mage::Material backpackMat = {
-			backDif,
-			backSpec,
-			nullptr,
-			32.0f
-	};
-
-
-	mage::Model bricks("./assets/models/bricks.obj");
-
-	vec3f lightPos(0, -0.9f, 0);
-
-
-	mage::Timer timer;
-	int frames = 0;
-	mage::Timer rotTimer;
-	while (!display.isClosed())
+	void init() override
 	{
-		timer.update();
+		shaderBasicLighting = createRef<mage::Shader>("./assets/shaders/lighting");
+		shaderLamp = createRef<mage::Shader>("./assets/shaders/basic");
+		cube = createRef<mage::Model>("./assets/models/bricks.obj");
+		backpack = createRef<mage::Model>("./assets/models/backpack.obj");
+		brickDif = createRef<mage::Texture>(
+				"./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
+		brickSpec = createRef<mage::Texture>(
+				"./assets/textures/bricks_specular.png", TEXTURE_SPECULAR);
+		backDif = createRef<mage::Texture>(
+				"./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE);
+		backSpec = createRef<mage::Texture>(
+				"./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR);
 
-		if (input.keyPressed(KEY_ESCAPE))
-			display.toggleCursor();
+		brickMat = mage::Material { brickDif.get(), brickSpec.get(), nullptr, 32.0f };
+		backMat = mage::Material { backDif.get(), backSpec.get(), nullptr, 32.0f };
 
-		camera.update(input, timer.delta());
-		display.clear(0, 0, 0);
-		// Render
-
-		//shader.enable();
-		//
-		//glm::mat4 rot(1);
-		//rot = glm::rotate((float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
-		//shader.setUniformMatf("model", rot);
-		//shader.setUniformMatf("projection", camera.getProjectionMatrix());
-		//shader.setUniformMatf("view", camera.getViewMatrix());
-		//
-		//shader.setUniform3f("lightColor", vec3f(1.0f, 0.5f, 0.7f));
-		//shader.setUniform3f("lightPos", lightPos);
-		//shader.setUniform3f("viewPos", camera.getPosition());
-		//
-		//renderer.render(shader, cubeMesh);
-		//
-		//shader.disable();
-
-		//shader.enable();
-		//glm::mat4 plane(1);
-		//shader.setUniformMatf("model", plane);
-		//shader.setUniformMatf("projection", camera.getProjectionMatrix());
-		//shader.setUniformMatf("view", camera.getViewMatrix());
-		//shader.setUniform3f("lightColor", vec3f(1.0f, 0.5f, 0.7f));
-		//shader.setUniform3f("lightPos", lightPos);
-		//shader.setUniform3f("viewPos", camera.getPosition());
-		//
-		//renderer.render(shader, planeMesh);
-		//shader.disable();
-
-		shader3.enable();
+		lightPos = vec3f(0, -0.9f, 0);
 
 		for (int i = 0; i < 20; i++)
 		{
-			glm::mat4 bp = glm::scale(glm::mat4(1), glm::vec3(1));
-			float x = (float) i * 3.5f;
-			bp = glm::translate(bp, vec3f(x, 0, -4));
-			glm::mat4 v = glm::transpose(glm::inverse(bp * camera.getViewMatrix()));
-			//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
-			shader3.setUniformMatf("model", bp);
-			shader3.setUniformMatf("projection", camera.getProjectionMatrix());
-			shader3.setUniformMatf("view", camera.getViewMatrix());
-			shader3.setUniformMatf("normalMatrix", v);
-			shader3.setUniform3f("light.ambient", vec3f(0.1f));
-			shader3.setUniform3f("light.diffuse", vec3f(0.5f));
-			shader3.setUniform3f("light.specular", vec3f(1));
-			shader3.setUniform3f("lightPos", vec3f(0, 0, -1));
-
-
-			renderer.render(shader3, backpackActual, backpackMat);
+			mat4f m = glm::translate(mat4f(1), vec3f((float) i * 3.5f, 0, -4));
+			backpackTransformations.push_back(m);
 		}
-		shader3.disable();
+		brickTransformation = glm::translate(mat4f(1), vec3f(-4, 0, 0));
+		brickTransformation = glm::scale(brickTransformation, vec3f(0.5f));
+		lampTransformation = glm::scale(mat4f(1), vec3f(0.1f));
+	}
 
-		shader3.enable();
+	void processInput(mage::Input* input, float delta) override
+	{
+		m_camera.update(*input, delta);
+		if(input->keyPressed(KEY_ESCAPE)){
+			mage::Display::toggleCursor();
+		}
+	}
 
-		glm::mat4 br = glm::translate(glm::mat4(1), vec3f(-4, 0, 0));
-		br = glm::scale(br, glm::vec3(0.5f));
-		//br = glm::rotate(br, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
-		glm::mat4 v2 = glm::transpose(glm::inverse(br * camera.getViewMatrix()));
-		//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
+	void update(float delta) override {
+		brickTransformation = glm::rotate(brickTransformation, delta * 0.5f, vec3f(0, 1, 1));
+	}
+
+	void render() override
+	{
+		shaderBasicLighting->enable();
+
+		for (int i = 0; i < 20; i++)
+		{
+			glm::mat4 v = glm::transpose(
+					glm::inverse(backpackTransformations[ i ] * m_camera.getViewMatrix()));
+			//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
+			shaderBasicLighting->setUniformMatf("model", backpackTransformations[ i ]);
+			shaderBasicLighting->setUniformMatf("projection", m_camera.getProjectionMatrix());
+			shaderBasicLighting->setUniformMatf("view", m_camera.getViewMatrix());
+			shaderBasicLighting->setUniformMatf("normalMatrix", v);
+			shaderBasicLighting->setUniform3f("light.ambient", vec3f(0.1f));
+			shaderBasicLighting->setUniform3f("light.diffuse", vec3f(0.5f));
+			shaderBasicLighting->setUniform3f("light.specular", vec3f(1));
+			shaderBasicLighting->setUniform3f("lightPos", vec3f(0, 0, -1));
+
+
+			renderer.render(*shaderBasicLighting, *backpack, backMat);
+		}
+		shaderBasicLighting->disable();
+
+		shaderBasicLighting->enable();
+
+		glm::mat4 v2 = glm::transpose(glm::inverse(brickTransformation * m_camera.getViewMatrix()));
 
 		//TODO This can probably be put under some form a transformation class/struct
-		shader3.setUniformMatf("model", br);
-		shader3.setUniformMatf("projection", camera.getProjectionMatrix());
-		shader3.setUniformMatf("view", camera.getViewMatrix());
-		shader3.setUniformMatf("normalMatrix", v2);
+		shaderBasicLighting->setUniformMatf("model", brickTransformation);
+		shaderBasicLighting->setUniformMatf("projection", m_camera.getProjectionMatrix());
+		shaderBasicLighting->setUniformMatf("view", m_camera.getViewMatrix());
+		shaderBasicLighting->setUniformMatf("normalMatrix", v2);
 		//shader3.setUniform3f("material.ambient", vec3f(1, 0.5f, 0.31f));
 		//shader3.setUniform3f("material.diffuse", vec3f(1, 0.5f, 0.31f));
 		//shader3.setUniform3f("material.specular", vec3f(0.5f, 0.5f, 0.5f));
 		//shader3.setUniform1f("material.shininess", 32.0f);
 		// TODO This should be under a light struct/class
-		shader3.setUniform3f("light.ambient", vec3f(0.1f));
-		shader3.setUniform3f("light.diffuse", vec3f(0.5f));
-		shader3.setUniform3f("light.specular", vec3f(1));
-		shader3.setUniform3f("lightPos", vec3f(0, 0, -1));
+		shaderBasicLighting->setUniform3f("light.ambient", vec3f(0.1f));
+		shaderBasicLighting->setUniform3f("light.diffuse", vec3f(0.5f));
+		shaderBasicLighting->setUniform3f("light.specular", vec3f(1));
+		shaderBasicLighting->setUniform3f("lightPos", vec3f(0, 0, -1));
 
 
-		renderer.render(shader3, bricks, brickMaterial);
+		renderer.render(*shaderBasicLighting, *cube, brickMat);
 
-		shader3.disable();
+		shaderBasicLighting->disable();
 
-		shaderLamp.enable();
-		glm::mat4 lampModel = glm::scale(glm::mat4(1), vec3f(0.1f));
-		shaderLamp.setUniformMatf("model", lampModel);
-		shaderLamp.setUniformMatf("projection", camera.getProjectionMatrix());
-		shaderLamp.setUniformMatf("view", camera.getViewMatrix());
+		shaderLamp->enable();
+		shaderLamp->setUniformMatf("model", lampTransformation);
+		shaderLamp->setUniformMatf("projection", m_camera.getProjectionMatrix());
+		shaderLamp->setUniformMatf("view", m_camera.getViewMatrix());
 
-		renderer.render(shaderLamp, bricks);
+		renderer.render(*shaderLamp, *cube);
 
-		shaderLamp.disable();
-
-
-		input.update();
-		display.update();
-		double elapsed = timer.elapsed();
-		// Calculating fps every single frame is a bit pointless and performance damaging
-		//mage::println(mage::console::BRIGHT_RED, "FPS: {}, frames: {}, time: {}", fps, frames, elapsed);
-		//std::string newTitle = fmt::format("{}{}", "Mage3D Testing -- FPS: ", fps);
-		//const char* newTitleCstr = newTitle.c_str();
-		//display.setTitle(newTitleCstr);
-		if (elapsed >= 1.0)
-		{
-			double fps = frames / elapsed;
-			DBGPRINT("Average FPS: %i | Precise: %f", frames, fps);
-			//std::string newTitle = fmt::format("{}{:.4f}", "Mage3D Testing -- FPS: ", fps);
-			//const char* newTitleCstr = newTitle.c_str();
-			//display.setTitle(newTitleCstr);
-			frames = 0;
-			timer.reset();
-		} else frames++;
-
+		shaderLamp->disable();
 	}
 
-	delete brickDif;
-	delete brickSpec;
-	delete backDif;
-	delete backSpec;
-	delete testRef;
+	void destroy() override { }
 
+private:
+	list<mat4f> backpackTransformations;
+	mat4f brickTransformation{};
+	mat4f lampTransformation{};
+	mage::Camera m_camera;
+
+	mage::Renderer renderer;
+
+	SharedPtr<mage::Shader> shaderBasicLighting;
+	SharedPtr<mage::Shader> shaderLamp;
+	SharedPtr<mage::Model> cube;
+	SharedPtr<mage::Model> backpack;
+
+	SharedPtr<mage::Texture> brickDif;
+	SharedPtr<mage::Texture> brickSpec;
+	SharedPtr<mage::Texture> backDif;
+	SharedPtr<mage::Texture> backSpec;
+	mage::Material brickMat{};
+	mage::Material backMat{};
+	vec3f lightPos{};
+
+
+};
+
+int main(int argc, char** argv)
+{
+	TestGame game;
+	mage::Engine engine(&game, "Test Game", 1920, 1080);
+	engine.start();
 	return 0;
 }
