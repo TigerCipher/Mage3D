@@ -31,137 +31,114 @@
 class TestGame : public mage::Game
 {
 public:
-	TestGame() : Game() {}
+    TestGame() :
+            Game() { }
 
-	void init() override
-	{
-		shaderBasicLighting = createRef<mage::Shader>("./assets/shaders/lighting");
-		shaderLamp = createRef<mage::Shader>("./assets/shaders/basic");
-		cube = createRef<mage::Model>("./assets/models/bricks.obj");
-		backpack = createRef<mage::Model>("./assets/models/backpack.obj");
-		brickDif = createRef<mage::Texture>(
-				"./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
-		brickSpec = createRef<mage::Texture>(
-				"./assets/textures/bricks_specular.png", TEXTURE_SPECULAR);
-		backDif = createRef<mage::Texture>(
-				"./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE);
-		backSpec = createRef<mage::Texture>(
-				"./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR);
+    void init() override
+    {
+        PROFILER_SCOPE(1);
+        m_root = createRef<mage::GameObject>();
+        m_basic = createRef<mage::GameObject>();
 
-		brickMat = mage::Material { brickDif.get(), brickSpec.get(), nullptr, 32.0f };
-		backMat = mage::Material { backDif.get(), backSpec.get(), nullptr, 32.0f };
+        brick = new mage::GameObject();
+        auto* lamp = new mage::GameObject();
+        shaderBasicLighting = createRef<mage::Shader>("./assets/shaders/lighting");
+        shaderLamp = createRef<mage::Shader>("./assets/shaders/basic");
+        cube = createRef<mage::Model>("./assets/models/bricks.obj");
+        backpack = createRef<mage::Model>("./assets/models/backpack.obj");
+        brickDif = createRef<mage::Texture>(
+                "./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
+        brickSpec = createRef<mage::Texture>(
+                "./assets/textures/bricks_specular.png", TEXTURE_SPECULAR);
+        backDif = createRef<mage::Texture>(
+                "./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE);
+        backSpec = createRef<mage::Texture>(
+                "./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR);
 
-		lightPos = vec3f(0, -0.9f, 0);
+        brickMat = createRef<mage::Material>(brickDif.get(), brickSpec.get(), nullptr, 32.0f);
+        backMat = createRef<mage::Material>(backDif.get(), backSpec.get(), nullptr, 32.0f);
 
-		for (int i = 0; i < 20; i++)
-		{
-			mat4f m = glm::translate(mat4f(1), vec3f((float) i * 3.5f, 0, -4));
-			backpackTransformations.push_back(m);
-		}
-		brickTransformation = glm::translate(mat4f(1), vec3f(-4, 0, 0));
-		brickTransformation = glm::scale(brickTransformation, vec3f(0.5f));
-		lampTransformation = glm::scale(mat4f(1), vec3f(0.1f));
-	}
+        lightPos = vec3f(0, 0.5f, -1.5f);
+        m_camera = createRef<mage::Camera>();
 
-	void processInput(mage::Input* input, float delta) override
-	{
-		m_camera.update(*input, delta);
-		if(input->keyPressed(KEY_ESCAPE)){
-			mage::Display::toggleCursor();
-		}
-	}
+        for (int i = 0; i < 20; i++)
+        {
+            auto* backp = (new mage::GameObject())->addComponent(
+                    new mage::ModelRenderer(backpack, backMat, m_camera, lightPos, mage::LIGHTING));
+            backp->getTransform().setPos(vec3f((float) i * 3.5f, 0, -4));
+            m_root->addChild(backp);
+        }
 
-	void update(float delta) override {
-		brickTransformation = glm::rotate(brickTransformation, delta * 0.5f, vec3f(0, 1, 1));
-	}
+        brick->addComponent(new mage::ModelRenderer(cube, brickMat, m_camera, lightPos, mage::LIGHTING));
+        brick->getTransform().setPos(vec3f(-4, 0, 0));
+        brick->getTransform().setScale(0.5f);
 
-	void render() override
-	{
-		shaderBasicLighting->enable();
+        lamp->addComponent(new mage::ModelRenderer(cube, nullptr, m_camera, lightPos, mage::LAMP));
+        lamp->getTransform().setPos(lightPos);
+        lamp->getTransform().setScale(0.1f);
 
-		for (int i = 0; i < 20; i++)
-		{
-			glm::mat4 v = glm::transpose(
-					glm::inverse(backpackTransformations[ i ] * m_camera.getViewMatrix()));
-			//bp = glm::rotate(bp, (float) rotTimer.elapsed() * 0.6f, glm::vec3(1, 1, 1));
-			shaderBasicLighting->setUniformMatf("model", backpackTransformations[ i ]);
-			shaderBasicLighting->setUniformMatf("projection", m_camera.getProjectionMatrix());
-			shaderBasicLighting->setUniformMatf("view", m_camera.getViewMatrix());
-			shaderBasicLighting->setUniformMatf("normalMatrix", v);
-			shaderBasicLighting->setUniform3f("light.ambient", vec3f(0.1f));
-			shaderBasicLighting->setUniform3f("light.diffuse", vec3f(0.5f));
-			shaderBasicLighting->setUniform3f("light.specular", vec3f(1));
-			shaderBasicLighting->setUniform3f("lightPos", vec3f(0, 0, -1));
+        m_root->addChild(brick);
+        m_basic->addChild(lamp);
 
+    }
 
-			renderer.render(*shaderBasicLighting, *backpack, backMat);
-		}
-		shaderBasicLighting->disable();
+    void processInput(mage::Input* input, float delta) override
+    {
+        m_camera->update(*input, delta);
+        if (input->keyPressed(KEY_ESCAPE))
+        {
+            mage::Display::toggleCursor();
+        }
+        m_root->inputAll(input, delta);
+        m_basic->inputAll(input, delta);
 
-		shaderBasicLighting->enable();
+    }
 
-		glm::mat4 v2 = glm::transpose(glm::inverse(brickTransformation * m_camera.getViewMatrix()));
+    void update(float delta) override
+    {
+        brick->getTransform().rotate(delta * 0.5f, vec3f(0, 1, 1));
+        m_root->updateAll(delta);
+        m_basic->updateAll(delta);
+    }
 
-		//TODO This can probably be put under some form a transformation class/struct
-		shaderBasicLighting->setUniformMatf("model", brickTransformation);
-		shaderBasicLighting->setUniformMatf("projection", m_camera.getProjectionMatrix());
-		shaderBasicLighting->setUniformMatf("view", m_camera.getViewMatrix());
-		shaderBasicLighting->setUniformMatf("normalMatrix", v2);
-		//shader3.setUniform3f("material.ambient", vec3f(1, 0.5f, 0.31f));
-		//shader3.setUniform3f("material.diffuse", vec3f(1, 0.5f, 0.31f));
-		//shader3.setUniform3f("material.specular", vec3f(0.5f, 0.5f, 0.5f));
-		//shader3.setUniform1f("material.shininess", 32.0f);
-		// TODO This should be under a light struct/class
-		shaderBasicLighting->setUniform3f("light.ambient", vec3f(0.1f));
-		shaderBasicLighting->setUniform3f("light.diffuse", vec3f(0.5f));
-		shaderBasicLighting->setUniform3f("light.specular", vec3f(1));
-		shaderBasicLighting->setUniform3f("lightPos", vec3f(0, 0, -1));
+    void render() override
+    {
 
+        m_root->renderAll(&renderer, shaderBasicLighting.get());
+        m_basic->renderAll(&renderer, shaderLamp.get());
+    }
 
-		renderer.render(*shaderBasicLighting, *cube, brickMat);
-
-		shaderBasicLighting->disable();
-
-		shaderLamp->enable();
-		shaderLamp->setUniformMatf("model", lampTransformation);
-		shaderLamp->setUniformMatf("projection", m_camera.getProjectionMatrix());
-		shaderLamp->setUniformMatf("view", m_camera.getViewMatrix());
-
-		renderer.render(*shaderLamp, *cube);
-
-		shaderLamp->disable();
-	}
-
-	void destroy() override { }
+    void destroy() override { }
 
 private:
-	list<mat4f> backpackTransformations;
-	mat4f brickTransformation{};
-	mat4f lampTransformation{};
-	mage::Camera m_camera;
+    mage::GameObject* brick;
+    SharedPtr<mage::GameObject> m_root;
+    SharedPtr<mage::GameObject> m_basic;
+    SharedPtr<mage::Camera> m_camera;
 
-	mage::Renderer renderer;
+    mage::Renderer renderer;
 
-	SharedPtr<mage::Shader> shaderBasicLighting;
-	SharedPtr<mage::Shader> shaderLamp;
-	SharedPtr<mage::Model> cube;
-	SharedPtr<mage::Model> backpack;
+    SharedPtr<mage::Shader> shaderBasicLighting;
+    SharedPtr<mage::Shader> shaderLamp;
+    SharedPtr<mage::Model> cube;
+    SharedPtr<mage::Model> backpack;
 
-	SharedPtr<mage::Texture> brickDif;
-	SharedPtr<mage::Texture> brickSpec;
-	SharedPtr<mage::Texture> backDif;
-	SharedPtr<mage::Texture> backSpec;
-	mage::Material brickMat{};
-	mage::Material backMat{};
-	vec3f lightPos{};
+    SharedPtr<mage::Texture> brickDif;
+    SharedPtr<mage::Texture> brickSpec;
+    SharedPtr<mage::Texture> backDif;
+    SharedPtr<mage::Texture> backSpec;
+
+    SharedPtr<mage::Material> brickMat { };
+    SharedPtr<mage::Material> backMat { };
+    vec3f lightPos { };
 
 
 };
 
 int main(int argc, char** argv)
 {
-	TestGame game;
-	mage::Engine engine(&game, "Test Game", 1920, 1080);
-	engine.start();
-	return 0;
+    TestGame game;
+    mage::Engine engine(&game, "Test Game", 1920, 1080);
+    engine.start();
+    return 0;
 }

@@ -29,5 +29,6 @@
 #include "texture.h"
 #include "model.h"
 #include "material.h"
+#include "modelrenderer.h"
 
 #endif //MAGE3D_GRAPHICS_H

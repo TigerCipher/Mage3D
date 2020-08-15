@@ -28,6 +28,9 @@
 #include "resourcemanager.h"
 #include "game.h"
 #include "engine.h"
+#include "transform.h"
+#include "gameobject.h"
+#include "gamecomponent.h"
 
 
 #endif // MAGE3D_CORE_H

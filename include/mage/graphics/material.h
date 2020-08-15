@@ -36,6 +36,15 @@ namespace mage
 	    Texture* emission;
 	    float shininess;
 
+	    mage3d_EXPORT Material() = default;
+	    mage3d_EXPORT Material(Texture* _diffuse, Texture* _specular, Texture* _emission, float _shininess)
+        {
+	        diffuse = _diffuse;
+	        specular = _specular;
+	        emission = _emission;
+	        shininess = _shininess;
+        }
+
 	    //~Material()
 		//{
 	    //	delete diffuse;

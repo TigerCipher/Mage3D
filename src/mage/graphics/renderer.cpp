@@ -112,6 +112,7 @@ void mage::Renderer::render(mage::Shader& shader, mage::Model& model)
 	}
 }
 
+// TODO: Should be pointers really
 void mage::Renderer::render(mage::Shader& shader, mage::Mesh& mesh, const mage::Material& material)
 {
 	mesh.enable();
@@ -154,7 +155,11 @@ void mage::Renderer::render(mage::Shader& shader, mage::Mesh& mesh, const mage::
 	for (int i = 0; i < shader.getNumAttribs(); i++)
 	{
 		glEnableVertexAttribArray(i);
-		AttribInfo info;
+		AttribInfo info{};
+
+		// TODO: This system isn't great. Engine should expect certain attribs
+        // For user made shaders, might be good to create a preprocessor so people can #include "base_vertex.glh"
+        // Or just automatically add this stuff before reading source of shader files?
 		if (shader.getAttribInfo(i, &info))
 		{
 			if (strcmp(info.name, "position") == 0)

@@ -25,6 +25,7 @@
 #include <bmd/types.h>
 
 #include <glm/glm.hpp>
+#include <glm/detail/type_quat.hpp>
 
 // Rename some of the glm types, again for quality of life sake
 using vec2f = glm::vec2;
@@ -34,20 +35,20 @@ using mat4f = glm::mat4;
 using vec2i = glm::ivec2;
 using vec3i = glm::ivec3;
 using vec4i = glm::ivec4;
-
+using quaternion = glm::quat;
 
 #define SIZE_OF_ARRAY(arr) (sizeof(arr) / sizeof(arr[0]))
 
 
 #define checkGlError() if(glGetError() != GL_NO_ERROR) \
-fprintf(stderr, "OpenGL Error (%i):\n%s\nOccured in %s at line %i\n", glGetError(), glGetString(glGetError()), __FILE__, __LINE__);
+fprintf(stderr, "OpenGL Error (%i):\n%s\nOccurred in %s at line %i\n", glGetError(), glGetString(glGetError()), __FILE__, __LINE__);
 
 #define DBGPRINT(fmt_, ...) printf(fmt_"\n", ##__VA_ARGS__)
 #define DBGPRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", ##__VA_ARGS__)
 #ifdef MAGE_VERBOSE
-	#define VERBOSE_PRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", ##__VA_ARGS__)
+    #define VERBOSE_PRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", ##__VA_ARGS__)
 #else
-	#define VERBOSE_PRINT_ERR(...)
+    #define VERBOSE_PRINT_ERR(...)
 #endif // MAGE_VERBOSE
 
 #endif //MAGE3D_COMMON_H
