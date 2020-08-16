@@ -38,12 +38,9 @@ public:
     {
         PROFILER_SCOPE(1);
         m_root = createRef<mage::GameObject>();
-        m_basic = createRef<mage::GameObject>();
 
         brick = new mage::GameObject();
         auto* lamp = new mage::GameObject();
-        shaderBasicLighting = createRef<mage::Shader>("./assets/shaders/lighting");
-        shaderLamp = createRef<mage::Shader>("./assets/shaders/basic");
         cube = createRef<mage::Model>("./assets/models/bricks.obj");
         backpack = createRef<mage::Model>("./assets/models/backpack.obj");
         brickDif = createRef<mage::Texture>(
@@ -65,21 +62,21 @@ public:
         for (int i = 0; i < 20; i++)
         {
             auto* backp = (new mage::GameObject())->addComponent(
-                    new mage::ModelRenderer(backpack, backMat, m_camera, lightPos, mage::LIGHTING));
+                    new mage::ModelRenderer(backpack, backMat, m_camera, lightPos));
             backp->getTransform().setPos(vec3f((float) i * 3.5f, 0, -4));
             m_root->addChild(backp);
         }
 
-        brick->addComponent(new mage::ModelRenderer(cube, brickMat, m_camera, lightPos, mage::LIGHTING));
+        brick->addComponent(new mage::ModelRenderer(cube, brickMat, m_camera, lightPos));
         brick->getTransform().setPos(vec3f(-4, 0, 0));
         brick->getTransform().setScale(0.5f);
 
-        lamp->addComponent(new mage::ModelRenderer(cube, nullptr, m_camera, lightPos, mage::LAMP));
+        lamp->addComponent(new mage::BasicModelRenderer(cube, m_camera));
         lamp->getTransform().setPos(lightPos);
         lamp->getTransform().setScale(0.1f);
 
         m_root->addChild(brick);
-        m_basic->addChild(lamp);
+        m_root->addChild(lamp);
 
     }
 
@@ -91,7 +88,6 @@ public:
             mage::Display::toggleCursor();
         }
         m_root->inputAll(input, delta);
-        m_basic->inputAll(input, delta);
 
     }
 
@@ -99,28 +95,20 @@ public:
     {
         brick->getTransform().rotate(delta * 0.5f, vec3f(0, 1, 1));
         m_root->updateAll(delta);
-        m_basic->updateAll(delta);
     }
 
-    void render() override
+    void render(const mage::RenderEngine* renderEngine) override
     {
-
-        m_root->renderAll(&renderer, shaderBasicLighting.get());
-        m_basic->renderAll(&renderer, shaderLamp.get());
+        m_root->renderAll(renderEngine);
     }
 
     void destroy() override { }
 
 private:
-    mage::GameObject* brick;
+    mage::GameObject* brick{};
     SharedPtr<mage::GameObject> m_root;
-    SharedPtr<mage::GameObject> m_basic;
     SharedPtr<mage::Camera> m_camera;
 
-    mage::Renderer renderer;
-
-    SharedPtr<mage::Shader> shaderBasicLighting;
-    SharedPtr<mage::Shader> shaderLamp;
     SharedPtr<mage::Model> cube;
     SharedPtr<mage::Model> backpack;
 

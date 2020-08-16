@@ -24,11 +24,11 @@
 
 #include "shader.h"
 #include "mesh.h"
-#include "renderer.h"
 #include "vertex.h"
 #include "texture.h"
 #include "model.h"
 #include "material.h"
 #include "modelrenderer.h"
+#include "renderengine.h"
 
 #endif //MAGE3D_GRAPHICS_H

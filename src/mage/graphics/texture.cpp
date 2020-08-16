@@ -113,6 +113,20 @@ std::ostream& mage::operator<<(std::ostream& os, const mage::Texture& texture)
 	return os;
 }
 
+void mage::Texture::enable(uint slot) const
+{
+    assert(slot < 31 && slot >= 0);
+	glActiveTexture(GL_TEXTURE0 + slot);
+	m_textureData->bind(0);
+}
+
+void mage::Texture::disable(uint slot) const
+{
+    assert(slot < 31 && slot >= 0);
+	glActiveTexture(GL_TEXTURE0 + slot);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 
 mage::TextureData::TextureData(GLenum textureTarget, int width, int height, int numTextures, ubyte** data,
 							   bool clamp)

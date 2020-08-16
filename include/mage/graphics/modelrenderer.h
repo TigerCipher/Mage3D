@@ -34,61 +34,39 @@
 namespace mage
 {
 
-    enum ShaderType
-    {
-        LIGHTING, LAMP
-    };
-
-    class ModelRenderer : public GameComponent
+    class BasicModelRenderer : public GameComponent
     {
     public:
-        ModelRenderer(SharedPtr<Model> model, SharedPtr<Material> material, SharedPtr<Camera> camera,
-                      vec3f lightPos, ShaderType type) :
-                m_lightPos(lightPos),
-                transposed(1),
-                m_type(type)
-        {
-            m_model = std::move(model);
-            m_material = std::move(material);
-            m_camera = std::move(camera);
-        }
+        mage3d_EXPORT BasicModelRenderer(SharedPtr<Model> model, SharedPtr<Camera> camera);
+        mage3d_EXPORT void render(const RenderEngine* renderEngine) override;
+    protected:
 
-        void update(float delta) override
-        {
-            if(m_type == LIGHTING)
-                transposed = glm::transpose(
-                        glm::inverse(getTransform().getTransformation() * m_camera->getViewMatrix()));
-        }
+        virtual void postRender(const mage::RenderEngine* renderEngine);
 
-        void render(Renderer* renderer, Shader* shader) override
-        {
-            shader->enable();
-            shader->setUniformMatf("model", getTransform().getTransformation());
-            shader->setUniformMatf("projection", m_camera->getProjectionMatrix());
-            shader->setUniformMatf("view", m_camera->getViewMatrix());
-            if (m_type == LIGHTING)
-            {
-                //transposed = glm::transpose(
-                //        glm::inverse(getTransform().getTransformation() * m_camera->getViewMatrix()));
-                shader->setUniformMatf("normalMatrix", transposed);
-                shader->setUniform3f("light.ambient", vec3f(0.1f));
-                shader->setUniform3f("light.diffuse", vec3f(0.5f));
-                shader->setUniform3f("light.specular", vec3f(1));
-                shader->setUniform3f("lightPos", m_lightPos);
-                renderer->render(*shader, *m_model, *m_material);
-            } else renderer->render(*shader, *m_model);
-
-            shader->disable();
-        }
-
-    private:
         SharedPtr<Model> m_model;
-        SharedPtr<Material> m_material;
         SharedPtr<Camera> m_camera;
+        const Shader* m_shader;
+    };
+
+    class ModelRenderer : public BasicModelRenderer
+    {
+    public:
+        mage3d_EXPORT ModelRenderer(SharedPtr<Model> model, SharedPtr<Material> material, SharedPtr<Camera> camera,
+                      vec3f lightPos);
+
+        void update(float delta) override;
+
+    protected:
+
+        void postRender(const mage::RenderEngine* renderEngine) override;
+
+        SharedPtr<Material> m_material;
         mat4f transposed;
         vec3f m_lightPos;
-        ShaderType m_type;
     };
+
+
+
 }
 
 #endif //MAGE3D_MODELRENDERER_H

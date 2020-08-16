@@ -28,8 +28,8 @@
 #include "display.h"
 #include "transform.h"
 #include "input.h"
-#include "mage/graphics/renderer.h"
 #include "mage/graphics/shader.h"
+#include "mage/graphics/renderengine.h"
 
 namespace mage
 {
@@ -46,7 +46,7 @@ namespace mage
 
         mage3d_EXPORT void inputAll(Input* _input, float delta);
         mage3d_EXPORT void updateAll(float delta);
-        mage3d_EXPORT void renderAll(Renderer* renderer, Shader* shader);
+        mage3d_EXPORT void renderAll(const RenderEngine* renderEngine);
 
         mage3d_EXPORT list<GameObject*> getAttachedChildren();
 
@@ -55,7 +55,7 @@ namespace mage
     private:
         void input(Input* _input, float delta);
         void update(float delta);
-        void render(Renderer* renderer, Shader* shader);
+        void render(const RenderEngine* renderEngine);
 
         list<GameObject*> m_children;
         list<GameComponent*> m_components;

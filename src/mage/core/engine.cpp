@@ -37,10 +37,12 @@ mage::Engine::Engine(Game* game, const char* title, int width, int height, float
 	// Or change assets system to load data (i.e loading models into vertices, indices, etc) and waiting to bind to gl buffers until after
 	// gl contexts are created
 	Display::create(title, width, height, &m_input);
+	m_renderEngine = new RenderEngine();
 }
 
 mage::Engine::~Engine()
 {
+    delete m_renderEngine;
 	Display::destroy();
 }
 
@@ -94,7 +96,7 @@ void mage::Engine::run()
 
 		// TODO: Might want to interpolate positions to render at between 2 ticks - accumulated / m_msPerUpdate should suffice
 
-		m_game->render();
+		m_game->render(m_renderEngine);
 
 		m_input.update();
 		Display::update();

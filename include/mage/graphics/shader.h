@@ -63,8 +63,8 @@ namespace mage
         std::string preprocess(const std::string& fileName);
 
         uint m_id;
-        const char* m_vertFile;
-        const char* m_fragFile;
+        std::string m_vertFile;
+        std::string m_fragFile;
     };
 
 	class Shader
@@ -78,18 +78,19 @@ namespace mage
 		mage3d_EXPORT void enable() const;
 		mage3d_EXPORT void disable() const;
 
-		mage3d_EXPORT void setUniform1i(const GLchar* name, int value);
-		mage3d_EXPORT void setUniform1f(const GLchar* name, float value);
-		mage3d_EXPORT void setUniform2f(const GLchar* name, const glm::vec2& value);
-		mage3d_EXPORT void setUniform3f(const GLchar* name, const glm::vec3& value);
-		mage3d_EXPORT void setUniform4f(const GLchar* name, const glm::vec4& value);
-		mage3d_EXPORT void setUniformMatf(const GLchar* name, const glm::mat4& value);
+		mage3d_EXPORT void setUniform1i(const GLchar* name, int value) const;
+		mage3d_EXPORT void setUniform1f(const GLchar* name, float value) const;
+		mage3d_EXPORT void setUniform2f(const GLchar* name, const glm::vec2& value) const;
+		mage3d_EXPORT void setUniform3f(const GLchar* name, const glm::vec3& value) const;
+		mage3d_EXPORT void setUniform4f(const GLchar* name, const glm::vec4& value) const;
+		mage3d_EXPORT void setUniformMatf(const GLchar* name, const glm::mat4& value) const;
 
 		mage3d_EXPORT int getAttribLocation(const char* attribName);
+		mage3d_EXPORT int getAttribLocation(const char* attribName) const;
 
 	protected:
 	private:
-		GLint getLocation(const GLchar* name);
+		GLint getLocation(const GLchar* name) const;
 		ShaderData* m_shaderData{};
 		std::string m_keyName;
 

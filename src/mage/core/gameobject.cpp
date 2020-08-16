@@ -58,11 +58,11 @@ void mage::GameObject::updateAll(float delta)
         child->updateAll(delta);
 }
 
-void mage::GameObject::renderAll(mage::Renderer* renderer, mage::Shader* shader)
+void mage::GameObject::renderAll(const RenderEngine* renderEngine)
 {
-    render(renderer, shader);
+    render(renderEngine);
     for (const auto& child : m_children)
-        child->renderAll(renderer, shader);
+        child->renderAll(renderEngine);
 }
 
 list<mage::GameObject*> mage::GameObject::getAttachedChildren()
@@ -90,10 +90,10 @@ void mage::GameObject::update(float delta)
         component->update(delta);
 }
 
-void mage::GameObject::render(mage::Renderer* renderer, mage::Shader* shader)
+void mage::GameObject::render(const RenderEngine* renderEngine)
 {
     for (const auto& component : m_components)
-        component->render(renderer, shader);
+        component->render(renderEngine);
 }
 
 

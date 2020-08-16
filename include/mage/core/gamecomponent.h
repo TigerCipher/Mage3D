@@ -24,6 +24,7 @@
 
 #include "mage3d_exported.h"
 #include "mage/common.h"
+#include "mage/graphics/renderengine.h"
 #include "gameobject.h"
 
 
@@ -38,7 +39,7 @@ namespace mage
         mage3d_EXPORT virtual ~GameComponent() = default;
         mage3d_EXPORT virtual void input(Input* _input, float delta) {}
         mage3d_EXPORT virtual void update(float delta) {}
-        mage3d_EXPORT virtual void render(Renderer* renderer, Shader* shader) {}
+        mage3d_EXPORT virtual void render(const RenderEngine* renderEngine) {}
         mage3d_EXPORT inline void setParent(GameObject* parent) { m_parent = parent; }
         mage3d_EXPORT inline Transform& getTransform() { return m_parent->getTransform(); }
         [[nodiscard]] mage3d_EXPORT inline const Transform& getTransform() const { return m_parent->getTransform(); }

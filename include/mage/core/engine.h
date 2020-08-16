@@ -29,6 +29,7 @@
 #include "game.h"
 #include "input.h"
 #include "mage/events/eventdispatcher.h"
+#include "mage/graphics/renderengine.h"
 
 namespace mage
 {
@@ -53,6 +54,7 @@ namespace mage
 		float m_msPerUpdate;
 		bool m_limitFrames;
 		UniquePtr<EventDispatcher> m_dispatcher;
+		const RenderEngine* m_renderEngine;
 	};
 
 }

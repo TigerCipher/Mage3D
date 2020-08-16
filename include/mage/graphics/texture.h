@@ -76,6 +76,9 @@ namespace mage
 		mage3d_EXPORT void enable(uint slot);
 		mage3d_EXPORT void disable(uint slot);
 
+		mage3d_EXPORT void enable(uint slot) const;
+		mage3d_EXPORT void disable(uint slot) const;
+
 		mage3d_EXPORT std::string getType() { return m_type; }
 
 		friend std::ostream& operator<<(std::ostream& os, const Texture& texture);

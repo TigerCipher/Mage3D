@@ -81,37 +81,37 @@ mage::Shader::~Shader()
 }
 
 
-void mage::Shader::setUniform1i(const GLchar* name, int value)
+void mage::Shader::setUniform1i(const GLchar* name, int value) const
 {
     glUniform1i(getLocation(name), value);
 }
 
-void mage::Shader::setUniform1f(const GLchar* name, float value)
+void mage::Shader::setUniform1f(const GLchar* name, float value) const
 {
     glUniform1f(getLocation(name), value);
 }
 
-void mage::Shader::setUniform2f(const GLchar* name, const glm::vec2& value)
+void mage::Shader::setUniform2f(const GLchar* name, const glm::vec2& value) const
 {
     glUniform2f(getLocation(name), value.x, value.y);
 }
 
-void mage::Shader::setUniform3f(const GLchar* name, const glm::vec3& value)
+void mage::Shader::setUniform3f(const GLchar* name, const glm::vec3& value) const
 {
     glUniform3f(getLocation(name), value.x, value.y, value.z);
 }
 
-void mage::Shader::setUniform4f(const GLchar* name, const glm::vec4& value)
+void mage::Shader::setUniform4f(const GLchar* name, const glm::vec4& value) const
 {
     glUniform4f(getLocation(name), value.x, value.y, value.z, value.w);
 }
 
-void mage::Shader::setUniformMatf(const GLchar* name, const glm::mat4& value)
+void mage::Shader::setUniformMatf(const GLchar* name, const glm::mat4& value) const
 {
     glUniformMatrix4fv(getLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
-GLint mage::Shader::getLocation(const GLchar* name)
+GLint mage::Shader::getLocation(const GLchar* name) const
 {
     return glGetUniformLocation(m_shaderData->getId(), name);
 }
@@ -131,6 +131,11 @@ int mage::Shader::getAttribLocation(const char* attribName)
     return glGetAttribLocation(m_shaderData->getId(), attribName);
 }
 
+int mage::Shader::getAttribLocation(const char* attribName) const
+{
+    return glGetAttribLocation(m_shaderData->getId(), attribName);
+}
+
 
 mage::ShaderData::ShaderData(const char* vertPath, const char* fragPath) :
         m_vertFile(vertPath),
@@ -141,8 +146,8 @@ mage::ShaderData::ShaderData(const char* vertPath, const char* fragPath) :
 
 mage::ShaderData::~ShaderData()
 {
-    DBGPRINT("Unloading shader file %s", m_vertFile);
-    DBGPRINT("Unloading shader file %s", m_fragFile);
+    DBGPRINT("Unloading shader file %s", m_vertFile.c_str());
+    DBGPRINT("Unloading shader file %s", m_fragFile.c_str());
     glDeleteProgram(m_id);
 }
 
