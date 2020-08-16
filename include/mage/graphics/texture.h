@@ -49,20 +49,20 @@ namespace mage
 		mage3d_EXPORT virtual ~TextureData();
 
 		mage3d_EXPORT void bind(int textureNum);
-		mage3d_EXPORT int getWidth() const { return m_width; }
-		mage3d_EXPORT int getHeight() const { return m_height; }
+		[[nodiscard]] mage3d_EXPORT inline int getWidth() const { return m_width; }
+		[[nodiscard]] mage3d_EXPORT inline int getHeight() const { return m_height; }
 
 		friend std::ostream& operator<<(std::ostream& os, const TextureData& data);
 
+		void operator=(TextureData& other) = delete;
 	private:
 		TextureData(TextureData& other)  : ResourceManager(other) { }
-		void operator=(TextureData& other) { }
 
-		GLenum m_textureTarget;
-		uint* m_id;
-		int m_numTextures;
-		int m_width;
-		int m_height;
+		GLenum m_textureTarget{};
+		uint* m_id{};
+		int m_numTextures{};
+		int m_width{};
+		int m_height{};
 	};
 
 	class Texture

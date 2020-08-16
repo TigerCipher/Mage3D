@@ -1,6 +1,6 @@
 #version 430 core
 
-layout(location = 0) in vec3 position;
+#include <vertex_attribs.glh>
 
 uniform mat4 model;
 uniform mat4 view;

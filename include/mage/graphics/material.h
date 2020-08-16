@@ -31,10 +31,10 @@ namespace mage
 
 	struct Material
 	{
-	    Texture* diffuse;
-	    Texture* specular;
-	    Texture* emission;
-	    float shininess;
+	    Texture* diffuse = nullptr;
+	    Texture* specular = nullptr;
+	    Texture* emission = nullptr;
+	    float shininess = 32.0f;
 
 	    mage3d_EXPORT Material() = default;
 	    mage3d_EXPORT Material(Texture* _diffuse, Texture* _specular, Texture* _emission, float _shininess)

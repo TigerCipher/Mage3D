@@ -61,6 +61,7 @@ public:
         lightPos = vec3f(0, 0.5f, -1.5f);
         m_camera = createRef<mage::Camera>();
 
+
         for (int i = 0; i < 20; i++)
         {
             auto* backp = (new mage::GameObject())->addComponent(

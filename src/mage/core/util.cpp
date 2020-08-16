@@ -14,36 +14,32 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: lighting.vert.glsl
- * Date File Created: 8/5/2020 at 6:50 PM
+ * File Name: util.cpp
+ * Date File Created: 8/15/2020 at 6:22 PM
  * Author: Matt
  */
 
-#version 430 core
+#include "mage/core/util.h"
 
-#include <vertex_attribs.glh>
-
-out vec3 fragPos;
-out vec3 fragNormal;
-out vec2 fragTexCoord;
-out vec3 fragLightPos;
-
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
-
-uniform mat4 normalMatrix;
-uniform vec3 lightPos;
-
-void main()
+list<std::string> mage::Util::split(const std::string& str, char delim)
 {
-    vec4 vert = vec4(position, 1.0);
-    gl_Position = projection * view * model * vert;
-    fragPos = vec3(view * model * vert);
-    fragTexCoord = texCoord;
-//    fragTexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
-    fragNormal = mat3(normalMatrix) * normal;
-    fragLightPos = vec3(view * vec4(lightPos, 1));
-//    fragNormal = normal;
-//    fragNormal = mat3(transpose(inverse(model))) * normal;
+    list<std::string> elems;
+    const char* cstr = str.c_str();
+    uint strLen = str.length();
+    uint start = 0;
+    uint end = 0;
+    while(end <= strLen)
+    {
+        while(end <= strLen)
+        {
+            if(cstr[end] == delim)
+                break;
+            end++;
+        }
+
+        elems.push_back(str.substr(start, end - start));
+        start = end + 1;
+        end = start;
+    }
+    return elems;
 }

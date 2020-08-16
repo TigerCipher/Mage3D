@@ -14,36 +14,31 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: lighting.vert.glsl
- * Date File Created: 8/5/2020 at 6:50 PM
+ * File Name: util.h
+ * Date File Created: 8/15/2020 at 6:22 PM
  * Author: Matt
  */
 
-#version 430 core
+#ifndef MAGE3D_UTIL_H
+#define MAGE3D_UTIL_H
 
-#include <vertex_attribs.glh>
 
-out vec3 fragPos;
-out vec3 fragNormal;
-out vec2 fragTexCoord;
-out vec3 fragLightPos;
+#include "mage3d_exported.h"
+#include "mage/common.h"
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+#include <string>
 
-uniform mat4 normalMatrix;
-uniform vec3 lightPos;
-
-void main()
+namespace mage
 {
-    vec4 vert = vec4(position, 1.0);
-    gl_Position = projection * view * model * vert;
-    fragPos = vec3(view * model * vert);
-    fragTexCoord = texCoord;
-//    fragTexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
-    fragNormal = mat3(normalMatrix) * normal;
-    fragLightPos = vec3(view * vec4(lightPos, 1));
-//    fragNormal = normal;
-//    fragNormal = mat3(transpose(inverse(model))) * normal;
+    class Util
+    {
+    public:
+        static list<std::string> split(const std::string& str, char delim);
+    protected:
+    private:
+    };
+
 }
+
+
+#endif //MAGE3D_UTIL_H

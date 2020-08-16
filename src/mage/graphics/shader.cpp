@@ -20,255 +20,241 @@
  */
 
 #include "mage/graphics/shader.h"
+#include "mage/core/util.h"
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
 #include <bmd/strutil.h>
-#include <algorithm>
-#include <mage/common.h>
+#include <fstream>
+
+std::map<std::string, mage::ShaderData*> mage::Shader::shaderMap;
 
 mage::Shader::Shader(const char* basePath)
 {
-	char fragPath[MAX_PATH_LENGTH] = { };
-	char vertPath[MAX_PATH_LENGTH] = { };
-	copyStr(vertPath, basePath);
-	copyStr(fragPath, basePath);
-	concatStr(vertPath, ".vert");
-	concatStr(fragPath, ".frag");
-	loadFileAndReadContents(vertPath, &m_vertFile);
-	loadFileAndReadContents(fragPath, &m_fragFile);
-	m_id = load();
+    char fragPath[MAX_PATH_LENGTH] = { };
+    char vertPath[MAX_PATH_LENGTH] = { };
+    copyStr(vertPath, basePath);
+    copyStr(fragPath, basePath);
+    concatStr(vertPath, ".vert");
+    concatStr(fragPath, ".frag");
+    m_keyName = std::string(vertPath);
+    m_keyName += ";";
+    m_keyName += fragPath;
+    std::map<std::string, ShaderData*>::const_iterator it = shaderMap.find(m_keyName);
+    if (it != shaderMap.end())
+    {
+        m_shaderData = it->second;
+        m_shaderData->addReference();
+        //m_shaderData("Ref count %i", m_textureData->getResourceCount());
+    } else
+    {
+        m_shaderData = new ShaderData(vertPath, fragPath);
+        shaderMap.insert(std::pair<std::string, ShaderData*>(m_keyName, m_shaderData));
+    }
 }
 
 mage::Shader::Shader(const char* vertPath, const char* fragPath)
 {
-	loadFileAndReadContents(vertPath, &m_vertFile);
-	loadFileAndReadContents(fragPath, &m_fragFile);
-	m_id = load();
+    m_keyName = std::string(vertPath);
+    m_keyName += ";";
+    m_keyName += fragPath;
+    std::map<std::string, ShaderData*>::const_iterator it = shaderMap.find(m_keyName);
+    if (it != shaderMap.end())
+    {
+        m_shaderData = it->second;
+        m_shaderData->addReference();
+        //m_shaderData("Ref count %i", m_textureData->getResourceCount());
+    } else
+    {
+        m_shaderData = new ShaderData(vertPath, fragPath);
+        shaderMap.insert(std::pair<std::string, ShaderData*>(m_keyName, m_shaderData));
+    }
 }
 
 mage::Shader::~Shader()
 {
-	DBGPRINT("Unloading shader file %s", m_vertFile.path);
-	DBGPRINT("Unloading shader file %s", m_fragFile.path);
-	glDeleteProgram(m_id);
+    if (m_shaderData && m_shaderData->removeReference())
+    {
+        if (m_keyName.length() > 0)
+            shaderMap.erase(m_keyName);
+        delete m_shaderData;
+    }
 }
 
-bool sortAttribs(const mage::AttribInfo& a, const mage::AttribInfo& b)
-{
-	return a.location < b.location;
-}
-
-GLuint mage::Shader::load()
-{
-	GLuint program = glCreateProgram();
-	GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
-	GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
-
-
-	DBGPRINT("Loading shader file %s", m_vertFile.path);
-	glShaderSource(vertex, 1, &m_vertFile.contents, NULL);
-	glCompileShader(vertex);
-	GLint success;
-	glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		GLint len;
-		glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &len);
-		std::vector<char> error(len);
-		glGetShaderInfoLog(vertex, len, &len, &error[ 0 ]);
-		DBGPRINT_ERR("Error while compiling vertex shader [%s]\nError: %s", m_vertFile.path,
-			  &error[ 0 ]);
-		glDeleteShader(vertex);
-		exit(-1);
-		return 0;
-	}
-
-	DBGPRINT("Loading shader file %s", m_fragFile.path);
-	glShaderSource(fragment, 1, &m_fragFile.contents, NULL);
-	glCompileShader(fragment);
-	glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		GLint len;
-		glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &len);
-		std::vector<char> error(len);
-		glGetShaderInfoLog(fragment, len, &len, &error[ 0 ]);
-		DBGPRINT_ERR("Error while compiling fragment shader [%s]\nError: %s", m_fragFile.path,
-			  &error[ 0 ]);
-		glDeleteShader(fragment);
-		exit(-1);
-		return 0;
-	}
-
-	glAttachShader(program, vertex);
-	glAttachShader(program, fragment);
-	glLinkProgram(program);
-	glValidateProgram(program);
-
-	glGetProgramiv(program, GL_LINK_STATUS, (int*) &success);
-	if (!success)
-	{
-		GLint len = 0;
-		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
-		std::vector<char> error(len);
-		glGetProgramInfoLog(program, len, &len, &error[ 0 ]);
-		DBGPRINT_ERR("Error while linking shader program\nError: %s\n", &error[ 0 ]);
-		glDeleteProgram(program);
-		glDeleteShader(vertex);
-		glDeleteShader(fragment);
-		exit(-1);
-		return 0;
-	}
-
-
-	//int attribNameLen;
-	//glGetProgramiv(program, GL_ACTIVE_ATTRIBUTE_MAX_LENGTH, &attribNameLen);
-	glGetProgramiv(program, GL_ACTIVE_ATTRIBUTES, &m_numAttribs);
-	const GLsizei bufSize = 32;
-	GLsizei length;
-	GLint size; // size of the variable
-	GLenum type;
-	GLchar name[bufSize];
-	for (int i = 0; i < m_numAttribs; i++)
-	{
-		glGetActiveAttrib(program, i, bufSize, &length, &size, &type, name);
-		int loc = glGetAttribLocation(program, name);
-		AttribInfo info { };
-		copyStr(info.name, name);
-		info.location = loc;
-		info.type = type;
-		m_attribs.push_back(info);
-		//println(console::MAGENTA, "Attribute {} : Type = {} Name = {} Length: {} Size: {}", loc, type, name, length, size);
-		//println(console::BRIGHT_MAGENTA, "Attrib info: {} {} {}", name, m_attribMap[name].location, m_attribMap[name].type);
-	}
-
-	std::sort(m_attribs.begin(), m_attribs.end(), sortAttribs);
-
-	if (m_vertFile.contents) free(m_vertFile.contents);
-	if (m_fragFile.contents) free(m_fragFile.contents);
-
-	glDeleteShader(vertex);
-	glDeleteShader(fragment);
-	return program;
-}
 
 void mage::Shader::setUniform1i(const GLchar* name, int value)
 {
-	glUniform1i(getLocation(name), value);
+    glUniform1i(getLocation(name), value);
 }
 
 void mage::Shader::setUniform1f(const GLchar* name, float value)
 {
-	glUniform1f(getLocation(name), value);
+    glUniform1f(getLocation(name), value);
 }
 
 void mage::Shader::setUniform2f(const GLchar* name, const glm::vec2& value)
 {
-	glUniform2f(getLocation(name), value.x, value.y);
+    glUniform2f(getLocation(name), value.x, value.y);
 }
 
 void mage::Shader::setUniform3f(const GLchar* name, const glm::vec3& value)
 {
-	glUniform3f(getLocation(name), value.x, value.y, value.z);
+    glUniform3f(getLocation(name), value.x, value.y, value.z);
 }
 
 void mage::Shader::setUniform4f(const GLchar* name, const glm::vec4& value)
 {
-	glUniform4f(getLocation(name), value.x, value.y, value.z, value.w);
+    glUniform4f(getLocation(name), value.x, value.y, value.z, value.w);
 }
 
 void mage::Shader::setUniformMatf(const GLchar* name, const glm::mat4& value)
 {
-	glUniformMatrix4fv(getLocation(name), 1, GL_FALSE, glm::value_ptr(value));
+    glUniformMatrix4fv(getLocation(name), 1, GL_FALSE, glm::value_ptr(value));
 }
 
 GLint mage::Shader::getLocation(const GLchar* name)
 {
-	return glGetUniformLocation(m_id, name);
+    return glGetUniformLocation(m_shaderData->getId(), name);
 }
 
 void mage::Shader::enable() const
 {
-	glUseProgram(m_id);
+    m_shaderData->bind();
 }
 
 void mage::Shader::disable() const
 {
-	glUseProgram(0);
+    m_shaderData->unbind();
 }
 
 int mage::Shader::getAttribLocation(const char* attribName)
 {
-	for (const auto& info : m_attribs)
-	{
-		if (strcmp(info.name, attribName) == 0)
-			return info.location;
-	}
-
-	return -1;
+    return glGetAttribLocation(m_shaderData->getId(), attribName);
 }
 
-GLenum mage::Shader::getAttribType(const char* attribName)
+
+mage::ShaderData::ShaderData(const char* vertPath, const char* fragPath) :
+        m_vertFile(vertPath),
+        m_fragFile(fragPath)
 {
-	for (const auto& info : m_attribs)
-	{
-		if (strcmp(info.name, attribName) == 0)
-			return info.type;
-	}
-
-	return 0;
+    m_id = load(vertPath, fragPath);
 }
 
-const char* mage::Shader::getAttribName(int location)
+mage::ShaderData::~ShaderData()
 {
-	for (const auto& info : m_attribs)
-	{
-		if(info.location == location)
-			return info.name;
-	}
-
-	return nullptr;
+    DBGPRINT("Unloading shader file %s", m_vertFile);
+    DBGPRINT("Unloading shader file %s", m_fragFile);
+    glDeleteProgram(m_id);
 }
 
-GLenum mage::Shader::getAttribType(int location)
+void mage::ShaderData::bind() const
 {
-	for (const auto& info : m_attribs)
-	{
-		if(info.location == location)
-			return info.type;
-	}
-
-	return 0;
+    glUseProgram(m_id);
 }
 
-int mage::Shader::getAttribInfo(const char* attribName, AttribInfo* info)
+void mage::ShaderData::unbind()
 {
-	for (const auto& i : m_attribs)
-	{
-		if(strcmp(i.name, attribName) == 0)
-		{
-			*info = i;
-			return 1;
-		}
-	}
-
-	return 0;
+    glUseProgram(0);
 }
 
-int mage::Shader::getAttribInfo(int location, AttribInfo* info)
+uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
 {
-	for (const auto& i : m_attribs)
-	{
-		if(i.location == location)
-		{
-			*info = i;
-			return 1;
-		}
-	}
+    std::string vsrc = preprocess(vertFile);
+    std::string fsrc = preprocess(fragFile);
+    const char* vertSrc = vsrc.c_str();
+    const char* fragSrc = fsrc.c_str();
+    GLuint program = glCreateProgram();
+    GLuint vertex = glCreateShader(GL_VERTEX_SHADER);
+    GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
 
-	return 0;
+
+    DBGPRINT("Loading shader file %s", vertFile);
+    glShaderSource(vertex, 1, &vertSrc, NULL);
+    glCompileShader(vertex);
+    GLint success;
+    glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        GLint len;
+        glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &len);
+        std::vector<char> error(len);
+        glGetShaderInfoLog(vertex, len, &len, &error[ 0 ]);
+        DBGPRINT_ERR("Error while compiling vertex shader [%s]\nError: %s", vertFile,
+                     &error[ 0 ]);
+        glDeleteShader(vertex);
+        exit(-1);
+        return 0;
+    }
+
+    DBGPRINT("Loading shader file %s", fragFile);
+    glShaderSource(fragment, 1, &fragSrc, NULL);
+    glCompileShader(fragment);
+    glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+    if (!success)
+    {
+        GLint len;
+        glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &len);
+        std::vector<char> error(len);
+        glGetShaderInfoLog(fragment, len, &len, &error[ 0 ]);
+        DBGPRINT_ERR("Error while compiling fragment shader [%s]\nError: %s", fragFile,
+                     &error[ 0 ]);
+        glDeleteShader(fragment);
+        exit(-1);
+        return 0;
+    }
+
+    glAttachShader(program, vertex);
+    glAttachShader(program, fragment);
+    glLinkProgram(program);
+    glValidateProgram(program);
+
+    glGetProgramiv(program, GL_LINK_STATUS, (int*) &success);
+    if (!success)
+    {
+        GLint len = 0;
+        glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
+        std::vector<char> error(len);
+        glGetProgramInfoLog(program, len, &len, &error[ 0 ]);
+        DBGPRINT_ERR("Error while linking shader program\nError: %s\n", &error[ 0 ]);
+        glDeleteProgram(program);
+        glDeleteShader(vertex);
+        glDeleteShader(fragment);
+        exit(-1);
+        return 0;
+    }
+
+    glDeleteShader(vertex);
+    glDeleteShader(fragment);
+    return program;
 }
 
+std::string mage::ShaderData::preprocess(const std::string& fileName)
+{
+    static const std::string INCLUDE_KEY = "#include";
+    std::string line;
+    std::string output;
+    std::ifstream file;
+    file.open(fileName);
+
+    if (file.is_open())
+    {
+        while (file.good())
+        {
+            getline(file, line);
+            if (line.find(INCLUDE_KEY) == std::string::npos)
+                output.append(line + "\n");
+            else
+            {
+                std::string includeFileName = Util::split(line, ' ')[ 1 ];
+                includeFileName = includeFileName.substr(1, includeFileName.length() - 2);
+                std::string ap = preprocess("./assets/shaders/" + includeFileName);
+                output.append(ap + "\n");
+            }
+        }
+    } else
+    {
+        DBGPRINT_ERR("Failed to process shader %s", fileName.c_str());
+    }
 
 
-
+    return output;
+}
