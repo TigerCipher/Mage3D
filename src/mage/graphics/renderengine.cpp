@@ -21,7 +21,6 @@
 
 #include "mage/graphics/renderengine.h"
 
-
 const mage::Shader* mage::RenderEngine::BASIC_SHADER;
 const mage::Shader* mage::RenderEngine::LIGHTING_SHADER;
 const mage::Texture* mage::RenderEngine::DEFAULT_DIFFUSE_TEXTURE;
@@ -38,6 +37,15 @@ mage::RenderEngine::RenderEngine()
 
     registerShader(BASIC_SHADER, "basic");
     registerShader(LIGHTING_SHADER, "lighting");
+
+    // TODO some models might need different culling
+	glFrontFace(GL_CW);
+	glCullFace(GL_FRONT);
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_CLAMP);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 mage::RenderEngine::~RenderEngine()
@@ -121,3 +129,4 @@ void mage::RenderEngine::renderModel(const mage::Shader* shader, Model* model, c
         renderMesh(shader, model->getMeshes()[i], material);
     }
 }
+

@@ -21,6 +21,7 @@
 
 #include "mage/graphics/shader.h"
 #include "mage/core/util.h"
+#include "mage/core/engine.h"
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
 #include <bmd/strutil.h>
@@ -186,7 +187,8 @@ uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
         DBGPRINT_ERR("Error while compiling vertex shader [%s]\nError: %s", vertFile,
                      &error[ 0 ]);
         glDeleteShader(vertex);
-        exit(-1);
+        // TODO log error
+        Engine::instance()->stop();
         return 0;
     }
 
@@ -203,7 +205,8 @@ uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
         DBGPRINT_ERR("Error while compiling fragment shader [%s]\nError: %s", fragFile,
                      &error[ 0 ]);
         glDeleteShader(fragment);
-        exit(-1);
+        // TODO log error
+        Engine::instance()->stop();
         return 0;
     }
 
@@ -223,7 +226,8 @@ uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
         glDeleteProgram(program);
         glDeleteShader(vertex);
         glDeleteShader(fragment);
-        exit(-1);
+        // TODO log error
+        Engine::instance()->stop();
         return 0;
     }
 
@@ -258,6 +262,8 @@ std::string mage::ShaderData::preprocess(const std::string& fileName)
     } else
     {
         DBGPRINT_ERR("Failed to process shader %s", fileName.c_str());
+        // TODO log error
+        Engine::instance()->stop();
     }
 
 

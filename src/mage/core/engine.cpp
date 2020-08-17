@@ -20,100 +20,114 @@
  */
 
 #include "mage/core/engine.h"
-#include <bmd/core.h>
 #include "mage/events/dummyevent.h"
 
+mage::Engine* mage::Engine::s_instance;
+
 mage::Engine::Engine(Game* game, const char* title, int width, int height, float ticksPerSecond,
-					 bool limitFrames) :
-		m_running(false),
-		m_game(game),
-		m_msPerUpdate(1.0f / ticksPerSecond),
-		m_limitFrames(limitFrames)
+                     bool limitFrames) :
+        m_running(false),
+        m_game(game),
+        m_msPerUpdate(1.0f / ticksPerSecond),
+        m_limitFrames(limitFrames)
 {
-	m_dispatcher = createScope<EventDispatcher>("Mage3D Core Events", 1);
-	SharedPtr<DummyEvent> preInitEvent = createRef<DummyEvent>(PRE_INIT);
-	m_dispatcher->dispatch(preInitEvent);
-	// TODO: See if possible to make the GL /glfw contexts but not show window until after loading resources
-	// Or change assets system to load data (i.e loading models into vertices, indices, etc) and waiting to bind to gl buffers until after
-	// gl contexts are created
-	Display::create(title, width, height, &m_input);
-	m_renderEngine = new RenderEngine();
+    m_dispatcher = createScope<EventDispatcher>("Mage3D Core Events", 1);
+    SharedPtr<DummyEvent> preInitEvent = createRef<DummyEvent>(PRE_INIT);
+    m_dispatcher->dispatch(preInitEvent);
+    // TODO: See if possible to make the GL /glfw contexts but not show window until after loading resources
+    // Or change assets system to load data (i.e loading models into vertices, indices, etc) and waiting to bind to gl buffers until after
+    // gl contexts are created
+    Display::create(title, width, height, &m_input);
+    m_renderEngine = new RenderEngine();
+    //m_renderEngine = createRef<const RenderEngine>();
 }
 
 mage::Engine::~Engine()
 {
     delete m_renderEngine;
-	Display::destroy();
+    Display::destroy();
 }
 
 void mage::Engine::start()
 {
-	if (m_running) return;
-	SharedPtr<DummyEvent> initEvent = createRef<DummyEvent>(INIT);
-	m_dispatcher->dispatch(initEvent);
-	m_game->init();
-	m_running = true;
-	run();
+    if (m_running) return;
+    SharedPtr<DummyEvent> initEvent = createRef<DummyEvent>(INIT);
+    m_dispatcher->dispatch(initEvent);
+    m_game->init();
+    m_running = true;
+    run();
 }
 
 void mage::Engine::stop()
 {
-	if (!m_running) return;
-	m_running = false;
+    if (!m_running) return;
+    m_running = false;
 }
 
 void mage::Engine::run()
 {
-	SharedPtr<DummyEvent> postInitEvent = createRef<DummyEvent>(POST_INIT);
-	m_dispatcher->dispatch(postInitEvent);
-	timer_t timer;
-	initTimer(&timer);
-	float accumulated = 0;
-	int loops = 0;
-	int ticks = 0;
-	float frameTime = 0;
-	while (m_running && !Display::isClosed())
-	{
-		tickTimer(&timer);
+    SharedPtr<DummyEvent> postInitEvent = createRef<DummyEvent>(POST_INIT);
+    m_dispatcher->dispatch(postInitEvent);
+    timer_t timer;
+    initTimer(&timer);
+    float accumulated = 0;
+    int loops = 0;
+    int ticks = 0;
+    float frameTime = 0;
+    while (m_running && !Display::isClosed())
+    {
+        tickTimer(&timer);
 
-		calculateFrameStatistics(frameTime, ticks);
-		accumulated += timer.delta;
-		frameTime += timer.delta;
+        calculateFrameStatistics(frameTime, ticks);
+        accumulated += timer.delta;
+        frameTime += timer.delta;
 
-		// TODO: Best to process input and movement with variable time step or should use msPerUpdate / fixed timestep in side the below loop?
-		m_game->processInput(&m_input, timer.delta);
-		loops = 0;
-		while (accumulated >= m_msPerUpdate &&
-			   loops < 10) //TODO make 10 (max frames allowed to skip render) modifiable
-		{
-			ticks++;
-			loops++;
-			m_game->update(m_msPerUpdate);
-			accumulated -= m_msPerUpdate;
-		}
+        // TODO: Best to process input and movement with variable time step or should use msPerUpdate / fixed timestep in side the below loop?
+        m_game->processInput(&m_input, timer.delta);
+        loops = 0;
+        while (accumulated >= m_msPerUpdate &&
+               loops < 10) //TODO make 10 (max frames allowed to skip render) modifiable
+        {
+            ticks++;
+            loops++;
+            m_game->update(m_msPerUpdate);
+            accumulated -= m_msPerUpdate;
+        }
 
-		Display::clear();
+        Display::clear();
 
-		// TODO: Might want to interpolate positions to render at between 2 ticks - accumulated / m_msPerUpdate should suffice
+        // TODO: Might want to interpolate positions to render at between 2 ticks - accumulated / m_msPerUpdate should suffice
 
-		m_game->render(m_renderEngine);
+        m_game->render(m_renderEngine);
 
-		m_input.update();
-		Display::update();
-	}
+        m_input.update();
+        Display::update();
+    }
+
+    delete s_instance;
 }
 
 void mage::Engine::calculateFrameStatistics(float& elapsed, int& ticks)
 {
-	static int frames = 0;
-	frames++;
+    static int frames = 0;
+    frames++;
 
-	if (elapsed >= 1.0f)
-	{
-		float mspf = 1000.0f / (float) frames;
-		DBGPRINT("FPS: %i -- mspf: %f --- ticks: %i", frames, mspf, ticks);
-		frames = 0;
-		elapsed = 0;
-		ticks = 0;
-	}
+    if (elapsed >= 1.0f)
+    {
+        float mspf = 1000.0f / (float) frames;
+        DBGPRINT("FPS: %i -- mspf: %f --- ticks: %i", frames, mspf, ticks);
+        frames = 0;
+        elapsed = 0;
+        ticks = 0;
+    }
 }
+
+
+void
+mage::Engine::createGame(mage::Game* game, const char* title, int width, int height, float ticksPerSecond,
+                         bool limitFrames)
+{
+    s_instance = new Engine(game, title, width, height, ticksPerSecond, limitFrames);
+    s_instance->start();
+}
+

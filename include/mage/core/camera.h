@@ -23,11 +23,11 @@
 #define MAGE3D_CAMERA_H
 
 #include "mage3d_exported.h"
-#include "input.h"
+#include "mage/common.h"
+#include "gamecomponent.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <mage/common.h>
 
 #define YAW -90.0f
 #define PITCH 0.0f
@@ -35,28 +35,26 @@
 #define SENSITIVITY 0.05f
 #define FOV 45.0f
 #define Z_NEAR 0.1f
-#define Z_FAR 100.0f
+#define Z_FAR 1000.0f
 
 namespace mage
 {
 	// TODO: Maybe make 2D and 3D variants for future 2D uses?
-	class Camera
+	class Camera : public GameComponent
 	{
 	public:
 		mage3d_EXPORT explicit Camera(glm::vec3 position = glm::vec3(0, 0, 0),
 									  glm::vec3 up = glm::vec3(0, 1, 0), float yaw = YAW,
 									  float pitch = PITCH);
 
-		mage3d_EXPORT ~Camera() = default;
-
-		mage3d_EXPORT void update(Input input, float delta);
+		mage3d_EXPORT void input(Input* _input, float delta) override;
 
 		mage3d_EXPORT glm::mat4 getViewMatrix();
-		mage3d_EXPORT glm::mat4 getProjectionMatrix();
+		mage3d_EXPORT glm::mat4 getProjectionMatrix() const;
 
-		mage3d_EXPORT vec3f getPosition() { return m_position; }
+		inline vec3f getPosition() { return m_position; }
 
-		mage3d_EXPORT void constrainPitch(bool constrainPitch) { m_constrainPitch = constrainPitch; }
+		inline void constrainPitch(bool constrainPitch) { m_constrainPitch = constrainPitch; }
 
 	protected:
 	private:
@@ -65,9 +63,9 @@ namespace mage
 		void clampPitch();
 
 		glm::vec3 m_position;
-		glm::vec3 m_front;
-		glm::vec3 m_right;
-		glm::vec3 m_up;
+		glm::vec3 m_front{};
+		glm::vec3 m_right{};
+		glm::vec3 m_up{};
 		glm::vec3 m_worldUp;
 
 		float m_yaw;

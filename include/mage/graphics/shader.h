@@ -25,9 +25,6 @@
 #include "mage3d_exported.h"
 #include "mage/common.h"
 #include "mage/core/resourcemanager.h"
-#include <GL/glew.h>
-#include <bmd/types.h>
-#include <bmd/files.h>
 #include <map>
 #include <string>
 

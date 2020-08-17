@@ -33,29 +33,42 @@
 
 namespace mage
 {
-	class Engine
-	{
-	public:
-		mage3d_EXPORT Engine(Game* game, const char* title, int width, int height, float ticksPerSecond = 120.0f, bool limitFrames = false);
 
-		mage3d_EXPORT virtual ~Engine();
+    class Engine
+    {
+    public:
 
-		mage3d_EXPORT void start();
-		mage3d_EXPORT void stop();
+        MAGE3D_NO_EXPORT Engine(Game* game, const char* title, int width = 1920, int height = 1080,
+                             float ticksPerSecond = 120.0f, bool limitFrames = false);
 
-	protected:
-	private:
+        mage3d_EXPORT virtual ~Engine();
 
-		void run();
-		static void calculateFrameStatistics(float& elapsed, int& ticks);
-		bool m_running;
-		Game* m_game;
-		Input m_input;
-		float m_msPerUpdate;
-		bool m_limitFrames;
-		UniquePtr<EventDispatcher> m_dispatcher;
-		const RenderEngine* m_renderEngine;
-	};
+        mage3d_EXPORT static void createGame(Game* game, const char* title, int width = 1920, int height = 1080,
+                                             float ticksPerSecond = 120.0f, bool limitFrames = false);
+
+        mage3d_EXPORT void start();
+        mage3d_EXPORT void stop();
+
+        mage3d_EXPORT inline const RenderEngine* getRenderEngine() const { return m_renderEngine; }
+
+        mage3d_EXPORT static Engine* instance() { return s_instance; }
+
+    protected:
+    private:
+        void run();
+        static void calculateFrameStatistics(float& elapsed, int& ticks);
+
+        bool m_running;
+        Game* m_game;
+        Input m_input;
+        float m_msPerUpdate;
+        bool m_limitFrames;
+        UniquePtr<EventDispatcher> m_dispatcher;
+        const RenderEngine* m_renderEngine;
+        //SharedPtr<const RenderEngine> m_renderEngine;
+
+        static Engine* s_instance;
+    };
 
 }
 

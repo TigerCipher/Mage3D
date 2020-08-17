@@ -31,30 +31,32 @@
 
 namespace mage
 {
+    class Scene;
+
 	class Game
 	{
 	public:
 		mage3d_EXPORT Game() = default;
-		mage3d_EXPORT virtual void init() {}
-		mage3d_EXPORT virtual void processInput(Input* input, float delta) {}
-		mage3d_EXPORT virtual void update(float delta) {}
-		mage3d_EXPORT virtual void render(const RenderEngine* renderEngine) {}
-		mage3d_EXPORT virtual void destroy() {}
+		mage3d_EXPORT virtual void init() = 0;
+		mage3d_EXPORT virtual void processInput(Input* input, float delta);
+		mage3d_EXPORT virtual void update(float delta);
+		mage3d_EXPORT virtual void render(const RenderEngine* renderEngine);
+
+		mage3d_EXPORT virtual void setCurrentScene(Scene* scene);
 
 		mage3d_EXPORT inline void setPaused(bool paused)
 		{
 			m_paused = paused;
 		}
 
-		mage3d_EXPORT inline bool isPaused()
+		mage3d_EXPORT inline bool isPaused() const
 		{
 			return m_paused;
 		}
 	protected:
 	private:
-		Game(Game& game) = default;
-        void operator=(Game& game) {}
         bool m_paused = false;
+        Scene* m_currentScene{};
 	};
 
 }

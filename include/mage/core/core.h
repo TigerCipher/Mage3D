@@ -24,13 +24,14 @@
 #include "display.h"
 #include "timer.h"
 #include "input.h"
-#include "camera.h"
 #include "resourcemanager.h"
-#include "game.h"
 #include "engine.h"
 #include "transform.h"
 #include "gameobject.h"
 #include "gamecomponent.h"
+#include "camera.h"
+#include "scene.h"
+#include "game.h"
 
 
 #endif // MAGE3D_CORE_H

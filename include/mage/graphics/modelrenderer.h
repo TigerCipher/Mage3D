@@ -37,22 +37,21 @@ namespace mage
     class BasicModelRenderer : public GameComponent
     {
     public:
-        mage3d_EXPORT BasicModelRenderer(SharedPtr<Model> model, SharedPtr<Camera> camera);
+        mage3d_EXPORT explicit BasicModelRenderer(SharedPtr<Model> model);
         mage3d_EXPORT void render(const RenderEngine* renderEngine) override;
     protected:
 
         virtual void postRender(const mage::RenderEngine* renderEngine);
 
         SharedPtr<Model> m_model;
-        SharedPtr<Camera> m_camera;
         const Shader* m_shader;
     };
 
     class ModelRenderer : public BasicModelRenderer
     {
     public:
-        mage3d_EXPORT ModelRenderer(SharedPtr<Model> model, SharedPtr<Material> material, SharedPtr<Camera> camera,
-                      vec3f lightPos);
+
+        mage3d_EXPORT ModelRenderer(SharedPtr<Model> model, SharedPtr<Material> material, vec3f lightPos);
 
         void update(float delta) override;
 

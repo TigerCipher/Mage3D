@@ -26,7 +26,7 @@
 #include "mage3d_exported.h"
 #include "mage/common.h"
 #include "mage/core/resourcemanager.h"
-#include <GL/glew.h>
+
 #include <string>
 #include <ostream>
 #include <map>
@@ -90,7 +90,7 @@ namespace mage
 		std::string m_filePath;
 		std::string m_type;
 
-		TextureData* m_textureData;
+		TextureData* m_textureData{};
 
 		static std::map<std::string, TextureData*> textureMap;
 	};

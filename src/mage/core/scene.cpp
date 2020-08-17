@@ -14,19 +14,37 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: textureexception.cpp
- * Date File Created: 8/4/2020 at 1:15 AM
+ * File Name: scene.cpp
+ * Date File Created: 8/16/2020 at 9:37 PM
  * Author: Matt
  */
 
-#include "mage/errors/textureexception.h"
+#include "mage/core/scene.h"
+#include "mage/core/gameobject.h"
 
-mage::TextureException::TextureException(const char* msg, const char* file, int line, const char* func,
-										 const char* info) :
-		m_file(file),
-		m_line(line),
-		m_func(func),
-		m_info(info)
+void mage::Scene::addToScene(mage::GameObject* child)
 {
-
+    m_root->addChild(child);
 }
+
+void mage::Scene::input(mage::Input* pInput, float delta)
+{
+    m_root->inputAll(pInput, delta);
+}
+
+void mage::Scene::update(float delta)
+{
+    m_root->updateAll(delta);
+}
+
+void mage::Scene::render(const mage::RenderEngine* renderEngine)
+{
+    m_root->renderAll(renderEngine);
+}
+
+void mage::Scene::preInit()
+{
+    m_root = createRef<mage::GameObject>();
+}
+
+

@@ -21,10 +21,7 @@
 #define MAGE3D_DISPLAY_H
 
 #include "mage3d_exported.h"
-
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
+#include "mage/common.h"
 #include "input.h"
 
 namespace mage

@@ -19,14 +19,60 @@
 
 
 #include <string>
+
 #include <mage/mage.h>
-#include <glm/gtx/transform.hpp>
-#include <iostream>
 
-#define BMD_PROFILE 1
 
-#include <bmd/profiler.h>
-#include <fmt/format.h>
+class TestScene : public mage::Scene
+{
+public:
+    void init() override
+    {
+        PROFILER_SCOPE(1);
+        auto* cam = (new mage::GameObject())->addComponent(new mage::Camera());
+        addToScene(cam);
+        brick = new mage::GameObject();
+        auto* lamp = new mage::GameObject();
+        SharedPtr<mage::Model> backpack = createRef<mage::Model>("./assets/models/backpack.obj");
+        SharedPtr<mage::Model> cube = createRef<mage::Model>("./assets/models/bricks.obj");
+        auto* brickDif = new mage::Texture("./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
+        auto* brickSpec = new mage::Texture("./assets/textures/bricks_specular.png", TEXTURE_SPECULAR);
+        auto* backDif = new mage::Texture("./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE);
+        auto* backSpec = new mage::Texture("./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR);
+        SharedPtr<mage::Material> brickMat = createRef<mage::Material>(brickDif, brickSpec, nullptr, 32.0f);
+        SharedPtr<mage::Material> backMat = createRef<mage::Material>(backDif, backSpec, nullptr, 32.0f);
+
+        vec3f lightPos(0, 0.5f, -1.5f);
+
+        for (int i = 0; i < 20; i++)
+        {
+            auto* backp = (new mage::GameObject())->addComponent(
+                    new mage::ModelRenderer(backpack, backMat, lightPos));
+            backp->getTransform().setPos(vec3f((float) i * 3.5f, 0, -4));
+            addToScene(backp);
+        }
+
+        brick->addComponent(new mage::ModelRenderer(cube, brickMat, lightPos));
+        brick->getTransform().setPos(vec3f(-4, 0, 0));
+        brick->getTransform().setScale(0.5f);
+
+        lamp->addComponent(new mage::BasicModelRenderer(cube));
+        lamp->getTransform().setPos(lightPos);
+        lamp->getTransform().setScale(0.1f);
+
+        addToScene(brick);
+        addToScene(lamp);
+    }
+
+    void update(float delta) override
+    {
+        brick->getTransform().rotate(delta * 0.5f, vec3f(0, 1, 1));
+        mage::Scene::update(delta);
+    }
+
+private:
+    mage::GameObject* brick{};
+};
 
 class TestGame : public mage::Game
 {
@@ -36,98 +82,25 @@ public:
 
     void init() override
     {
-        PROFILER_SCOPE(1);
-        m_root = createRef<mage::GameObject>();
-
-        brick = new mage::GameObject();
-        auto* lamp = new mage::GameObject();
-        cube = createRef<mage::Model>("./assets/models/bricks.obj");
-        backpack = createRef<mage::Model>("./assets/models/backpack.obj");
-        brickDif = createRef<mage::Texture>(
-                "./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
-        brickSpec = createRef<mage::Texture>(
-                "./assets/textures/bricks_specular.png", TEXTURE_SPECULAR);
-        backDif = createRef<mage::Texture>(
-                "./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE);
-        backSpec = createRef<mage::Texture>(
-                "./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR);
-
-        brickMat = createRef<mage::Material>(brickDif.get(), brickSpec.get(), nullptr, 32.0f);
-        backMat = createRef<mage::Material>(backDif.get(), backSpec.get(), nullptr, 32.0f);
-
-        lightPos = vec3f(0, 0.5f, -1.5f);
-        m_camera = createRef<mage::Camera>();
-
-
-        for (int i = 0; i < 20; i++)
-        {
-            auto* backp = (new mage::GameObject())->addComponent(
-                    new mage::ModelRenderer(backpack, backMat, m_camera, lightPos));
-            backp->getTransform().setPos(vec3f((float) i * 3.5f, 0, -4));
-            m_root->addChild(backp);
-        }
-
-        brick->addComponent(new mage::ModelRenderer(cube, brickMat, m_camera, lightPos));
-        brick->getTransform().setPos(vec3f(-4, 0, 0));
-        brick->getTransform().setScale(0.5f);
-
-        lamp->addComponent(new mage::BasicModelRenderer(cube, m_camera));
-        lamp->getTransform().setPos(lightPos);
-        lamp->getTransform().setScale(0.1f);
-
-        m_root->addChild(brick);
-        m_root->addChild(lamp);
-
+        setCurrentScene(&m_scene);
     }
 
-    void processInput(mage::Input* input, float delta) override
+    void processInput(mage::Input* _input, float delta) override
     {
-        m_camera->update(*input, delta);
-        if (input->keyPressed(KEY_ESCAPE))
+        if (_input->keyPressed(KEY_ESCAPE))
         {
             mage::Display::toggleCursor();
         }
-        m_root->inputAll(input, delta);
-
+        mage::Game::processInput(_input, delta);
     }
-
-    void update(float delta) override
-    {
-        brick->getTransform().rotate(delta * 0.5f, vec3f(0, 1, 1));
-        m_root->updateAll(delta);
-    }
-
-    void render(const mage::RenderEngine* renderEngine) override
-    {
-        m_root->renderAll(renderEngine);
-    }
-
-    void destroy() override { }
 
 private:
-    mage::GameObject* brick{};
-    SharedPtr<mage::GameObject> m_root;
-    SharedPtr<mage::Camera> m_camera;
-
-    SharedPtr<mage::Model> cube;
-    SharedPtr<mage::Model> backpack;
-
-    SharedPtr<mage::Texture> brickDif;
-    SharedPtr<mage::Texture> brickSpec;
-    SharedPtr<mage::Texture> backDif;
-    SharedPtr<mage::Texture> backSpec;
-
-    SharedPtr<mage::Material> brickMat { };
-    SharedPtr<mage::Material> backMat { };
-    vec3f lightPos { };
-
-
+    TestScene m_scene;
 };
 
 int main(int argc, char** argv)
 {
     TestGame game;
-    mage::Engine engine(&game, "Test Game", 1920, 1080);
-    engine.start();
+    mage::Engine::createGame(&game, "Test Game");
     return 0;
 }

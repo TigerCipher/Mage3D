@@ -34,6 +34,8 @@
 namespace mage
 {
 
+    class Camera;
+
     class RenderEngine
     {
     public:
@@ -45,7 +47,11 @@ namespace mage
 
         mage3d_EXPORT void renderMesh(const Shader* shader, Mesh* mesh) const;
         mage3d_EXPORT void renderMesh(const Shader* shader, Mesh* mesh, const Material* material) const;
-        mage3d_EXPORT void renderModel(const Shader* shader, Model* model, const Material* material = nullptr) const;
+        mage3d_EXPORT void
+        renderModel(const Shader* shader, Model* model, const Material* material = nullptr) const;
+
+        inline void addCamera(Camera* camera) const { m_camera = camera; }
+        inline Camera* getCamera() const { return m_camera; }
 
 
         static const Shader* BASIC_SHADER;
@@ -56,6 +62,7 @@ namespace mage
     protected:
     private:
         mutable std::map<std::string, const Shader*> shaderMap;
+        mutable Camera* m_camera{};
     };
 
 }

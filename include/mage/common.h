@@ -22,12 +22,16 @@
 #ifndef MAGE3D_COMMON_H
 #define MAGE3D_COMMON_H
 
-#include <bmd/types.h>
+#define BMD_PROFILE 1
+#include <bmd/core.h>
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/detail/type_quat.hpp>
 
-// Rename some of the glm types, again for quality of life sake
+// Rename some of the glm types, for quality of life sake
 using vec2f = glm::vec2;
 using vec3f = glm::vec3;
 using vec4f = glm::vec4;

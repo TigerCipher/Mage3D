@@ -23,7 +23,7 @@
 #define MAGE3D_INPUT_H
 
 #include "mage3d_exported.h"
-#include <GLFW/glfw3.h>
+#include "mage/common.h"
 
 #define MAX_KEYS 1024
 #define MAX_BUTTONS 32
@@ -251,7 +251,9 @@ namespace mage
 				m_mouseX(0),
 				m_mouseY(0),
 				m_lastMouseX(0),
-				m_lastMouseY(0) { }
+				m_lastMouseY(0),
+				m_scrollX(0),
+				m_scrollY(0){ }
 
 		mage3d_EXPORT ~Input() = default;
 		mage3d_EXPORT void onKeyCallback(int key, int scancode, int action, int mods);
@@ -285,11 +287,11 @@ namespace mage
 
 	protected:
 	private:
-		bool m_keys[MAX_KEYS] = { 0 };
-		bool m_lastKeys[MAX_KEYS] = { 0 };
+		bool m_keys[MAX_KEYS] = { false };
+		bool m_lastKeys[MAX_KEYS] = { false };
 
-		bool m_mouseButtons[MAX_BUTTONS] = { 0 };
-		bool m_lastMouseButtons[MAX_BUTTONS] = { 0 };
+		bool m_mouseButtons[MAX_BUTTONS] = { false };
+		bool m_lastMouseButtons[MAX_BUTTONS] = { false };
 
 		double m_mouseX;
 		double m_mouseY;

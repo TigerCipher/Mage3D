@@ -35,6 +35,7 @@ mage::Camera::Camera(glm::vec3 position, glm::vec3 up, float yaw, float pitch) :
 		m_zFar(Z_FAR)
 {
 	updateVectors();
+	Engine::instance()->getRenderEngine()->addCamera(this);
 }
 
 void mage::Camera::updateVectors()
@@ -48,20 +49,20 @@ void mage::Camera::updateVectors()
 	m_up = glm::normalize(glm::cross(m_right, m_front));
 }
 
-void mage::Camera::update(mage::Input input, float delta)
+void mage::Camera::input(mage::Input* _input, float delta)
 {
 	float velocity = m_speed * delta;
-	if (input.keyDown(KEY_W))
+	if (_input->keyDown(KEY_W))
 		m_position += m_front * velocity;
-	if (input.keyDown(KEY_S))
+	if (_input->keyDown(KEY_S))
 		m_position -= m_front * velocity;
-	if (input.keyDown(KEY_A))
+	if (_input->keyDown(KEY_A))
 		m_position -= m_right * velocity;
-	if (input.keyDown(KEY_D))
+	if (_input->keyDown(KEY_D))
 		m_position += m_right * velocity;
 
-	float xOff = input.getMouseOffsetX() * m_sensitivity;
-	float yOff = input.getMouseOffsetY() * m_sensitivity;
+	float xOff = _input->getMouseOffsetX() * m_sensitivity;
+	float yOff = _input->getMouseOffsetY() * m_sensitivity;
 
 	if (Display::isCursorLocked())
 	{
@@ -74,12 +75,13 @@ void mage::Camera::update(mage::Input input, float delta)
 	updateVectors();
 }
 
+
 glm::mat4 mage::Camera::getViewMatrix()
 {
 	return glm::lookAt(m_position, m_position + m_front, m_up);
 }
 
-glm::mat4 mage::Camera::getProjectionMatrix()
+glm::mat4 mage::Camera::getProjectionMatrix() const
 {
 	return glm::perspective(glm::radians(m_fov),
 							(float) Display::getWidth() / (float) Display::getHeight(), m_zNear, m_zFar);

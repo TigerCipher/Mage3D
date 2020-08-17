@@ -42,7 +42,7 @@ namespace mage
 		mage3d_EXPORT Model() = default;
 		mage3d_EXPORT explicit Model(const char* path);
 
-		mage3d_EXPORT ~Model();
+		mage3d_EXPORT virtual ~Model();
 
 		list<Mesh*> getMeshes() { return m_meshes; }
 

@@ -25,9 +25,9 @@
 mage::GameObject::~GameObject()
 {
     for (auto& component : m_components)
-        if(component) delete component;
+        delete component;
     for (auto& child : m_children)
-        if(child) delete child;
+        delete child;
 }
 
 mage::GameObject* mage::GameObject::addChild(mage::GameObject* child)

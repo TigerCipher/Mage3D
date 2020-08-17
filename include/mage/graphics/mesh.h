@@ -22,7 +22,6 @@
 #ifndef MAGE3D_MESH_H
 #define MAGE3D_MESH_H
 
-#include <GL/glew.h>
 #include "mage3d_exported.h"
 #include "mage/common.h"
 #include "vertex.h"

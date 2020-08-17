@@ -31,7 +31,6 @@
 namespace mage
 {
     class Shader;
-    class Renderer;
 
     class GameComponent
     {
@@ -40,9 +39,10 @@ namespace mage
         mage3d_EXPORT virtual void input(Input* _input, float delta) {}
         mage3d_EXPORT virtual void update(float delta) {}
         mage3d_EXPORT virtual void render(const RenderEngine* renderEngine) {}
+
         mage3d_EXPORT inline void setParent(GameObject* parent) { m_parent = parent; }
         mage3d_EXPORT inline Transform& getTransform() { return m_parent->getTransform(); }
-        [[nodiscard]] mage3d_EXPORT inline const Transform& getTransform() const { return m_parent->getTransform(); }
+        mage3d_EXPORT inline const Transform& getTransform() const { return m_parent->getTransform(); }
     private:
         GameObject* m_parent{};
     };

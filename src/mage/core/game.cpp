@@ -14,37 +14,32 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: event.h
- * Date File Created: 8/13/2020 at 10:35 PM
+ * File Name: game.cpp
+ * Date File Created: 8/16/2020 at 10:36 PM
  * Author: Matt
  */
 
-#ifndef MAGE3D_EVENT_H
-#define MAGE3D_EVENT_H
+#include "mage/core/game.h"
+#include "mage/core/scene.h"
 
-#include "mage3d_exported.h"
-#include "mage/common.h"
-
-
-namespace mage
+void mage::Game::setCurrentScene(mage::Scene* scene)
 {
-	enum EventType
-	{
-		PRE_INIT, INIT, POST_INIT
-	};
-
-
-	class Event
-	{
-	public:
-		mage3d_EXPORT explicit Event(EventType type) : m_type(type) {}
-		mage3d_EXPORT virtual ~Event() = default;
-		mage3d_EXPORT virtual void invoke() {}
-
-		mage3d_EXPORT inline EventType getType() { return m_type; }
-	protected:
-		EventType m_type;
-	};
+    m_currentScene = scene;
+    m_currentScene->preInit();
+    m_currentScene->init();
 }
 
-#endif //MAGE3D_EVENT_H
+void mage::Game::processInput(mage::Input* input, float delta)
+{
+    m_currentScene->input(input, delta);
+}
+
+void mage::Game::update(float delta)
+{
+    m_currentScene->update(delta);
+}
+
+void mage::Game::render(const mage::RenderEngine* renderEngine)
+{
+    m_currentScene->render(renderEngine);
+}

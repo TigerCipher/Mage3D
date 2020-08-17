@@ -14,57 +14,42 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: textureexception.h
- * Date File Created: 8/4/2020 at 1:15 AM
+ * File Name: scene.h
+ * Date File Created: 8/16/2020 at 9:37 PM
  * Author: Matt
  */
 
-#ifndef MAGE3D_TEXTUREEXCEPTION_H
-#define MAGE3D_TEXTUREEXCEPTION_H
+#ifndef MAGE3D_SCENE_H
+#define MAGE3D_SCENE_H
 
 
 #include "mage3d_exported.h"
 #include "mage/common.h"
-
-#include <exception>
-
-#define TexException(msg, info) TextureException(msg, __FILE__, __LINE__, __FUNCTION__, info)
+#include "engine.h"
+#include "input.h"
+#include "mage/graphics/renderengine.h"
 
 namespace mage
 {
-	class TextureException : public std::exception
-	{
-	public:
-		mage3d_EXPORT TextureException(const char* msg, const char* file, int line, const char* func,
-									   const char* info);
+    class GameObject;
+    class Scene
+    {
+    public:
+        mage3d_EXPORT Scene() = default;
+        mage3d_EXPORT virtual ~Scene() = default;
+        mage3d_EXPORT virtual void preInit();
+        mage3d_EXPORT virtual void init() = 0;
+        mage3d_EXPORT virtual void addToScene(GameObject* child);
+        mage3d_EXPORT virtual void input(Input* pInput, float delta);
+        mage3d_EXPORT virtual void update(float delta);
+        mage3d_EXPORT virtual void render(const RenderEngine* renderEngine);
 
-		mage3d_EXPORT const char* getFile() const
-		{
-			return m_file;
-		}
+    protected:
+    private:
+        SharedPtr<GameObject> m_root{};
+    };
 
-		mage3d_EXPORT const char* getFunc() const
-		{
-			return m_func;
-		}
-
-		mage3d_EXPORT const char* getInfo() const
-		{
-			return m_info;
-		}
-
-		mage3d_EXPORT int getLine() const
-		{
-			return m_line;
-		}
-
-	private:
-		const char* m_file;
-		const char* m_func;
-		const char* m_info;
-		int m_line;
-	};
 }
 
 
-#endif //MAGE3D_TEXTUREEXCEPTION_H
+#endif //MAGE3D_SCENE_H

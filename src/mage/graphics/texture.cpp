@@ -20,7 +20,6 @@
  */
 
 #include "mage/graphics/texture.h"
-#include "mage/errors/textureexception.h"
 #include <SOIL/SOIL.h>
 #include <cassert>
 #include <fmt/format.h>

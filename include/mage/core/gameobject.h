@@ -30,6 +30,7 @@
 #include "input.h"
 #include "mage/graphics/shader.h"
 #include "mage/graphics/renderengine.h"
+#include "engine.h"
 
 namespace mage
 {
@@ -50,7 +51,7 @@ namespace mage
 
         mage3d_EXPORT list<GameObject*> getAttachedChildren();
 
-        mage3d_EXPORT inline Transform& getTransform() { return m_transform; }
+        inline Transform& getTransform() { return m_transform; }
     protected:
     private:
         void input(Input* _input, float delta);

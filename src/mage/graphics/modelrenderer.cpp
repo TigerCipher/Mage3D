@@ -21,10 +21,11 @@
 
 #include "mage/graphics/modelrenderer.h"
 
-mage::BasicModelRenderer::BasicModelRenderer(SharedPtr<mage::Model> model, SharedPtr<mage::Camera> camera)
+#include <utility>
+
+mage::BasicModelRenderer::BasicModelRenderer(SharedPtr<mage::Model> model)
 {
     m_model = std::move(model);
-    m_camera = std::move(camera);
     m_shader = RenderEngine::BASIC_SHADER;
 }
 
@@ -32,8 +33,8 @@ void mage::BasicModelRenderer::render(const mage::RenderEngine* renderEngine)
 {
     m_shader->enable();
     m_shader->setUniformMatf("model", getTransform().getTransformation());
-    m_shader->setUniformMatf("projection", m_camera->getProjectionMatrix());
-    m_shader->setUniformMatf("view", m_camera->getViewMatrix());
+    m_shader->setUniformMatf("projection", renderEngine->getCamera()->getProjectionMatrix());
+    m_shader->setUniformMatf("view", renderEngine->getCamera()->getViewMatrix());
     postRender(renderEngine);
 }
 
@@ -44,8 +45,7 @@ void mage::BasicModelRenderer::postRender(const mage::RenderEngine* renderEngine
 }
 
 
-mage::ModelRenderer::ModelRenderer(SharedPtr<mage::Model> model, SharedPtr<mage::Material> material,
-                                   SharedPtr<mage::Camera> camera, vec3f lightPos) : BasicModelRenderer(std::move(model), std::move(camera)),
+mage::ModelRenderer::ModelRenderer(SharedPtr<mage::Model> model, SharedPtr<mage::Material> material, vec3f lightPos) : BasicModelRenderer(std::move(model)),
                                    m_lightPos(lightPos),
                                    transposed(1)
 {
@@ -55,12 +55,12 @@ mage::ModelRenderer::ModelRenderer(SharedPtr<mage::Model> model, SharedPtr<mage:
 
 void mage::ModelRenderer::update(float delta)
 {
-    transposed = glm::transpose(
-                        glm::inverse(getTransform().getTransformation() * m_camera->getViewMatrix()));
 }
 
 void mage::ModelRenderer::postRender(const mage::RenderEngine* renderEngine)
 {
+    transposed = glm::transpose(
+                        glm::inverse(getTransform().getTransformation() * renderEngine->getCamera()->getViewMatrix()));
     m_shader->setUniformMatf("normalMatrix", transposed);
     m_shader->setUniform3f("light.ambient", vec3f(0.1f));
     m_shader->setUniform3f("light.diffuse", vec3f(0.5f));
