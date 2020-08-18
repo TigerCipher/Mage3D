@@ -26,24 +26,22 @@
 out vec3 fragPos;
 out vec3 fragNormal;
 out vec2 fragTexCoord;
-out vec3 fragLightPos;
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
 uniform mat4 normalMatrix;
-uniform vec3 lightPos;
 
 void main()
 {
     vec4 vert = vec4(position, 1.0);
     gl_Position = projection * view * model * vert;
-    fragPos = vec3(view * model * vert);
+    fragPos = vec3(model * vert);
     fragTexCoord = texCoord;
 //    fragTexCoord = vec2(texCoord.x, 1.0 - texCoord.y);
     fragNormal = mat3(normalMatrix) * normal;
-    fragLightPos = vec3(view * vec4(lightPos, 1));
+
 //    fragNormal = normal;
 //    fragNormal = mat3(transpose(inverse(model))) * normal;
 }

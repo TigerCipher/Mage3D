@@ -32,6 +32,7 @@
 #include "camera.h"
 #include "scene.h"
 #include "game.h"
+#include "log.h"
 
 
 #endif // MAGE3D_CORE_H

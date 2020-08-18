@@ -46,9 +46,12 @@ mage::Mesh::Mesh(list<Vertex> vertices, list<uint> indices)
 	// Same with things like textures
 	// That or have the engine render a splashscreen while things load?
 	// Though if we wanted a traditional animated splashscreen or anything, might have to introduce multi threading
+	int er;
+	checkGlError(er);
 	glGenVertexArrays(1, &m_vaoId);
 	glBindVertexArray(m_vaoId);
 	createBuffers(vertices.data(), indices.data());
+	checkGlError(er);
 	disable();
 }
 
@@ -68,6 +71,9 @@ m_indices(indices)
 
 mage::Mesh::~Mesh()
 {
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+    glDisableVertexAttribArray(2);
 	glDeleteVertexArrays(1, &m_vaoId);
 	glDeleteBuffers(1, &m_vbo);
 	glDeleteBuffers(1, &m_ebo);
@@ -83,18 +89,24 @@ void mage::Mesh::createBuffers(Vertex vertices[], uint indices[])
 	glGenBuffers(1, &m_ebo);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numIndices * sizeof(uint), indices, GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void*) offsetof(Vertex, pos));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void*) offsetof(Vertex, coords));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+                          (void*) offsetof(Vertex, normal));
 }
 
-void mage::Mesh::render()
+void mage::Mesh::render() const
 {
-	//enable();
-	//enableAttribPointers();
 	glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, 0);
-	//disableAttribPointers();
-	//disable();
 }
 
-void mage::Mesh::enable()
+void mage::Mesh::enable() const
 {
 	glBindVertexArray(m_vaoId);
 	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);

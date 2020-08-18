@@ -31,12 +31,12 @@ mage::Model::Model(const char* path) :
 
 void mage::Model::loadModel(const char* path)
 {
-	DBGPRINT("Loading model %s", path);
+	LOG_INFO("Loading model {}", path);
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate/* | aiProcess_FlipUVs*/);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
-		DBGPRINT_ERR("Error while loading model %s -> %s", path, importer.GetErrorString());
+		LOG_ERROR("Error while loading model {} -> {}", path, importer.GetErrorString());
 		return;
 	}
 	processNode(scene->mRootNode, scene);
@@ -121,7 +121,7 @@ mage::Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const cha
 
 mage::Model::~Model()
 {
-	DBGPRINT("Unloading model %s", m_fileName.c_str());
+	LOG_INFO("Unloading model {}", m_fileName.c_str());
 	for (auto& mesh : m_meshes)
 	{
 		// if(mesh) delete mesh; -> according to clang-tidy deleting null ptr has no effect unlike free?

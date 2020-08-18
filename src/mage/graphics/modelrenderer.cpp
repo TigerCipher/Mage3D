@@ -60,12 +60,18 @@ void mage::ModelRenderer::update(float delta)
 void mage::ModelRenderer::postRender(const mage::RenderEngine* renderEngine)
 {
     transposed = glm::transpose(
-                        glm::inverse(getTransform().getTransformation() * renderEngine->getCamera()->getViewMatrix()));
+                        glm::inverse(getTransform().getTransformation()));
     m_shader->setUniformMatf("normalMatrix", transposed);
     m_shader->setUniform3f("light.ambient", vec3f(0.1f));
     m_shader->setUniform3f("light.diffuse", vec3f(0.5f));
     m_shader->setUniform3f("light.specular", vec3f(1));
-    m_shader->setUniform3f("lightPos", m_lightPos);
+    m_shader->setUniform3f("light.position", m_lightPos);
+    m_shader->setUniform1f("light.constant", 1.0f);
+    m_shader->setUniform1f("light.linear", 0.07f);
+    m_shader->setUniform1f("light.quadratic", 0.017f);
+    m_shader->setUniform3f("viewPos", renderEngine->getCamera()->getPosition());
+
+    //m_shader->setUniform3f("light.direction", vec3f(-0.2f, -1, -0.3f));
 
     renderEngine->renderModel(m_shader, m_model.get(), m_material.get());
     m_shader->disable();

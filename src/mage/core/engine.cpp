@@ -31,19 +31,25 @@ mage::Engine::Engine(Game* game, const char* title, int width, int height, float
         m_msPerUpdate(1.0f / ticksPerSecond),
         m_limitFrames(limitFrames)
 {
+    Log::init();
+    LOG_INFO("Initializing mage3d engine");
     m_dispatcher = createScope<EventDispatcher>("Mage3D Core Events", 1);
+    LOG_TRACE("Event dispatcher created");
     SharedPtr<DummyEvent> preInitEvent = createRef<DummyEvent>(PRE_INIT);
     m_dispatcher->dispatch(preInitEvent);
     // TODO: See if possible to make the GL /glfw contexts but not show window until after loading resources
     // Or change assets system to load data (i.e loading models into vertices, indices, etc) and waiting to bind to gl buffers until after
     // gl contexts are created
     Display::create(title, width, height, &m_input);
+    LOG_TRACE("Display created [title = {}, size: {} x {}]", title, width, height);
     m_renderEngine = new RenderEngine();
+    LOG_TRACE("Render engine created");
     //m_renderEngine = createRef<const RenderEngine>();
 }
 
 mage::Engine::~Engine()
 {
+    LOG_INFO("Cleaning up engine resources");
     delete m_renderEngine;
     Display::destroy();
 }

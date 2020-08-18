@@ -30,131 +30,105 @@
 namespace mage
 {
 
-	struct Position
-	{
-		float x;
-		float y;
-		float z;
+    struct Position
+    {
+        float x = 0;
+        float y = 0;
+        float z = 0;
 
-		Position(float _x, float _y, float _z) :
-				x(_x),
-				y(_y),
-				z(_z) { }
+        Position(float _x, float _y, float _z) :
+                x(_x),
+                y(_y),
+                z(_z) { }
 
-		friend std::ostream& operator<<(std::ostream& os, const Position& position)
-		{
-			os << "x: " << position.x << " y: " << position.y << " z: " << position.z;
-			return os;
-		}
-	};
-
-	// Keeping for now, but might get rid of. If color overlays are really needed, they can just be a uniform in the shader
-	struct ColorRGB8
-	{
-		float r;
-		float g;
-		float b;
-		float a;
-
-		ColorRGB8(float _r, float _g, float _b, float _a = 1.0f) :
-				r(_r),
-				g(_g),
-				b(_b),
-				a(_a) { }
-
-		friend std::ostream& operator<<(std::ostream& os, const ColorRGB8& rgb8)
-		{
-			os << "r: " << rgb8.r << " g: " << rgb8.g << " b: " << rgb8.b << " a: " << rgb8.a;
-			return os;
-		}
-	};
-
-	struct TexCoords
-	{
-		float u;
-		float v;
-
-		TexCoords(float _u, float _v) :
-				u(_u),
-				v(_v) { }
-
-		friend std::ostream& operator<<(std::ostream& os, const TexCoords& coords)
-		{
-			os << "u: " << coords.u << " v: " << coords.v;
-			return os;
-		}
-	};
-
-	struct Normal
-	{
-		float x;
-		float y;
-		float z;
-
-		Normal(float _x, float _y, float _z) :
-				x(_x),
-				y(_y),
-				z(_z) { }
-
-		friend std::ostream& operator<<(std::ostream& os, const Normal& normal)
-		{
-			os << "x: " << normal.x << " y: " << normal.y << " z: " << normal.z;
-			return os;
-		}
-	};
+        friend std::ostream& operator<<(std::ostream& os, const Position& position)
+        {
+            os << "x: " << position.x << " y: " << position.y << " z: " << position.z;
+            return os;
+        }
+    };
 
 
-	struct Vertex
-	{
-		Position pos;
-		Normal normal;
-		TexCoords coords;
-		ColorRGB8 color;
+    struct TexCoords
+    {
+        float u = 0;
+        float v = 0;
 
-		explicit Vertex(Position _pos, Normal _normal = Normal(0, 0, 0), TexCoords _texCoords = TexCoords(0, 0),
-			   ColorRGB8 _color = ColorRGB8(1, 1, 1)) :
-				pos(_pos),
-				normal(_normal),
-				coords(_texCoords),
-				color(_color) { }
+        TexCoords(float _u, float _v) :
+                u(_u),
+                v(_v) { }
 
-		void setPos(float x, float y, float z)
-		{
-			pos.x = x;
-			pos.y = y;
-			pos.z = z;
-		}
-		void setColor(float r, float g, float b, float a = 1.0f)
-		{
-			color.r = r;
-			color.g = g;
-			color.b = b;
-			color.a = a;
-		}
-		void setTexCoords(float u, float v)
-		{
-			coords.u = u;
-			coords.v = v;
-		}
-		void setNormalCoords(float x, float y, float z)
-		{
-			normal.x = x;
-			normal.y = y;
-			normal.z = z;
-		}
+        friend std::ostream& operator<<(std::ostream& os, const TexCoords& coords)
+        {
+            os << "u: " << coords.u << " v: " << coords.v;
+            return os;
+        }
+    };
 
-		vec3f posVec() { return vec3f(pos.x, pos.y, pos.z); }
-		vec2f texCoordsVec() { return vec2f(coords.u, coords.v); }
-		vec3f normalVec() { return vec3f(normal.x, normal.y, normal.z); }
+    struct Normal
+    {
+        float x = 0;
+        float y = 0;
+        float z = 0;
+
+        Normal(float _x, float _y, float _z) :
+                x(_x),
+                y(_y),
+                z(_z) { }
+
+        friend std::ostream& operator<<(std::ostream& os, const Normal& normal)
+        {
+            os << "x: " << normal.x << " y: " << normal.y << " z: " << normal.z;
+            return os;
+        }
+    };
 
 
-		friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex)
-		{
-			os << "pos: " << vertex.pos << " normal: " << vertex.normal << " coords: " << vertex.coords
-			   << " color: " << vertex.color;
-			return os;
-		}
-	};
+    struct Vertex
+    {
+        Position pos;
+        Normal normal;
+        TexCoords coords;
+
+        explicit Vertex(Position _pos, Normal _normal = Normal(0, 0, 0),
+                        TexCoords _texCoords = TexCoords(0, 0)) :
+                pos(_pos),
+                normal(_normal),
+                coords(_texCoords) { }
+
+        void setPos(float x, float y, float z)
+        {
+            pos.x = x;
+            pos.y = y;
+            pos.z = z;
+        }
+
+        void setTexCoords(float u, float v)
+        {
+            coords.u = u;
+            coords.v = v;
+        }
+
+        void setNormalCoords(float x, float y, float z)
+        {
+            normal.x = x;
+            normal.y = y;
+            normal.z = z;
+        }
+
+        vec3f posVec() { return vec3f(pos.x, pos.y, pos.z); }
+
+        vec2f texCoordsVec() { return vec2f(coords.u, coords.v); }
+
+        vec3f normalVec() { return vec3f(normal.x, normal.y, normal.z); }
+
+
+        friend std::ostream& operator<<(std::ostream& os, const Vertex& vertex)
+        {
+            os << "pos: " << vertex.pos << " normal: " << vertex.normal << " coords: " << vertex.coords;
+            return os;
+        }
+    };
 }
 
 

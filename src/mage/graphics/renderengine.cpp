@@ -72,27 +72,16 @@ const mage::Shader* mage::RenderEngine::getShader(const std::string& shader) con
 
 void mage::RenderEngine::renderMesh(const mage::Shader* shader, Mesh* mesh) const
 {
+    GLenum er;
     mesh->enable();
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glEnableVertexAttribArray(2);
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(shader->getAttribLocation("position"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void*) offsetof(Vertex, pos));
-    glVertexAttribPointer(shader->getAttribLocation("texCoord"), 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void*) offsetof(Vertex, coords));
-    glVertexAttribPointer(shader->getAttribLocation("normal"), 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void*) offsetof(Vertex, normal));
-    glVertexAttribPointer(shader->getAttribLocation("color"), 4, GL_FLOAT, GL_FALSE, sizeof(Vertex),
-                          (void*) offsetof(Vertex, color));
+
     mesh->render();
 
-    glDisableVertexAttribArray(0);
-    glDisableVertexAttribArray(1);
-    glDisableVertexAttribArray(2);
-    glDisableVertexAttribArray(3);
+    //glDisableVertexAttribArray(0);
+    //glDisableVertexAttribArray(1);
+    //glDisableVertexAttribArray(2);
 
-    mesh->disable();
+    Mesh::disable();
 }
 
 void mage::RenderEngine::renderMesh(const mage::Shader* shader, mage::Mesh* mesh, const mage::Material* material) const
@@ -102,7 +91,6 @@ void mage::RenderEngine::renderMesh(const mage::Shader* shader, mage::Mesh* mesh
         renderMesh(shader, mesh);
         return;
     }
-
     const Texture* diffuse = material->diffuse ? material->diffuse : DEFAULT_DIFFUSE_TEXTURE;
     const Texture* specular = material->specular ? material->specular : DEFAULT_SPECULAR_TEXTURE;
     const Texture* emission = material->emission ? material->emission : DEFAULT_EMISSION_TEXTURE;

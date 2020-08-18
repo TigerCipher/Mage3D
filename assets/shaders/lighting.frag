@@ -26,7 +26,6 @@ out vec4 color;
 in vec3 fragPos;
 in vec2 fragTexCoord;
 in vec3 fragNormal;
-in vec3 fragLightPos;
 
 struct Material
 {
@@ -38,15 +37,21 @@ struct Material
 
 struct Light
 {
-//vec3 position;
+    vec3 position;
+//    vec3 direction;
+
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+
+    float constant;
+    float linear;
+    float quadratic;
 };
 
 uniform Material material;
 uniform Light light;
-
+uniform vec3 viewPos;
 
 void main()
 {
@@ -54,17 +59,24 @@ void main()
     vec3 ambient = vec3(texture(material.texture_diffuse, fragTexCoord)) * light.ambient;
 
     vec3 norm = normalize(fragNormal);
-    vec3 lightToObj = normalize(fragLightPos - fragPos);
+//    vec3 lightDir = normalize(-light.direction);
+    vec3 lightDir = normalize(light.position - fragPos);
 
-    float diff = max(dot(norm, lightToObj), 0);
+    float diff = max(dot(norm, lightDir), 0);
     vec3 diffuse = light.diffuse * vec3(texture(material.texture_diffuse, fragTexCoord)) * diff;
 
-    vec3 viewDir = normalize(-fragPos);
-    vec3 reflectDir = reflect(-lightToObj, norm);
+    vec3 viewDir = normalize(viewPos - fragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
     float spec = pow(max(dot(viewDir, reflectDir), 0), material.shininess);
     vec3 specular = light.specular * spec * vec3(texture(material.texture_specular, fragTexCoord));
 
+    float dist = length(light.position - fragPos);
+    float atten = 1.0f / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
 
+    ambient *= atten;
+    diffuse *= atten;
+    specular *= atten;
+    emission *= atten;
 
     vec3 result = (ambient + diffuse + specular + emission);
     color = vec4(result, 1.0);

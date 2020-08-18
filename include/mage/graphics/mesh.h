@@ -40,15 +40,15 @@ namespace mage
 		mage3d_EXPORT Mesh(list<Vertex>& vertices, list<uint>& indices, const list<Texture>& textures);
 		mage3d_EXPORT ~Mesh();
 
-		mage3d_EXPORT void render();
+		mage3d_EXPORT void render() const;
 
-		mage3d_EXPORT void enable();
-		mage3d_EXPORT void disable();
+		mage3d_EXPORT void enable() const;
+		static mage3d_EXPORT void disable();
 
 		mage3d_EXPORT list<Texture> getTextures() { return m_textures; }
 		mage3d_EXPORT list<Vertex> getVertices() { return m_vertices; }
 		mage3d_EXPORT list<uint> getIndices() { return m_indices; }
-		mage3d_EXPORT int getNumVertices() { return m_numVertices; }
+		mage3d_EXPORT int getNumVertices() const { return m_numVertices; }
 
 		mage3d_EXPORT friend std::ostream& operator<<(std::ostream& os, const Mesh& mesh);
 

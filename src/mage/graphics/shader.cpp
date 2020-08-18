@@ -147,8 +147,8 @@ mage::ShaderData::ShaderData(const char* vertPath, const char* fragPath) :
 
 mage::ShaderData::~ShaderData()
 {
-    DBGPRINT("Unloading shader file %s", m_vertFile.c_str());
-    DBGPRINT("Unloading shader file %s", m_fragFile.c_str());
+    LOG_INFO("Unloading shader file {}", m_vertFile);
+    LOG_INFO("Unloading shader file {}", m_fragFile);
     glDeleteProgram(m_id);
 }
 
@@ -173,7 +173,7 @@ uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
     GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
 
 
-    DBGPRINT("Loading shader file %s", vertFile);
+    LOG_INFO("Loading shader file {}", vertFile);
     glShaderSource(vertex, 1, &vertSrc, NULL);
     glCompileShader(vertex);
     GLint success;
@@ -184,15 +184,14 @@ uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
         glGetShaderiv(vertex, GL_INFO_LOG_LENGTH, &len);
         std::vector<char> error(len);
         glGetShaderInfoLog(vertex, len, &len, &error[ 0 ]);
-        DBGPRINT_ERR("Error while compiling vertex shader [%s]\nError: %s", vertFile,
+        LOG_CRITICAL("Error while compiling vertex shader [{}]. Error: {}", vertFile,
                      &error[ 0 ]);
         glDeleteShader(vertex);
-        // TODO log error
         Engine::instance()->stop();
         return 0;
     }
 
-    DBGPRINT("Loading shader file %s", fragFile);
+    LOG_INFO("Loading shader file {}", fragFile);
     glShaderSource(fragment, 1, &fragSrc, NULL);
     glCompileShader(fragment);
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
@@ -202,10 +201,9 @@ uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
         glGetShaderiv(fragment, GL_INFO_LOG_LENGTH, &len);
         std::vector<char> error(len);
         glGetShaderInfoLog(fragment, len, &len, &error[ 0 ]);
-        DBGPRINT_ERR("Error while compiling fragment shader [%s]\nError: %s", fragFile,
+        LOG_CRITICAL("Error while compiling fragment shader [{}]. Error: {}", fragFile,
                      &error[ 0 ]);
         glDeleteShader(fragment);
-        // TODO log error
         Engine::instance()->stop();
         return 0;
     }
@@ -222,11 +220,10 @@ uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
         glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
         std::vector<char> error(len);
         glGetProgramInfoLog(program, len, &len, &error[ 0 ]);
-        DBGPRINT_ERR("Error while linking shader program\nError: %s\n", &error[ 0 ]);
+        LOG_CRITICAL("Error while linking shader program. Error: {}", &error[ 0 ]);
         glDeleteProgram(program);
         glDeleteShader(vertex);
         glDeleteShader(fragment);
-        // TODO log error
         Engine::instance()->stop();
         return 0;
     }
@@ -261,8 +258,7 @@ std::string mage::ShaderData::preprocess(const std::string& fileName)
         }
     } else
     {
-        DBGPRINT_ERR("Failed to process shader %s", fileName.c_str());
-        // TODO log error
+        LOG_CRITICAL("Failed to process shader {}", fileName);
         Engine::instance()->stop();
     }
 

@@ -31,6 +31,9 @@
 #include <glm/glm.hpp>
 #include <glm/detail/type_quat.hpp>
 
+#include "mage3d_exported.h"
+#include "core/log.h"
+
 // Rename some of the glm types, for quality of life sake
 using vec2f = glm::vec2;
 using vec3f = glm::vec3;
@@ -43,13 +46,31 @@ using quaternion = glm::quat;
 
 #define SIZE_OF_ARRAY(arr) (sizeof(arr) / sizeof(arr[0]))
 
+mage3d_EXPORT const char* getGlErrorString(GLenum err);
 
-#define checkGlError() if(glGetError() != GL_NO_ERROR) \
-fprintf(stderr, "OpenGL Error (%i):\n%s\nOccurred in %s at line %i\n", glGetError(), glGetString(glGetError()), __FILE__, __LINE__);
 
-#define DBGPRINT(fmt_, ...) printf(fmt_"\n", ##__VA_ARGS__)
-#define DBGPRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", ##__VA_ARGS__)
-#ifdef MAGE_VERBOSE
+#ifndef MAGE_DEBUG
+    #define MAGE_DEBUG 1
+#endif
+#ifndef MAGE_VERBOSE
+    #define MAGE_VERBOSE 0
+#endif
+
+
+#define checkGlError(er) er = glGetError();\
+if(er != GL_NO_ERROR) \
+fprintf(stderr, "OpenGL Error 0x%x (%i): %s\nOccurred in %s at line %i\n", er, er, getGlErrorString(er), __FILE__, __LINE__)
+
+
+#if MAGE_DEBUG
+    #define DBGPRINT(fmt_, ...) printf(fmt_"\n", __VA_ARGS__)
+    #define DBGPRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", __VA_ARGS__)
+#else
+    #define DBGPRINT(...)
+    #define DBGPRINT_ERR(...)
+#endif // MAGE_DEBUG
+
+#if MAGE_VERBOSE
     #define VERBOSE_PRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", ##__VA_ARGS__)
 #else
     #define VERBOSE_PRINT_ERR(...)
