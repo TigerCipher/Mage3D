@@ -48,17 +48,17 @@ namespace mage
         mage3d_EXPORT void renderMesh(const Shader* shader, Mesh* mesh) const;
         mage3d_EXPORT void renderMesh(const Shader* shader, Mesh* mesh, const Material* material) const;
         mage3d_EXPORT void
-        renderModel(const Shader* shader, Model* model, const Material* material = nullptr) const;
+        renderModel(const Shader* shader, Model* model) const;
 
-        inline void addCamera(Camera* camera) const { m_camera = camera; }
-        inline Camera* getCamera() const { return m_camera; }
+        mage3d_EXPORT inline void addCamera(Camera* camera) const { m_camera = camera; }
+        mage3d_EXPORT inline Camera* getCamera() const { return m_camera; }
 
 
-        static const Shader* BASIC_SHADER;
-        static const Shader* LIGHTING_SHADER;
-        static const Texture* DEFAULT_DIFFUSE_TEXTURE;
-        static const Texture* DEFAULT_SPECULAR_TEXTURE;
-        static const Texture* DEFAULT_EMISSION_TEXTURE;
+        //static const Shader* BASIC_SHADER;
+        //static const Shader* LIGHTING_SHADER;
+        //static const Texture* DEFAULT_DIFFUSE_TEXTURE;
+        //static const Texture* DEFAULT_SPECULAR_TEXTURE;
+        //static const Texture* DEFAULT_EMISSION_TEXTURE;
     protected:
     private:
         mutable std::map<std::string, const Shader*> shaderMap;

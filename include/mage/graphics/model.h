@@ -39,13 +39,13 @@ namespace mage
 	class Model
 	{
 	public:
-		mage3d_EXPORT Model() = default;
-		mage3d_EXPORT explicit Model(const char* path);
+		mage3d_EXPORT explicit Model(const char* path, const Material* mat = nullptr);
 
 		mage3d_EXPORT virtual ~Model();
 
-		list<Mesh*> getMeshes() { return m_meshes; }
-
+		mage3d_EXPORT inline list<Mesh*> getMeshes() { return m_meshes; }
+		[[nodiscard]] mage3d_EXPORT inline const Material* getMaterial() { return m_material; }
+		[[nodiscard]] mage3d_EXPORT inline const Material* getMaterial() const { return m_material; }
 		//list<Material> getMaterials() { return m_materials; }
 
 	private:
@@ -57,6 +57,7 @@ namespace mage
 
 		list<Mesh*> m_meshes;
 		std::string m_fileName;
+		const Material* m_material;
 		//list<Material> m_materials;
 	};
 

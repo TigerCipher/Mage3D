@@ -21,22 +21,22 @@
 
 #include "mage/graphics/renderengine.h"
 
-const mage::Shader* mage::RenderEngine::BASIC_SHADER;
-const mage::Shader* mage::RenderEngine::LIGHTING_SHADER;
-const mage::Texture* mage::RenderEngine::DEFAULT_DIFFUSE_TEXTURE;
-const mage::Texture* mage::RenderEngine::DEFAULT_SPECULAR_TEXTURE;
-const mage::Texture* mage::RenderEngine::DEFAULT_EMISSION_TEXTURE;
+//const mage::Shader* mage::RenderEngine::BASIC_SHADER;
+//const mage::Shader* mage::RenderEngine::LIGHTING_SHADER;
+//const mage::Texture* mage::RenderEngine::DEFAULT_DIFFUSE_TEXTURE;
+//const mage::Texture* mage::RenderEngine::DEFAULT_SPECULAR_TEXTURE;
+//const mage::Texture* mage::RenderEngine::DEFAULT_EMISSION_TEXTURE;
 
 mage::RenderEngine::RenderEngine()
 {
-    BASIC_SHADER = new Shader("./assets/shaders/basic");
-    LIGHTING_SHADER = new Shader("./assets/shaders/lighting");
-    DEFAULT_DIFFUSE_TEXTURE = new Texture(TEXTURE_DEFAULT_DIFFUSE, TEXTURE_DIFFUSE);
-    DEFAULT_SPECULAR_TEXTURE = new Texture(TEXTURE_DEFAULT_SPECULAR, TEXTURE_SPECULAR);
-    DEFAULT_EMISSION_TEXTURE = new Texture(TEXTURE_DEFAULT_EMISSION, TEXTURE_EMISSION);
+    //BASIC_SHADER = new Shader("./assets/shaders/basic");
+    //LIGHTING_SHADER = new Shader("./assets/shaders/lighting");
+    //DEFAULT_DIFFUSE_TEXTURE = new Texture(TEXTURE_DEFAULT_DIFFUSE, TEXTURE_DIFFUSE);
+    //DEFAULT_SPECULAR_TEXTURE = new Texture(TEXTURE_DEFAULT_SPECULAR, TEXTURE_SPECULAR);
+    //DEFAULT_EMISSION_TEXTURE = new Texture(TEXTURE_DEFAULT_EMISSION, TEXTURE_EMISSION);
 
-    registerShader(BASIC_SHADER, "basic");
-    registerShader(LIGHTING_SHADER, "lighting");
+    //registerShader(BASIC_SHADER, "basic");
+    //registerShader(LIGHTING_SHADER, "lighting");
 
     // TODO some models might need different culling
 	glFrontFace(GL_CW);
@@ -50,14 +50,14 @@ mage::RenderEngine::RenderEngine()
 
 mage::RenderEngine::~RenderEngine()
 {
-    for (auto & iterator : shaderMap)
-    {
-        delete iterator.second;
-    }
-
-    delete DEFAULT_DIFFUSE_TEXTURE;
-    delete DEFAULT_SPECULAR_TEXTURE;
-    delete DEFAULT_EMISSION_TEXTURE;
+    //for (auto & iterator : shaderMap)
+    //{
+    //    delete iterator.second;
+    //}
+    //
+    //delete DEFAULT_DIFFUSE_TEXTURE;
+    //delete DEFAULT_SPECULAR_TEXTURE;
+    //delete DEFAULT_EMISSION_TEXTURE;
 }
 
 void mage::RenderEngine::registerShader(const mage::Shader* shader, const std::string& shaderName) const
@@ -91,30 +91,27 @@ void mage::RenderEngine::renderMesh(const mage::Shader* shader, mage::Mesh* mesh
         renderMesh(shader, mesh);
         return;
     }
-    const Texture* diffuse = material->diffuse ? material->diffuse : DEFAULT_DIFFUSE_TEXTURE;
-    const Texture* specular = material->specular ? material->specular : DEFAULT_SPECULAR_TEXTURE;
-    const Texture* emission = material->emission ? material->emission : DEFAULT_EMISSION_TEXTURE;
-    diffuse->enable(0);
-    specular->enable(1);
-    emission->enable(2);
+    material->getDiffuse()->enable(0);
+    material->getSpecular()->enable(1);
+    material->getEmission()->enable(2);
 
     shader->setUniform1i("material.texture_diffuse", 0);
     shader->setUniform1i("material.texture_specular", 1);
     shader->setUniform1i("material.texture_emission", 2);
-    shader->setUniform1f("material.shininess", material->shininess);
+    shader->setUniform1f("material.shininess", material->getShininess());
 
     renderMesh(shader, mesh);
 
-    diffuse->disable(0);
-    specular->disable(1);
-    emission->disable(2);
+    material->getDiffuse()->disable(0);
+    material->getSpecular()->disable(1);
+    material->getEmission()->disable(2);
 }
 
-void mage::RenderEngine::renderModel(const mage::Shader* shader, Model* model, const mage::Material* material) const
+void mage::RenderEngine::renderModel(const mage::Shader* shader, Model* model) const
 {
     for(int i = 0; i < model->getMeshes().size(); i++)
     {
-        renderMesh(shader, model->getMeshes()[i], material);
+        renderMesh(shader, model->getMeshes()[i], model->getMaterial());
     }
 }
 

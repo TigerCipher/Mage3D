@@ -46,6 +46,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 
   # We want std=c++xx not g++
   set(CMAKE_CXX_EXTENSIONS OFF)
+#  set(CMAKE_CXX_FLAGS "/O2")
 
   # Lets us use folders in IDEs
   set_property(GLOBAL PROPERTY USE_FOLDERS ON)

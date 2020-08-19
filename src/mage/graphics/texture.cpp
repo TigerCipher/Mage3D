@@ -53,17 +53,6 @@ mage::Texture::Texture(const char* filePath, const char* type) :
 	load(filePath);
 }
 
-mage::Texture::~Texture()
-{
-	if (m_textureData && m_textureData->removeReference())
-	{
-		if (m_filePath.length() > 0)
-			textureMap.erase(m_filePath);
-		LOG_INFO("Unloading texture {}", m_filePath);
-		delete m_textureData;
-	}
-}
-
 void mage::Texture::enable(uint slot)
 {
 	assert(slot < 31 && slot >= 0);
@@ -88,7 +77,8 @@ void mage::Texture::load(const char* filePath)
 		//DBGPRINT("Ref count %i", m_textureData->getResourceCount());
 	} else
 	{
-		LOG_INFO("Loading texture {}", filePath);
+	    PROFILER_SCOPE(1);
+		LOG_TRACE("Loading texture {}", filePath);
 		int width, height;
 		//TODO Try updating to SOIL2 to see if that better supports DDS files
 		ubyte* image = SOIL_load_image(filePath, &width, &height, nullptr, SOIL_LOAD_RGBA);
@@ -124,6 +114,17 @@ void mage::Texture::disable(uint slot) const
     assert(slot < 31 && slot >= 0);
 	glActiveTexture(GL_TEXTURE0 + slot);
 	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void mage::Texture::destroy()
+{
+	if (m_textureData && m_textureData->removeReference())
+	{
+		if (m_filePath.length() > 0)
+			textureMap.erase(m_filePath);
+		LOG_TRACE("Unloading texture {}", m_filePath);
+		delete m_textureData;
+	}
 }
 
 

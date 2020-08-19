@@ -50,11 +50,12 @@ namespace mage
 		mage3d_EXPORT void input(Input* _input, float delta) override;
 
 		mage3d_EXPORT glm::mat4 getViewMatrix();
-		mage3d_EXPORT glm::mat4 getProjectionMatrix() const;
+		[[nodiscard]] mage3d_EXPORT glm::mat4 getProjectionMatrix() const;
 
-		inline vec3f getPosition() { return m_position; }
+		mage3d_EXPORT inline vec3f getPosition() { return m_position; }
+		mage3d_EXPORT inline vec3f getFront() { return m_front; }
 
-		inline void constrainPitch(bool constrainPitch) { m_constrainPitch = constrainPitch; }
+		mage3d_EXPORT inline void constrainPitch(bool constrainPitch) { m_constrainPitch = constrainPitch; }
 
 	protected:
 	private:

@@ -29,30 +29,29 @@ public:
     void init() override
     {
         PROFILER_SCOPE(1);
+
+        //mage::AssetManager::loadTextures("./assets/textures");
+
         auto* cam = (new mage::GameObject())->addComponent(new mage::Camera());
         addToScene(cam);
         brick = new mage::GameObject();
         auto* lamp = new mage::GameObject();
-        SharedPtr<mage::Model> backpack = createRef<mage::Model>("./assets/models/backpack.obj");
-        SharedPtr<mage::Model> cube = createRef<mage::Model>("./assets/models/bricks.obj");
-        auto* brickDif = new mage::Texture("./assets/textures/bricks_diffuse.png", TEXTURE_DIFFUSE);
-        auto* brickSpec = new mage::Texture("./assets/textures/bricks_specular.png", TEXTURE_SPECULAR);
-        auto* backDif = new mage::Texture("./assets/textures/backpack_diffuse.jpg", TEXTURE_DIFFUSE);
-        auto* backSpec = new mage::Texture("./assets/textures/backpack_specular.jpg", TEXTURE_SPECULAR);
-        SharedPtr<mage::Material> brickMat = createRef<mage::Material>(brickDif, brickSpec, nullptr, 32.0f);
-        SharedPtr<mage::Material> backMat = createRef<mage::Material>(backDif, backSpec, nullptr, 32.0f);
+        auto* brickMat = new mage::Material("./assets/textures/bricks_diffuse.png", "./assets/textures/bricks_specular.png", nullptr, 16.0f);
+        auto* backMat = new mage::Material("./assets/textures/backpack_diffuse.jpg", "./assets/textures/backpack_specular.jpg");
+        SharedPtr<mage::Model> backpack = createRef<mage::Model>("./assets/models/backpack.obj", backMat);
+        SharedPtr<mage::Model> cube = createRef<mage::Model>("./assets/models/bricks.obj", brickMat);
 
         vec3f lightPos(0, 0.5f, -1.5f);
 
         for (int i = 0; i < 20; i++)
         {
             auto* backp = (new mage::GameObject())->addComponent(
-                    new mage::ModelRenderer(backpack, backMat, lightPos));
+                    new mage::ModelRenderer(backpack, lightPos));
             backp->getTransform().setPos(vec3f((float) i * 3.5f, 0, -4));
             addToScene(backp);
         }
 
-        brick->addComponent(new mage::ModelRenderer(cube, brickMat, lightPos));
+        brick->addComponent(new mage::ModelRenderer(cube, lightPos));
         brick->getTransform().setPos(vec3f(-4, 0, 0));
         brick->getTransform().setScale(0.5f);
 

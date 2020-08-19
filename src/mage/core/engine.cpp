@@ -21,6 +21,7 @@
 
 #include "mage/core/engine.h"
 #include "mage/events/dummyevent.h"
+#include "mage/core/assetmanager.h"
 
 mage::Engine* mage::Engine::s_instance;
 
@@ -31,6 +32,7 @@ mage::Engine::Engine(Game* game, const char* title, int width, int height, float
         m_msPerUpdate(1.0f / ticksPerSecond),
         m_limitFrames(limitFrames)
 {
+    PROFILER_SCOPE(1);
     Log::init();
     LOG_INFO("Initializing mage3d engine");
     m_dispatcher = createScope<EventDispatcher>("Mage3D Core Events", 1);
@@ -42,6 +44,7 @@ mage::Engine::Engine(Game* game, const char* title, int width, int height, float
     // gl contexts are created
     Display::create(title, width, height, &m_input);
     LOG_TRACE("Display created [title = {}, size: {} x {}]", title, width, height);
+    AssetManager::loadAssets("./assets");
     m_renderEngine = new RenderEngine();
     LOG_TRACE("Render engine created");
     //m_renderEngine = createRef<const RenderEngine>();
@@ -49,8 +52,10 @@ mage::Engine::Engine(Game* game, const char* title, int width, int height, float
 
 mage::Engine::~Engine()
 {
+    PROFILER_SCOPE(1);
     LOG_INFO("Cleaning up engine resources");
     delete m_renderEngine;
+    AssetManager::destroy();
     Display::destroy();
 }
 

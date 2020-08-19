@@ -23,15 +23,16 @@
 #include <iostream>
 
 
-mage::Model::Model(const char* path) :
-		m_fileName(path)
+mage::Model::Model(const char* path, const mage::Material* mat) :
+		m_fileName(path),
+		m_material(mat)
 {
 	loadModel(path);
 }
 
 void mage::Model::loadModel(const char* path)
 {
-	LOG_INFO("Loading model {}", path);
+	LOG_TRACE("Loading model {}", path);
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate/* | aiProcess_FlipUVs*/);
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
@@ -121,12 +122,14 @@ mage::Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const cha
 
 mage::Model::~Model()
 {
-	LOG_INFO("Unloading model {}", m_fileName.c_str());
+	LOG_TRACE("Unloading model {}", m_fileName.c_str());
 	for (auto& mesh : m_meshes)
 	{
 		// if(mesh) delete mesh; -> according to clang-tidy deleting null ptr has no effect unlike free?
 		delete mesh;
 	}
+
+	delete m_material;
 }
 
 

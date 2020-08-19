@@ -51,15 +51,13 @@ namespace mage
     {
     public:
 
-        mage3d_EXPORT ModelRenderer(SharedPtr<Model> model, SharedPtr<Material> material, vec3f lightPos);
+        mage3d_EXPORT ModelRenderer(SharedPtr<Model> model, vec3f lightPos);
 
         void update(float delta) override;
 
     protected:
 
         void postRender(const mage::RenderEngine* renderEngine) override;
-
-        SharedPtr<Material> m_material;
         mat4f transposed;
         vec3f m_lightPos;
     };

@@ -31,6 +31,7 @@ std::map<std::string, mage::ShaderData*> mage::Shader::shaderMap;
 
 mage::Shader::Shader(const char* basePath)
 {
+    PROFILER_SCOPE(1);
     char fragPath[MAX_PATH_LENGTH] = { };
     char vertPath[MAX_PATH_LENGTH] = { };
     copyStr(vertPath, basePath);
@@ -55,6 +56,7 @@ mage::Shader::Shader(const char* basePath)
 
 mage::Shader::Shader(const char* vertPath, const char* fragPath)
 {
+    PROFILER_SCOPE(1);
     m_keyName = std::string(vertPath);
     m_keyName += ";";
     m_keyName += fragPath;
@@ -68,16 +70,6 @@ mage::Shader::Shader(const char* vertPath, const char* fragPath)
     {
         m_shaderData = new ShaderData(vertPath, fragPath);
         shaderMap.insert(std::pair<std::string, ShaderData*>(m_keyName, m_shaderData));
-    }
-}
-
-mage::Shader::~Shader()
-{
-    if (m_shaderData && m_shaderData->removeReference())
-    {
-        if (m_keyName.length() > 0)
-            shaderMap.erase(m_keyName);
-        delete m_shaderData;
     }
 }
 
@@ -127,14 +119,24 @@ void mage::Shader::disable() const
     m_shaderData->unbind();
 }
 
-int mage::Shader::getAttribLocation(const char* attribName)
+[[maybe_unused]] int mage::Shader::getAttribLocation(const char* attribName)
 {
     return glGetAttribLocation(m_shaderData->getId(), attribName);
 }
 
-int mage::Shader::getAttribLocation(const char* attribName) const
+[[maybe_unused]] int mage::Shader::getAttribLocation(const char* attribName) const
 {
     return glGetAttribLocation(m_shaderData->getId(), attribName);
+}
+
+void mage::Shader::destroy() const
+{
+    if (m_shaderData && m_shaderData->removeReference())
+    {
+        if (m_keyName.length() > 0)
+            shaderMap.erase(m_keyName);
+        delete m_shaderData;
+    }
 }
 
 
@@ -149,6 +151,7 @@ mage::ShaderData::~ShaderData()
 {
     LOG_INFO("Unloading shader file {}", m_vertFile);
     LOG_INFO("Unloading shader file {}", m_fragFile);
+    LOG_TRACE("Deleting shader program ID: {}", m_id);
     glDeleteProgram(m_id);
 }
 
@@ -173,7 +176,7 @@ uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
     GLuint fragment = glCreateShader(GL_FRAGMENT_SHADER);
 
 
-    LOG_INFO("Loading shader file {}", vertFile);
+    LOG_TRACE("Loading shader file {}", vertFile);
     glShaderSource(vertex, 1, &vertSrc, NULL);
     glCompileShader(vertex);
     GLint success;
@@ -191,7 +194,7 @@ uint mage::ShaderData::load(const char* vertFile, const char* fragFile)
         return 0;
     }
 
-    LOG_INFO("Loading shader file {}", fragFile);
+    LOG_TRACE("Loading shader file {}", fragFile);
     glShaderSource(fragment, 1, &fragSrc, NULL);
     glCompileShader(fragment);
     glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);

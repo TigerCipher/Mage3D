@@ -33,6 +33,7 @@
 #include "scene.h"
 #include "game.h"
 #include "log.h"
+#include "assetmanager.h"
 
 
 #endif // MAGE3D_CORE_H

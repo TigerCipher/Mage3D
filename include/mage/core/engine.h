@@ -49,7 +49,7 @@ namespace mage
         mage3d_EXPORT void start();
         mage3d_EXPORT void stop();
 
-        mage3d_EXPORT inline const RenderEngine* getRenderEngine() const { return m_renderEngine; }
+        [[nodiscard]] mage3d_EXPORT inline const RenderEngine* getRenderEngine() const { return m_renderEngine; }
 
         mage3d_EXPORT static Engine* instance() { return s_instance; }
 

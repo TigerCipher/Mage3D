@@ -38,7 +38,7 @@ struct Material
 struct Light
 {
     vec3 position;
-//    vec3 direction;
+    vec3 direction;
 
     vec3 ambient;
     vec3 diffuse;
@@ -47,6 +47,9 @@ struct Light
     float constant;
     float linear;
     float quadratic;
+
+    float cutoff;
+    float outerCutoff;
 };
 
 uniform Material material;
@@ -55,13 +58,14 @@ uniform vec3 viewPos;
 
 void main()
 {
-    vec3 emission = vec3(texture(material.texture_emission, fragTexCoord));
+    vec3 lightDir = normalize(light.position - fragPos);
     vec3 ambient = vec3(texture(material.texture_diffuse, fragTexCoord)) * light.ambient;
 
-    vec3 norm = normalize(fragNormal);
-//    vec3 lightDir = normalize(-light.direction);
-    vec3 lightDir = normalize(light.position - fragPos);
 
+
+    vec3 emission = vec3(texture(material.texture_emission, fragTexCoord));
+    vec3 norm = normalize(fragNormal);
+    //    vec3 lightDir = normalize(-light.direction);
     float diff = max(dot(norm, lightDir), 0);
     vec3 diffuse = light.diffuse * vec3(texture(material.texture_diffuse, fragTexCoord)) * diff;
 
@@ -70,8 +74,15 @@ void main()
     float spec = pow(max(dot(viewDir, reflectDir), 0), material.shininess);
     vec3 specular = light.specular * spec * vec3(texture(material.texture_specular, fragTexCoord));
 
+
     float dist = length(light.position - fragPos);
     float atten = 1.0f / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
+
+    float theta = dot(lightDir, normalize(-light.direction));
+    float epsilon = light.cutoff - light.outerCutoff;
+    float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+    diffuse *= intensity;
+    specular *= intensity;
 
     ambient *= atten;
     diffuse *= atten;

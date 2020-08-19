@@ -20,13 +20,13 @@
  */
 
 #include "mage/graphics/modelrenderer.h"
-
+#include "mage/core/assetmanager.h"
 #include <utility>
 
 mage::BasicModelRenderer::BasicModelRenderer(SharedPtr<mage::Model> model)
 {
     m_model = std::move(model);
-    m_shader = RenderEngine::BASIC_SHADER;
+    m_shader = AssetManager::getShader("./assets/shaders/basic");
 }
 
 void mage::BasicModelRenderer::render(const mage::RenderEngine* renderEngine)
@@ -45,12 +45,11 @@ void mage::BasicModelRenderer::postRender(const mage::RenderEngine* renderEngine
 }
 
 
-mage::ModelRenderer::ModelRenderer(SharedPtr<mage::Model> model, SharedPtr<mage::Material> material, vec3f lightPos) : BasicModelRenderer(std::move(model)),
+mage::ModelRenderer::ModelRenderer(SharedPtr<mage::Model> model, vec3f lightPos) : BasicModelRenderer(std::move(model)),
                                    m_lightPos(lightPos),
                                    transposed(1)
 {
-    m_material = std::move(material);
-    m_shader = RenderEngine::LIGHTING_SHADER;
+    m_shader = AssetManager::getShader("./assets/shaders/lighting");
 }
 
 void mage::ModelRenderer::update(float delta)
@@ -63,16 +62,18 @@ void mage::ModelRenderer::postRender(const mage::RenderEngine* renderEngine)
                         glm::inverse(getTransform().getTransformation()));
     m_shader->setUniformMatf("normalMatrix", transposed);
     m_shader->setUniform3f("light.ambient", vec3f(0.1f));
-    m_shader->setUniform3f("light.diffuse", vec3f(0.5f));
-    m_shader->setUniform3f("light.specular", vec3f(1));
-    m_shader->setUniform3f("light.position", m_lightPos);
+    m_shader->setUniform3f("light.diffuse", vec3f(1));
+    m_shader->setUniform3f("light.specular", vec3f(0.5f));
+    m_shader->setUniform3f("light.position", renderEngine->getCamera()->getPosition());
+    m_shader->setUniform3f("light.direction", renderEngine->getCamera()->getFront());
     m_shader->setUniform1f("light.constant", 1.0f);
     m_shader->setUniform1f("light.linear", 0.07f);
     m_shader->setUniform1f("light.quadratic", 0.017f);
+    m_shader->setUniform1f("light.cutoff", glm::cos(glm::radians(5.5f)));
+    m_shader->setUniform1f("light.outerCutoff", glm::cos(glm::radians(12.5f)));
     m_shader->setUniform3f("viewPos", renderEngine->getCamera()->getPosition());
 
-    //m_shader->setUniform3f("light.direction", vec3f(-0.2f, -1, -0.3f));
 
-    renderEngine->renderModel(m_shader, m_model.get(), m_material.get());
+    renderEngine->renderModel(m_shader, m_model.get());
     m_shader->disable();
 }
