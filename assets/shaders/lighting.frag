@@ -34,61 +34,26 @@ struct Material
     sampler2D texture_emission;
     float shininess;
 };
-
-struct Light
-{
-    vec3 position;
-    vec3 direction;
-
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-
-    float constant;
-    float linear;
-    float quadratic;
-
-    float cutoff;
-    float outerCutoff;
-};
-
 uniform Material material;
-uniform Light light;
+
+#include <lighting.glh>
+
 uniform vec3 viewPos;
 
 void main()
 {
-    vec3 lightDir = normalize(light.position - fragPos);
-    vec3 ambient = vec3(texture(material.texture_diffuse, fragTexCoord)) * light.ambient;
-
-
-
     vec3 emission = vec3(texture(material.texture_emission, fragTexCoord));
+
     vec3 norm = normalize(fragNormal);
-    //    vec3 lightDir = normalize(-light.direction);
-    float diff = max(dot(norm, lightDir), 0);
-    vec3 diffuse = light.diffuse * vec3(texture(material.texture_diffuse, fragTexCoord)) * diff;
-
     vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    float spec = pow(max(dot(viewDir, reflectDir), 0), material.shininess);
-    vec3 specular = light.specular * spec * vec3(texture(material.texture_specular, fragTexCoord));
 
+    vec3 result = calculateDirectionLight(directionLight, material, norm, viewDir);
 
-    float dist = length(light.position - fragPos);
-    float atten = 1.0f / (light.constant + light.linear * dist + light.quadratic * (dist * dist));
+    for(int i = 0; i < NUM_PNT_LIGHTS; i++)
+        result += calculatePointLight(pointLights[i], material, norm, fragPos, viewDir);
 
-    float theta = dot(lightDir, normalize(-light.direction));
-    float epsilon = light.cutoff - light.outerCutoff;
-    float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
-    diffuse *= intensity;
-    specular *= intensity;
+    result += calculateSpotLight(spotLight, material, norm, fragPos, viewDir);
+    result += emission;
 
-    ambient *= atten;
-    diffuse *= atten;
-    specular *= atten;
-    emission *= atten;
-
-    vec3 result = (ambient + diffuse + specular + emission);
     color = vec4(result, 1.0);
 }

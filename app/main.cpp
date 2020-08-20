@@ -30,14 +30,17 @@ public:
     {
         PROFILER_SCOPE(1);
 
-        //mage::AssetManager::loadTextures("./assets/textures");
-
         auto* cam = (new mage::GameObject())->addComponent(new mage::Camera());
         addToScene(cam);
         brick = new mage::GameObject();
         auto* lamp = new mage::GameObject();
-        SharedPtr<mage::Model> backpack = createRef<mage::Model>("./assets/models/backpack.obj", mage::Material("./assets/textures/backpack_diffuse.jpg", "./assets/textures/backpack_specular.jpg"));
-        SharedPtr<mage::Model> cube = createRef<mage::Model>("./assets/models/bricks.obj", mage::Material("./assets/textures/bricks_diffuse.png", "./assets/textures/bricks_specular.png", nullptr, 16.0f));
+        SharedPtr<mage::Model> backpack = createRef<mage::Model>("./assets/models/backpack.obj",
+                                                                 mage::Material(
+                                                                         "./assets/textures/backpack_diffuse.jpg",
+                                                                         "./assets/textures/backpack_specular.jpg"));
+        SharedPtr<mage::Model> cube = createRef<mage::Model>("./assets/models/bricks.obj", mage::Material(
+                "./assets/textures/bricks_diffuse.png", "./assets/textures/bricks_specular.png", nullptr,
+                16.0f));
 
         vec3f lightPos(0, 0.5f, -1.5f);
 
@@ -57,6 +60,17 @@ public:
         lamp->getTransform().setPos(lightPos);
         lamp->getTransform().setScale(0.1f);
 
+        for(int i = 1; i <= 3; i++)
+        {
+            auto* lampObj = (new mage::GameObject())->addComponent(new mage::BasicModelRenderer(cube));
+            lampObj->getTransform().setPos(lightPos + vec3f(10 * i, 0, 0));
+            lampObj->getTransform().setScale(0.1f);
+            addToScene(lampObj);
+        }
+        //m_lightPos + vec3f(10, 5, 0)
+        //m_lightPos + vec3f(-20, 20, 10)
+        //m_lightPos + vec3f(30, 0, -10)
+
         addToScene(brick);
         addToScene(lamp);
     }
@@ -68,7 +82,7 @@ public:
     }
 
 private:
-    mage::GameObject* brick{};
+    mage::GameObject* brick { };
 };
 
 class TestGame : public mage::Game

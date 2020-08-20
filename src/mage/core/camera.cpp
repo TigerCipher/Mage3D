@@ -51,7 +51,10 @@ void mage::Camera::updateVectors()
 
 void mage::Camera::input(mage::Input* _input, float delta)
 {
-	float velocity = m_speed * delta;
+    float speed = m_speed;
+    if(_input->keyDown(KEY_LEFT_SHIFT))
+        speed = speed * 10;
+	float velocity = speed * delta;
 	if (_input->keyDown(KEY_W))
 		m_position += m_front * velocity;
 	if (_input->keyDown(KEY_S))

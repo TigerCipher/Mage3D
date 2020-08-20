@@ -96,6 +96,8 @@ void mage::AssetManager::loadModels(const char* baseDir)
 
 void mage::AssetManager::loadAssets(const char* baseDir)
 {
+    // TODO: Fine for now, but for large games, surely not *everything* must be loaded into ram all at once
+    // TODO: Perhaps assign IDs to scenes and load assets from respected folders, i.e for scene 1: ./assets/01/textures
     LOG_TRACE("Loading assets from {}", baseDir);
     std::string texDir(baseDir);
     texDir += "/textures";
@@ -156,14 +158,3 @@ void mage::AssetManager::destroy()
         item.second->destroy();
     s_modelMap.clear();
 }
-
-
-
-
-
-
-
-//mage::Texture* mage::AssetManager::getTexture(const std::string& name)
-//{
-//    return s_textureMap[ name ];
-//}

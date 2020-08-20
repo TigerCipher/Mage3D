@@ -43,7 +43,6 @@ namespace mage
 
         virtual void postRender(const mage::RenderEngine* renderEngine);
 
-        // Wrapper class to contain model and material?
         SharedPtr<Model> m_model;
         Shader m_shader;
     };

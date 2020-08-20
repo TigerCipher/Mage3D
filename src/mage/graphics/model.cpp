@@ -22,6 +22,7 @@
 #include "mage/graphics/model.h"
 #include "mage/core/assetmanager.h"
 
+//std::unordered_map<std::string, mage::ModelData*> s_modelMap;
 
 mage::ModelData::ModelData(const char* path) :
         m_fileName(path)
@@ -133,5 +134,11 @@ void mage::ModelData::destroy()
 mage::Model::Model(const std::string& modelFile, const mage::Material& material) :
         m_data(AssetManager::getModel(modelFile))
 {
+    //auto it = s_modelMap.find(modelFile);
+    //if (it != s_modelMap.end())
+    //{
+    //    m_data = it->second;
+    //    m_data->addReference();
+    //}
     m_material = createScope<Material>(material);
 }

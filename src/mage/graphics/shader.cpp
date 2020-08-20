@@ -24,7 +24,6 @@
 #include "mage/core/engine.h"
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
-#include <bmd/strutil.h>
 #include <fstream>
 
 std::map<std::string, mage::ShaderData*> mage::Shader::shaderMap;

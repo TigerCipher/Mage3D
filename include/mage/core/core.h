@@ -22,7 +22,6 @@
 
 
 #include "display.h"
-#include "timer.h"
 #include "input.h"
 #include "resourcemanager.h"
 #include "engine.h"

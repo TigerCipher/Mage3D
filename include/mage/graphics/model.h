@@ -27,6 +27,7 @@
 #include "mage/common.h"
 #include "mesh.h"
 #include "material.h"
+#include "mage/core/resourcemanager.h"
 
 #include <string>
 #include <assimp/Importer.hpp>
@@ -37,6 +38,7 @@
 namespace mage
 {
 
+    // TODO might be best to make this a resource manager / counter
 	class ModelData
 	{
 	public:
@@ -77,6 +79,7 @@ namespace mage
     private:
         ModelData m_data;
         UniquePtr<Material> m_material;
+        //static std::unordered_map<std::string, ModelData*> s_modelMap;
     };
 
 }
