@@ -20,116 +20,118 @@
  */
 
 #include "mage/graphics/model.h"
-#include <iostream>
+#include "mage/core/assetmanager.h"
 
 
-mage::Model::Model(const char* path, const mage::Material* mat) :
-		m_fileName(path),
-		m_material(mat)
+mage::ModelData::ModelData(const char* path) :
+        m_fileName(path)
 {
-	loadModel(path);
+    loadModel(path);
 }
 
-void mage::Model::loadModel(const char* path)
+void mage::ModelData::loadModel(const char* path)
 {
-	LOG_TRACE("Loading model {}", path);
-	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate/* | aiProcess_FlipUVs*/);
-	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
-	{
-		LOG_ERROR("Error while loading model {} -> {}", path, importer.GetErrorString());
-		return;
-	}
-	processNode(scene->mRootNode, scene);
+    LOG_TRACE("Loading model {}", path);
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate/* | aiProcess_FlipUVs*/);
+    if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
+    {
+        LOG_ERROR("Error while loading model {} -> {}", path, importer.GetErrorString());
+        return;
+    }
+    processNode(scene->mRootNode, scene);
 }
 
-void mage::Model::processNode(aiNode* node, const aiScene* scene)
+void mage::ModelData::processNode(aiNode* node, const aiScene* scene)
 {
-	for (uint i = 0; i < node->mNumMeshes; i++)
-	{
-		aiMesh* mesh = scene->mMeshes[ node->mMeshes[ i ] ];
-		m_meshes.push_back(processMesh(mesh, scene));
-	}
+    for (uint i = 0; i < node->mNumMeshes; i++)
+    {
+        aiMesh* mesh = scene->mMeshes[ node->mMeshes[ i ] ];
+        m_meshes.push_back(processMesh(mesh, scene));
+    }
 
-	// Rinse and repeat for any child nodes
-	for (uint i = 0; i < node->mNumChildren; i++)
-	{
-		processNode(node->mChildren[ i ], scene);
-	}
+    // Rinse and repeat for any child nodes
+    for (uint i = 0; i < node->mNumChildren; i++)
+    {
+        processNode(node->mChildren[ i ], scene);
+    }
 }
 
-mage::Mesh* mage::Model::processMesh(aiMesh* mesh, const aiScene* scene)
+mage::Mesh* mage::ModelData::processMesh(aiMesh* mesh, const aiScene* scene)
 {
-	list<Vertex> vertices;
-	list<uint> indices;
-	//list<Texture> textures;
+    list<Vertex> vertices;
+    list<uint> indices;
+    //list<Texture> textures;
 
-	// Fill out Vertex struct
-	for (uint i = 0; i < mesh->mNumVertices; i++)
-	{
-		Position pos(mesh->mVertices[ i ].x, mesh->mVertices[ i ].y, mesh->mVertices[ i ].z);
-		Normal normal(mesh->mNormals[ i ].x, mesh->mNormals[ i ].y, mesh->mNormals[ i ].z);
-		Vertex vert(pos, normal);
-		if (mesh->mTextureCoords[ 0 ])
-			vert.setTexCoords(mesh->mTextureCoords[ 0 ][ i ].x, mesh->mTextureCoords[ 0 ][ i ].y);
-		vertices.push_back(vert);
-	}
+    // Fill out Vertex struct
+    for (uint i = 0; i < mesh->mNumVertices; i++)
+    {
+        Position pos(mesh->mVertices[ i ].x, mesh->mVertices[ i ].y, mesh->mVertices[ i ].z);
+        Normal normal(mesh->mNormals[ i ].x, mesh->mNormals[ i ].y, mesh->mNormals[ i ].z);
+        Vertex vert(pos, normal);
+        if (mesh->mTextureCoords[ 0 ])
+            vert.setTexCoords(mesh->mTextureCoords[ 0 ][ i ].x, mesh->mTextureCoords[ 0 ][ i ].y);
+        vertices.push_back(vert);
+    }
 
-	// Get the indices for the mesh
-	for (uint i = 0; i < mesh->mNumFaces; i++)
-	{
-		aiFace face = mesh->mFaces[ i ];
-		for (uint j = 0; j < face.mNumIndices; j++)
-		{
-			indices.push_back(face.mIndices[ j ]);
-		}
-	}
+    // Get the indices for the mesh
+    for (uint i = 0; i < mesh->mNumFaces; i++)
+    {
+        aiFace face = mesh->mFaces[ i ];
+        for (uint j = 0; j < face.mNumIndices; j++)
+        {
+            indices.push_back(face.mIndices[ j ]);
+        }
+    }
 
-	// Get the material/textures
-	//if (mesh->mMaterialIndex >= 0)
-	//{
-	//	aiMaterial* mat = scene->mMaterials[ mesh->mMaterialIndex ];
-	//	list<Texture> diffuseMaps = loadMaterialTextures(mat, aiTextureType_DIFFUSE, TEXTURE_DIFFUSE);
-	//	for (const auto& item : diffuseMaps)
-	//	{
-	//		textures.push_back(item);
-	//	}
-	//	list<Texture> specularMaps = loadMaterialTextures(mat, aiTextureType_SPECULAR, TEXTURE_SPECULAR);
-	//	for (const auto& item : specularMaps)
-	//	{
-	//		textures.push_back(item);
-	//	}
-	//}
-	return new Mesh(vertices, indices);
+    // Get the material/textures
+    //if (mesh->mMaterialIndex >= 0)
+    //{
+    //	aiMaterial* mat = scene->mMaterials[ mesh->mMaterialIndex ];
+    //	list<Texture> diffuseMaps = loadMaterialTextures(mat, aiTextureType_DIFFUSE, TEXTURE_DIFFUSE);
+    //	for (const auto& item : diffuseMaps)
+    //	{
+    //		textures.push_back(item);
+    //	}
+    //	list<Texture> specularMaps = loadMaterialTextures(mat, aiTextureType_SPECULAR, TEXTURE_SPECULAR);
+    //	for (const auto& item : specularMaps)
+    //	{
+    //		textures.push_back(item);
+    //	}
+    //}
+    return new Mesh(vertices, indices);
 }
 
 
 list<mage::Texture>
-mage::Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const char* typeName)
+mage::ModelData::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const char* typeName)
 {
-	list<Texture> textures;
-	for (uint i = 0; i < mat->GetTextureCount(type); i++)
-	{
-		aiString str;
-		mat->GetTexture(type, i, &str);
-		std::string file("./assets/textures/");
-		file.append(str.C_Str());
-		Texture tex(file.c_str(), typeName);
-		textures.push_back(tex);
-	}
-	return textures;
+    list<Texture> textures;
+    for (uint i = 0; i < mat->GetTextureCount(type); i++)
+    {
+        aiString str;
+        mat->GetTexture(type, i, &str);
+        std::string file("./assets/textures/");
+        file.append(str.C_Str());
+        Texture tex(file.c_str(), typeName);
+        textures.push_back(tex);
+    }
+    return textures;
 }
 
-mage::Model::~Model()
+void mage::ModelData::destroy()
 {
-	LOG_TRACE("Unloading model {}", m_fileName.c_str());
-	for (auto& mesh : m_meshes)
-	{
-		// if(mesh) delete mesh; -> according to clang-tidy deleting null ptr has no effect unlike free?
-		delete mesh;
-	}
-
-	delete m_material;
+    LOG_TRACE("Unloading model {}", m_fileName.c_str());
+    for (auto& mesh : m_meshes)
+    {
+        // if(mesh) delete mesh; -> according to clang-tidy deleting null ptr has no effect unlike free?
+        delete mesh;
+    }
 }
 
 
+mage::Model::Model(const std::string& modelFile, const mage::Material& material) :
+        m_data(AssetManager::getModel(modelFile))
+{
+    m_material = createScope<Material>(material);
+}

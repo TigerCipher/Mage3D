@@ -36,10 +36,8 @@ public:
         addToScene(cam);
         brick = new mage::GameObject();
         auto* lamp = new mage::GameObject();
-        auto* brickMat = new mage::Material("./assets/textures/bricks_diffuse.png", "./assets/textures/bricks_specular.png", nullptr, 16.0f);
-        auto* backMat = new mage::Material("./assets/textures/backpack_diffuse.jpg", "./assets/textures/backpack_specular.jpg");
-        SharedPtr<mage::Model> backpack = createRef<mage::Model>("./assets/models/backpack.obj", backMat);
-        SharedPtr<mage::Model> cube = createRef<mage::Model>("./assets/models/bricks.obj", brickMat);
+        SharedPtr<mage::Model> backpack = createRef<mage::Model>("./assets/models/backpack.obj", mage::Material("./assets/textures/backpack_diffuse.jpg", "./assets/textures/backpack_specular.jpg"));
+        SharedPtr<mage::Model> cube = createRef<mage::Model>("./assets/models/bricks.obj", mage::Material("./assets/textures/bricks_diffuse.png", "./assets/textures/bricks_specular.png", nullptr, 16.0f));
 
         vec3f lightPos(0, 0.5f, -1.5f);
 

@@ -70,7 +70,7 @@ namespace mage
 		mage3d_EXPORT Shader() = default;
 		mage3d_EXPORT explicit Shader(const char* basePath);
 		mage3d_EXPORT Shader(const char* vertPath, const char* fragPath);
-		mage3d_EXPORT virtual ~Shader() = default;
+		mage3d_EXPORT virtual ~Shader();
 		mage3d_EXPORT void destroy() const;
 
 		mage3d_EXPORT void enable() const;
@@ -85,6 +85,10 @@ namespace mage
 
 		mage3d_EXPORT int getAttribLocation(const char* attribName);
 		mage3d_EXPORT int getAttribLocation(const char* attribName) const;
+
+		mage3d_EXPORT Shader(const Shader& rhs);
+		mage3d_EXPORT Shader& operator=(const Shader& rhs);
+
 
 	protected:
 	private:

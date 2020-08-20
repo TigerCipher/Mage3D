@@ -45,10 +45,10 @@ namespace mage
         mage3d_EXPORT void registerShader(const Shader* shader, const std::string& shaderName) const;
         mage3d_EXPORT const Shader* getShader(const std::string& shader) const;
 
-        mage3d_EXPORT void renderMesh(const Shader* shader, Mesh* mesh) const;
-        mage3d_EXPORT void renderMesh(const Shader* shader, Mesh* mesh, const Material* material) const;
+        mage3d_EXPORT void renderMesh(const Shader& shader, Mesh* mesh) const;
+        mage3d_EXPORT void renderMesh(const Shader& shader, Mesh* mesh, const Material& material) const;
         mage3d_EXPORT void
-        renderModel(const Shader* shader, Model* model) const;
+        renderModel(const Shader& shader, const Model& model) const;
 
         mage3d_EXPORT inline void addCamera(Camera* camera) const { m_camera = camera; }
         mage3d_EXPORT inline Camera* getCamera() const { return m_camera; }

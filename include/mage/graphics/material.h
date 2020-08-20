@@ -25,7 +25,6 @@
 #include "mage3d_exported.h"
 #include "mage/common.h"
 #include "texture.h"
-#include "mage/core/assetmanager.h"
 #include <string>
 #include <utility>
 
@@ -37,22 +36,21 @@ namespace mage
         mage3d_EXPORT explicit Material(const char* diffuse = TEXTURE_DEFAULT_DIFFUSE,
                                const char* specular = TEXTURE_DEFAULT_SPECULAR,
                                const char* emission = TEXTURE_DEFAULT_EMISSION,
-                               float shininess = 32.0f) :
-                m_shininess(shininess){
-            if(diffuse) m_diffuseTexture = AssetManager::getTexture(diffuse);
-            else m_diffuseTexture = AssetManager::getTexture(TEXTURE_DEFAULT_DIFFUSE);
-            if(specular) m_specularTexture = AssetManager::getTexture(specular);
-            else m_specularTexture = AssetManager::getTexture(TEXTURE_DEFAULT_SPECULAR);
-            if(emission) m_emissionTexture = AssetManager::getTexture(emission);
-            else m_emissionTexture = AssetManager::getTexture(TEXTURE_DEFAULT_EMISSION);
-        }
+                               float shininess = 32.0f);
 
-        mage3d_EXPORT inline Texture* getDiffuse() { return m_diffuseTexture; }
-        mage3d_EXPORT inline Texture* getSpecular() { return m_specularTexture; }
-        mage3d_EXPORT inline Texture* getEmission() { return m_emissionTexture; }
-        [[nodiscard]] mage3d_EXPORT inline Texture* getDiffuse() const { return m_diffuseTexture; }
-        [[nodiscard]] mage3d_EXPORT inline Texture* getSpecular() const { return m_specularTexture; }
-        [[nodiscard]] mage3d_EXPORT inline Texture* getEmission() const { return m_emissionTexture; }
+        //mage3d_EXPORT inline Texture* getDiffuse() { return m_diffuseTexture; }
+        //mage3d_EXPORT inline Texture* getSpecular() { return m_specularTexture; }
+        //mage3d_EXPORT inline Texture* getEmission() { return m_emissionTexture; }
+        //[[nodiscard]] mage3d_EXPORT inline Texture* getDiffuse() const { return m_diffuseTexture; }
+        //[[nodiscard]] mage3d_EXPORT inline Texture* getSpecular() const { return m_specularTexture; }
+        //[[nodiscard]] mage3d_EXPORT inline Texture* getEmission() const { return m_emissionTexture; }
+        mage3d_EXPORT inline Texture& getDiffuse() { return m_diffuseTexture; }
+        mage3d_EXPORT inline Texture& getSpecular() { return m_specularTexture; }
+        mage3d_EXPORT inline Texture& getEmission() { return m_emissionTexture; }
+        [[nodiscard]] mage3d_EXPORT inline const Texture& getDiffuse() const { return m_diffuseTexture; }
+        [[nodiscard]] mage3d_EXPORT inline const Texture& getSpecular() const { return m_specularTexture; }
+        [[nodiscard]] mage3d_EXPORT inline const Texture& getEmission() const { return m_emissionTexture; }
+
         //mage3d_EXPORT inline SharedPtr<Texture>& getDiffuse() { return m_diffuseTexture; }
         //mage3d_EXPORT inline SharedPtr<Texture>& getSpecular() { return m_specularTexture; }
         //mage3d_EXPORT inline SharedPtr<Texture>& getEmission() { return m_emissionTexture; }
@@ -62,9 +60,12 @@ namespace mage
         [[nodiscard]] mage3d_EXPORT inline float getShininess() const { return m_shininess; }
 
     private:
-        Texture* m_diffuseTexture;
-        Texture* m_specularTexture;
-        Texture* m_emissionTexture;
+        //Texture* m_diffuseTexture;
+        //Texture* m_specularTexture;
+        //Texture* m_emissionTexture;
+        Texture m_diffuseTexture;
+        Texture m_specularTexture;
+        Texture m_emissionTexture;
         //SharedPtr<Texture> m_diffuseTexture;
         //SharedPtr<Texture> m_specularTexture;
         //SharedPtr<Texture> m_emissionTexture;

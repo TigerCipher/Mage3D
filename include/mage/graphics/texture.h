@@ -71,7 +71,7 @@ namespace mage
 		mage3d_EXPORT Texture();
 		mage3d_EXPORT explicit Texture(const char* filePath);
 		mage3d_EXPORT Texture(const char* filePath, const char* type);
-		mage3d_EXPORT virtual ~Texture() = default;
+		mage3d_EXPORT virtual ~Texture();
 
 		mage3d_EXPORT void enable(uint slot);
 		mage3d_EXPORT void disable(uint slot);
@@ -83,6 +83,12 @@ namespace mage
 		mage3d_EXPORT void destroy();
 
 		friend std::ostream& operator<<(std::ostream& os, const Texture& texture);
+
+		mage3d_EXPORT Texture(const Texture& rhs);
+		mage3d_EXPORT Texture& operator=(const Texture& rhs);
+		//Texture(Texture&& rhs) = delete;
+		//Texture& operator=(Texture&& rhs) = delete;
+
 
 	protected:
 	private:

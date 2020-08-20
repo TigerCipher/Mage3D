@@ -27,32 +27,35 @@
 #include "mage/common.h"
 #include "mage/graphics/texture.h"
 #include "mage/graphics/shader.h"
-//#include "mage/graphics/model.h"
+#include "mage/graphics/model.h"
 #include <map>
 #include <string>
 
 
 namespace mage
 {
-    //class Model;
     class AssetManager
     {
     public:
         mage3d_EXPORT static void loadAssets(const char* baseDir);
         mage3d_EXPORT static void loadTextures(const char* baseDir);
         mage3d_EXPORT static void loadShaders(const char* baseDir);
+        mage3d_EXPORT static void loadModels(const char* baseDir);
         mage3d_EXPORT static bool addTexture(const std::string& name, const char* textureFile);
         mage3d_EXPORT static bool addShader(const std::string& name, const char* shaderFile);
+        mage3d_EXPORT static bool addModel(const std::string& name, const char* modelFile);
         mage3d_EXPORT static void destroy();
-        mage3d_EXPORT static inline Texture* getTexture(const std::string& name) { return s_textureMap[ name ].get(); }
+        //mage3d_EXPORT static inline Texture* getTexture(const std::string& name) { return s_textureMap[ name ].get(); }
+        mage3d_EXPORT static inline Texture& getTexture(const std::string& name) { return *s_textureMap[ name ]; }
         //mage3d_EXPORT static inline SharedPtr<Texture>& getTexture(const std::string& name) {return s_textureMap[ name ];}
-        mage3d_EXPORT static inline Shader* getShader(const std::string& name) { return s_shaderMap[name].get(); }
+        mage3d_EXPORT static inline Shader& getShader(const std::string& name) { return *s_shaderMap[name]; }
+        mage3d_EXPORT static inline ModelData& getModel(const std::string& name) { return *s_modelMap[name]; }
     protected:
     private:
         static std::unordered_map<std::string, UniquePtr<Texture>> s_textureMap;
         //static std::unordered_map<std::string, SharedPtr<Texture>> s_textureMap;
         static std::unordered_map<std::string, UniquePtr<Shader>> s_shaderMap;
-        //static std::map<std::string, Model> s_modelMap;
+        static std::unordered_map<std::string, UniquePtr<ModelData>> s_modelMap;
     };
 
 }

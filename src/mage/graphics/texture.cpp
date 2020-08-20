@@ -53,6 +53,11 @@ mage::Texture::Texture(const char* filePath, const char* type) :
 	load(filePath);
 }
 
+mage::Texture::~Texture()
+{
+    destroy();
+}
+
 void mage::Texture::enable(uint slot)
 {
 	assert(slot < 31 && slot >= 0);
@@ -77,7 +82,6 @@ void mage::Texture::load(const char* filePath)
 		//DBGPRINT("Ref count %i", m_textureData->getResourceCount());
 	} else
 	{
-	    PROFILER_SCOPE(1);
 		LOG_TRACE("Loading texture {}", filePath);
 		int width, height;
 		//TODO Try updating to SOIL2 to see if that better supports DDS files
@@ -125,6 +129,23 @@ void mage::Texture::destroy()
 		LOG_TRACE("Unloading texture {}", m_filePath);
 		delete m_textureData;
 	}
+}
+
+mage::Texture::Texture(const mage::Texture& rhs)
+{
+    rhs.m_textureData->addReference();
+    m_textureData = rhs.m_textureData;
+    m_type = rhs.m_type;
+    m_filePath = rhs.m_filePath;
+}
+
+mage::Texture& mage::Texture::operator=(const mage::Texture& rhs)
+{
+    rhs.m_textureData->addReference();
+    m_textureData = rhs.m_textureData;
+    m_type = rhs.m_type;
+    m_filePath = rhs.m_filePath;
+    return *this;
 }
 
 

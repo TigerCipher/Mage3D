@@ -36,17 +36,18 @@
 
 namespace mage
 {
-	class Model
+
+	class ModelData
 	{
 	public:
-		mage3d_EXPORT explicit Model(const char* path, const Material* mat = nullptr);
+		mage3d_EXPORT explicit ModelData(const char* path);
 
-		mage3d_EXPORT virtual ~Model();
+		mage3d_EXPORT virtual ~ModelData() = default;
 
 		mage3d_EXPORT inline list<Mesh*> getMeshes() { return m_meshes; }
-		[[nodiscard]] mage3d_EXPORT inline const Material* getMaterial() { return m_material; }
-		[[nodiscard]] mage3d_EXPORT inline const Material* getMaterial() const { return m_material; }
-		//list<Material> getMaterials() { return m_materials; }
+		[[nodiscard]] mage3d_EXPORT inline const list<Mesh*>& getMeshes() const { return m_meshes; }
+
+		mage3d_EXPORT void destroy();
 
 	private:
 
@@ -57,9 +58,26 @@ namespace mage
 
 		list<Mesh*> m_meshes;
 		std::string m_fileName;
-		const Material* m_material;
-		//list<Material> m_materials;
 	};
+
+	class Model
+    {
+    public:
+        mage3d_EXPORT Model(const std::string& modelFile, const Material& material);
+        mage3d_EXPORT virtual ~Model() = default;
+
+        mage3d_EXPORT inline list<Mesh*> getMeshes() { return m_data.getMeshes(); }
+        [[nodiscard]] mage3d_EXPORT inline const list<Mesh*>& getMeshes() const { return m_data.getMeshes(); }
+        mage3d_EXPORT inline ModelData& getData() { return m_data; }
+        [[nodiscard]] mage3d_EXPORT inline const ModelData& getData() const { return m_data; }
+        //mage3d_EXPORT inline UniquePtr<Material>& getMaterial() { return m_material; }
+        mage3d_EXPORT inline Material& getMaterial() { return *m_material; }
+        [[nodiscard]] mage3d_EXPORT inline const Material& getMaterial() const { return *m_material; }
+
+    private:
+        ModelData m_data;
+        UniquePtr<Material> m_material;
+    };
 
 }
 

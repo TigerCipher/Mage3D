@@ -31,7 +31,6 @@ std::map<std::string, mage::ShaderData*> mage::Shader::shaderMap;
 
 mage::Shader::Shader(const char* basePath)
 {
-    PROFILER_SCOPE(1);
     char fragPath[MAX_PATH_LENGTH] = { };
     char vertPath[MAX_PATH_LENGTH] = { };
     copyStr(vertPath, basePath);
@@ -56,7 +55,6 @@ mage::Shader::Shader(const char* basePath)
 
 mage::Shader::Shader(const char* vertPath, const char* fragPath)
 {
-    PROFILER_SCOPE(1);
     m_keyName = std::string(vertPath);
     m_keyName += ";";
     m_keyName += fragPath;
@@ -71,6 +69,11 @@ mage::Shader::Shader(const char* vertPath, const char* fragPath)
         m_shaderData = new ShaderData(vertPath, fragPath);
         shaderMap.insert(std::pair<std::string, ShaderData*>(m_keyName, m_shaderData));
     }
+}
+
+mage::Shader::~Shader()
+{
+    destroy();
 }
 
 
@@ -137,6 +140,21 @@ void mage::Shader::destroy() const
             shaderMap.erase(m_keyName);
         delete m_shaderData;
     }
+}
+
+mage::Shader::Shader(const mage::Shader& rhs)
+{
+    rhs.m_shaderData->addReference();
+    m_shaderData = rhs.m_shaderData;
+    m_keyName = rhs.m_keyName;
+}
+
+mage::Shader& mage::Shader::operator=(const mage::Shader& rhs)
+{
+    rhs.m_shaderData->addReference();
+    m_shaderData = rhs.m_shaderData;
+    m_keyName = rhs.m_keyName;
+    return *this;
 }
 
 

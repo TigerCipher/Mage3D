@@ -20,11 +20,12 @@
  */
 
 #include "mage/core/assetmanager.h"
+//#include "mage/graphics/model.h"
 
 std::unordered_map<std::string, UniquePtr<mage::Texture>> mage::AssetManager::s_textureMap;
 //std::unordered_map<std::string, SharedPtr<mage::Texture>> mage::AssetManager::s_textureMap;
 std::unordered_map<std::string, UniquePtr<mage::Shader>> mage::AssetManager::s_shaderMap;
-//std::map<std::string, mage::Model> mage::AssetManager::s_modelMap;
+std::unordered_map<std::string, UniquePtr<mage::ModelData>> mage::AssetManager::s_modelMap;
 
 void textureCallback(file_t* file, void* udata)
 {
@@ -53,8 +54,21 @@ void shaderCallback(file_t* file, void* udata)
     }
 }
 
+void modelCallback(file_t* file, void* udata)
+{
+    if(!file->isFile) return;
+    if(strcmp(file->ext, ".obj") == 0)
+    {
+        std::string name(file->path);
+        if(mage::AssetManager::addModel(name, file->path))
+            *(int*)udata += 1;
+    }
+}
+
 void mage::AssetManager::loadTextures(const char* baseDir)
 {
+    PROFILER_SCOPE(1);
+    LOG_TRACE("Loading textures from {}", baseDir);
     int n = 0;
     traverse_r(baseDir, textureCallback, &n);
     LOG_TRACE("Loaded {} textures", n);
@@ -63,19 +77,35 @@ void mage::AssetManager::loadTextures(const char* baseDir)
 
 void mage::AssetManager::loadShaders(const char* baseDir)
 {
+    PROFILER_SCOPE(1);
+    LOG_TRACE("Loading shaders from {}", baseDir);
     int n = 0;
     traverse_r(baseDir, shaderCallback, &n);
     LOG_TRACE("Loaded {} shaders", n);
 }
 
+void mage::AssetManager::loadModels(const char* baseDir)
+{
+    PROFILER_SCOPE(1);
+    LOG_TRACE("Loading models from {}", baseDir);
+    int n = 0;
+    traverse_r(baseDir, modelCallback, &n);
+    LOG_TRACE("Loaded {} models", n);
+}
+
+
 void mage::AssetManager::loadAssets(const char* baseDir)
 {
+    LOG_TRACE("Loading assets from {}", baseDir);
     std::string texDir(baseDir);
     texDir += "/textures";
     std::string shaderDir(baseDir);
     shaderDir += "/shaders";
+    std::string modelDir(baseDir);
+    modelDir += "/models";
     loadTextures(texDir.c_str());
     loadShaders(shaderDir.c_str());
+    loadModels(modelDir.c_str());
 }
 
 bool mage::AssetManager::addTexture(const std::string& name, const char* textureFile)
@@ -101,16 +131,35 @@ bool mage::AssetManager::addShader(const std::string& name, const char* shaderFi
     return ret;
 }
 
+bool mage::AssetManager::addModel(const std::string& name, const char* modelFile)
+{
+    bool ret = true;
+    auto it = s_modelMap.find(name);
+    if (it != s_modelMap.end())
+        ret = false;
+    if(ret)
+        s_modelMap.insert(std::make_pair(name, createScope<ModelData>(modelFile)));
+    return ret;
+}
+
 void mage::AssetManager::destroy()
 {
-    for (const auto& item : s_textureMap)
-        item.second->destroy();
+    //for (const auto& item : s_textureMap)
+    //    item.second->destroy();
     s_textureMap.clear();
 
-    for (const auto& item : s_shaderMap)
-        item.second->destroy();
+    //for (const auto& item : s_shaderMap)
+    //    item.second->destroy();
     s_shaderMap.clear();
+
+    for(const auto& item : s_modelMap)
+        item.second->destroy();
+    s_modelMap.clear();
 }
+
+
+
+
 
 
 

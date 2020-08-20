@@ -70,7 +70,7 @@ const mage::Shader* mage::RenderEngine::getShader(const std::string& shader) con
     return shaderMap[shader];
 }
 
-void mage::RenderEngine::renderMesh(const mage::Shader* shader, Mesh* mesh) const
+void mage::RenderEngine::renderMesh(const mage::Shader& shader, Mesh* mesh) const
 {
     GLenum er;
     mesh->enable();
@@ -84,34 +84,34 @@ void mage::RenderEngine::renderMesh(const mage::Shader* shader, Mesh* mesh) cons
     Mesh::disable();
 }
 
-void mage::RenderEngine::renderMesh(const mage::Shader* shader, mage::Mesh* mesh, const mage::Material* material) const
+void mage::RenderEngine::renderMesh(const mage::Shader& shader, mage::Mesh* mesh, const mage::Material& material) const
 {
-    if(!material)
-    {
-        renderMesh(shader, mesh);
-        return;
-    }
-    material->getDiffuse()->enable(0);
-    material->getSpecular()->enable(1);
-    material->getEmission()->enable(2);
+    //if(!material)
+    //{
+    //    renderMesh(shader, mesh);
+    //    return;
+    //}
+    material.getDiffuse().enable(0);
+    material.getSpecular().enable(1);
+    material.getEmission().enable(2);
 
-    shader->setUniform1i("material.texture_diffuse", 0);
-    shader->setUniform1i("material.texture_specular", 1);
-    shader->setUniform1i("material.texture_emission", 2);
-    shader->setUniform1f("material.shininess", material->getShininess());
+    shader.setUniform1i("material.texture_diffuse", 0);
+    shader.setUniform1i("material.texture_specular", 1);
+    shader.setUniform1i("material.texture_emission", 2);
+    shader.setUniform1f("material.shininess", material.getShininess());
 
     renderMesh(shader, mesh);
 
-    material->getDiffuse()->disable(0);
-    material->getSpecular()->disable(1);
-    material->getEmission()->disable(2);
+    material.getDiffuse().disable(0);
+    material.getSpecular().disable(1);
+    material.getEmission().disable(2);
 }
 
-void mage::RenderEngine::renderModel(const mage::Shader* shader, Model* model) const
+void mage::RenderEngine::renderModel(const mage::Shader& shader, const Model& model) const
 {
-    for(int i = 0; i < model->getMeshes().size(); i++)
+    for(int i = 0; i < model.getMeshes().size(); i++)
     {
-        renderMesh(shader, model->getMeshes()[i], model->getMaterial());
+        renderMesh(shader, model.getMeshes()[i], model.getMaterial());
     }
 }
 
