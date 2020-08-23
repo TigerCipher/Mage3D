@@ -22,7 +22,6 @@
 #include "mage/graphics/model.h"
 #include "mage/core/assetmanager.h"
 
-//std::unordered_map<std::string, mage::ModelData*> s_modelMap;
 
 mage::ModelData::ModelData(const char* path) :
         m_fileName(path)
@@ -114,7 +113,7 @@ mage::ModelData::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const
         mat->GetTexture(type, i, &str);
         std::string file("./assets/textures/");
         file.append(str.C_Str());
-        Texture tex(file.c_str(), typeName);
+        Texture tex(file.c_str());
         textures.push_back(tex);
     }
     return textures;
@@ -134,11 +133,6 @@ void mage::ModelData::destroy()
 mage::Model::Model(const std::string& modelFile, const mage::Material& material) :
         m_data(AssetManager::getModel(modelFile))
 {
-    //auto it = s_modelMap.find(modelFile);
-    //if (it != s_modelMap.end())
-    //{
-    //    m_data = it->second;
-    //    m_data->addReference();
-    //}
-    m_material = createScope<Material>(material);
+    m_material = material;
 }
+

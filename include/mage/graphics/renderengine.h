@@ -53,6 +53,8 @@ namespace mage
         mage3d_EXPORT inline void addCamera(Camera* camera) const { m_camera = camera; }
         mage3d_EXPORT inline Camera* getCamera() const { return m_camera; }
 
+        mage3d_EXPORT inline Texture* getTarget() const { return m_target; }
+
 
         //static const Shader* BASIC_SHADER;
         //static const Shader* LIGHTING_SHADER;
@@ -63,6 +65,7 @@ namespace mage
     private:
         mutable std::map<std::string, const Shader*> shaderMap;
         mutable Camera* m_camera{};
+        Texture* m_target;
     };
 
 }

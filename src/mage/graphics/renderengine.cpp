@@ -20,6 +20,7 @@
  */
 
 #include "mage/graphics/renderengine.h"
+#include "mage/core/display.h"
 
 //const mage::Shader* mage::RenderEngine::BASIC_SHADER;
 //const mage::Shader* mage::RenderEngine::LIGHTING_SHADER;
@@ -39,17 +40,23 @@ mage::RenderEngine::RenderEngine()
     //registerShader(LIGHTING_SHADER, "lighting");
 
     // TODO some models might need different culling
-	glFrontFace(GL_CW);
-	glCullFace(GL_FRONT);
-	glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_DEPTH_CLAMP);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glFrontFace(GL_CW);
+    glCullFace(GL_FRONT);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+    glEnable(GL_DEPTH_CLAMP);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    m_target = new Texture(Display::getWidth(), Display::getHeight(), 0, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA,
+                           GL_RGBA, false, GL_COLOR_ATTACHMENT0);
+
 }
 
 mage::RenderEngine::~RenderEngine()
 {
+    delete m_target;
     //for (auto & iterator : shaderMap)
     //{
     //    delete iterator.second;
@@ -62,12 +69,12 @@ mage::RenderEngine::~RenderEngine()
 
 void mage::RenderEngine::registerShader(const mage::Shader* shader, const std::string& shaderName) const
 {
-    shaderMap[shaderName] = shader;
+    shaderMap[ shaderName ] = shader;
 }
 
 const mage::Shader* mage::RenderEngine::getShader(const std::string& shader) const
 {
-    return shaderMap[shader];
+    return shaderMap[ shader ];
 }
 
 void mage::RenderEngine::renderMesh(const mage::Shader& shader, Mesh* mesh) const
@@ -84,7 +91,8 @@ void mage::RenderEngine::renderMesh(const mage::Shader& shader, Mesh* mesh) cons
     Mesh::disable();
 }
 
-void mage::RenderEngine::renderMesh(const mage::Shader& shader, mage::Mesh* mesh, const mage::Material& material) const
+void mage::RenderEngine::renderMesh(const mage::Shader& shader, mage::Mesh* mesh,
+                                    const mage::Material& material) const
 {
     //if(!material)
     //{
@@ -109,9 +117,9 @@ void mage::RenderEngine::renderMesh(const mage::Shader& shader, mage::Mesh* mesh
 
 void mage::RenderEngine::renderModel(const mage::Shader& shader, const Model& model) const
 {
-    for(int i = 0; i < model.getMeshes().size(); i++)
+    for (int i = 0; i < model.getMeshes().size(); i++)
     {
-        renderMesh(shader, model.getMeshes()[i], model.getMaterial());
+        renderMesh(shader, model.getMeshes()[ i ], model.getMaterial());
     }
 }
 

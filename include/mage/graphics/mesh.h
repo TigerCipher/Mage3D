@@ -24,6 +24,7 @@
 
 #include "mage3d_exported.h"
 #include "mage/common.h"
+#include "mage/core/resourcemanager.h"
 #include "vertex.h"
 #include "texture.h"
 
@@ -32,29 +33,35 @@
 
 namespace mage
 {
+    //TODO make ref counter for mesh (like textures and shaders)
 	class Mesh
 	{
 	public:
+	    mage3d_EXPORT Mesh(const list<float>& vertices);
 		mage3d_EXPORT Mesh(Vertex vertices[], uint verticesSize, uint indices[], uint indicesSize);
 		mage3d_EXPORT Mesh(list<Vertex> vertices, list<uint> indices);
 		mage3d_EXPORT Mesh(list<Vertex>& vertices, list<uint>& indices, const list<Texture>& textures);
-		mage3d_EXPORT ~Mesh();
+		mage3d_EXPORT virtual ~Mesh();
 
 		mage3d_EXPORT void render() const;
+		mage3d_EXPORT void draw_basic();
 
 		mage3d_EXPORT void enable() const;
+		mage3d_EXPORT void enable_basic();
+		mage3d_EXPORT void disable_basic();
 		static mage3d_EXPORT void disable();
 
 		mage3d_EXPORT list<Texture> getTextures() { return m_textures; }
 		mage3d_EXPORT list<Vertex> getVertices() { return m_vertices; }
 		mage3d_EXPORT list<uint> getIndices() { return m_indices; }
-		mage3d_EXPORT int getNumVertices() const { return m_numVertices; }
+		[[nodiscard]] mage3d_EXPORT int getNumVertices() const { return m_numVertices; }
 
 		mage3d_EXPORT friend std::ostream& operator<<(std::ostream& os, const Mesh& mesh);
 
 	protected:
 	private:
 		void createBuffers(Vertex vertices[], uint indices[]);
+		void createBuffers(list<float> vertices);
 
 
 		GLuint m_vaoId { };

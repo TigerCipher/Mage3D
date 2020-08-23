@@ -127,6 +127,45 @@ std::ostream& mage::operator<<(std::ostream& os, const mage::Mesh& mesh)
 	return os;
 }
 
+mage::Mesh::Mesh(const list<float>& vertices)
+{
+    glGenVertexArrays(1, &m_vaoId);
+	glBindVertexArray(m_vaoId);
+	m_numVertices = vertices.size();
+	createBuffers(vertices);
+	disable();
+}
+
+void mage::Mesh::createBuffers(list<float> vertices)
+{
+    glGenBuffers(1, &m_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+	glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                          (void*) (2 * sizeof(float)));
+}
+
+void mage::Mesh::enable_basic()
+{
+    glBindVertexArray(m_vaoId);
+	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+}
+
+void mage::Mesh::disable_basic()
+{
+    glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void mage::Mesh::draw_basic()
+{
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
 
 
 

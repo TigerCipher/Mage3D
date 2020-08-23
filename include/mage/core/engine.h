@@ -30,6 +30,7 @@
 #include "input.h"
 #include "mage/events/eventdispatcher.h"
 #include "mage/graphics/renderengine.h"
+#include "mage/graphics/shader.h"
 
 namespace mage
 {
@@ -65,6 +66,8 @@ namespace mage
         bool m_limitFrames;
         UniquePtr<EventDispatcher> m_dispatcher;
         const RenderEngine* m_renderEngine;
+        Shader m_screenShader;
+        Mesh* m_quad;
         //SharedPtr<const RenderEngine> m_renderEngine;
 
         static Engine* s_instance;

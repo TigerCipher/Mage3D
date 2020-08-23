@@ -26,6 +26,7 @@ std::unordered_map<std::string, UniquePtr<mage::Texture>> mage::AssetManager::s_
 //std::unordered_map<std::string, SharedPtr<mage::Texture>> mage::AssetManager::s_textureMap;
 std::unordered_map<std::string, UniquePtr<mage::Shader>> mage::AssetManager::s_shaderMap;
 std::unordered_map<std::string, UniquePtr<mage::ModelData>> mage::AssetManager::s_modelMap;
+int mage::AssetManager::s_assetCount;
 
 void textureCallback(file_t* file, void* udata)
 {
@@ -71,6 +72,7 @@ void mage::AssetManager::loadTextures(const char* baseDir)
     LOG_TRACE("Loading textures from {}", baseDir);
     int n = 0;
     traverse_r(baseDir, textureCallback, &n);
+    s_assetCount += n;
     LOG_TRACE("Loaded {} textures", n);
 }
 
@@ -81,6 +83,7 @@ void mage::AssetManager::loadShaders(const char* baseDir)
     LOG_TRACE("Loading shaders from {}", baseDir);
     int n = 0;
     traverse_r(baseDir, shaderCallback, &n);
+    s_assetCount += n;
     LOG_TRACE("Loaded {} shaders", n);
 }
 
@@ -90,6 +93,7 @@ void mage::AssetManager::loadModels(const char* baseDir)
     LOG_TRACE("Loading models from {}", baseDir);
     int n = 0;
     traverse_r(baseDir, modelCallback, &n);
+    s_assetCount += n;
     LOG_TRACE("Loaded {} models", n);
 }
 
@@ -98,7 +102,7 @@ void mage::AssetManager::loadAssets(const char* baseDir)
 {
     // TODO: Fine for now, but for large games, surely not *everything* must be loaded into ram all at once
     // TODO: Perhaps assign IDs to scenes and load assets from respected folders, i.e for scene 1: ./assets/01/textures
-    LOG_TRACE("Loading assets from {}", baseDir);
+    LOG_INFO("Loading assets from {}", baseDir);
     std::string texDir(baseDir);
     texDir += "/textures";
     std::string shaderDir(baseDir);
@@ -108,6 +112,8 @@ void mage::AssetManager::loadAssets(const char* baseDir)
     loadTextures(texDir.c_str());
     loadShaders(shaderDir.c_str());
     loadModels(modelDir.c_str());
+
+    LOG_INFO("{} assets loaded", s_assetCount);
 }
 
 bool mage::AssetManager::addTexture(const std::string& name, const char* textureFile)
@@ -146,15 +152,17 @@ bool mage::AssetManager::addModel(const std::string& name, const char* modelFile
 
 void mage::AssetManager::destroy()
 {
-    //for (const auto& item : s_textureMap)
-    //    item.second->destroy();
+    LOG_INFO("Cleaning up loaded assets");
+    for (const auto& item : s_textureMap)
+        item.second->destroy();
     s_textureMap.clear();
 
-    //for (const auto& item : s_shaderMap)
-    //    item.second->destroy();
+    for (const auto& item : s_shaderMap)
+        item.second->destroy();
     s_shaderMap.clear();
 
     for(const auto& item : s_modelMap)
         item.second->destroy();
     s_modelMap.clear();
+    LOG_INFO("{} assets cleaned up", s_assetCount);
 }

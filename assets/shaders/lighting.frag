@@ -42,12 +42,12 @@ uniform vec3 viewPos;
 
 void main()
 {
-    vec3 emission = vec3(texture(material.texture_emission, fragTexCoord));
+    vec4 emission = texture(material.texture_emission, fragTexCoord);
 
     vec3 norm = normalize(fragNormal);
     vec3 viewDir = normalize(viewPos - fragPos);
 
-    vec3 result = calculateDirectionLight(directionLight, material, norm, viewDir);
+    vec4 result = calculateDirectionLight(directionLight, material, norm, viewDir);
 
     for(int i = 0; i < NUM_PNT_LIGHTS; i++)
         result += calculatePointLight(pointLights[i], material, norm, fragPos, viewDir);
@@ -55,5 +55,5 @@ void main()
     result += calculateSpotLight(spotLight, material, norm, fragPos, viewDir);
     result += emission;
 
-    color = vec4(result, 1.0);
+    color = result;
 }

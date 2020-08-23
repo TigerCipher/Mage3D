@@ -82,7 +82,7 @@ void mage::windowResize([[maybe_unused]] GLFWwindow* pWindow, int width, int hei
     //auto* const display = static_cast<mage::Display*>(glfwGetWindowUserPointer(pWindow));
     Display::m_width = width;
     Display::m_height = height;
-    glViewport(0, 0, width, height);
+    //glViewport(0, 0, width, height);
 }
 
 

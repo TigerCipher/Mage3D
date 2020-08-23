@@ -27,6 +27,7 @@
 #include "mage/core/resourcemanager.h"
 #include <map>
 #include <string>
+#include <ostream>
 
 
 namespace mage
@@ -54,6 +55,9 @@ namespace mage
 	    ShaderData& operator=(const ShaderData& rhs) = delete;
 	    ShaderData(ShaderData&& rhs) = delete;
 	    ShaderData& operator=(ShaderData&& rhs) = delete;
+
+        friend std::ostream& operator<<(std::ostream& os, const ShaderData& data);
+
     private:
         uint load(const char* vertSrc, const char* fragSrc);
 
@@ -70,7 +74,7 @@ namespace mage
 		mage3d_EXPORT Shader() = default;
 		mage3d_EXPORT explicit Shader(const char* basePath);
 		mage3d_EXPORT Shader(const char* vertPath, const char* fragPath);
-		mage3d_EXPORT virtual ~Shader();
+		mage3d_EXPORT virtual ~Shader() = default;
 		mage3d_EXPORT void destroy() const;
 
 		mage3d_EXPORT void enable() const;
@@ -89,8 +93,10 @@ namespace mage
 		mage3d_EXPORT Shader(const Shader& rhs);
 		mage3d_EXPORT Shader& operator=(const Shader& rhs);
 
+        friend std::ostream& operator<<(std::ostream& os, const Shader& shader);
 
-	protected:
+
+    protected:
 	private:
 		GLint getLocation(const GLchar* name) const;
 		ShaderData* m_shaderData{};

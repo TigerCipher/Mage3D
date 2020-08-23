@@ -30,5 +30,6 @@
 #include "material.h"
 #include "modelrenderer.h"
 #include "renderengine.h"
+#include "quadrenderer.h"
 
 #endif //MAGE3D_GRAPHICS_H

@@ -42,65 +42,84 @@
 namespace mage
 {
 
-	class TextureData : public ResourceManager
-	{
-	public:
-		mage3d_EXPORT TextureData(GLenum textureTarget, int width, int height, int numTextures, ubyte** data, bool clamp);
-		mage3d_EXPORT virtual ~TextureData();
+    class TextureData : public ResourceManager
+    {
+    public:
+        mage3d_EXPORT TextureData(GLenum textureTarget, int width, int height, int numTextures, ubyte** data,
+                                  GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clamp,
+                                  GLenum* attachments);
+        mage3d_EXPORT virtual ~TextureData();
 
-		mage3d_EXPORT void bind(int textureNum);
-		[[nodiscard]] mage3d_EXPORT inline int getWidth() const { return m_width; }
-		[[nodiscard]] mage3d_EXPORT inline int getHeight() const { return m_height; }
+        mage3d_EXPORT void bind(int textureNum);
+        mage3d_EXPORT void bindAsRenderTarget() const;
 
-		friend std::ostream& operator<<(std::ostream& os, const TextureData& data);
+        [[nodiscard]] mage3d_EXPORT inline int getWidth() const { return m_width; }
 
-		void operator=(TextureData& other) = delete;
-	private:
-		TextureData(TextureData& other)  : ResourceManager(other) { }
-
-		GLenum m_textureTarget{};
-		uint* m_id{};
-		int m_numTextures{};
-		int m_width{};
-		int m_height{};
-	};
-
-	class Texture
-	{
-	public:
-		mage3d_EXPORT Texture();
-		mage3d_EXPORT explicit Texture(const char* filePath);
-		mage3d_EXPORT Texture(const char* filePath, const char* type);
-		mage3d_EXPORT virtual ~Texture();
-
-		mage3d_EXPORT void enable(uint slot);
-		mage3d_EXPORT void disable(uint slot);
-
-		mage3d_EXPORT void enable(uint slot) const;
-		mage3d_EXPORT void disable(uint slot) const;
-
-		mage3d_EXPORT std::string getType() { return m_type; }
-		mage3d_EXPORT void destroy();
-
-		friend std::ostream& operator<<(std::ostream& os, const Texture& texture);
-
-		mage3d_EXPORT Texture(const Texture& rhs);
-		mage3d_EXPORT Texture& operator=(const Texture& rhs);
-		//Texture(Texture&& rhs) = delete;
-		//Texture& operator=(Texture&& rhs) = delete;
+        [[nodiscard]] mage3d_EXPORT inline int getHeight() const { return m_height; }
+        [[nodiscard]] mage3d_EXPORT inline int getId() const { return m_id[0]; }
 
 
-	protected:
-	private:
+        friend std::ostream& operator<<(std::ostream& os, const TextureData& data);
 
-		void load(const char* filePath);
-		std::string m_filePath;
-		std::string m_type;
+        void operator=(TextureData& other) = delete;
+    private:
+        TextureData(TextureData& other) :
+                ResourceManager(other) { }
 
-		TextureData* m_textureData{};
+        GLenum m_textureTarget { };
+        uint* m_id { };
+        uint m_frameBuffer;
+        uint m_renderBuffer;
+        int m_numTextures { };
+        int m_width { };
+        int m_height { };
+    };
 
-		static std::map<std::string, TextureData*> textureMap;
-	};
+    class Texture
+    {
+    public:
+        //mage3d_EXPORT Texture();
+        mage3d_EXPORT explicit Texture(const char* filePath, GLenum textureTarget = GL_TEXTURE_2D,
+                                       GLfloat filter = GL_LINEAR, GLenum internalFormat = GL_RGBA,
+                                       GLenum format = GL_RGBA, bool clamp = false,
+                                       GLenum attachment = GL_NONE);
+        mage3d_EXPORT explicit Texture(int width = 0, int height = 0, ubyte* data = 0,
+                              GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR,
+                              GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clamp = false,
+                              GLenum attachment = GL_NONE);
+        mage3d_EXPORT virtual ~Texture() = default;
+
+        mage3d_EXPORT void enable(uint slot);
+        mage3d_EXPORT void disable(uint slot);
+
+        mage3d_EXPORT void bindAsRenderTarget();
+        mage3d_EXPORT void bindAsRenderTarget() const;
+
+        mage3d_EXPORT void enable(uint slot) const;
+        mage3d_EXPORT void disable(uint slot) const;
+
+        mage3d_EXPORT std::string getType() { return m_type; }
+        mage3d_EXPORT inline TextureData* getData() { return m_textureData; }
+
+        mage3d_EXPORT void destroy();
+
+        friend std::ostream& operator<<(std::ostream& os, const Texture& texture);
+
+        mage3d_EXPORT Texture(const Texture& rhs);
+        mage3d_EXPORT Texture& operator=(const Texture& rhs);
+
+    protected:
+    private:
+
+        void load(const char* filePath, GLenum textureTarget, GLfloat filter, GLenum internalFormat,
+                  GLenum format, bool clamp, GLenum attachment);
+        std::string m_filePath;
+        std::string m_type;
+
+        TextureData* m_textureData { };
+
+        static std::map<std::string, TextureData*> textureMap;
+    };
 
 
 }

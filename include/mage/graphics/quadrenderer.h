@@ -14,54 +14,40 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: ModelRenderer.h
- * Date File Created: 8/14/2020 at 10:19 PM
+ * File Name: quadrenderer.h
+ * Date File Created: 8/22/2020 at 9:05 PM
  * Author: Matt
  */
 
-#ifndef MAGE3D_MODELRENDERER_H
-#define MAGE3D_MODELRENDERER_H
+#ifndef MAGE3D_QUADRENDERER_H
+#define MAGE3D_QUADRENDERER_H
 
-#include <utility>
 
 #include "mage3d_exported.h"
 #include "mage/common.h"
+#include "shader.h"
+#include "mesh.h"
+#include "mage/core/assetmanager.h"
 #include "mage/core/gamecomponent.h"
-#include "model.h"
-#include "material.h"
-#include "mage/core/camera.h"
 
 namespace mage
 {
-
-    class BasicModelRenderer : public GameComponent
+    class QuadRenderer : public GameComponent
     {
     public:
-        mage3d_EXPORT explicit BasicModelRenderer(const Model& model);
+        mage3d_EXPORT QuadRenderer(const std::string& textureName);
+        mage3d_EXPORT ~QuadRenderer() override;
+
         mage3d_EXPORT void render(const RenderEngine* renderEngine) override;
+
     protected:
-
-        virtual void postRender(const mage::RenderEngine* renderEngine);
-
-        Model m_model;
+    private:
+        Mesh* m_quad;
+        Texture m_texture;
         Shader m_shader;
     };
 
-    class ModelRenderer : public BasicModelRenderer
-    {
-    public:
-
-        mage3d_EXPORT ModelRenderer(const Model& model, vec3f lightPos);
-
-    protected:
-
-        void postRender(const mage::RenderEngine* renderEngine) override;
-        mat4f transposed;
-        vec3f m_lightPos;
-    };
-
-
-
 }
 
-#endif //MAGE3D_MODELRENDERER_H
+
+#endif //MAGE3D_QUADRENDERER_H

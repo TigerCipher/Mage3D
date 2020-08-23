@@ -62,7 +62,6 @@ mage::Shader::Shader(const char* vertPath, const char* fragPath)
     {
         m_shaderData = it->second;
         m_shaderData->addReference();
-        //m_shaderData("Ref count %i", m_textureData->getResourceCount());
     } else
     {
         m_shaderData = new ShaderData(vertPath, fragPath);
@@ -70,10 +69,6 @@ mage::Shader::Shader(const char* vertPath, const char* fragPath)
     }
 }
 
-mage::Shader::~Shader()
-{
-    destroy();
-}
 
 
 void mage::Shader::setUniform1i(const GLchar* name, int value) const
@@ -133,12 +128,10 @@ void mage::Shader::disable() const
 
 void mage::Shader::destroy() const
 {
-    if (m_shaderData && m_shaderData->removeReference())
-    {
-        if (m_keyName.length() > 0)
-            shaderMap.erase(m_keyName);
-        delete m_shaderData;
-    }
+    if (m_keyName.length() > 0)
+        shaderMap.erase(m_keyName);
+    while(!m_shaderData->removeReference()) {}
+    delete m_shaderData;
 }
 
 mage::Shader::Shader(const mage::Shader& rhs)
@@ -150,10 +143,17 @@ mage::Shader::Shader(const mage::Shader& rhs)
 
 mage::Shader& mage::Shader::operator=(const mage::Shader& rhs)
 {
+    if (this == &rhs) return *this;
     rhs.m_shaderData->addReference();
     m_shaderData = rhs.m_shaderData;
     m_keyName = rhs.m_keyName;
     return *this;
+}
+
+std::ostream& mage::operator<<(std::ostream& os, const mage::Shader& shader)
+{
+    os << "m_shaderData: " << *shader.m_shaderData << " m_keyName: " << shader.m_keyName;
+    return os;
 }
 
 
@@ -166,8 +166,8 @@ mage::ShaderData::ShaderData(const char* vertPath, const char* fragPath) :
 
 mage::ShaderData::~ShaderData()
 {
-    LOG_INFO("Unloading shader file {}", m_vertFile);
-    LOG_INFO("Unloading shader file {}", m_fragFile);
+    LOG_TRACE("Unloading shader file {}", m_vertFile);
+    LOG_TRACE("Unloading shader file {}", m_fragFile);
     LOG_TRACE("Deleting shader program ID: {}", m_id);
     glDeleteProgram(m_id);
 }
@@ -284,4 +284,11 @@ std::string mage::ShaderData::preprocess(const std::string& fileName)
 
 
     return output;
+}
+
+std::ostream& mage::operator<<(std::ostream& os, const mage::ShaderData& data)
+{
+    os << " m_id: " << data.m_id << " m_vertFile: "
+       << data.m_vertFile << " m_fragFile: " << data.m_fragFile << " ref count: " << data.getResourceCount();
+    return os;
 }

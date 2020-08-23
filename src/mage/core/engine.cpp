@@ -47,6 +47,18 @@ mage::Engine::Engine(Game* game, const char* title, int width, int height, float
     AssetManager::loadAssets("./assets");
     m_renderEngine = new RenderEngine();
     LOG_TRACE("Render engine created");
+    m_screenShader = AssetManager::getShader("./assets/shaders/screen");
+    list<float> quadVertices = {
+            // positions   // texCoords
+            -1.0f, 1.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f,
+            1.0f, -1.0f, 1.0f, 0.0f,
+
+            -1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, -1.0f, 1.0f, 0.0f,
+            1.0f, 1.0f, 1.0f, 1.0f
+    };
+    m_quad = new Mesh(quadVertices);
     //m_renderEngine = createRef<const RenderEngine>();
 }
 
@@ -54,6 +66,7 @@ mage::Engine::~Engine()
 {
     PROFILER_SCOPE(1);
     LOG_INFO("Cleaning up engine resources");
+    delete m_quad;
     delete m_renderEngine;
     AssetManager::destroy();
     Display::destroy();
@@ -105,11 +118,28 @@ void mage::Engine::run()
             accumulated -= m_msPerUpdate;
         }
 
+        m_renderEngine->getTarget()->bindAsRenderTarget();
+        glClearColor(0.1f, 0.1f, 0.1f, 1);
         Display::clear();
 
         // TODO: Might want to interpolate positions to render at between 2 ticks - accumulated / m_msPerUpdate should suffice
-
+        glEnable(GL_DEPTH_TEST);
         m_game->render(m_renderEngine);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        glDisable(GL_DEPTH_TEST);
+        glClearColor(1, 1, 1, 1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glViewport(0, 0, Display::getWidth(), Display::getHeight());
+
+        m_screenShader.enable();
+        m_quad->enable_basic();
+        glBindTexture(GL_TEXTURE_2D, m_renderEngine->getTarget()->getData()->getId());
+        //m_screenShader.setUniform1i("screenTexture", 0);
+        m_quad->draw_basic();
+        m_quad->disable_basic();
+        glBindTexture(GL_TEXTURE_2D, 0);
+        m_screenShader.disable();
 
         m_input.update();
         Display::update();

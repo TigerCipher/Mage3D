@@ -41,6 +41,19 @@ namespace mage
 
 		~ResourceManager() = default;
 
+		//ResourceManager(const ResourceManager& rhs)
+        //{
+		//    rhs.addReference();
+		//    m_count = rhs.m_count;
+        //}
+		//ResourceManager& operator=(const ResourceManager& rhs)
+        //{
+		//    rhs.addReference();
+		//    m_count = rhs.m_count;
+		//    return *this;
+        //}
+
+
 
 		inline void addReference()
 		{
@@ -53,12 +66,23 @@ namespace mage
 			return m_count == 0;
 		}
 
+		inline void addReference() const
+		{
+			m_count++;
+		}
 
-		inline uint getResourceCount() const { return m_count; }
+		inline bool removeReference() const
+		{
+			m_count--;
+			return m_count == 0;
+		}
+
+
+		[[nodiscard]] inline uint getResourceCount() const { return m_count; }
 
 	protected:
 	private:
-		uint m_count;
+		mutable uint m_count;
 	};
 
 

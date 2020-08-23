@@ -56,6 +56,7 @@ namespace mage
         //static std::unordered_map<std::string, SharedPtr<Texture>> s_textureMap;
         static std::unordered_map<std::string, UniquePtr<Shader>> s_shaderMap;
         static std::unordered_map<std::string, UniquePtr<ModelData>> s_modelMap;
+        static int s_assetCount;
     };
 
 }

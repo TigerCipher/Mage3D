@@ -34,15 +34,26 @@ public:
         addToScene(cam);
         brick = new mage::GameObject();
         auto* lamp = new mage::GameObject();
-        SharedPtr<mage::Model> backpack = createRef<mage::Model>("./assets/models/backpack.obj",
-                                                                 mage::Material(
-                                                                         "./assets/textures/backpack_diffuse.jpg",
-                                                                         "./assets/textures/backpack_specular.jpg"));
-        SharedPtr<mage::Model> cube = createRef<mage::Model>("./assets/models/bricks.obj", mage::Material(
+        mage::Model backpack("./assets/models/backpack.obj",
+                             mage::Material(
+                                     "./assets/textures/backpack_diffuse.jpg",
+                                     "./assets/textures/backpack_specular.jpg"));
+        mage::Model cube("./assets/models/bricks.obj", mage::Material(
                 "./assets/textures/bricks_diffuse.png", "./assets/textures/bricks_specular.png", nullptr,
                 16.0f));
 
+        mage::Model plane("./assets/models/plane.obj", mage::Material());
+        mage::Model window("./assets/models/plane.obj", mage::Material("./assets/textures/red_window.png"));
+
         vec3f lightPos(0, 0.5f, -1.5f);
+        auto* planeObj = (new mage::GameObject())->addComponent(new mage::ModelRenderer(plane, lightPos));
+        planeObj->getTransform().setPos(vec3f(0, -5, 0));
+        addToScene(planeObj);
+        //auto* windowPane = (new mage::GameObject())->addComponent(new mage::ModelRenderer(window, lightPos));
+        //windowPane->getTransform().setScale(0.25f);
+        //windowPane->getTransform().rotate(glm::radians(90.0f), vec3f(1, 0, 0));
+        //addToScene(windowPane);
+
 
         for (int i = 0; i < 20; i++)
         {
@@ -60,7 +71,7 @@ public:
         lamp->getTransform().setPos(lightPos);
         lamp->getTransform().setScale(0.1f);
 
-        for(int i = 1; i <= 3; i++)
+        for (int i = 1; i <= 3; i++)
         {
             auto* lampObj = (new mage::GameObject())->addComponent(new mage::BasicModelRenderer(cube));
             lampObj->getTransform().setPos(lightPos + vec3f(10 * i, 0, 0));
@@ -73,6 +84,12 @@ public:
 
         addToScene(brick);
         addToScene(lamp);
+
+        // TODO CUrrently must be added last. Need to come up with an efficient sorting algorithm
+        auto* winPane = (new mage::GameObject())->addComponent(new mage::QuadRenderer("./assets/textures/red_window.png"));
+        winPane->getTransform().rotate(-glm::radians(90.0f), vec3f(1, 0, 0));
+        winPane->getTransform().setPos(vec3f(0, 0, 0));
+        addToScene(winPane);
     }
 
     void update(float delta) override

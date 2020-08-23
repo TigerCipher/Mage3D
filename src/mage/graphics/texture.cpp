@@ -26,109 +26,92 @@
 
 std::map<std::string, mage::TextureData*> mage::Texture::textureMap;
 
-mage::Texture::Texture() :
-		m_filePath(TEXTURE_DEFAULT_DIFFUSE),
-		m_type(TEXTURE_DIFFUSE)
+//mage::Texture::Texture() :
+//        m_filePath(TEXTURE_DEFAULT_DIFFUSE),
+//        m_type(TEXTURE_DIFFUSE)
+//{
+//    load(m_filePath.c_str(), GL_TEXTURE_2D, GL_LINEAR, GL_RGBA, GL_RGBA, false, GL_NONE);
+//}
+
+mage::Texture::Texture(const char* filePath, GLenum textureTarget, GLfloat filter, GLenum internalFormat,
+                       GLenum format, bool clamp, GLenum attachment):
+                       m_filePath(filePath)
 {
-	load(m_filePath.c_str());
+    load(filePath, textureTarget, filter, internalFormat, format, clamp, attachment);
 }
 
-mage::Texture::Texture(const char* filePath) :
-		m_filePath(filePath),
-		m_type(TEXTURE_DIFFUSE)
-{
-	load(filePath);
-}
-
-mage::Texture::Texture(const char* filePath, const char* type) :
-		m_filePath(filePath),
-		m_type(type)
-{
-	if (strcmp(type, TEXTURE_DIFFUSE) != 0 && strcmp(type, TEXTURE_SPECULAR) != 0 &&
-		strcmp(type, TEXTURE_EMISSION) != 0)
-	{
-		LOG_WARN("Texture type \'{}\' is unknown to the Mage3D engine. Reverting to default type \'diffuse\'", type);
-		m_type = TEXTURE_DIFFUSE;
-	}
-	load(filePath);
-}
-
-mage::Texture::~Texture()
-{
-    destroy();
-}
 
 void mage::Texture::enable(uint slot)
 {
-	assert(slot < 31 && slot >= 0);
-	glActiveTexture(GL_TEXTURE0 + slot);
-	m_textureData->bind(0);
+    assert(slot < 31 && slot >= 0);
+    glActiveTexture(GL_TEXTURE0 + slot);
+    m_textureData->bind(0);
 }
 
 void mage::Texture::disable(uint slot)
 {
-	assert(slot < 31 && slot >= 0);
-	glActiveTexture(GL_TEXTURE0 + slot);
-	glBindTexture(GL_TEXTURE_2D, 0);
+    assert(slot < 31 && slot >= 0);
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void mage::Texture::load(const char* filePath)
+void mage::Texture::load(const char* filePath, GLenum textureTarget, GLfloat filter, GLenum internalFormat,
+                       GLenum format, bool clamp, GLenum attachment)
 {
-	std::map<std::string, TextureData*>::const_iterator it = textureMap.find(filePath);
-	if (it != textureMap.end())
-	{
-		m_textureData = it->second;
-		m_textureData->addReference();
-		//DBGPRINT("Ref count %i", m_textureData->getResourceCount());
-	} else
-	{
-		LOG_TRACE("Loading texture {}", filePath);
-		int width, height;
-		//TODO Try updating to SOIL2 to see if that better supports DDS files
-		ubyte* image = SOIL_load_image(filePath, &width, &height, nullptr, SOIL_LOAD_RGBA);
-		if (!image)
-		{
-			LOG_WARN("Texture ({}) cannot be loaded, reverting to default texture", filePath);
-			m_filePath = fmt::format("./assets/textures/defaults/default_{}.png", m_type);
-			const char* newPath = m_filePath.c_str();
-			image = SOIL_load_image(newPath, &width, &height, nullptr, SOIL_LOAD_RGBA);
-		}
-		m_textureData = new TextureData(GL_TEXTURE_2D, width, height, 1, &image, true);
-		SOIL_free_image_data(image);
-		textureMap.insert(std::pair<std::string, TextureData*>(filePath, m_textureData));
-	}
+    std::map<std::string, TextureData*>::const_iterator it = textureMap.find(filePath);
+    if (it != textureMap.end())
+    {
+        m_textureData = it->second;
+        m_textureData->addReference();
+        //DBGPRINT("Ref count %i", m_textureData->getResourceCount());
+    } else
+    {
+        LOG_TRACE("Loading texture {}", filePath);
+        int width, height;
+        //TODO Try updating to SOIL2 to see if that better supports DDS files
+        ubyte* image = SOIL_load_image(filePath, &width, &height, nullptr, SOIL_LOAD_RGBA);
+        if (!image)
+        {
+            LOG_WARN("Texture ({}) cannot be loaded, reverting to default texture", filePath);
+            m_filePath = fmt::format("./assets/textures/defaults/default_{}.png", m_type);
+            const char* newPath = m_filePath.c_str();
+            image = SOIL_load_image(newPath, &width, &height, nullptr, SOIL_LOAD_RGBA);
+        }
+        m_textureData = new TextureData(textureTarget, width, height, 1, &image, &filter, &internalFormat, &format, clamp, &attachment);
+        SOIL_free_image_data(image);
+        textureMap.insert(std::pair<std::string, TextureData*>(filePath, m_textureData));
+    }
 }
 
 std::ostream& mage::operator<<(std::ostream& os, const mage::Texture& texture)
 {
-	os << "m_filePath: " << texture.m_filePath << " m_type: " << texture.m_type << " m_textureData: "
-	   << *(texture.m_textureData);
-	return os;
+    os << "m_filePath: " << texture.m_filePath << " m_type: " << texture.m_type << " m_textureData: "
+       << *(texture.m_textureData);
+    return os;
 }
 
 void mage::Texture::enable(uint slot) const
 {
     assert(slot < 31 && slot >= 0);
-	glActiveTexture(GL_TEXTURE0 + slot);
-	m_textureData->bind(0);
+    glActiveTexture(GL_TEXTURE0 + slot);
+    m_textureData->bind(0);
 }
 
 void mage::Texture::disable(uint slot) const
 {
     assert(slot < 31 && slot >= 0);
-	glActiveTexture(GL_TEXTURE0 + slot);
-	glBindTexture(GL_TEXTURE_2D, 0);
+    glActiveTexture(GL_TEXTURE0 + slot);
+    glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void mage::Texture::destroy()
 {
-	if (m_textureData && m_textureData->removeReference())
-	{
-		if (m_filePath.length() > 0)
-			textureMap.erase(m_filePath);
-		LOG_TRACE("Unloading texture {}", m_filePath);
-		delete m_textureData;
-	}
+    if (m_filePath.length() > 0)
+        textureMap.erase(m_filePath);
+    LOG_TRACE("Unloading texture {}", m_filePath);
+    while (!m_textureData->removeReference())
+    { }
+    delete m_textureData;
 }
 
 mage::Texture::Texture(const mage::Texture& rhs)
@@ -148,53 +131,129 @@ mage::Texture& mage::Texture::operator=(const mage::Texture& rhs)
     return *this;
 }
 
+mage::Texture::Texture(int width, int height, ubyte* data, GLenum textureTarget, GLfloat filter,
+                       GLenum internalFormat, GLenum format, bool clamp, GLenum attachment)
+{
+    m_filePath = "";
+    m_textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clamp, &attachment);
+}
+
+void mage::Texture::bindAsRenderTarget()
+{
+    m_textureData->bindAsRenderTarget();
+}
+
+void mage::Texture::bindAsRenderTarget() const
+{
+    m_textureData->bindAsRenderTarget();
+}
+
 
 mage::TextureData::TextureData(GLenum textureTarget, int width, int height, int numTextures, ubyte** data,
-							   bool clamp)
+                               GLfloat* filters, GLenum* internalFormat, GLenum* format, bool clamp,
+                               GLenum* attachments)
 {
-	m_id = new uint[numTextures];
-	m_numTextures = numTextures;
-	m_textureTarget = textureTarget;
-	m_width = width;
-	m_height = height;
+    m_id = new uint[numTextures];
+    m_numTextures = numTextures;
+    m_textureTarget = textureTarget;
+    m_width = width;
+    m_height = height;
+    m_frameBuffer = 0;
+    m_renderBuffer = 0;
 
-	glGenTextures(m_numTextures, m_id);
-	for (int i = 0; i < m_numTextures; i++)
-	{
-		glBindTexture(m_textureTarget, m_id[ i ]);
-		glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glGenTextures(m_numTextures, m_id);
+    for (int i = 0; i < m_numTextures; i++)
+    {
+        glBindTexture(m_textureTarget, m_id[ i ]);
+        glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, filters[i]);
+        glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, filters[i]);
 
-		if (clamp)
-		{
-			glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		}
+        if (clamp)
+        {
+            glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+            glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        }
 
-		glTexParameteri(m_textureTarget, GL_TEXTURE_BASE_LEVEL, 0);
-		glTexParameteri(m_textureTarget, GL_TEXTURE_MAX_LEVEL, 0);
+        glTexImage2D(m_textureTarget, 0, internalFormat[i], m_width, m_height, 0, format[i], GL_UNSIGNED_BYTE, data[ i ]);
+        glTexParameteri(m_textureTarget, GL_TEXTURE_BASE_LEVEL, 0);
+        glTexParameteri(m_textureTarget, GL_TEXTURE_MAX_LEVEL, 0);
 
-		glTexImage2D(m_textureTarget, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data[ i ]);
-	}
+    }
+
+    if(attachments != 0)
+    {
+        GLenum drawBuffers[32];
+        assert(m_numTextures <= 32);
+        bool hasDepth = false;
+        for (int i = 0; i < m_numTextures; i++)
+        {
+            if(attachments[i] == GL_DEPTH_ATTACHMENT || attachments[i] == GL_STENCIL_ATTACHMENT)
+            {
+                drawBuffers[i] = GL_NONE;
+                hasDepth = true;
+            }else
+                drawBuffers[i] = attachments[i];
+            if(attachments[i] == GL_NONE)
+                continue;
+            if(m_frameBuffer == 0)
+            {
+                glGenFramebuffers(1, &m_frameBuffer);
+                glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
+            }
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[i], m_textureTarget, m_id[i], 0);
+        }
+
+        if(m_frameBuffer != 0)
+        {
+            //if(!hasDepth)
+            //{
+                glGenRenderbuffers(1, &m_renderBuffer);
+                glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
+                //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);
+                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_width, m_height);
+                //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
+                glBindRenderbuffer(GL_RENDERBUFFER, 0);
+                glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
+            //}
+
+            //glDrawBuffers(m_numTextures, drawBuffers);
+            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            {
+                LOG_CRITICAL("Error during frame buffer creation");
+                assert(false);
+            }
+
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        }
+    }
 }
 
 mage::TextureData::~TextureData()
 {
-	LOG_TRACE("Deleting texture id {}", *m_id);
-	if (*m_id) glDeleteTextures(m_numTextures, m_id);
-	delete[] m_id;
+    LOG_TRACE("Deleting texture id {}", *m_id);
+    if (*m_id) glDeleteTextures(m_numTextures, m_id);
+    if(m_frameBuffer) glDeleteFramebuffers(1, &m_frameBuffer);
+    if(m_renderBuffer) glDeleteRenderbuffers(1, &m_renderBuffer);
+    delete[] m_id;
 }
 
 void mage::TextureData::bind(int textureNum)
 {
-	glBindTexture(m_textureTarget, m_id[ textureNum ]);
+    glBindTexture(m_textureTarget, m_id[ textureNum ]);
 }
 
 std::ostream& mage::operator<<(std::ostream& os, const mage::TextureData& data)
 {
-	os << " m_textureTarget: " << data.m_textureTarget
-	   << " m_id: " << data.m_id[ 0 ] << " m_numTextures: " << data.m_numTextures << " m_width: "
-	   << data.m_width
-	   << " m_height: " << data.m_height;
-	return os;
+    os << " m_textureTarget: " << data.m_textureTarget
+       << " m_id: " << data.m_id[ 0 ] << " m_numTextures: " << data.m_numTextures << " m_width: "
+       << data.m_width
+       << " m_height: " << data.m_height;
+    return os;
+}
+
+void mage::TextureData::bindAsRenderTarget() const
+{
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
+    glViewport(0, 0, m_width, m_height);
 }

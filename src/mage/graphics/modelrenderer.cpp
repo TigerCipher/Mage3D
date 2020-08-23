@@ -23,9 +23,9 @@
 #include "mage/core/assetmanager.h"
 #include <utility>
 
-mage::BasicModelRenderer::BasicModelRenderer(SharedPtr<mage::Model> model)
+mage::BasicModelRenderer::BasicModelRenderer(const mage::Model& model) :
+        m_model(model)
 {
-    m_model = std::move(model);
     m_shader = AssetManager::getShader("./assets/shaders/basic");
 }
 
@@ -40,26 +40,24 @@ void mage::BasicModelRenderer::render(const mage::RenderEngine* renderEngine)
 
 void mage::BasicModelRenderer::postRender(const mage::RenderEngine* renderEngine)
 {
-    renderEngine->renderModel(m_shader, *m_model);
+    renderEngine->renderModel(m_shader, m_model);
     m_shader.disable();
 }
 
 
-mage::ModelRenderer::ModelRenderer(SharedPtr<mage::Model> model, vec3f lightPos) : BasicModelRenderer(std::move(model)),
-                                                                                       m_lightPos(lightPos),
-                                                                                       transposed(1)
+mage::ModelRenderer::ModelRenderer(const mage::Model& model, vec3f lightPos) :
+        BasicModelRenderer(model),
+        m_lightPos(lightPos),
+        transposed(1)
 {
     m_shader = AssetManager::getShader("./assets/shaders/lighting");
 }
 
-void mage::ModelRenderer::update(float delta)
-{
-}
 
 void mage::ModelRenderer::postRender(const mage::RenderEngine* renderEngine)
 {
     transposed = glm::transpose(
-                        glm::inverse(getTransform().getTransformation()));
+            glm::inverse(getTransform().getTransformation()));
     m_shader.setUniformMatf("normalMatrix", transposed);
     m_shader.setUniform3f("directionLight.ambient", vec3f(0.05f));
     m_shader.setUniform3f("directionLight.diffuse", vec3f(0.4f));
@@ -99,7 +97,7 @@ void mage::ModelRenderer::postRender(const mage::RenderEngine* renderEngine)
     m_shader.setUniform1f("pointLights[3].quadratic", 0.017f);
 
     m_shader.setUniform3f("spotLight.ambient", vec3f(0.05f));
-    m_shader.setUniform3f("spotLight.diffuse", vec3f(0, 0.5f, 0.5f));
+    m_shader.setUniform3f("spotLight.diffuse", vec3f(0, 1, 1));
     m_shader.setUniform3f("spotLight.specular", vec3f(0.7f));
     m_shader.setUniform3f("spotLight.position", renderEngine->getCamera()->getPosition());
     m_shader.setUniform3f("spotLight.direction", renderEngine->getCamera()->getFront());
@@ -107,11 +105,11 @@ void mage::ModelRenderer::postRender(const mage::RenderEngine* renderEngine)
     m_shader.setUniform1f("spotLight.linear", 0.07f);
     m_shader.setUniform1f("spotLight.quadratic", 0.017f);
     m_shader.setUniform1f("spotLight.cutoff", glm::cos(glm::radians(5.5f)));
-    m_shader.setUniform1f("spotLight.outerCutoff", glm::cos(glm::radians(12.5f)));
+    m_shader.setUniform1f("spotLight.outerCutoff", glm::cos(glm::radians(20.5f)));
 
     m_shader.setUniform3f("viewPos", renderEngine->getCamera()->getPosition());
 
 
-    renderEngine->renderModel(m_shader, *m_model);
+    renderEngine->renderModel(m_shader, m_model);
     m_shader.disable();
 }
