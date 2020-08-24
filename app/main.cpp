@@ -86,7 +86,8 @@ public:
         addToScene(lamp);
 
         // TODO CUrrently must be added last. Need to come up with an efficient sorting algorithm
-        auto* winPane = (new mage::GameObject())->addComponent(new mage::QuadRenderer("./assets/textures/red_window.png"));
+        auto* winPane = (new mage::GameObject())
+                ->addComponent(new mage::QuadRenderer("./assets/textures/red_window.png"));
         winPane->getTransform().rotate(-glm::radians(90.0f), vec3f(1, 0, 0));
         winPane->getTransform().setPos(vec3f(0, 0, 0));
         addToScene(winPane);
@@ -97,6 +98,7 @@ public:
         brick->getTransform().rotate(delta * 0.5f, vec3f(0, 1, 1));
         mage::Scene::update(delta);
     }
+
 
 private:
     mage::GameObject* brick { };
@@ -119,11 +121,54 @@ public:
         {
             mage::Display::toggleCursor();
         }
+        if (_input->keyPressed(KEY_F))
+        {
+            if (m_toggle >= 6) m_toggle = -1;
+            else if (m_toggle < 0) m_toggle = 1;
+            else m_toggle++;
+            m_toggled = true;
+        }
         mage::Game::processInput(_input, delta);
+    }
+
+    void render(const mage::RenderEngine* renderEngine) override
+    {
+        if (m_toggle == 1 && m_toggled)
+        {
+            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/inversion"));
+            m_toggled = false;
+        } else if (m_toggle == -1 && m_toggled)
+        {
+            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/screen"));
+            m_toggled = false;
+        } else if (m_toggle == 2 && m_toggled)
+        {
+            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/grayscale"));
+            m_toggled = false;
+        } else if (m_toggle == 3 && m_toggled)
+        {
+            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/sharpen"));
+            m_toggled = false;
+        } else if (m_toggle == 4 && m_toggled)
+        {
+            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/blur"));
+            m_toggled = false;
+        } else if (m_toggle == 5 && m_toggled)
+        {
+            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/edges"));
+            m_toggled = false;
+        } else if (m_toggle == 6 && m_toggled)
+        {
+            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/greenscale"));
+            m_toggled = false;
+        }
+        Game::render(renderEngine);
     }
 
 private:
     TestScene m_scene;
+    int m_toggle = 0;
+    bool m_toggled = false;
 };
 
 int main(int argc, char** argv)

@@ -21,6 +21,8 @@
 
 #include "mage/graphics/renderengine.h"
 #include "mage/core/display.h"
+#include "mage/core/gameobject.h"
+#include "mage/core/assetmanager.h"
 
 //const mage::Shader* mage::RenderEngine::BASIC_SHADER;
 //const mage::Shader* mage::RenderEngine::LIGHTING_SHADER;
@@ -52,11 +54,25 @@ mage::RenderEngine::RenderEngine()
     m_target = new Texture(Display::getWidth(), Display::getHeight(), 0, GL_TEXTURE_2D, GL_NEAREST, GL_RGBA,
                            GL_RGBA, false, GL_COLOR_ATTACHMENT0);
 
+    list<float> quadVertices = {
+            // positions   // texCoords
+            -1.0f, 1.0f, 0.0f, 1.0f,
+            -1.0f, -1.0f, 0.0f, 0.0f,
+            1.0f, -1.0f, 1.0f, 0.0f,
+
+            -1.0f, 1.0f, 0.0f, 1.0f,
+            1.0f, -1.0f, 1.0f, 0.0f,
+            1.0f, 1.0f, 1.0f, 1.0f
+    };
+
+    m_screenMesh = new Mesh(quadVertices);
+    m_filterShader = AssetManager::getShader("./assets/shaders/screen");
 }
 
 mage::RenderEngine::~RenderEngine()
 {
     delete m_target;
+    delete m_screenMesh;
     //for (auto & iterator : shaderMap)
     //{
     //    delete iterator.second;
@@ -121,5 +137,30 @@ void mage::RenderEngine::renderModel(const mage::Shader& shader, const Model& mo
     {
         renderMesh(shader, model.getMeshes()[ i ], model.getMaterial());
     }
+}
+
+void mage::RenderEngine::render(mage::GameObject* gameObject) const
+{
+    m_target->bindAsRenderTarget();
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_DEPTH_TEST);
+    gameObject->renderAll(this);
+    applyFilter(m_filterShader, *m_target);
+}
+
+void mage::RenderEngine::applyFilter(const mage::Shader& filter, const mage::Texture& src, Texture* dest) const
+{
+    assert(&src != dest);
+    if(!dest)
+        Display::bindAsRenderTarget();
+    else dest->bindAsRenderTarget();
+    filter.enable();
+    m_screenMesh->enable_basic();
+    src.enable(0);
+    m_screenMesh->draw_basic();
+    m_screenMesh->disable_basic();
+    src.disable(0);
+    filter.disable();
 }
 

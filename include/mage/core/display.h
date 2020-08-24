@@ -36,6 +36,7 @@ namespace mage
 		mage3d_EXPORT static void update();
 		mage3d_EXPORT static void clear();
 		mage3d_EXPORT static void clear(int red, int green, int blue);
+		mage3d_EXPORT static void bindAsRenderTarget();
 		mage3d_EXPORT static bool isClosed();
 		mage3d_EXPORT static void setTitle(const char* title);
 		mage3d_EXPORT static void toggleCursor();

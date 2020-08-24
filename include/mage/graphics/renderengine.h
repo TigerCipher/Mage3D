@@ -35,6 +35,7 @@ namespace mage
 {
 
     class Camera;
+    class GameObject;
 
     class RenderEngine
     {
@@ -45,6 +46,9 @@ namespace mage
         mage3d_EXPORT void registerShader(const Shader* shader, const std::string& shaderName) const;
         mage3d_EXPORT const Shader* getShader(const std::string& shader) const;
 
+        mage3d_EXPORT void render(GameObject* gameObject) const;
+        mage3d_EXPORT void applyFilter(const Shader& filter, const Texture& src, Texture* dest = nullptr) const;
+
         mage3d_EXPORT void renderMesh(const Shader& shader, Mesh* mesh) const;
         mage3d_EXPORT void renderMesh(const Shader& shader, Mesh* mesh, const Material& material) const;
         mage3d_EXPORT void
@@ -54,6 +58,8 @@ namespace mage
         mage3d_EXPORT inline Camera* getCamera() const { return m_camera; }
 
         mage3d_EXPORT inline Texture* getTarget() const { return m_target; }
+
+        mage3d_EXPORT inline void setFilter(const Shader& filter) const { m_filterShader = filter; }
 
 
         //static const Shader* BASIC_SHADER;
@@ -66,6 +72,8 @@ namespace mage
         mutable std::map<std::string, const Shader*> shaderMap;
         mutable Camera* m_camera{};
         Texture* m_target;
+        mutable Shader m_filterShader;
+        mutable Mesh* m_screenMesh;
     };
 
 }

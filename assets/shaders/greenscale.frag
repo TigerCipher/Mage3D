@@ -14,38 +14,23 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: scene.cpp
- * Date File Created: 8/16/2020 at 9:37 PM
+ * File Name: screen.frag.glsl
+ * Date File Created: 8/23/2020 at 2:15 PM
  * Author: Matt
  */
 
-#include "mage/core/scene.h"
-#include "mage/core/gameobject.h"
+#version 430 core
 
-void mage::Scene::addToScene(mage::GameObject* child)
+out vec4 color;
+
+in vec2 fragTexCoords;
+
+uniform sampler2D screenTexture;
+
+void main()
 {
-    m_root->addChild(child);
+    vec4 col = texture(screenTexture, fragTexCoords);
+    float g = col.g;
+    if(g == 0) g += 0.1;
+    color = vec4(0.2 * col.r, 2 * col.g, 0.2 * col.b, 1.0);
 }
-
-void mage::Scene::input(mage::Input* pInput, float delta)
-{
-    m_root->inputAll(pInput, delta);
-}
-
-void mage::Scene::update(float delta)
-{
-    m_root->updateAll(delta);
-}
-
-void mage::Scene::render(const mage::RenderEngine* renderEngine)
-{
-    renderEngine->render(m_root.get());
-    //m_root->renderAll(renderEngine);
-}
-
-void mage::Scene::preInit()
-{
-    m_root = createRef<mage::GameObject>();
-}
-
-

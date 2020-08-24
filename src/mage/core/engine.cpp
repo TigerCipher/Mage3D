@@ -118,28 +118,27 @@ void mage::Engine::run()
             accumulated -= m_msPerUpdate;
         }
 
-        m_renderEngine->getTarget()->bindAsRenderTarget();
-        glClearColor(0.1f, 0.1f, 0.1f, 1);
-        Display::clear();
-
-        // TODO: Might want to interpolate positions to render at between 2 ticks - accumulated / m_msPerUpdate should suffice
-        glEnable(GL_DEPTH_TEST);
         m_game->render(m_renderEngine);
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
-        glDisable(GL_DEPTH_TEST);
-        glClearColor(1, 1, 1, 1);
-        glClear(GL_COLOR_BUFFER_BIT);
-        glViewport(0, 0, Display::getWidth(), Display::getHeight());
-
-        m_screenShader.enable();
-        m_quad->enable_basic();
-        glBindTexture(GL_TEXTURE_2D, m_renderEngine->getTarget()->getData()->getId());
-        //m_screenShader.setUniform1i("screenTexture", 0);
-        m_quad->draw_basic();
-        m_quad->disable_basic();
-        glBindTexture(GL_TEXTURE_2D, 0);
-        m_screenShader.disable();
+        //m_renderEngine->getTarget()->bindAsRenderTarget();
+        //Display::clear();
+        //
+        //// TODO: Might want to interpolate positions to render at between 2 ticks - accumulated / m_msPerUpdate should suffice
+        //glEnable(GL_DEPTH_TEST);
+        //m_game->render(m_renderEngine);
+        //
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glDisable(GL_DEPTH_TEST);
+        //glClear(GL_COLOR_BUFFER_BIT);
+        //glViewport(0, 0, Display::getWidth(), Display::getHeight());
+        //
+        //m_screenShader.enable();
+        //m_quad->enable_basic();
+        //glBindTexture(GL_TEXTURE_2D, m_renderEngine->getTarget()->getData()->getId());
+        ////m_screenShader.setUniform1i("screenTexture", 0);
+        //m_quad->draw_basic();
+        //m_quad->disable_basic();
+        //glBindTexture(GL_TEXTURE_2D, 0);
+        //m_screenShader.disable();
 
         m_input.update();
         Display::update();

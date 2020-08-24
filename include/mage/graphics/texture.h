@@ -100,6 +100,9 @@ namespace mage
 
         mage3d_EXPORT std::string getType() { return m_type; }
         mage3d_EXPORT inline TextureData* getData() { return m_textureData; }
+        [[nodiscard]] mage3d_EXPORT inline TextureData* getData() const { return m_textureData; }
+        mage3d_EXPORT inline std::string getFilePath() { return m_filePath; }
+        [[nodiscard]] mage3d_EXPORT inline std::string getFilePath() const { return m_filePath; }
 
         mage3d_EXPORT void destroy();
 

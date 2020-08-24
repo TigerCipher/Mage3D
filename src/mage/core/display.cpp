@@ -152,7 +152,7 @@ int mage::Display::init()
 
     if (!m_pWindow) return -1;
     LOG_TRACE("Window created at position ({}, {}) with dimensions ({}, {})", centerX,
-             centerY, m_width, m_height);
+              centerY, m_width, m_height);
     //TODO: Set up callbacks and whatnot
     glfwMakeContextCurrent(m_pWindow);
     //glfwSetWindowUserPointer(m_pWindow, this);
@@ -215,6 +215,14 @@ void mage::Display::toggleCursor()
 bool mage::Display::isCursorLocked()
 {
     return glfwGetInputMode(m_pWindow, GLFW_CURSOR) == GLFW_CURSOR_DISABLED;
+}
+
+void mage::Display::bindAsRenderTarget()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glDisable(GL_DEPTH_TEST);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glViewport(0, 0, m_width, m_height);
 }
 
 
