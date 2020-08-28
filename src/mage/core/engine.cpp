@@ -118,6 +118,7 @@ void mage::Engine::run()
             accumulated -= m_msPerUpdate;
         }
 
+        m_renderEngine->preRender();
         m_game->render(m_renderEngine);
         //m_renderEngine->getTarget()->bindAsRenderTarget();
         //Display::clear();

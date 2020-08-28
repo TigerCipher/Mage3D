@@ -141,9 +141,6 @@ void mage::RenderEngine::renderModel(const mage::Shader& shader, const Model& mo
 
 void mage::RenderEngine::render(mage::GameObject* gameObject) const
 {
-    m_target->bindAsRenderTarget();
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
     gameObject->renderAll(this);
     applyFilter(m_filterShader, *m_target);
@@ -162,5 +159,24 @@ void mage::RenderEngine::applyFilter(const mage::Shader& filter, const mage::Tex
     m_screenMesh->disable_basic();
     src.disable(0);
     filter.disable();
+}
+
+void mage::RenderEngine::applyFilter() const
+{
+    Display::bindAsRenderTarget();
+    m_filterShader.enable();
+    m_screenMesh->enable_basic();
+    m_target->enable(0);
+    m_screenMesh->draw_basic();
+    m_screenMesh->disable_basic();
+    m_target->disable(0);
+    m_filterShader.disable();
+}
+
+void mage::RenderEngine::preRender() const
+{
+    m_target->bindAsRenderTarget();
+    glClearColor(0, 0, 0, 0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 

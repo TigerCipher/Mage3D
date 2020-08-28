@@ -46,8 +46,10 @@ namespace mage
         mage3d_EXPORT void registerShader(const Shader* shader, const std::string& shaderName) const;
         mage3d_EXPORT const Shader* getShader(const std::string& shader) const;
 
+        mage3d_EXPORT void preRender() const;
         mage3d_EXPORT void render(GameObject* gameObject) const;
         mage3d_EXPORT void applyFilter(const Shader& filter, const Texture& src, Texture* dest = nullptr) const;
+        mage3d_EXPORT void applyFilter() const;
 
         mage3d_EXPORT void renderMesh(const Shader& shader, Mesh* mesh) const;
         mage3d_EXPORT void renderMesh(const Shader& shader, Mesh* mesh, const Material& material) const;

@@ -22,6 +22,7 @@
 #include "mage/graphics/texture.h"
 #include <SOIL/SOIL.h>
 #include <cassert>
+#include <utility>
 #include <fmt/format.h>
 
 std::map<std::string, mage::TextureData*> mage::Texture::textureMap;
@@ -34,8 +35,8 @@ std::map<std::string, mage::TextureData*> mage::Texture::textureMap;
 //}
 
 mage::Texture::Texture(const char* filePath, GLenum textureTarget, GLfloat filter, GLenum internalFormat,
-                       GLenum format, bool clamp, GLenum attachment):
-                       m_filePath(filePath)
+                       GLenum format, bool clamp, GLenum attachment) :
+        m_filePath(filePath)
 {
     load(filePath, textureTarget, filter, internalFormat, format, clamp, attachment);
 }
@@ -56,7 +57,7 @@ void mage::Texture::disable(uint slot)
 }
 
 void mage::Texture::load(const char* filePath, GLenum textureTarget, GLfloat filter, GLenum internalFormat,
-                       GLenum format, bool clamp, GLenum attachment)
+                         GLenum format, bool clamp, GLenum attachment)
 {
     std::map<std::string, TextureData*>::const_iterator it = textureMap.find(filePath);
     if (it != textureMap.end())
@@ -77,7 +78,8 @@ void mage::Texture::load(const char* filePath, GLenum textureTarget, GLfloat fil
             const char* newPath = m_filePath.c_str();
             image = SOIL_load_image(newPath, &width, &height, nullptr, SOIL_LOAD_RGBA);
         }
-        m_textureData = new TextureData(textureTarget, width, height, 1, &image, &filter, &internalFormat, &format, clamp, &attachment);
+        m_textureData = new TextureData(textureTarget, width, height, 1, &image, &filter, &internalFormat,
+                                        &format, clamp, &attachment);
         SOIL_free_image_data(image);
         textureMap.insert(std::pair<std::string, TextureData*>(filePath, m_textureData));
     }
@@ -135,7 +137,8 @@ mage::Texture::Texture(int width, int height, ubyte* data, GLenum textureTarget,
                        GLenum internalFormat, GLenum format, bool clamp, GLenum attachment)
 {
     m_filePath = "";
-    m_textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format, clamp, &attachment);
+    m_textureData = new TextureData(textureTarget, width, height, 1, &data, &filter, &internalFormat, &format,
+                                    clamp, &attachment);
 }
 
 void mage::Texture::bindAsRenderTarget()
@@ -165,8 +168,8 @@ mage::TextureData::TextureData(GLenum textureTarget, int width, int height, int 
     for (int i = 0; i < m_numTextures; i++)
     {
         glBindTexture(m_textureTarget, m_id[ i ]);
-        glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, filters[i]);
-        glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, filters[i]);
+        glTexParameterf(m_textureTarget, GL_TEXTURE_MIN_FILTER, filters[ i ]);
+        glTexParameterf(m_textureTarget, GL_TEXTURE_MAG_FILTER, filters[ i ]);
 
         if (clamp)
         {
@@ -174,50 +177,52 @@ mage::TextureData::TextureData(GLenum textureTarget, int width, int height, int 
             glTexParameterf(m_textureTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
         }
 
-        glTexImage2D(m_textureTarget, 0, internalFormat[i], m_width, m_height, 0, format[i], GL_UNSIGNED_BYTE, data[ i ]);
+        glTexImage2D(m_textureTarget, 0, internalFormat[ i ], m_width, m_height, 0, format[ i ],
+                     GL_UNSIGNED_BYTE, data[ i ]);
         glTexParameteri(m_textureTarget, GL_TEXTURE_BASE_LEVEL, 0);
         glTexParameteri(m_textureTarget, GL_TEXTURE_MAX_LEVEL, 0);
 
     }
 
-    if(attachments != 0)
+    if (attachments != nullptr)
     {
         GLenum drawBuffers[32];
         assert(m_numTextures <= 32);
         bool hasDepth = false;
         for (int i = 0; i < m_numTextures; i++)
         {
-            if(attachments[i] == GL_DEPTH_ATTACHMENT || attachments[i] == GL_STENCIL_ATTACHMENT)
+            if (attachments[ i ] == GL_DEPTH_ATTACHMENT || attachments[ i ] == GL_STENCIL_ATTACHMENT)
             {
-                drawBuffers[i] = GL_NONE;
+                drawBuffers[ i ] = GL_NONE;
                 hasDepth = true;
-            }else
-                drawBuffers[i] = attachments[i];
-            if(attachments[i] == GL_NONE)
+            } else
+                drawBuffers[ i ] = attachments[ i ];
+            if (attachments[ i ] == GL_NONE)
                 continue;
-            if(m_frameBuffer == 0)
+            if (m_frameBuffer == 0)
             {
                 glGenFramebuffers(1, &m_frameBuffer);
                 glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
             }
-            glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[i], m_textureTarget, m_id[i], 0);
+            glFramebufferTexture2D(GL_FRAMEBUFFER, attachments[ i ], m_textureTarget, m_id[ i ], 0);
         }
 
-        if(m_frameBuffer != 0)
+        if (m_frameBuffer != 0)
         {
             //if(!hasDepth)
             //{
-                glGenRenderbuffers(1, &m_renderBuffer);
-                glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
-                //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);
-                glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_width, m_height);
-                //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
-                glBindRenderbuffer(GL_RENDERBUFFER, 0);
-                glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
+            glGenRenderbuffers(1, &m_renderBuffer);
+            glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
+            //glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, m_width, m_height);
+            glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, m_width, m_height);
+            //glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
+            glBindRenderbuffer(GL_RENDERBUFFER, 0);
+            glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
+                                      m_renderBuffer);
             //}
 
             //glDrawBuffers(m_numTextures, drawBuffers);
-            if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+            if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
             {
                 LOG_CRITICAL("Error during frame buffer creation");
                 assert(false);
@@ -232,8 +237,8 @@ mage::TextureData::~TextureData()
 {
     LOG_TRACE("Deleting texture id {}", *m_id);
     if (*m_id) glDeleteTextures(m_numTextures, m_id);
-    if(m_frameBuffer) glDeleteFramebuffers(1, &m_frameBuffer);
-    if(m_renderBuffer) glDeleteRenderbuffers(1, &m_renderBuffer);
+    if (m_frameBuffer) glDeleteFramebuffers(1, &m_frameBuffer);
+    if (m_renderBuffer) glDeleteRenderbuffers(1, &m_renderBuffer);
     delete[] m_id;
 }
 
@@ -256,4 +261,48 @@ void mage::TextureData::bindAsRenderTarget() const
     glBindTexture(GL_TEXTURE_2D, 0);
     glBindFramebuffer(GL_FRAMEBUFFER, m_frameBuffer);
     glViewport(0, 0, m_width, m_height);
+}
+
+void mage::TextureCube::load(list<std::string> faces)
+{
+    glGenTextures(1, &m_id);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
+
+    int width, height, channels;
+    for (int i = 0; i < faces.size(); i++)
+    {
+
+        ubyte* data = SOIL_load_image(faces[ i ].c_str(), &width, &height, &channels, SOIL_LOAD_RGBA);
+        if(data) LOG_INFO("Cube texture {} loaded", faces[i].c_str());
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA,
+                     GL_UNSIGNED_BYTE, data);
+        SOIL_free_image_data(data);
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+}
+
+mage::TextureCube::TextureCube(list<std::string> faces)
+{
+    load(std::move(faces));
+}
+
+void mage::TextureCube::enable()
+{
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
+}
+
+void mage::TextureCube::disable()
+{
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+mage::TextureCube::~TextureCube()
+{
+    glDeleteTextures(1, &m_id);
 }

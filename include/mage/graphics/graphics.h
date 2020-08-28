@@ -31,5 +31,6 @@
 #include "modelrenderer.h"
 #include "renderengine.h"
 #include "quadrenderer.h"
+#include "skybox.h"
 
 #endif //MAGE3D_GRAPHICS_H

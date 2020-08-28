@@ -38,6 +38,7 @@
 using vec2f = glm::vec2;
 using vec3f = glm::vec3;
 using vec4f = glm::vec4;
+using mat3f = glm::mat3;
 using mat4f = glm::mat4;
 using vec2i = glm::ivec2;
 using vec3i = glm::ivec3;

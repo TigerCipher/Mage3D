@@ -39,13 +39,21 @@ void mage::Scene::update(float delta)
 
 void mage::Scene::render(const mage::RenderEngine* renderEngine)
 {
+    m_skybox->render(renderEngine);
     renderEngine->render(m_root.get());
+
+    //renderEngine->applyFilter();
     //m_root->renderAll(renderEngine);
 }
 
 void mage::Scene::preInit()
 {
     m_root = createRef<mage::GameObject>();
+}
+
+void mage::Scene::initSkybox(const list<std::string>& faces)
+{
+    m_skybox = createRef<Skybox>(faces);
 }
 
 

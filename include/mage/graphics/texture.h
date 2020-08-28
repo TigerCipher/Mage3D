@@ -56,7 +56,8 @@ namespace mage
         [[nodiscard]] mage3d_EXPORT inline int getWidth() const { return m_width; }
 
         [[nodiscard]] mage3d_EXPORT inline int getHeight() const { return m_height; }
-        [[nodiscard]] mage3d_EXPORT inline int getId() const { return m_id[0]; }
+
+        [[nodiscard]] mage3d_EXPORT inline int getId() const { return m_id[ 0 ]; }
 
 
         friend std::ostream& operator<<(std::ostream& os, const TextureData& data);
@@ -68,8 +69,8 @@ namespace mage
 
         GLenum m_textureTarget { };
         uint* m_id { };
-        uint m_frameBuffer;
-        uint m_renderBuffer;
+        uint m_frameBuffer { };
+        uint m_renderBuffer { };
         int m_numTextures { };
         int m_width { };
         int m_height { };
@@ -84,9 +85,10 @@ namespace mage
                                        GLenum format = GL_RGBA, bool clamp = false,
                                        GLenum attachment = GL_NONE);
         mage3d_EXPORT explicit Texture(int width = 0, int height = 0, ubyte* data = 0,
-                              GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR,
-                              GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA, bool clamp = false,
-                              GLenum attachment = GL_NONE);
+                                       GLenum textureTarget = GL_TEXTURE_2D, GLfloat filter = GL_LINEAR,
+                                       GLenum internalFormat = GL_RGBA, GLenum format = GL_RGBA,
+                                       bool clamp = false,
+                                       GLenum attachment = GL_NONE);
         mage3d_EXPORT virtual ~Texture() = default;
 
         mage3d_EXPORT void enable(uint slot);
@@ -99,9 +101,13 @@ namespace mage
         mage3d_EXPORT void disable(uint slot) const;
 
         mage3d_EXPORT std::string getType() { return m_type; }
+
         mage3d_EXPORT inline TextureData* getData() { return m_textureData; }
+
         [[nodiscard]] mage3d_EXPORT inline TextureData* getData() const { return m_textureData; }
+
         mage3d_EXPORT inline std::string getFilePath() { return m_filePath; }
+
         [[nodiscard]] mage3d_EXPORT inline std::string getFilePath() const { return m_filePath; }
 
         mage3d_EXPORT void destroy();
@@ -122,6 +128,25 @@ namespace mage
         TextureData* m_textureData { };
 
         static std::map<std::string, TextureData*> textureMap;
+    };
+
+
+    class TextureCube
+    {
+    public:
+        mage3d_EXPORT explicit TextureCube(list<std::string> faces);
+        mage3d_EXPORT virtual ~TextureCube();
+        mage3d_EXPORT void enable();
+        mage3d_EXPORT void disable();
+    private:
+
+        void load(list<std::string> faces);
+
+        uint m_id{};
+        //int m_width;
+        //int m_height;
+        //int m_channels;
+
     };
 
 

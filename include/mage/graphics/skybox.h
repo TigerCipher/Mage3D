@@ -14,45 +14,41 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: scene.h
- * Date File Created: 8/16/2020 at 9:37 PM
+ * File Name: skybox.h
+ * Date File Created: 8/28/2020 at 4:42 PM
  * Author: Matt
  */
 
-#ifndef MAGE3D_SCENE_H
-#define MAGE3D_SCENE_H
+#ifndef MAGE3D_SKYBOX_H
+#define MAGE3D_SKYBOX_H
 
 
 #include "mage3d_exported.h"
 #include "mage/common.h"
-#include "engine.h"
-#include "input.h"
-#include "mage/graphics/renderengine.h"
-#include "mage/graphics/skybox.h"
+#include "shader.h"
+#include "mesh.h"
+#include "texture.h"
+#include "renderengine.h"
+
 
 namespace mage
 {
-    class GameObject;
-    class Scene
+    class Skybox
     {
     public:
-        mage3d_EXPORT Scene() = default;
-        mage3d_EXPORT virtual ~Scene() = default;
-        mage3d_EXPORT virtual void preInit();
-        mage3d_EXPORT virtual void init() = 0;
-        mage3d_EXPORT virtual void addToScene(GameObject* child);
-        mage3d_EXPORT virtual void input(Input* pInput, float delta);
-        mage3d_EXPORT virtual void update(float delta);
-        mage3d_EXPORT virtual void render(const RenderEngine* renderEngine);
+        mage3d_EXPORT explicit Skybox(list<std::string> faces);
+        mage3d_EXPORT virtual ~Skybox();
+
+        mage3d_EXPORT void render(const RenderEngine* renderEngine);
 
     protected:
-        mage3d_EXPORT virtual void initSkybox(const list<std::string>& faces);
     private:
-        SharedPtr<GameObject> m_root{};
-        SharedPtr<Skybox> m_skybox{};
+        Shader m_shader;
+        Mesh* m_mesh;
+        TextureCube* m_texture;
     };
 
 }
 
 
-#endif //MAGE3D_SCENE_H
+#endif //MAGE3D_SKYBOX_H

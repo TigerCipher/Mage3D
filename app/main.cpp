@@ -30,6 +30,17 @@ public:
     {
         PROFILER_SCOPE(1);
 
+        list<std::string> skyboxFaces = {
+                "./assets/skybox/right.jpg",
+                "./assets/skybox/left.jpg",
+                "./assets/skybox/top.jpg",
+                "./assets/skybox/bottom.jpg",
+                "./assets/skybox/front.jpg",
+                "./assets/skybox/back.jpg"
+        };
+
+        initSkybox(skyboxFaces);
+
         auto* cam = (new mage::GameObject())->addComponent(new mage::Camera());
         addToScene(cam);
         brick = new mage::GameObject();

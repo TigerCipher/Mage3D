@@ -33,11 +33,15 @@
 
 namespace mage
 {
+    enum MeshType
+    {
+        STANDARD, QUAD, CUBE
+    };
     //TODO make ref counter for mesh (like textures and shaders)
 	class Mesh
 	{
 	public:
-	    mage3d_EXPORT Mesh(const list<float>& vertices);
+	    mage3d_EXPORT explicit Mesh(const list<float>& vertices, MeshType type = QUAD);
 		mage3d_EXPORT Mesh(Vertex vertices[], uint verticesSize, uint indices[], uint indicesSize);
 		mage3d_EXPORT Mesh(list<Vertex> vertices, list<uint> indices);
 		mage3d_EXPORT Mesh(list<Vertex>& vertices, list<uint>& indices, const list<Texture>& textures);
@@ -61,7 +65,8 @@ namespace mage
 	protected:
 	private:
 		void createBuffers(Vertex vertices[], uint indices[]);
-		void createBuffers(list<float> vertices);
+		void createBuffersQuad(list<float> vertices);
+		void createBuffersCube(list<float> vertices);
 
 
 		GLuint m_vaoId { };
@@ -70,6 +75,7 @@ namespace mage
 
 		uint m_numVertices{};
 		uint m_numIndices{};
+		uint m_numAttribsPerVert{};
 
 		list<Vertex> m_vertices{};
 		list<uint> m_indices{};

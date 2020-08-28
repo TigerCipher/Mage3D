@@ -26,47 +26,47 @@
 
 
 mage::Mesh::Mesh(mage::Vertex vertices[], uint verticesSize, uint indices[], uint indicesSize) :
-		m_numVertices(verticesSize),
-		m_numIndices(indicesSize)
+        m_numVertices(verticesSize),
+        m_numIndices(indicesSize)
 {
-	assert(m_numIndices % 3 == 0);
-	glGenVertexArrays(1, &m_vaoId);
-	glBindVertexArray(m_vaoId);
-	createBuffers(vertices, indices);
-	disable();
+    assert(m_numIndices % 3 == 0);
+    glGenVertexArrays(1, &m_vaoId);
+    glBindVertexArray(m_vaoId);
+    createBuffers(vertices, indices);
+    disable();
 }
 
 mage::Mesh::Mesh(list<Vertex> vertices, list<uint> indices)
 {
-	m_numVertices = vertices.size();
-	m_numIndices = indices.size();
-	assert(m_numIndices % 3 == 0);
-	// TODO Perhaps only create the buffers in a separate 'init' function
-	// So that models and other mesh using resources can be loaded before the display is shown?
-	// Same with things like textures
-	// That or have the engine render a splashscreen while things load?
-	// Though if we wanted a traditional animated splashscreen or anything, might have to introduce multi threading
-	int er;
-	checkGlError(er);
-	glGenVertexArrays(1, &m_vaoId);
-	glBindVertexArray(m_vaoId);
-	createBuffers(vertices.data(), indices.data());
-	checkGlError(er);
-	disable();
+    m_numVertices = vertices.size();
+    m_numIndices = indices.size();
+    assert(m_numIndices % 3 == 0);
+    // TODO Perhaps only create the buffers in a separate 'init' function
+    // So that models and other mesh using resources can be loaded before the display is shown?
+    // Same with things like textures
+    // That or have the engine render a splashscreen while things load?
+    // Though if we wanted a traditional animated splashscreen or anything, might have to introduce multi threading
+    int er;
+    checkGlError(er);
+    glGenVertexArrays(1, &m_vaoId);
+    glBindVertexArray(m_vaoId);
+    createBuffers(vertices.data(), indices.data());
+    checkGlError(er);
+    disable();
 }
 
-mage::Mesh::Mesh(list<mage::Vertex>& vertices, list<uint>& indices, const list<mage::Texture>& textures):
-m_textures(textures),
-m_vertices(vertices),
-m_indices(indices)
+mage::Mesh::Mesh(list<mage::Vertex>& vertices, list<uint>& indices, const list<mage::Texture>& textures) :
+        m_textures(textures),
+        m_vertices(vertices),
+        m_indices(indices)
 {
-	m_numVertices = vertices.size();
-	m_numIndices = indices.size();
-	assert(m_numIndices % 3 == 0);
-	glGenVertexArrays(1, &m_vaoId);
-	glBindVertexArray(m_vaoId);
-	createBuffers(vertices.data(), indices.data());
-	disable();
+    m_numVertices = vertices.size();
+    m_numIndices = indices.size();
+    assert(m_numIndices % 3 == 0);
+    glGenVertexArrays(1, &m_vaoId);
+    glBindVertexArray(m_vaoId);
+    createBuffers(vertices.data(), indices.data());
+    disable();
 }
 
 mage::Mesh::~Mesh()
@@ -74,23 +74,23 @@ mage::Mesh::~Mesh()
     glDisableVertexAttribArray(0);
     glDisableVertexAttribArray(1);
     glDisableVertexAttribArray(2);
-	glDeleteVertexArrays(1, &m_vaoId);
-	glDeleteBuffers(1, &m_vbo);
-	glDeleteBuffers(1, &m_ebo);
+    glDeleteVertexArrays(1, &m_vaoId);
+    glDeleteBuffers(1, &m_vbo);
+    glDeleteBuffers(1, &m_ebo);
 }
 
 void mage::Mesh::createBuffers(Vertex vertices[], uint indices[])
 {
-	// Set up vertex buffer object
-	glGenBuffers(1, &m_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(Vertex), vertices, GL_STATIC_DRAW);
-	// Set up element buffer object
-	glGenBuffers(1, &m_ebo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numIndices * sizeof(uint), indices, GL_STATIC_DRAW);
+    // Set up vertex buffer object
+    glGenBuffers(1, &m_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(Vertex), vertices, GL_STATIC_DRAW);
+    // Set up element buffer object
+    glGenBuffers(1, &m_ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_numIndices * sizeof(uint), indices, GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
@@ -103,48 +103,65 @@ void mage::Mesh::createBuffers(Vertex vertices[], uint indices[])
 
 void mage::Mesh::render() const
 {
-	glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, 0);
+    glDrawElements(GL_TRIANGLES, m_numIndices, GL_UNSIGNED_INT, 0);
 }
 
 void mage::Mesh::enable() const
 {
-	glBindVertexArray(m_vaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    glBindVertexArray(m_vaoId);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
 }
 
 void mage::Mesh::disable()
 {
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 }
 
 std::ostream& mage::operator<<(std::ostream& os, const mage::Mesh& mesh)
 {
-	os << "m_vaoId: " << mesh.m_vaoId << " m_vbo: " << mesh.m_vbo << " m_ebo: " << mesh.m_ebo
-	   << " m_numVertices: " << mesh.m_numVertices << " m_numIndices: " << mesh.m_numIndices;
-	return os;
+    os << "m_vaoId: " << mesh.m_vaoId << " m_vbo: " << mesh.m_vbo << " m_ebo: " << mesh.m_ebo
+       << " m_numVertices: " << mesh.m_numVertices << " m_numIndices: " << mesh.m_numIndices;
+    return os;
 }
 
-mage::Mesh::Mesh(const list<float>& vertices)
+mage::Mesh::Mesh(const list<float>& vertices, mage::MeshType type)
 {
     glGenVertexArrays(1, &m_vaoId);
-	glBindVertexArray(m_vaoId);
-	m_numVertices = vertices.size();
-	createBuffers(vertices);
-	disable();
+    glBindVertexArray(m_vaoId);
+    m_numVertices = vertices.size();
+    switch (type)
+    {
+        case QUAD:
+            m_numAttribsPerVert = 4;
+            createBuffersQuad(vertices);
+            break;
+        case CUBE:
+            m_numAttribsPerVert = 3;
+            createBuffersCube(vertices);
+            break;
+        case STANDARD:
+            LOG_CRITICAL("This particular mesh constructor does not currently support the \"standard\" type");
+            assert(false);
+            break;
+        default:
+            LOG_CRITICAL("Unknown mesh type");
+            assert(false);
+    }
+    disable_basic();
 }
 
-void mage::Mesh::createBuffers(list<float> vertices)
+void mage::Mesh::createBuffersQuad(list<float> vertices)
 {
     glGenBuffers(1, &m_vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
-	glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
-	glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*) 0);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
                           (void*) (2 * sizeof(float)));
 }
@@ -152,18 +169,28 @@ void mage::Mesh::createBuffers(list<float> vertices)
 void mage::Mesh::enable_basic()
 {
     glBindVertexArray(m_vaoId);
-	glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 }
 
 void mage::Mesh::disable_basic()
 {
     glBindVertexArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 void mage::Mesh::draw_basic()
 {
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawArrays(GL_TRIANGLES, 0, m_numVertices / m_numAttribsPerVert);
+}
+
+void mage::Mesh::createBuffersCube(list<float> vertices)
+{
+    glGenBuffers(1, &m_vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+    glBufferData(GL_ARRAY_BUFFER, m_numVertices * sizeof(float), vertices.data(), GL_STATIC_DRAW);
+
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*) 0);
 }
 
 
