@@ -1,0 +1,59 @@
+{
+  "Shaders": [
+    {
+      "id": "lighting",
+      "vertex": "./assets/shaders/lighting.vert",
+      "fragment": "./assets/shaders/lighting.frag"
+    },
+    {
+      "id": "basic",
+      "vertex": "./assets/shaders/basic.vert",
+      "fragment": "./assets/shaders/basic.frag"
+    },
+    {
+      "id": "blur",
+      "vertex": "./assets/shaders/base_post_processing.vert",
+      "fragment": "./assets/shaders/blur.frag"
+    },
+    {
+      "id": "edges",
+      "vertex": "./assets/shaders/base_post_processing.vert",
+      "fragment": "./assets/shaders/edges.frag"
+    },
+    {
+      "id": "grayscale",
+      "vertex": "./assets/shaders/base_post_processing.vert",
+      "fragment": "./assets/shaders/grayscale.frag"
+    },
+    {
+      "id": "greenscale",
+      "vertex": "./assets/shaders/base_post_processing.vert",
+      "fragment": "./assets/shaders/greenscale.frag"
+    },
+    {
+      "id": "inversion",
+      "vertex": "./assets/shaders/base_post_processing.vert",
+      "fragment": "./assets/shaders/inversion.frag"
+    },
+    {
+      "id": "sharpen",
+      "vertex": "./assets/shaders/base_post_processing.vert",
+      "fragment": "./assets/shaders/sharpen.frag"
+    },
+    {
+      "id": "transparent",
+      "vertex": "./assets/shaders/transparent.vert",
+      "fragment": "./assets/shaders/transparent.frag"
+    },
+    {
+      "id": "screen",
+      "vertex": "./assets/shaders/base_post_processing.vert",
+      "fragment": "./assets/shaders/screen.frag"
+    },
+    {
+      "id": "skybox",
+      "vertex": "./assets/shaders/skybox.vert",
+      "fragment": "./assets/shaders/skybox.frag"
+    }
+  ]
+}

@@ -21,6 +21,11 @@
 
 #include "mage/core/assetmanager.h"
 //#include "mage/graphics/model.h"
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <sstream>
+
+using json = nlohmann::json;
 
 std::unordered_map<std::string, UniquePtr<mage::Texture>> mage::AssetManager::s_textureMap;
 //std::unordered_map<std::string, SharedPtr<mage::Texture>> mage::AssetManager::s_textureMap;
@@ -37,32 +42,32 @@ void textureCallback(file_t* file, void* udata)
         // TODO: Check for type of texture. Assume the naming convention is textureName_type.ext
         // Or maybe maybe some sort of .material file? like json or something pointing to the different textures?
         //i.e bricks_diffuse.png and bricks_specular.png
-        if(mage::AssetManager::addTexture(name, file->path))
+        if (mage::AssetManager::addTexture(name, file->path))
             *(int*) udata += 1;
     }
 }
 
 void shaderCallback(file_t* file, void* udata)
 {
-    if(!file->isFile) return;
-    if(strcmp(file->ext, ".frag") == 0 || strcmp(file->ext, ".vert") == 0)
+    if (!file->isFile) return;
+    if (strcmp(file->ext, ".frag") == 0 || strcmp(file->ext, ".vert") == 0)
     {
         std::string name(file->path);
         int i = name.find_last_of('.');
         name = name.substr(0, i);
-        if(mage::AssetManager::addShader(name, name.c_str()))
-            *(int*)udata += 1;
+        if (mage::AssetManager::addShader(name, name.c_str()))
+            *(int*) udata += 1;
     }
 }
 
 void modelCallback(file_t* file, void* udata)
 {
-    if(!file->isFile) return;
-    if(strcmp(file->ext, ".obj") == 0)
+    if (!file->isFile) return;
+    if (strcmp(file->ext, ".obj") == 0)
     {
         std::string name(file->path);
-        if(mage::AssetManager::addModel(name, file->path))
-            *(int*)udata += 1;
+        if (mage::AssetManager::addModel(name, file->path))
+            *(int*) udata += 1;
     }
 }
 
@@ -80,9 +85,20 @@ void mage::AssetManager::loadTextures(const char* baseDir)
 void mage::AssetManager::loadShaders(const char* baseDir)
 {
     PROFILER_SCOPE(1);
-    LOG_TRACE("Loading shaders from {}", baseDir);
+    LOG_TRACE("Loading shaders registered in {}", baseDir);
     int n = 0;
-    traverse_r(baseDir, shaderCallback, &n);
+    //traverse_r(baseDir, shaderCallback, &n);
+    std::ifstream f(baseDir);
+    json j;
+    f >> j;
+
+    for (const auto& item : j[ "Shaders" ])
+    {
+        LOG_INFO("Loading shader program: {}", item[ "id" ].get<std::string>());
+        addShader(item[ "id" ].get<std::string>(), item[ "vertex" ].get<std::string>().c_str(),
+                  item[ "fragment" ].get<std::string>().c_str());
+        n++;
+    }
     s_assetCount += n;
     LOG_TRACE("Loaded {} shaders", n);
 }
@@ -106,7 +122,7 @@ void mage::AssetManager::loadAssets(const char* baseDir)
     std::string texDir(baseDir);
     texDir += "/textures";
     std::string shaderDir(baseDir);
-    shaderDir += "/shaders";
+    shaderDir += "/shaders.json";
     std::string modelDir(baseDir);
     modelDir += "/models";
     loadTextures(texDir.c_str());
@@ -120,8 +136,8 @@ bool mage::AssetManager::addTexture(const std::string& name, const char* texture
 {
     bool ret = true;
     auto it = s_textureMap.find(name);
-    if(it != s_textureMap.end()) ret = false;
-    if(ret)
+    if (it != s_textureMap.end()) ret = false;
+    if (ret)
         s_textureMap.insert(std::make_pair(name, createScope<Texture>(textureFile)));
     return ret;
     //s_textureMap.insert(std::make_pair(name, createRef<Texture>(textureFile)));
@@ -134,8 +150,19 @@ bool mage::AssetManager::addShader(const std::string& name, const char* shaderFi
     auto it = s_shaderMap.find(name);
     if (it != s_shaderMap.end())
         ret = false;
-    if(ret)
+    if (ret)
         s_shaderMap.insert(std::make_pair(name, createScope<Shader>(shaderFile)));
+    return ret;
+}
+
+bool mage::AssetManager::addShader(const std::string& name, const char* vertexFile, const char* fragFile)
+{
+    bool ret = true;
+    auto it = s_shaderMap.find(name);
+    if (it != s_shaderMap.end())
+        ret = false;
+    if (ret)
+        s_shaderMap.insert(std::make_pair(name, createScope<Shader>(vertexFile, fragFile)));
     return ret;
 }
 
@@ -145,7 +172,7 @@ bool mage::AssetManager::addModel(const std::string& name, const char* modelFile
     auto it = s_modelMap.find(name);
     if (it != s_modelMap.end())
         ret = false;
-    if(ret)
+    if (ret)
         s_modelMap.insert(std::make_pair(name, createScope<ModelData>(modelFile)));
     return ret;
 }
@@ -154,15 +181,23 @@ void mage::AssetManager::destroy()
 {
     LOG_INFO("Cleaning up loaded assets");
     for (const auto& item : s_textureMap)
+    {
         item.second->destroy();
+    }
     s_textureMap.clear();
 
     for (const auto& item : s_shaderMap)
+    {
         item.second->destroy();
+    }
     s_shaderMap.clear();
 
-    for(const auto& item : s_modelMap)
+    for (const auto& item : s_modelMap)
+    {
         item.second->destroy();
+    }
     s_modelMap.clear();
     LOG_INFO("{} assets cleaned up", s_assetCount);
 }
+
+

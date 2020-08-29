@@ -47,7 +47,7 @@ mage::Engine::Engine(Game* game, const char* title, int width, int height, float
     AssetManager::loadAssets("./assets");
     m_renderEngine = new RenderEngine();
     LOG_TRACE("Render engine created");
-    m_screenShader = AssetManager::getShader("./assets/shaders/screen");
+    m_screenShader = AssetManager::getShader("screen");
     list<float> quadVertices = {
             // positions   // texCoords
             -1.0f, 1.0f, 0.0f, 1.0f,

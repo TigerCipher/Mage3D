@@ -26,7 +26,7 @@
 mage::BasicModelRenderer::BasicModelRenderer(const mage::Model& model) :
         m_model(model)
 {
-    m_shader = AssetManager::getShader("./assets/shaders/basic");
+    m_shader = AssetManager::getShader("basic");
 }
 
 void mage::BasicModelRenderer::render(const mage::RenderEngine* renderEngine)
@@ -50,7 +50,7 @@ mage::ModelRenderer::ModelRenderer(const mage::Model& model, vec3f lightPos) :
         m_lightPos(lightPos),
         transposed(1)
 {
-    m_shader = AssetManager::getShader("./assets/shaders/lighting");
+    m_shader = AssetManager::getShader("lighting");
 }
 
 

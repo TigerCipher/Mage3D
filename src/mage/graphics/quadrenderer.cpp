@@ -37,7 +37,7 @@ mage::QuadRenderer::QuadRenderer(const std::string& textureName)
 
     m_quad = new Mesh(verts, ints);
     m_texture = AssetManager::getTexture(textureName);
-    m_shader = AssetManager::getShader("./assets/shaders/transparent");
+    m_shader = AssetManager::getShader("transparent");
 }
 
 mage::QuadRenderer::~QuadRenderer()

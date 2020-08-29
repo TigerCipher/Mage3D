@@ -66,7 +66,7 @@ mage::RenderEngine::RenderEngine()
     };
 
     m_screenMesh = new Mesh(quadVertices);
-    m_filterShader = AssetManager::getShader("./assets/shaders/screen");
+    m_filterShader = AssetManager::getShader("screen");
 }
 
 mage::RenderEngine::~RenderEngine()

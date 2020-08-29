@@ -43,6 +43,7 @@ namespace mage
         mage3d_EXPORT static void loadModels(const char* baseDir);
         mage3d_EXPORT static bool addTexture(const std::string& name, const char* textureFile);
         mage3d_EXPORT static bool addShader(const std::string& name, const char* shaderFile);
+        mage3d_EXPORT static bool addShader(const std::string& name, const char* vertexFile, const char* fragFile);
         mage3d_EXPORT static bool addModel(const std::string& name, const char* modelFile);
         mage3d_EXPORT static void destroy();
         //mage3d_EXPORT static inline Texture* getTexture(const std::string& name) { return s_textureMap[ name ].get(); }

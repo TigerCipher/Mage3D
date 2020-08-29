@@ -20,7 +20,7 @@ include(GenerateExportHeader)
 include(filter)
 
 #TODO StalkWalker is only compatible with MSVC. If I end up liking spdlog, maybe just get rid of stack walker from my bmd logger
-set(MAGE3D_LINKS PUBLIC ${BMD_LIBRARIES} fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL glm assimp::assimp spdlog::spdlog)
+set(MAGE3D_LINKS PUBLIC ${BMD_LIBRARIES} fmt::fmt ${OPENGL_LIBRARY} GLEW::GLEW glfw SOIL glm assimp::assimp spdlog::spdlog nlohmann_json::nlohmann_json)
 set(MAGE3D_INCLUDES "../include" ${BMD_INCLUDE_DIRS})
 
 

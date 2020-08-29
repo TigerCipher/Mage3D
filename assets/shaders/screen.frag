@@ -31,5 +31,4 @@ void main()
 {
     vec3 col = texture(screenTexture, fragTexCoords).rgb;
     color = vec4(col, 1.0);
-//    color = vec4(vec3(1.0 - texture(screenTexture, fragTexCoords)), 1.0);
 }

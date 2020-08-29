@@ -135,10 +135,12 @@ mage::Mesh::Mesh(const list<float>& vertices, mage::MeshType type)
     switch (type)
     {
         case QUAD:
+            assert(m_numVertices % 4 == 0);
             m_numAttribsPerVert = 4;
             createBuffersQuad(vertices);
             break;
         case CUBE:
+            assert(m_numVertices % 3 == 0);
             m_numAttribsPerVert = 3;
             createBuffersCube(vertices);
             break;

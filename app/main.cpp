@@ -146,31 +146,31 @@ public:
     {
         if (m_toggle == 1 && m_toggled)
         {
-            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/inversion"));
+            renderEngine->setFilter(mage::AssetManager::getShader("inversion"));
             m_toggled = false;
         } else if (m_toggle == -1 && m_toggled)
         {
-            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/screen"));
+            renderEngine->setFilter(mage::AssetManager::getShader("screen"));
             m_toggled = false;
         } else if (m_toggle == 2 && m_toggled)
         {
-            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/grayscale"));
+            renderEngine->setFilter(mage::AssetManager::getShader("grayscale"));
             m_toggled = false;
         } else if (m_toggle == 3 && m_toggled)
         {
-            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/sharpen"));
+            renderEngine->setFilter(mage::AssetManager::getShader("sharpen"));
             m_toggled = false;
         } else if (m_toggle == 4 && m_toggled)
         {
-            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/blur"));
+            renderEngine->setFilter(mage::AssetManager::getShader("blur"));
             m_toggled = false;
         } else if (m_toggle == 5 && m_toggled)
         {
-            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/edges"));
+            renderEngine->setFilter(mage::AssetManager::getShader("edges"));
             m_toggled = false;
         } else if (m_toggle == 6 && m_toggled)
         {
-            renderEngine->setFilter(mage::AssetManager::getShader("./assets/shaders/greenscale"));
+            renderEngine->setFilter(mage::AssetManager::getShader("greenscale"));
             m_toggled = false;
         }
         Game::render(renderEngine);
