@@ -45,15 +45,14 @@ public:
         addToScene(cam);
         brick = new mage::GameObject();
         auto* lamp = new mage::GameObject();
-        mage::Model backpack("./assets/models/backpack.obj",
-                             mage::Material(
-                                     "./assets/textures/backpack_diffuse.jpg",
-                                     "./assets/textures/backpack_specular.jpg"));
-        mage::Model cube("./assets/models/bricks.obj", mage::Material(
-                "./assets/textures/bricks_diffuse.png", "./assets/textures/bricks_specular.png", nullptr,
-                16.0f));
+        //mage::Model backpack("./assets/models/backpack.obj",
+        //                     mage::Material(
+        //                             "./assets/textures/backpack_diffuse.jpg",
+        //                             "./assets/textures/backpack_specular.jpg"));
+        mage::Model backpack("./assets/models/backpack.obj", mage::AssetManager::getMaterial("backpack"));
+        mage::Model cube("./assets/models/bricks.obj", mage::AssetManager::getMaterial("bricks"));
 
-        mage::Model plane("./assets/models/plane.obj", mage::Material());
+        mage::Model plane("./assets/models/plane.obj", mage::AssetManager::getMaterial("default"));
         mage::Model window("./assets/models/plane.obj", mage::Material("./assets/textures/red_window.png"));
 
         vec3f lightPos(0, 0.5f, -1.5f);

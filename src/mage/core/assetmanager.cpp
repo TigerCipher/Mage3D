@@ -31,6 +31,7 @@ std::unordered_map<std::string, UniquePtr<mage::Texture>> mage::AssetManager::s_
 //std::unordered_map<std::string, SharedPtr<mage::Texture>> mage::AssetManager::s_textureMap;
 std::unordered_map<std::string, UniquePtr<mage::Shader>> mage::AssetManager::s_shaderMap;
 std::unordered_map<std::string, UniquePtr<mage::ModelData>> mage::AssetManager::s_modelMap;
+std::unordered_map<std::string, UniquePtr<mage::Material>> mage::AssetManager::s_materialMap;
 int mage::AssetManager::s_assetCount;
 
 void textureCallback(file_t* file, void* udata)
@@ -128,6 +129,9 @@ void mage::AssetManager::loadAssets(const char* baseDir)
     loadTextures(texDir.c_str());
     loadShaders(shaderDir.c_str());
     loadModels(modelDir.c_str());
+    std::string matDir(baseDir);
+    matDir += "/materials.json";
+    loadMaterials(matDir.c_str());
 
     LOG_INFO("{} assets loaded", s_assetCount);
 }
@@ -199,5 +203,36 @@ void mage::AssetManager::destroy()
     s_modelMap.clear();
     LOG_INFO("{} assets cleaned up", s_assetCount);
 }
+
+void mage::AssetManager::loadMaterials(const char* baseDir)
+{
+    PROFILER_SCOPE(1);
+    LOG_TRACE("Loading materials registered in {}", baseDir);
+    int n = 0;
+    std::ifstream f(baseDir);
+    json j;
+    f >> j;
+
+    for (const auto& item : j[ "Materials" ])
+    {
+        LOG_INFO("Loading material: {}", item[ "id" ].get<std::string>());
+        s_materialMap.insert(std::make_pair(item[ "id" ].get<std::string>(),
+                                            createScope<Material>(
+                                                    item.value("diffuse",
+                                                               "./assets/textures/defaults/default_diffuse.png")
+                                                        .c_str(),
+                                                    item.value("specular",
+                                                               "./assets/textures/defaults/default_specular.png")
+                                                        .c_str(),
+                                                    item.value("emission",
+                                                               "./assets/textures/defaults/default_emission.png")
+                                                        .c_str(),
+                                                    item.value("shininess", 32.0f))));
+        n++;
+    }
+    s_assetCount += n;
+    LOG_TRACE("Loaded {} materials", n);
+}
+
 
 

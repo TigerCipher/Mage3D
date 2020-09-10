@@ -28,6 +28,7 @@
 #include "mage/graphics/texture.h"
 #include "mage/graphics/shader.h"
 #include "mage/graphics/model.h"
+#include "mage/graphics/material.h"
 #include <map>
 #include <string>
 
@@ -41,6 +42,7 @@ namespace mage
         mage3d_EXPORT static void loadTextures(const char* baseDir);
         mage3d_EXPORT static void loadShaders(const char* baseDir);
         mage3d_EXPORT static void loadModels(const char* baseDir);
+        mage3d_EXPORT static void loadMaterials(const char* baseDir);
         mage3d_EXPORT static bool addTexture(const std::string& name, const char* textureFile);
         mage3d_EXPORT static bool addShader(const std::string& name, const char* shaderFile);
         mage3d_EXPORT static bool addShader(const std::string& name, const char* vertexFile, const char* fragFile);
@@ -51,12 +53,14 @@ namespace mage
         //mage3d_EXPORT static inline SharedPtr<Texture>& getTexture(const std::string& name) {return s_textureMap[ name ];}
         mage3d_EXPORT static inline Shader& getShader(const std::string& name) { return *s_shaderMap[name]; }
         mage3d_EXPORT static inline ModelData& getModel(const std::string& name) { return *s_modelMap[name]; }
+        mage3d_EXPORT static inline Material& getMaterial(const std::string& name) { return *s_materialMap[name]; }
     protected:
     private:
         static std::unordered_map<std::string, UniquePtr<Texture>> s_textureMap;
         //static std::unordered_map<std::string, SharedPtr<Texture>> s_textureMap;
         static std::unordered_map<std::string, UniquePtr<Shader>> s_shaderMap;
         static std::unordered_map<std::string, UniquePtr<ModelData>> s_modelMap;
+        static std::unordered_map<std::string, UniquePtr<Material>> s_materialMap;
         static int s_assetCount;
     };
 
