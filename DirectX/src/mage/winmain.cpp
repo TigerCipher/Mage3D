@@ -20,14 +20,44 @@
  */
 
 #include <Windows.h>
+#include <sstream>
 #include "mage/common.h"
+#include "mage/debug/debugmessagemap.h"
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    switch(msg)
+    static mage::DebugMessageMap dmm;
+    OutputDebugString(dmm(msg, lParam, wParam).c_str());
+
+    switch (msg)
     {
         case WM_CLOSE:
             PostQuitMessage(69);
+            break;
+        case WM_KEYDOWN:
+            if (wParam == 'K')
+            {
+                SetWindowText(hWnd, "Key was pressed!");
+            }
+            break;
+        case WM_KEYUP:
+            if (wParam == 'K')
+            {
+                SetWindowText(hWnd, "Key was released!");
+            }
+            break;
+        case WM_CHAR:
+        {
+            static std::string title;
+            title.push_back((char) wParam);
+            SetWindowTextA(hWnd, title.c_str());
+        }
+            break;
+        case WM_LBUTTONDOWN:
+            POINTS pt = MAKEPOINTS(lParam);
+            std::ostringstream oss;
+            oss << "(" << pt.x << ", " << pt.y << ")";
+            SetWindowText(hWnd, oss.str().c_str());
             break;
     }
     return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -68,11 +98,11 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrefInstance, LPSTR lpCmdLi
     MSG msg;
     BOOL res;
 
-    while((res = GetMessage(&msg, nullptr, 0, 0)) > 0)
+    while ((res = GetMessage(&msg, nullptr, 0, 0)) > 0)
     {
-        TranslateMessage(&msg);
+        TranslateMessage(&msg); // Gives the WM_CHAR message
         DispatchMessage(&msg);
     }
-    if(res == -1) return -1;
+    if (res == -1) return -1;
     else return msg.wParam;
 }
