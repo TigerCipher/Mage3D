@@ -14,39 +14,30 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: common.h
- * Date File Created: 9/10/2020 at 3:38 PM
+ * File Name: mageexception.cpp
+ * Date File Created: 9/12/2020 at 3:01 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_COMMON_H
-#define MAGE3DX_COMMON_H
+#include "mage/debug/mageexception.h"
+#include <sstream>
 
-#include "winwrapper.h"
-#define BMD_PROFILE 1
-#include <bmd/core.h>
+const char* mage::MageException::what() const noexcept
+{
+    std::ostringstream oss;
+    oss << getType() << "\n" << getOrigin();
+    m_what = oss.str();
+    return m_what.c_str();
+}
 
+const char* mage::MageException::getType() const noexcept
+{
+    return "Mage Exception";
+}
 
-#ifndef MAGE_DEBUG
-    #define MAGE_DEBUG 1
-#endif
-#ifndef MAGE_VERBOSE
-    #define MAGE_VERBOSE 0
-#endif
-
-#if MAGE_DEBUG
-    #define DBGPRINT(fmt_, ...) printf(fmt_"\n", __VA_ARGS__)
-    #define DBGPRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", __VA_ARGS__)
-#else
-    #define DBGPRINT(...)
-    #define DBGPRINT_ERR(...)
-#endif // MAGE_DEBUG
-
-#if MAGE_VERBOSE
-    #define VERBOSE_PRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", ##__VA_ARGS__)
-#else
-    #define VERBOSE_PRINT_ERR(...)
-#endif // MAGE_VERBOSE
-
-
-#endif //MAGE3DX_COMMON_H
+std::string mage::MageException::getOrigin() const noexcept
+{
+    std::ostringstream oss;
+    oss << "[File] " << m_file << "\n[Line] " << m_line;
+    return oss.str();
+}

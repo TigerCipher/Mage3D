@@ -9,6 +9,7 @@ file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS
 	${Mage3DX_SOURCE_DIR}/src/*.cc
 	${Mage3DX_SOURCE_DIR}/src/*.cxx
 	${Mage3DX_SOURCE_DIR}/src/*.c
+	${Mage3DX_SOURCE_DIR}/src/*.rc
 	)
 
 

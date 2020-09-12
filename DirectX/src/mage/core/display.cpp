@@ -1,0 +1,131 @@
+/*
+ * Mage3DX
+ * Copyright (C) 2020 Blue Moon Development. All rights reserved.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contact: team@bluemoondev.org
+ * 
+ * File Name: display.cpp
+ * Date File Created: 9/11/2020 at 3:03 PM
+ * Author: Matt
+ */
+
+#include "mage/core/display.h"
+#include "mage/debug/debugmessagemap.h"
+#include "mage/resource.h"
+
+#include <sstream>
+
+mage::Display::Window mage::Display::Window::s_winClass;
+
+mage::Display::Window::Window() noexcept:
+        m_hInst(GetModuleHandle(nullptr))
+{
+    WNDCLASSEX wc = { 0 };
+    wc.cbSize = sizeof(wc);
+    wc.style = CS_OWNDC;
+    wc.lpfnWndProc = handleMessageSetup;
+    wc.cbClsExtra = 0;
+    wc.cbWndExtra = 0;
+    wc.hInstance = getInstance();
+    wc.hIcon = static_cast<HICON>(LoadImage(m_hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 32, 32, 0));
+    wc.hCursor = nullptr;
+    wc.hbrBackground = nullptr;
+    wc.lpszMenuName = nullptr;
+    wc.lpszClassName = getName();
+    wc.hIconSm = static_cast<HICON>(LoadImage(m_hInst, MAKEINTRESOURCE(IDI_ICON1), IMAGE_ICON, 16, 16, 0));
+    RegisterClassEx(&wc);
+}
+
+mage::Display::Window::~Window()
+{
+    UnregisterClass(winClassName, getInstance());
+}
+
+const char* mage::Display::Window::getName() noexcept
+{
+    return winClassName;
+}
+
+HINSTANCE mage::Display::Window::getInstance() noexcept
+{
+    return s_winClass.m_hInst;
+}
+
+mage::Display::Display(int width, int height, const char* title)
+{
+    RECT region;
+    region.left = 100;
+    region.right = width + region.left;
+    region.top = 100;
+    region.bottom = height + region.top;
+    m_width = width;
+    m_height = height;
+    if(FAILED(AdjustWindowRect(&region, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, false)))
+    {
+        throw DISPLAY_LAST_EXCEPTION();
+    }
+
+    m_hwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, CW_USEDEFAULT,
+                          CW_USEDEFAULT, region.right - region.left, region.bottom - region.top, nullptr,
+                          nullptr, Window::getInstance(), this);
+
+    if(!m_hwnd)
+    {
+        throw DISPLAY_LAST_EXCEPTION();
+    }
+    ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+}
+
+mage::Display::~Display()
+{
+    DestroyWindow(m_hwnd);
+}
+
+LRESULT CALLBACK mage::Display::handleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+{
+    if(msg == WM_NCCREATE)
+    {
+        const CREATESTRUCTW* const cs = reinterpret_cast<CREATESTRUCTW*>(lParam);
+        auto* const pDisplay = static_cast<Display*>(cs->lpCreateParams);
+        SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pDisplay));
+        SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(&Display::handleMessageIntermediate));
+        return pDisplay->handleMessage(hWnd, msg, wParam, lParam);
+    }
+    return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+LRESULT CALLBACK mage::Display::handleMessageIntermediate(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+{
+    auto* const pDisplay = reinterpret_cast<Display*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+    return pDisplay->handleMessage(hWnd, msg, wParam, lParam);
+}
+
+LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+{
+    static mage::DebugMessageMap dmm;
+    OutputDebugString(dmm(msg, lParam, wParam).c_str());
+
+    switch(msg)
+    {
+        case WM_CLOSE:
+            PostQuitMessage(0);
+            return 0;
+        default: break;
+    }
+    return DefWindowProc(hWnd, msg, wParam, lParam);
+}
+
+void mage::Display::setTitle(const std::string& title)
+{
+    SetWindowText(m_hwnd, title.c_str());
+}
