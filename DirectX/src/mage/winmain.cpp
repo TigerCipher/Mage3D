@@ -27,7 +27,8 @@ using namespace mage;
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrefInstance, LPSTR lpCmdLine, int nCmdShow)
 {
-    try{
+    try
+    {
         Display display(1920, 1080, "Mage3DX Game Engine");
         MSG msg;
         BOOL res;
@@ -36,19 +37,46 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrefInstance, LPSTR lpCmdLi
         {
             TranslateMessage(&msg); // Gives the WM_CHAR message
             DispatchMessage(&msg);
+            if (display.m_keyboard.isPressed(VK_SPACE))
+            {
+                MessageBox(nullptr, "A key was pressed!", "The SPACE key was pressed!",
+                           MB_OK | MB_ICONEXCLAMATION);
+            }
+
+            while (!display.m_mouse.isEmpty())
+            {
+                const auto e = display.m_mouse.read();
+                switch (e.getType())
+                {
+                    case Mouse::Event::Type::LEAVE:
+                    {
+                        std::ostringstream oss;
+                        oss << "Mouse not in window";
+                        display.setTitle(oss.str());
+                        break;
+                    }
+                    case Mouse::Event::Type::MOVE:
+                    {
+                        std::ostringstream oss;
+                        oss << "Mouse Pos: (" << e.getX() << ", " << e.getY() << ")";
+                        display.setTitle(oss.str());
+                        break;
+                    }
+                }
+            }
         }
         if (res == -1) return -1;
         else return msg.wParam;
     }
-    catch(const MageException& e)
+    catch (const MageException& e)
     {
         MessageBox(nullptr, e.what(), e.getType(), MB_OK | MB_ICONEXCLAMATION);
     }
-    catch(const std::exception& e)
+    catch (const std::exception& e)
     {
         MessageBox(nullptr, e.what(), "STD Exception", MB_OK | MB_ICONEXCLAMATION);
     }
-    catch(...)
+    catch (...)
     {
         MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
     }

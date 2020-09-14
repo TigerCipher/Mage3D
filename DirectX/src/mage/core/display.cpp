@@ -70,7 +70,7 @@ mage::Display::Display(int width, int height, const char* title)
     region.bottom = height + region.top;
     m_width = width;
     m_height = height;
-    if(FAILED(AdjustWindowRect(&region, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, false)))
+    if (!AdjustWindowRect(&region, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, false))
     {
         throw DISPLAY_LAST_EXCEPTION();
     }
@@ -79,7 +79,7 @@ mage::Display::Display(int width, int height, const char* title)
                           CW_USEDEFAULT, region.right - region.left, region.bottom - region.top, nullptr,
                           nullptr, Window::getInstance(), this);
 
-    if(!m_hwnd)
+    if (!m_hwnd)
     {
         throw DISPLAY_LAST_EXCEPTION();
     }
@@ -93,7 +93,7 @@ mage::Display::~Display()
 
 LRESULT CALLBACK mage::Display::handleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-    if(msg == WM_NCCREATE)
+    if (msg == WM_NCCREATE)
     {
         const CREATESTRUCTW* const cs = reinterpret_cast<CREATESTRUCTW*>(lParam);
         auto* const pDisplay = static_cast<Display*>(cs->lpCreateParams);
@@ -104,7 +104,8 @@ LRESULT CALLBACK mage::Display::handleMessageSetup(HWND hWnd, UINT msg, WPARAM w
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-LRESULT CALLBACK mage::Display::handleMessageIntermediate(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT
+CALLBACK mage::Display::handleMessageIntermediate(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
     auto* const pDisplay = reinterpret_cast<Display*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
     return pDisplay->handleMessage(hWnd, msg, wParam, lParam);
@@ -115,17 +116,103 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
     static mage::DebugMessageMap dmm;
     OutputDebugString(dmm(msg, lParam, wParam).c_str());
 
-    switch(msg)
+    switch (msg)
     {
         case WM_CLOSE:
             PostQuitMessage(0);
             return 0;
-        default: break;
+        case WM_KEYDOWN:
+        case WM_SYSKEYDOWN:
+            if (!(lParam & 0x40000000) || m_keyboard.isAutoRepeat())
+            {
+                m_keyboard.onKeyPressed(static_cast<uchar>(wParam));
+            }
+            break;
+        case WM_KEYUP:
+        case WM_SYSKEYUP:
+            m_keyboard.onKeyReleased(static_cast<uchar>(wParam));
+            break;
+        case WM_CHAR:
+            m_keyboard.onChar(static_cast<char>(wParam));
+            break;
+        case WM_MOUSEMOVE:
+        {
+            const POINTS pt = MAKEPOINTS(lParam);
+            if (pt.x >= 0 && pt.x < m_width && pt.y >= 0 && pt.y < m_height)
+            {
+                m_mouse.onMouseMove(pt.x, pt.y);
+                if (!m_mouse.isInWindow())
+                {
+                    SetCapture(m_hwnd);
+                    m_mouse.onMouseEnter();
+                }
+            } else
+            {
+                if (wParam & (MK_RBUTTON | MK_LBUTTON))
+                {
+                    m_mouse.onMouseMove(pt.x, pt.y);
+                } else
+                {
+                    ReleaseCapture();
+                    m_mouse.onMouseLeave();
+                }
+            }
+            break;
+        }
+        case WM_LBUTTONDOWN:
+        {
+            const POINTS pt = MAKEPOINTS(lParam);
+            m_mouse.onLeftPressed(pt.x, pt.y);
+            break;
+        }
+        case WM_LBUTTONUP:
+        {
+            const POINTS pt = MAKEPOINTS(lParam);
+            m_mouse.onLeftReleased(pt.x, pt.y);
+            if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height)
+            {
+                ReleaseCapture();
+                m_mouse.onMouseLeave();
+            }
+            break;
+        }
+        case WM_RBUTTONDOWN:
+        {
+            const POINTS pt = MAKEPOINTS(lParam);
+            m_mouse.onRightPressed(pt.x, pt.y);
+            break;
+        }
+        case WM_RBUTTONUP:
+        {
+            const POINTS pt = MAKEPOINTS(lParam);
+            m_mouse.onRightReleased(pt.x, pt.y);
+            if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height)
+            {
+                ReleaseCapture();
+                m_mouse.onMouseLeave();
+            }
+            break;
+        }
+        case WM_MOUSEWHEEL:
+        {
+            const POINTS pt = MAKEPOINTS(lParam);
+            const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
+            m_mouse.onWheelDelta(pt.x, pt.y, delta);
+            break;
+        }
+        case WM_KILLFOCUS:
+            m_keyboard.clearState();
+            break;
+        default: // Just so clang-d stops giving me a warning
+            break;
     }
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
 void mage::Display::setTitle(const std::string& title)
 {
-    SetWindowText(m_hwnd, title.c_str());
+    if (!SetWindowText(m_hwnd, title.c_str()))
+    {
+        throw DISPLAY_LAST_EXCEPTION();
+    }
 }

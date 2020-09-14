@@ -24,6 +24,9 @@
 
 #include "mage/common.h"
 #include "mage/debug/displayexception.h"
+#include "keyboard.h"
+#include "mouse.h"
+
 #include <string>
 
 
@@ -39,6 +42,8 @@ namespace mage
 
         void setTitle(const std::string& title);
 
+        Keyboard m_keyboard;
+        Mouse m_mouse;
     protected:
     private:
 

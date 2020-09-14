@@ -169,7 +169,7 @@ int unloadFile(file_t* file);
 
 /**
 * Flushes the file stream contained in the FSFile struct
-* @param file The file to flush
+* @param file The file to clearBuffers
 * @return 0 if no error, non 0 if error
 */
 int flushFile(file_t* file);
@@ -580,7 +580,7 @@ int flushFile(file_t* file)
 	if (file->outStream)
 	{
 		int err = fflush(file->outStream);
-		checkErrorMsg(err, "Error: Failed to flush file out stream\n");
+		checkErrorMsg(err, "Error: Failed to clearBuffers file out stream\n");
 	}
 	return BMD_NO_ERROR;
 }
