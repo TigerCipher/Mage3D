@@ -289,7 +289,7 @@ int compareTimes(fs_time* a, fs_time* b);
 #endif // __cplusplus
 
 
-// TODO: Add function to clear the file
+// TODO: Add function to flush the file
 // TODO: On the loadFile and loadFileAndReadContents, maybe add callback so it can load the data as an image
 // Like, in Mage3D's case, callback(file_t* file, stuff) { file->contents = SOIL_load_image.... } ?
 
