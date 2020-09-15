@@ -23,10 +23,7 @@
 #define MAGE3DX_KEYBOARD_H
 
 
-#include "mage/common.h"
-#include <queue>
 #include <bitset>
-
 
 namespace mage
 {

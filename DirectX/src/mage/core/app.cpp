@@ -14,31 +14,29 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: debugmessagemap.h
- * Date File Created: 9/10/2020 at 11:50 PM
+ * File Name: app.cpp
+ * Date File Created: 9/15/2020 at 2:56 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_DEBUGMESSAGEMAP_H
-#define MAGE3DX_DEBUGMESSAGEMAP_H
+#include "mage/core/app.h"
 
-
-namespace mage
+int mage::App::run()
 {
-    class DebugMessageMap
+    while(m_running)
     {
-    public:
-        DebugMessageMap() noexcept;
-        virtual ~DebugMessageMap() = default;
+        if(const auto exitCode = Display::processMessages())
+            return *exitCode;
+        update();
+    }
 
-        std::string operator() (DWORD msg, LPARAM lParam, WPARAM wParam) const noexcept;
-
-    protected:
-    private:
-        std::unordered_map<DWORD, std::string> m_map;
-    };
-
+    return 0;
 }
 
-
-#endif //MAGE3DX_DEBUGMESSAGEMAP_H
+void mage::App::update()
+{
+    const float t = m_timer.peek();
+    std::ostringstream oss;
+    oss << "Time Elapsed: " << std::setprecision(1) << std::fixed << t << "s";
+    m_display.setTitle(oss.str());
+}

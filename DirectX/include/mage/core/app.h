@@ -14,31 +14,34 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: debugmessagemap.h
- * Date File Created: 9/10/2020 at 11:50 PM
+ * File Name: app.h
+ * Date File Created: 9/15/2020 at 2:56 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_DEBUGMESSAGEMAP_H
-#define MAGE3DX_DEBUGMESSAGEMAP_H
+#ifndef MAGE3DX_APP_H
+#define MAGE3DX_APP_H
 
+#include "display.h"
+#include "timer.h"
 
 namespace mage
 {
-    class DebugMessageMap
+    class App
     {
     public:
-        DebugMessageMap() noexcept;
-        virtual ~DebugMessageMap() = default;
-
-        std::string operator() (DWORD msg, LPARAM lParam, WPARAM wParam) const noexcept;
-
-    protected:
+        App(int width, int height, const char* title) : m_display(width, height, title), m_running(true) {}
+        virtual ~App() = default;
+        int run();
+        inline void stop() { m_running = false; }
     private:
-        std::unordered_map<DWORD, std::string> m_map;
+        void update();
+        Display m_display;
+        Timer m_timer;
+        bool m_running;
     };
 
 }
 
 
-#endif //MAGE3DX_DEBUGMESSAGEMAP_H
+#endif //MAGE3DX_APP_H

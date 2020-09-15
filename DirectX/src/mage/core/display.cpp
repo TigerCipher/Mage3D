@@ -23,7 +23,6 @@
 #include "mage/debug/debugmessagemap.h"
 #include "mage/resource.h"
 
-#include <sstream>
 
 mage::Display::Window mage::Display::Window::s_winClass;
 
@@ -215,4 +214,17 @@ void mage::Display::setTitle(const std::string& title)
     {
         throw DISPLAY_LAST_EXCEPTION();
     }
+}
+
+std::optional<int> mage::Display::processMessages()
+{
+    MSG msg;
+    while(PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+    {
+        if(msg.message == WM_QUIT)
+            return (int) msg.wParam;
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+    return { };
 }

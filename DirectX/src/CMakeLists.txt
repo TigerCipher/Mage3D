@@ -34,7 +34,11 @@ message(STATUS "Linking libraries to mage3dx, libs: ${MAGE3D_LINKS}")
 target_link_libraries(mage3dx ${MAGE3D_LINKS})
 message(STATUS "Setting compile features for mage3dx")
 target_compile_features(mage3dx PUBLIC cxx_std_17)
-target_compile_options(mage3dx PUBLIC /MP /Ot /fp:fast) # /MTd (breaks bmd library)
+
+# NEEDS TO BE DIFFERENT FOR RELEASE! (but for release I'll probably just build on Visual Studio instead of cmake)
+target_compile_options(mage3dx PUBLIC /MP /Ot /fp:fast -MTd)
+
+target_precompile_headers(mage3dx PRIVATE "../include/mage_pch.h")
 
 
 

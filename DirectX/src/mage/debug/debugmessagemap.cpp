@@ -20,9 +20,6 @@
  */
 
 #include "mage/debug/debugmessagemap.h"
-#include <string>
-#include <sstream>
-#include <iomanip>
 
 // secret messages
 #define WM_UAHDESTROYWINDOW 0x0090
@@ -34,7 +31,7 @@
 
 #define REGISTER_MESSAGE(msg){msg,#msg}
 
-mage::DebugMessageMap::DebugMessageMap() :
+mage::DebugMessageMap::DebugMessageMap() noexcept :
         m_map({
                       REGISTER_MESSAGE(WM_CREATE),
                       REGISTER_MESSAGE(WM_DESTROY),
@@ -212,7 +209,7 @@ mage::DebugMessageMap::DebugMessageMap() :
 
 }
 
-std::string mage::DebugMessageMap::operator()(DWORD msg, LPARAM lParam, WPARAM wParam) const
+std::string mage::DebugMessageMap::operator()(DWORD msg, LPARAM lParam, WPARAM wParam) const noexcept
 {
     constexpr int firstColWidth = 25;
     const auto it = m_map.find(msg);

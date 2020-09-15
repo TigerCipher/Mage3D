@@ -23,10 +23,6 @@
 #define MAGE3DX_MOUSE_H
 
 
-#include "mage/common.h"
-#include <queue>
-
-
 namespace mage
 {
     class Mouse

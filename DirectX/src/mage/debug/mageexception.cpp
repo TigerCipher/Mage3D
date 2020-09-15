@@ -20,7 +20,6 @@
  */
 
 #include "mage/debug/mageexception.h"
-#include <sstream>
 
 const char* mage::MageException::what() const noexcept
 {

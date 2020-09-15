@@ -22,6 +22,7 @@
 #include <sstream>
 #include "mage/debug/mageexception.h"
 #include "mage/core/display.h"
+#include "mage/core/app.h"
 
 using namespace mage;
 
@@ -29,44 +30,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrefInstance, LPSTR lpCmdLi
 {
     try
     {
-        Display display(1920, 1080, "Mage3DX Game Engine");
-        MSG msg;
-        BOOL res;
-
-        while ((res = GetMessage(&msg, nullptr, 0, 0)) > 0)
-        {
-            TranslateMessage(&msg); // Gives the WM_CHAR message
-            DispatchMessage(&msg);
-            if (display.m_keyboard.isPressed(VK_SPACE))
-            {
-                MessageBox(nullptr, "A key was pressed!", "The SPACE key was pressed!",
-                           MB_OK | MB_ICONEXCLAMATION);
-            }
-
-            while (!display.m_mouse.isEmpty())
-            {
-                const auto e = display.m_mouse.read();
-                switch (e.getType())
-                {
-                    case Mouse::Event::Type::LEAVE:
-                    {
-                        std::ostringstream oss;
-                        oss << "Mouse not in window";
-                        display.setTitle(oss.str());
-                        break;
-                    }
-                    case Mouse::Event::Type::MOVE:
-                    {
-                        std::ostringstream oss;
-                        oss << "Mouse Pos: (" << e.getX() << ", " << e.getY() << ")";
-                        display.setTitle(oss.str());
-                        break;
-                    }
-                }
-            }
-        }
-        if (res == -1) return -1;
-        else return msg.wParam;
+        App app(1920, 1080, "Mage3DX Game Engine");
+        return app.run();
     }
     catch (const MageException& e)
     {

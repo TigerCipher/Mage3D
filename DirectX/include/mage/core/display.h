@@ -22,12 +22,9 @@
 #ifndef MAGE3DX_DISPLAY_H
 #define MAGE3DX_DISPLAY_H
 
-#include "mage/common.h"
 #include "mage/debug/displayexception.h"
 #include "keyboard.h"
 #include "mouse.h"
-
-#include <string>
 
 
 namespace mage
@@ -41,6 +38,7 @@ namespace mage
         Display& operator=(const Display& disp) = delete;
 
         void setTitle(const std::string& title);
+        static std::optional<int> processMessages();
 
         Keyboard m_keyboard;
         Mouse m_mouse;

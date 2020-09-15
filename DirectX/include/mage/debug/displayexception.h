@@ -23,7 +23,6 @@
 #define MAGE3DX_DISPLAYEXCEPTION_H
 
 
-#include "mage/common.h"
 #include "mageexception.h"
 
 #define DISPLAY_EXCEPTION(hr) DisplayException(__LINE__, __FILE__, hr)

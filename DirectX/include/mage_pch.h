@@ -14,31 +14,37 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: debugmessagemap.h
- * Date File Created: 9/10/2020 at 11:50 PM
+ * File Name: mage_pch.h
+ * Date File Created: 9/15/2020 at 3:33 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_DEBUGMESSAGEMAP_H
-#define MAGE3DX_DEBUGMESSAGEMAP_H
+#ifndef MAGE3DX_MAGE_PCH_H
+#define MAGE3DX_MAGE_PCH_H
 
 
-namespace mage
-{
-    class DebugMessageMap
-    {
-    public:
-        DebugMessageMap() noexcept;
-        virtual ~DebugMessageMap() = default;
+#include "mage/common.h"
 
-        std::string operator() (DWORD msg, LPARAM lParam, WPARAM wParam) const noexcept;
+#include <functional>
+#include <exception>
+#include <random>
+#include <chrono>
+#include <string>
+#include <sstream>
+#include <utility>
+#include <memory>
+#include <vector>
+#include <array>
+#include <list>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include <optional>
+#include <variant>
+#include <cmath>
+#include <iomanip>
+#include <queue>
+#include <algorithm>
 
-    protected:
-    private:
-        std::unordered_map<DWORD, std::string> m_map;
-    };
-
-}
-
-
-#endif //MAGE3DX_DEBUGMESSAGEMAP_H
+#endif //MAGE3DX_MAGE_PCH_H

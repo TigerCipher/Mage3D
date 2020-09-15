@@ -14,31 +14,22 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: debugmessagemap.h
- * Date File Created: 9/10/2020 at 11:50 PM
+ * File Name: timer.cpp
+ * Date File Created: 9/15/2020 at 3:04 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_DEBUGMESSAGEMAP_H
-#define MAGE3DX_DEBUGMESSAGEMAP_H
+#include "mage/core/timer.h"
 
-
-namespace mage
+float mage::Timer::markPoint() noexcept
 {
-    class DebugMessageMap
-    {
-    public:
-        DebugMessageMap() noexcept;
-        virtual ~DebugMessageMap() = default;
-
-        std::string operator() (DWORD msg, LPARAM lParam, WPARAM wParam) const noexcept;
-
-    protected:
-    private:
-        std::unordered_map<DWORD, std::string> m_map;
-    };
-
+    const auto prev = m_last;
+    m_last = std::chrono::steady_clock::now();
+    const std::chrono::duration<float> time = m_last - prev;
+    return time.count();
 }
 
-
-#endif //MAGE3DX_DEBUGMESSAGEMAP_H
+float mage::Timer::peek() const noexcept
+{
+    return std::chrono::duration<float>(std::chrono::steady_clock::now() - m_last).count();
+}

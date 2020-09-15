@@ -23,10 +23,6 @@
 #define MAGE3DX_MAGEEXCEPTION_H
 
 
-#include "mage/common.h"
-#include <exception>
-#include <string>
-
 
 namespace mage
 {
