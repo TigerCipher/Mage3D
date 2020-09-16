@@ -62,6 +62,7 @@ HINSTANCE mage::Display::Window::getInstance() noexcept
 
 mage::Display::Display(int width, int height, const char* title)
 {
+    LOG_INFO("Creating display of size: ({}, {})", width, height);
     RECT region;
     region.left = 100;
     region.right = width + region.left;
@@ -112,8 +113,10 @@ CALLBACK mage::Display::handleMessageIntermediate(HWND hWnd, UINT msg, WPARAM wP
 
 LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
+    #if MAGE_DEBUG
     static mage::DebugMessageMap dmm;
     OutputDebugString(dmm(msg, lParam, wParam).c_str());
+    #endif
 
     switch (msg)
     {
@@ -219,9 +222,9 @@ void mage::Display::setTitle(const std::string& title)
 std::optional<int> mage::Display::processMessages()
 {
     MSG msg;
-    while(PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
+    while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
     {
-        if(msg.message == WM_QUIT)
+        if (msg.message == WM_QUIT)
             return (int) msg.wParam;
         TranslateMessage(&msg);
         DispatchMessage(&msg);

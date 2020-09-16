@@ -16,9 +16,8 @@ file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS
 
 include(filter)
 
-#TODO StalkWalker is only compatible with MSVC. If I end up liking spdlog, maybe just get rid of stack walker from my bmd logger
-set(MAGE3D_LINKS PUBLIC ${BMD_LIBRARIES})
-set(MAGE3D_INCLUDES "../include" ${BMD_INCLUDE_DIRS})
+set(MAGE3D_LINKS PUBLIC ${BMD_LIBRARIES} ${SPDLOG_LIBRARIES} ${FMT_LIBRARIES})
+set(MAGE3D_INCLUDES "../include" ${BMD_INCLUDE_DIRS} ${SPDLOG_INCLUDE_DIRS} ${FMT_INCLUDE_DIRS})
 
 message(Blue "Creating Mage3DX executable")
 add_executable(mage3dx WIN32 ${SRC_LIST} ${HEADER_LIST})

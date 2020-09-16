@@ -23,7 +23,9 @@
 #define MAGE3DX_MAGE_PCH_H
 
 
+#define FMT_HEADER_ONLY
 #include "mage/common.h"
+#include "mage/debug/log.h"
 
 #include <functional>
 #include <exception>

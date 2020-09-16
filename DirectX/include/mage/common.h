@@ -30,23 +30,6 @@
 #ifndef MAGE_DEBUG
     #define MAGE_DEBUG 1
 #endif
-#ifndef MAGE_VERBOSE
-    #define MAGE_VERBOSE 0
-#endif
-
-#if MAGE_DEBUG
-    #define DBGPRINT(fmt_, ...) printf(fmt_"\n", __VA_ARGS__)
-    #define DBGPRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", __VA_ARGS__)
-#else
-    #define DBGPRINT(...)
-    #define DBGPRINT_ERR(...)
-#endif // MAGE_DEBUG
-
-#if MAGE_VERBOSE
-    #define VERBOSE_PRINT_ERR(fmt_, ...) fprintf(stderr, fmt_"\n", ##__VA_ARGS__)
-#else
-    #define VERBOSE_PRINT_ERR(...)
-#endif // MAGE_VERBOSE
 
 
 #endif //MAGE3DX_COMMON_H

@@ -30,6 +30,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrefInstance, LPSTR lpCmdLi
 {
     try
     {
+        Log::init();
         App app(1920, 1080, "Mage3DX Game Engine");
         return app.run();
     }

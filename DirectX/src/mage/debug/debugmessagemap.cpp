@@ -225,7 +225,7 @@ std::string mage::DebugMessageMap::operator()(DWORD msg, LPARAM lParam, WPARAM w
     }
 
     oss << "    LP: 0x" << std::hex << std::setfill('0') << std::setw(8) << lParam;
-    oss << "    WP: 0x" << std::hex << std::setfill('0') << std::setw(8) << wParam << std::endl;
+    oss << "    WP: 0x" << std::hex << std::setfill('0') << std::setw(8) << wParam << "\n";
 
     return oss.str();
 }

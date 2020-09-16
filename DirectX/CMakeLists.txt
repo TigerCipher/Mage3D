@@ -49,6 +49,8 @@ endif()
 
 
 include(find_bmd)
+include(find_spdlog)
+include(find_fmt)
 
 #include(FetchContent) Only using this in tests/CMakeLists.txt which I currently have disabled while I still learn about Check2
 
