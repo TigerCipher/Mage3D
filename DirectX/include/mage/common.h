@@ -31,5 +31,12 @@
     #define MAGE_DEBUG 1
 #endif
 
+#ifndef MAGE_VERBOSE
+    #define MAGE_VERBOSE 0
+#endif
+
+
+#define VOIDPP(x) reinterpret_cast<void**>(x)
+
 
 #endif //MAGE3DX_COMMON_H

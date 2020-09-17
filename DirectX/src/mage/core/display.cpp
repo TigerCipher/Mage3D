@@ -23,7 +23,6 @@
 #include "mage/debug/debugmessagemap.h"
 #include "mage/resource.h"
 
-
 mage::Display::Window mage::Display::Window::s_winClass;
 
 mage::Display::Window::Window() noexcept:
@@ -84,6 +83,8 @@ mage::Display::Display(int width, int height, const char* title)
         throw DISPLAY_LAST_EXCEPTION();
     }
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+
+    m_gfx = createScope<Graphics>(m_hwnd);
 }
 
 mage::Display::~Display()
@@ -113,7 +114,7 @@ CALLBACK mage::Display::handleMessageIntermediate(HWND hWnd, UINT msg, WPARAM wP
 
 LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
-    #if MAGE_DEBUG
+    #if MAGE_VERBOSE
     static mage::DebugMessageMap dmm;
     OutputDebugString(dmm(msg, lParam, wParam).c_str());
     #endif
@@ -121,6 +122,7 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
     switch (msg)
     {
         case WM_CLOSE:
+            LOG_INFO("Quit message received. Closing program");
             PostQuitMessage(0);
             return 0;
         case WM_KEYDOWN:
@@ -219,7 +221,7 @@ void mage::Display::setTitle(const std::string& title)
     }
 }
 
-std::optional<int> mage::Display::processMessages()
+std::optional<int> mage::Display::processMessages() noexcept
 {
     MSG msg;
     while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -230,4 +232,10 @@ std::optional<int> mage::Display::processMessages()
         DispatchMessage(&msg);
     }
     return { };
+}
+
+mage::Graphics& mage::Display::getGraphics()
+{
+    if(!m_gfx) throw DISPLAY_NO_GFX_EXCEPTION();
+    return *m_gfx;
 }

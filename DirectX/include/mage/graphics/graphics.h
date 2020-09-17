@@ -14,35 +14,42 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: mageexception.h
- * Date File Created: 9/12/2020 at 3:01 PM
+ * File Name: renderengine.h
+ * Date File Created: 9/16/2020 at 5:17 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_MAGEEXCEPTION_H
-#define MAGE3DX_MAGEEXCEPTION_H
+#ifndef MAGE3DX_GRAPHICS_H
+#define MAGE3DX_GRAPHICS_H
 
-
+#include "mage/debug/graphicsexception.h"
+#include <d3d11.h>
 
 namespace mage
 {
-    class MageException : public std::exception
+    class Graphics
     {
     public:
-        MageException(int line, const char* file) noexcept : m_line(line), m_file(file) {}
-        [[nodiscard]] virtual const char* what() const noexcept;
-        virtual const char* getType() const noexcept;
-        inline int getLine() const noexcept { return m_line; }
-        inline const std::string& getFile() const noexcept { return m_file; }
-        std::string getOrigin() const noexcept;
+        explicit Graphics(HWND hwnd);
+        virtual ~Graphics();
+
+        Graphics(const Graphics& rhs) = delete;
+        Graphics& operator=(const Graphics& rhs) = delete;
+
+        void swap();
+        void clear(float r, float g, float b) noexcept;
     protected:
-        mutable std::string m_what;
     private:
-        int m_line;
-        std::string m_file;
+        ID3D11Device* m_device { };
+        IDXGISwapChain* m_swap { };
+        ID3D11DeviceContext* m_context { };
+        ID3D11RenderTargetView* m_target { };
+        #ifndef NDEBUG
+        DebugInfo m_debugInfo;
+        #endif
     };
 
 }
 
 
-#endif //MAGE3DX_MAGEEXCEPTION_H
+#endif //MAGE3DX_GRAPHICS_H

@@ -25,6 +25,7 @@
 #include "mage/debug/displayexception.h"
 #include "keyboard.h"
 #include "mouse.h"
+#include "mage/graphics/graphics.h"
 
 
 namespace mage
@@ -38,7 +39,9 @@ namespace mage
         Display& operator=(const Display& disp) = delete;
 
         void setTitle(const std::string& title);
-        static std::optional<int> processMessages();
+        static std::optional<int> processMessages() noexcept;
+
+        Graphics& getGraphics();
 
         Keyboard m_keyboard;
         Mouse m_mouse;
@@ -52,6 +55,7 @@ namespace mage
         int m_width;
         int m_height;
         HWND m_hwnd;
+        UniquePtr<Graphics> m_gfx;
 
         class Window
         {

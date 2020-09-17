@@ -35,10 +35,19 @@ const char* mage::DisplayException::getType() const noexcept
     return "Mage Display Exception";
 }
 
-std::string mage::DisplayException::translateError(HRESULT hr) noexcept
+
+
+
+std::string mage::DisplayException::getErrorString() const noexcept
+{
+    return ExceptionHelper::translateError(m_result);
+}
+
+
+std::string mage::ExceptionHelper::translateError(HRESULT hr) noexcept
 {
     char* msgBuffer = nullptr;
-    DWORD len = FormatMessage(
+    const DWORD len = FormatMessage(
             FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
             nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPSTR>(&msgBuffer), 0,
             nullptr);
@@ -48,11 +57,7 @@ std::string mage::DisplayException::translateError(HRESULT hr) noexcept
     return errStr;
 }
 
-
-
-std::string mage::DisplayException::getErrorString() const noexcept
+const char* mage::NoGraphicsException::getType() const noexcept
 {
-    return translateError(m_result);
+    return "Mage Display Exception - No graphics";
 }
-
-

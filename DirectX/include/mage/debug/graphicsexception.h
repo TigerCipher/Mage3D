@@ -14,48 +14,48 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: displayexception.h
- * Date File Created: 9/12/2020 at 3:12 PM
+ * File Name: hresultexception.h
+ * Date File Created: 9/16/2020 at 10:15 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_DISPLAYEXCEPTION_H
-#define MAGE3DX_DISPLAYEXCEPTION_H
+#ifndef MAGE3DX_GRAPHICSEXCEPTION_H
+#define MAGE3DX_GRAPHICSEXCEPTION_H
 
+#include <utility>
 
+#include "mage_pch.h"
 #include "mageexception.h"
-
-#define DISPLAY_EXCEPTION(hr) DisplayException(__LINE__, __FILE__, hr)
-#define DISPLAY_LAST_EXCEPTION() DisplayException(__LINE__, __FILE__, GetLastError())
-#define DISPLAY_NO_GFX_EXCEPTION() NoGraphicsException(__LINE__, __FILE__)
+#include "mage/debug/debuginfo.h"
 
 namespace mage
 {
-    class ExceptionHelper
+    class GraphicsException : public MageException
     {
     public:
-        static std::string translateError(HRESULT hr) noexcept;
-    };
-    class DisplayException : public MageException
-    {
-    public:
-        DisplayException(int line, const char* file, HRESULT hr) : MageException(line, file), m_result(hr) {}
+        GraphicsException(int line, const char* file, HRESULT hr, const list<std::string>& msgs = {}) noexcept;
+
         const char* what() const noexcept override;
         const char* getType() const noexcept override;
-        inline HRESULT getError() const noexcept { return m_result; }
+        HRESULT getErrorCode() const noexcept;
         std::string getErrorString() const noexcept;
+        std::string getErrorDescription() const noexcept;
+        std::string getErrorInfo() const noexcept;
     private:
         HRESULT m_result;
+        std::string m_info;
     };
 
-    class NoGraphicsException : public MageException
+    class GraphicsDeviceRemovedException : public GraphicsException
     {
     public:
-        NoGraphicsException(int line, const char* file) : MageException(line, file) {}
-        const char * getType() const noexcept override;
+        GraphicsDeviceRemovedException(int line, const char* file, HRESULT hr, list<std::string> msgs) noexcept:
+                GraphicsException(line, file, hr, std::move(msgs)) { }
+
+        const char* getType() const noexcept override;
     };
 
 }
 
 
-#endif //MAGE3DX_DISPLAYEXCEPTION_H
+#endif //MAGE3DX_GRAPHICSEXCEPTION_H

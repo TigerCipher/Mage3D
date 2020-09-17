@@ -23,6 +23,7 @@
 
 int mage::App::run()
 {
+    LOG_INFO("Main loop beginning");
     while(m_running)
     {
         if(const auto exitCode = Display::processMessages())
@@ -35,8 +36,7 @@ int mage::App::run()
 
 void mage::App::update()
 {
-    const float t = m_timer.peek();
-    std::ostringstream oss;
-    oss << "Time Elapsed: " << std::setprecision(1) << std::fixed << t << "s";
-    m_display.setTitle(oss.str());
+    const float c = sin(m_timer.peek()) / 2.0f + 0.5f;
+    m_display.getGraphics().clear(1.0f, c, c);
+    m_display.getGraphics().swap();
 }

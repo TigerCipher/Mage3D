@@ -36,14 +36,17 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrefInstance, LPSTR lpCmdLi
     }
     catch (const MageException& e)
     {
+        DestroyWindow(GetActiveWindow());
         MessageBox(nullptr, e.what(), e.getType(), MB_OK | MB_ICONEXCLAMATION);
     }
     catch (const std::exception& e)
     {
+        DestroyWindow(GetActiveWindow());
         MessageBox(nullptr, e.what(), "STD Exception", MB_OK | MB_ICONEXCLAMATION);
     }
     catch (...)
     {
+        DestroyWindow(GetActiveWindow());
         MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
     }
     return -1;

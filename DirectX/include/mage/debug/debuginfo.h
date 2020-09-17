@@ -14,35 +14,35 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: mageexception.h
- * Date File Created: 9/12/2020 at 3:01 PM
+ * File Name: debuginfo.h
+ * Date File Created: 9/16/2020 at 11:05 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_MAGEEXCEPTION_H
-#define MAGE3DX_MAGEEXCEPTION_H
+#ifndef MAGE3DX_DEBUGINFO_H
+#define MAGE3DX_DEBUGINFO_H
 
+#include "mage_pch.h"
 
-
+struct IDXGIInfoQueue;
 namespace mage
 {
-    class MageException : public std::exception
+    class DebugInfo
     {
     public:
-        MageException(int line, const char* file) noexcept : m_line(line), m_file(file) {}
-        [[nodiscard]] virtual const char* what() const noexcept;
-        virtual const char* getType() const noexcept;
-        inline int getLine() const noexcept { return m_line; }
-        inline const std::string& getFile() const noexcept { return m_file; }
-        std::string getOrigin() const noexcept;
-    protected:
-        mutable std::string m_what;
+        DebugInfo();
+        virtual ~DebugInfo();
+        DebugInfo(const DebugInfo& rhs) = delete;
+        DebugInfo& operator=(const DebugInfo& rhs) = delete;
+
+        void set() noexcept;
+        [[nodiscard]] list<std::string> getMessages() const;
     private:
-        int m_line;
-        std::string m_file;
+        ulonglong m_next = 0;
+        IDXGIInfoQueue* m_infoQueue{};
     };
 
 }
 
 
-#endif //MAGE3DX_MAGEEXCEPTION_H
+#endif //MAGE3DX_DEBUGINFO_H
