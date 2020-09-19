@@ -119,13 +119,29 @@ void mage::Graphics::drawTriangle()
 {
     struct Vertex
     {
-        float x, y;
+        struct
+        {
+            float x, y;
+        } pos;
+        struct
+        {
+            ubyte r, g, b;
+            ubyte a = 255;
+        } color;
     };
-    const Vertex verts[] = {
-            { 0,     0.5f },
-            { 0.5f,  -0.5f },
-            { -0.5f, -0.5f }
+    Vertex verts[] = {
+            { 0,     0.5f,  255, 0,   0 },
+            { 0.5f,  -0.5f, 0,   255, 0 },
+            { -0.5f, -0.5f, 0,   0,   255 },
+            { -0.3f, 0.3f,  0,   255, 0 },
+            { 0.3f,  0.3f,  0,   0,   255 },
+            { 0,     -0.8f, 255, 0,   0 },
+
+            //{ 0.5f, 1.0f },
+            //{ 1, 0.5f },
+            //{ 0.5f, 0.5f },
     };
+    verts[ 0 ].color.g = 255;
     COMptr<ID3D11Buffer> vertexBuffer;
     D3D11_BUFFER_DESC desc = { };
     desc.Usage = D3D11_USAGE_DEFAULT;
@@ -144,6 +160,25 @@ void mage::Graphics::drawTriangle()
     const UINT offset = 0;
     m_context->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
 
+    const ushort ints[] = {
+            0, 1, 2,
+            0, 2, 3,
+            0, 4, 1,
+            2, 1, 5
+    };
+    COMptr<ID3D11Buffer> iBuf;
+    D3D11_BUFFER_DESC iDesc = { };
+    iDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    iDesc.Usage = D3D11_USAGE_DEFAULT;
+    iDesc.CPUAccessFlags = 0;
+    iDesc.MiscFlags = 0;
+    iDesc.StructureByteStride = sizeof(ushort);
+    iDesc.ByteWidth = sizeof(ints);
+    D3D11_SUBRESOURCE_DATA isd = { };
+    isd.pSysMem = ints;
+    GFX_THROW_INFO(m_device->CreateBuffer(&iDesc, &isd, &iBuf));
+
+    m_context->IASetIndexBuffer(iBuf.Get(), DXGI_FORMAT_R16_UINT, 0);
 
     COMptr<ID3DBlob> blob;
     // Pixel
@@ -161,17 +196,24 @@ void mage::Graphics::drawTriangle()
     GFX_THROW_INFO(D3DReadFileToBlob(L"basicVS.cso", &blob));
 
     GFX_THROW_INFO(
-            m_device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertexShader));
+            m_device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr,
+                                         &vertexShader));
     m_context->VSSetShader(vertexShader.Get(), nullptr, 0);
-
 
 
     COMptr<ID3D11InputLayout> layout;
     const D3D11_INPUT_ELEMENT_DESC eleDesc[] = {
-            { "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+            {
+                    "Position", 0, DXGI_FORMAT_R32G32_FLOAT,
+                    0, 0,                 D3D11_INPUT_PER_VERTEX_DATA, 0
+            },
+            {
+                    "Color",    0, DXGI_FORMAT_R8G8B8A8_UNORM,
+                    0, sizeof(float) * 2, D3D11_INPUT_PER_VERTEX_DATA, 0
+            },
     };
     GFX_THROW_INFO(m_device->CreateInputLayout(eleDesc, (UINT) std::size(eleDesc), blob->GetBufferPointer(),
-                                blob->GetBufferSize(), &layout));
+                                               blob->GetBufferSize(), &layout));
 
     m_context->IASetInputLayout(layout.Get());
 
@@ -181,13 +223,13 @@ void mage::Graphics::drawTriangle()
 
 
     D3D11_VIEWPORT vp;
-    vp.Width = 1920;
-    vp.Height = 1080;
+    vp.Width = 1280;
+    vp.Height = 720;
     vp.MinDepth = 0;
     vp.MaxDepth = 1;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
+    vp.TopLeftX = 100;
+    vp.TopLeftY = 100;
     m_context->RSSetViewports(1, &vp);
 
-    GFX_THROW_INFO_ONLY(m_context->Draw(std::size(verts), 0));
+    GFX_THROW_INFO_ONLY(m_context->DrawIndexed((UINT) std::size(ints), 0, 0));
 }

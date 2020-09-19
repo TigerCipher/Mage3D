@@ -23,6 +23,7 @@
 #include "mage/debug/debugmessagemap.h"
 #include "mage/resource.h"
 
+
 mage::Display::Window mage::Display::Window::s_winClass;
 
 mage::Display::Window::Window() noexcept:
@@ -63,9 +64,11 @@ mage::Display::Display(int width, int height, const char* title)
 {
     LOG_INFO("Creating display of size: ({}, {})", width, height);
     RECT region;
-    region.left = 100;
+    // Center our window to the desktop
+    GetClientRect(GetDesktopWindow(), &region);
+    region.left = (region.right / 2) - (width / 2);
+    region.top = (region.bottom / 2) - (height / 2);
     region.right = width + region.left;
-    region.top = 100;
     region.bottom = height + region.top;
     m_width = width;
     m_height = height;
@@ -73,9 +76,10 @@ mage::Display::Display(int width, int height, const char* title)
     {
         throw DISPLAY_LAST_EXCEPTION();
     }
-
-    m_hwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, CW_USEDEFAULT,
-                          CW_USEDEFAULT, region.right - region.left, region.bottom - region.top, nullptr,
+    //RECT screenRegion;
+    //GetClientRect(GetDesktopWindow(), &screenRegion);
+    m_hwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, region.left,
+                          region.top, width, height, nullptr,
                           nullptr, Window::getInstance(), this);
 
     if (!m_hwnd)
@@ -236,6 +240,6 @@ std::optional<int> mage::Display::processMessages() noexcept
 
 mage::Graphics& mage::Display::getGraphics()
 {
-    if(!m_gfx) throw DISPLAY_NO_GFX_EXCEPTION();
+    if (!m_gfx) throw DISPLAY_NO_GFX_EXCEPTION();
     return *m_gfx;
 }
