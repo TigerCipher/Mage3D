@@ -14,33 +14,22 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: timer.h
- * Date File Created: 9/15/2020 at 3:04 PM
+ * File Name: util.h
+ * Date File Created: 9/18/2020 at 3:00 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TIMER_H
-#define MAGE3DX_TIMER_H
+#ifndef MAGE3DX_UTIL_H
+#define MAGE3DX_UTIL_H
 
 
 #include "pch.h"
 
+
 namespace mage
 {
-    class Timer
-    {
-    public:
-        Timer() noexcept : m_last(std::chrono::steady_clock::now()) {}
-        virtual ~Timer() = default;
-
-        float markPoint() noexcept;
-        [[nodiscard]] float peek() const noexcept;
-
-    private:
-        std::chrono::steady_clock::time_point m_last;
-    };
-
+    void fromList(std::string& str, const list<std::string>& strList);
 }
 
 
-#endif //MAGE3DX_TIMER_H
+#endif //MAGE3DX_UTIL_H

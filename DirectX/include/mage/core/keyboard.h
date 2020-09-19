@@ -22,7 +22,7 @@
 #ifndef MAGE3DX_KEYBOARD_H
 #define MAGE3DX_KEYBOARD_H
 
-
+#include "pch.h"
 #include <bitset>
 
 namespace mage

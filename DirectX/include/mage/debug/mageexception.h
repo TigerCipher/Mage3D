@@ -22,7 +22,7 @@
 #ifndef MAGE3DX_MAGEEXCEPTION_H
 #define MAGE3DX_MAGEEXCEPTION_H
 
-
+#include "pch.h"
 
 namespace mage
 {

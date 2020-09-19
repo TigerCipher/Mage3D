@@ -22,16 +22,16 @@
 #ifndef MAGE3DX_DEBUGINFO_H
 #define MAGE3DX_DEBUGINFO_H
 
-#include "mage_pch.h"
+#include "pch.h"
+#include <dxgidebug.h>
 
-struct IDXGIInfoQueue;
 namespace mage
 {
     class DebugInfo
     {
     public:
         DebugInfo();
-        virtual ~DebugInfo();
+        virtual ~DebugInfo() = default;
         DebugInfo(const DebugInfo& rhs) = delete;
         DebugInfo& operator=(const DebugInfo& rhs) = delete;
 
@@ -39,7 +39,7 @@ namespace mage
         [[nodiscard]] list<std::string> getMessages() const;
     private:
         ulonglong m_next = 0;
-        IDXGIInfoQueue* m_infoQueue{};
+        COMptr<IDXGIInfoQueue> m_infoQueue{};
     };
 
 }

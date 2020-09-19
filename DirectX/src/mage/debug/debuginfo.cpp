@@ -21,8 +21,6 @@
 
 #include "mage/debug/debuginfo.h"
 #include "mage/core/display.h"
-#include "mage/graphics/graphics.h"
-#include <dxgidebug.h>
 
 #pragma comment(lib, "dxguid.lib")
 
@@ -45,14 +43,9 @@ mage::DebugInfo::DebugInfo()
     }
 
     HRESULT hr;
-    GFX_THROW_FAILED(debugInterface(__uuidof(IDXGIInfoQueue), VOIDPP(&m_infoQueue)));
+    GFX_THROW_FAILED(debugInterface(__uuidof(IDXGIInfoQueue), &m_infoQueue));
 }
 
-mage::DebugInfo::~DebugInfo()
-{
-    if (m_infoQueue)
-        m_infoQueue->Release();
-}
 
 void mage::DebugInfo::set() noexcept
 {

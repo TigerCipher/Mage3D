@@ -14,33 +14,32 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: timer.h
- * Date File Created: 9/15/2020 at 3:04 PM
+ * File Name: infoexception.h
+ * Date File Created: 9/18/2020 at 2:55 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TIMER_H
-#define MAGE3DX_TIMER_H
+#ifndef MAGE3DX_INFOEXCEPTION_H
+#define MAGE3DX_INFOEXCEPTION_H
 
 
 #include "pch.h"
+#include "mageexception.h"
 
 namespace mage
 {
-    class Timer
+    class InfoException : public MageException
     {
     public:
-        Timer() noexcept : m_last(std::chrono::steady_clock::now()) {}
-        virtual ~Timer() = default;
-
-        float markPoint() noexcept;
-        [[nodiscard]] float peek() const noexcept;
-
+        InfoException(int line, const char* file, const list<std::string>& msgs) noexcept;
+        const char * what() const noexcept override;
+        const char * getType() const noexcept override;
+        std::string getErrorInfo() const noexcept;
     private:
-        std::chrono::steady_clock::time_point m_last;
+        std::string m_info;
     };
 
 }
 
 
-#endif //MAGE3DX_TIMER_H
+#endif //MAGE3DX_INFOEXCEPTION_H

@@ -31,19 +31,22 @@ namespace mage
     {
     public:
         explicit Graphics(HWND hwnd);
-        virtual ~Graphics();
+        virtual ~Graphics() = default;
 
         Graphics(const Graphics& rhs) = delete;
         Graphics& operator=(const Graphics& rhs) = delete;
 
         void swap();
         void clear(float r, float g, float b) noexcept;
+
+        // Test functions
+        void drawTriangle();
     protected:
     private:
-        ID3D11Device* m_device { };
-        IDXGISwapChain* m_swap { };
-        ID3D11DeviceContext* m_context { };
-        ID3D11RenderTargetView* m_target { };
+        COMptr<ID3D11Device> m_device { };
+        COMptr<IDXGISwapChain> m_swap { };
+        COMptr<ID3D11DeviceContext> m_context { };
+        COMptr<ID3D11RenderTargetView> m_target { };
         #ifndef NDEBUG
         DebugInfo m_debugInfo;
         #endif

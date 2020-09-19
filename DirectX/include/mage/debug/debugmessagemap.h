@@ -22,6 +22,7 @@
 #ifndef MAGE3DX_DEBUGMESSAGEMAP_H
 #define MAGE3DX_DEBUGMESSAGEMAP_H
 
+#include "pch.h"
 
 namespace mage
 {

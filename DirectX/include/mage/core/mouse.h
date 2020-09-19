@@ -22,6 +22,7 @@
 #ifndef MAGE3DX_MOUSE_H
 #define MAGE3DX_MOUSE_H
 
+#include "pch.h"
 
 namespace mage
 {

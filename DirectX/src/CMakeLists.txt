@@ -1,18 +1,23 @@
 
 file(GLOB_RECURSE HEADER_LIST CONFIGURE_DEPENDS
-	${Mage3DX_SOURCE_DIR}/include/*.h
-	${Mage3DX_SOURCE_DIR}/include/*.hpp
-	)
+        ${Mage3DX_SOURCE_DIR}/include/*.h
+        ${Mage3DX_SOURCE_DIR}/include/*.hpp
+        )
 
 file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS
-	${Mage3DX_SOURCE_DIR}/src/*.cpp
-	${Mage3DX_SOURCE_DIR}/src/*.cc
-	${Mage3DX_SOURCE_DIR}/src/*.cxx
-	${Mage3DX_SOURCE_DIR}/src/*.c
-	${Mage3DX_SOURCE_DIR}/src/*.rc
-	)
+        ${Mage3DX_SOURCE_DIR}/src/*.cpp
+        ${Mage3DX_SOURCE_DIR}/src/*.cc
+        ${Mage3DX_SOURCE_DIR}/src/*.cxx
+        ${Mage3DX_SOURCE_DIR}/src/*.c
+        ${Mage3DX_SOURCE_DIR}/src/*.rc
+        )
 
-
+file(GLOB_RECURSE VERTEX_SHADER_LIST CONFIGURE_DEPENDS
+        ${Mage3DX_SOURCE_DIR}/assets/shaders/*VS.hlsl
+        )
+file(GLOB_RECURSE PIXEL_SHADER_LIST CONFIGURE_DEPENDS
+        ${Mage3DX_SOURCE_DIR}/assets/shaders/*PS.hlsl
+        )
 
 include(filter)
 
@@ -35,15 +40,38 @@ message(STATUS "Setting compile features for mage3dx")
 target_compile_features(mage3dx PUBLIC cxx_std_17)
 
 # NEEDS TO BE DIFFERENT FOR RELEASE! (but for release I'll probably just build on Visual Studio instead of cmake)
-target_compile_options(mage3dx PUBLIC /MP /Ot /fp:fast -MTd)
+#set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+#set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+set(CompilerFlags
+        CMAKE_CXX_FLAGS
+        CMAKE_CXX_FLAGS_DEBUG
+        CMAKE_CXX_FLAGS_RELEASE
+        CMAKE_C_FLAGS
+        CMAKE_C_FLAGS_DEBUG
+        CMAKE_C_FLAGS_RELEASE
+        )
+foreach(CompilerFlag ${CompilerFlags})
+  string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+endforeach()
 
-target_precompile_headers(mage3dx PRIVATE "../include/mage_pch.h")
+target_compile_options(mage3dx PUBLIC /MP /Ot /fp:fast)# -MTd)
+target_precompile_headers(mage3dx PRIVATE "../include/pch.h")
 
 
+include(shaders)
 
+foreach (vs ${VERTEX_SHADER_LIST})
+    compile_vs(vs_out ${vs})
+    list(APPEND MAGE_VS_OUT ${vs_out})
+endforeach ()
+foreach (ps ${PIXEL_SHADER_LIST})
+    compile_ps(ps_out ${ps})
+    list(APPEND MAGE_PS_OUT ${ps_out})
+endforeach ()
+add_custom_target(mage_shaders DEPENDS ${MAGE_VS_OUT} ${MAGE_PS_OUT})
 
 message(Blue "Creating folders for project mage3dx")
 target_source_group(
-				ROOT_DIR "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/include"
-				TARGET mage3dx
-				PREFIX "Source Files" "Header Files")
+        ROOT_DIR "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/include"
+        TARGET mage3dx
+        PREFIX "Source Files" "Header Files")

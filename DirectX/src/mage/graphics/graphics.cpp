@@ -20,22 +20,27 @@
  */
 
 #include "mage/graphics/graphics.h"
+#include "mage/debug/infoexception.h"
+#include <d3dcompiler.h>
 
 // probably should do this for my other libs since ultimately this won't be built with Cmake for release
 #pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "D3DCompiler.lib")
 
 
-#define GFX_THROW_NOINFO(hrcall) if( FAILED( hr = (hrcall) ) ) throw GraphicsException( __LINE__,__FILE__,hr )
+#define GFX_THROW_NOINFO(hrcall) {HRESULT hr; if( FAILED( hr = (hrcall) ) ) throw GraphicsException( __LINE__,__FILE__,hr ); }
 #define GFX_EXCEPT_NOINFO(hr) GraphicsException( __LINE__,__FILE__,hr )
 
 #ifndef NDEBUG
     #define GFX_EXCEPT(hr) GraphicsException(__LINE__, __FILE__, (hr), m_debugInfo.getMessages())
-    #define GFX_THROW_INFO(hrcall) m_debugInfo.set(); if(FAILED(hr = (hrcall))) throw GFX_EXCEPT(hr)
-    #define GFX_DEVICE_REMOVED_EXCEPT(hr) GraphicsDeviceRemovedException( __LINE__,__FILE__,(hr), m_debugInfo.getMessages() )
+    #define GFX_THROW_INFO(hrcall) {HRESULT hr; m_debugInfo.set(); if(FAILED(hr = (hrcall))) throw GFX_EXCEPT(hr);}
+    #define GFX_DEVICE_REMOVED_EXCEPT(hr) GraphicsDeviceRemovedException( __LINE__,__FILE__,(hr), m_debugInfo.getMessages())
+    #define GFX_THROW_INFO_ONLY(func) m_debugInfo.set(); (func); {auto l = m_debugInfo.getMessages(); if(!l.empty()) {throw InfoException(__LINE__, __FILE__, l);}}
 #else
     #define GFX_EXCEPT(hr) GraphicsException(__LINE__, __FILE__, (hr))
     #define GFX_THROW_INFO(hrcall) GFX_THROW_NOINFO(hrcall)
     #define GFX_DEVICE_REMOVED_EXCEPT(hr) GraphicsDeviceRemovedException( __LINE__,__FILE__,(hr) )
+    #define GFX_THROW_INFO_ONLY(func) (func)
 #endif
 
 
@@ -62,7 +67,6 @@ mage::Graphics::Graphics(HWND hwnd)
     //swapDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD ;
     swapDesc.Flags = 0;
 
-    HRESULT hr;
     UINT flg = 0;
     #ifndef NDEBUG
     flg |= D3D11_CREATE_DEVICE_DEBUG;
@@ -73,22 +77,21 @@ mage::Graphics::Graphics(HWND hwnd)
                                                  D3D11_SDK_VERSION, &swapDesc, &m_swap, &m_device, nullptr,
                                                  &m_context));
 
-    ID3D11Resource* backBuffer;
-    GFX_THROW_INFO(m_swap->GetBuffer(0, __uuidof(ID3D11Resource), VOIDPP(&backBuffer)));
-    GFX_THROW_INFO(m_device->CreateRenderTargetView(backBuffer, nullptr, &m_target));
-    backBuffer->Release();
-}
+    COMptr<ID3D11Resource> backBuffer;
+    GFX_THROW_INFO(m_swap->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
+    GFX_THROW_INFO(m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_target));
 
-mage::Graphics::~Graphics()
-{
-    if (m_target)
-        m_target->Release();
-    if (m_context)
-        m_context->Release();
-    if (m_swap)
-        m_swap->Release();
-    if (m_device)
-        m_device->Release();
+    //UINT flgs = D3DCOMPILE_ENABLE_STRICTNESS;
+    //#ifndef NDEBUG
+    //flgs |= D3DCOMPILE_DEBUG;
+    //#endif
+    //LPCSTR profile = "vs_5_0";
+    //COMptr<ID3DBlob> shaderBlob;
+    //COMptr<ID3DBlob> errBlob;
+    //GFX_THROW_INFO(
+    //        D3DCompileFromFile(L"vertex_shader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main",
+    //                           profile, flgs, 0, &shaderBlob, &errBlob));
+
 }
 
 void mage::Graphics::swap()
@@ -99,6 +102,7 @@ void mage::Graphics::swap()
     #endif
     if (FAILED(hr = m_swap->Present(1, 0)))
     {
+        LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(m_debugInfo.getMessages(), "\n"));
         if (hr == DXGI_ERROR_DEVICE_REMOVED)
             throw GFX_DEVICE_REMOVED_EXCEPT(m_device->GetDeviceRemovedReason());
         else throw GFX_EXCEPT(hr);
@@ -108,5 +112,82 @@ void mage::Graphics::swap()
 void mage::Graphics::clear(float r, float g, float b) noexcept
 {
     const float color[] = { r, g, b, 1.0f };
-    m_context->ClearRenderTargetView(m_target, color);
+    m_context->ClearRenderTargetView(m_target.Get(), color);
+}
+
+void mage::Graphics::drawTriangle()
+{
+    struct Vertex
+    {
+        float x, y;
+    };
+    const Vertex verts[] = {
+            { 0,     0.5f },
+            { 0.5f,  -0.5f },
+            { -0.5f, -0.5f }
+    };
+    COMptr<ID3D11Buffer> vertexBuffer;
+    D3D11_BUFFER_DESC desc = { };
+    desc.Usage = D3D11_USAGE_DEFAULT;
+    desc.CPUAccessFlags = 0;
+    desc.MiscFlags = 0;
+    desc.StructureByteStride = sizeof(Vertex);
+    desc.ByteWidth = sizeof(verts);
+    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+    D3D11_SUBRESOURCE_DATA data = { };
+    data.pSysMem = verts;
+    GFX_THROW_INFO(m_device->CreateBuffer(&desc, &data, &vertexBuffer));
+
+    // Bind buffer to pipeline
+    const UINT stride = sizeof(Vertex);
+    const UINT offset = 0;
+    m_context->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
+
+
+    COMptr<ID3DBlob> blob;
+    // Pixel
+    COMptr<ID3D11PixelShader> pixelShader;
+    GFX_THROW_INFO(D3DReadFileToBlob(L"basicPS.cso", &blob));
+
+    GFX_THROW_INFO(
+            m_device->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr,
+                                        &pixelShader));
+    m_context->PSSetShader(pixelShader.Get(), nullptr, 0);
+
+    // Vertex
+    COMptr<ID3D11VertexShader> vertexShader;
+
+    GFX_THROW_INFO(D3DReadFileToBlob(L"basicVS.cso", &blob));
+
+    GFX_THROW_INFO(
+            m_device->CreateVertexShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &vertexShader));
+    m_context->VSSetShader(vertexShader.Get(), nullptr, 0);
+
+
+
+    COMptr<ID3D11InputLayout> layout;
+    const D3D11_INPUT_ELEMENT_DESC eleDesc[] = {
+            { "Position", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+    };
+    GFX_THROW_INFO(m_device->CreateInputLayout(eleDesc, (UINT) std::size(eleDesc), blob->GetBufferPointer(),
+                                blob->GetBufferSize(), &layout));
+
+    m_context->IASetInputLayout(layout.Get());
+
+    m_context->OMSetRenderTargets(1, m_target.GetAddressOf(), nullptr);
+
+    m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+
+    D3D11_VIEWPORT vp;
+    vp.Width = 1920;
+    vp.Height = 1080;
+    vp.MinDepth = 0;
+    vp.MaxDepth = 1;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
+    m_context->RSSetViewports(1, &vp);
+
+    GFX_THROW_INFO_ONLY(m_context->Draw(std::size(verts), 0));
 }

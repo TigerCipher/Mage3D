@@ -24,7 +24,7 @@
 
 #include <utility>
 
-#include "mage_pch.h"
+#include "pch.h"
 #include "mageexception.h"
 #include "mage/debug/debuginfo.h"
 

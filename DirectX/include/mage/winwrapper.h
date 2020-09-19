@@ -24,9 +24,10 @@
 
 // target Windows 7 or later
 #define _WIN32_WINNT 0x0601
+
 #include <sdkddkver.h>
 
-#ifndef FULL_WINTARD
+//#ifndef FULL_WINTARD
 #define WIN32_LEAN_AND_MEAN
 #define NOGDICAPMASKS
 #define NOSYSMETRICS
@@ -60,7 +61,7 @@
 #define NOPROXYSTUB
 #define NOIMAGE
 #define NOTAPE
-#endif
+//#endif
 
 #define NOMINMAX
 
@@ -68,5 +69,23 @@
 
 #include <Windows.h>
 
+#include <wrl.h>
+
+template<typename T>
+using COMPtr = Microsoft::WRL::ComPtr<T>;
+
+template<typename T>
+using COMptr = Microsoft::WRL::ComPtr<T>;
+
+template<typename T>
+using comptr = Microsoft::WRL::ComPtr<T>;
+
+#include <memory>
+
+template<typename T, typename... Args>
+constexpr COMptr<T> createCOM(Args&& ...args)
+{
+    return Microsoft::WRL::Make<T>(std::forward<Args>(args)...);
+}
 
 #endif //MAGE3DX_WINWRAPPER_H

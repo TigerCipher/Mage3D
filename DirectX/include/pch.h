@@ -14,33 +14,42 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: timer.h
- * Date File Created: 9/15/2020 at 3:04 PM
+ * File Name: mage_pch.h
+ * Date File Created: 9/15/2020 at 3:33 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TIMER_H
-#define MAGE3DX_TIMER_H
+#ifndef MAGE3DX_PCH_H
+#define MAGE3DX_PCH_H
 
 
-#include "pch.h"
+#ifndef FMT_HEADER_ONLY
+    #define FMT_HEADER_ONLY
+#endif
 
-namespace mage
-{
-    class Timer
-    {
-    public:
-        Timer() noexcept : m_last(std::chrono::steady_clock::now()) {}
-        virtual ~Timer() = default;
+#include "mage/common.h"
+#include "mage/debug/log.h"
 
-        float markPoint() noexcept;
-        [[nodiscard]] float peek() const noexcept;
+#include <functional>
+#include <exception>
+#include <random>
+#include <chrono>
+#include <string>
+#include <sstream>
+#include <utility>
+#include <memory>
+#include <vector>
+#include <array>
+#include <list>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
+#include <optional>
+#include <variant>
+#include <cmath>
+#include <iomanip>
+#include <queue>
+#include <algorithm>
 
-    private:
-        std::chrono::steady_clock::time_point m_last;
-    };
-
-}
-
-
-#endif //MAGE3DX_TIMER_H
+#endif //MAGE3DX_PCH_H

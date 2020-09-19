@@ -14,39 +14,24 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: mage_pch.h
- * Date File Created: 9/15/2020 at 3:33 PM
+ * File Name: util.cpp
+ * Date File Created: 9/18/2020 at 3:00 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_MAGE_PCH_H
-#define MAGE3DX_MAGE_PCH_H
+#include "mage/core/util.h"
 
+namespace mage
+{
+    void fromList(std::string& str, const list<std::string>& strList)
+    {
+        for(const auto& s : strList)
+        {
+            str += s;
+            str.push_back('\n');
+        }
 
-#define FMT_HEADER_ONLY
-#include "mage/common.h"
-#include "mage/debug/log.h"
-
-#include <functional>
-#include <exception>
-#include <random>
-#include <chrono>
-#include <string>
-#include <sstream>
-#include <utility>
-#include <memory>
-#include <vector>
-#include <array>
-#include <list>
-#include <map>
-#include <set>
-#include <unordered_map>
-#include <unordered_set>
-#include <optional>
-#include <variant>
-#include <cmath>
-#include <iomanip>
-#include <queue>
-#include <algorithm>
-
-#endif //MAGE3DX_MAGE_PCH_H
+        if(!str.empty())
+            str.pop_back();
+    }
+}
