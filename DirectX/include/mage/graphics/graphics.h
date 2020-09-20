@@ -40,13 +40,14 @@ namespace mage
         void clear(float r, float g, float b) noexcept;
 
         // Test functions
-        void drawTriangle(float angle);
+        void drawTriangle(float angle, float x, float y);
     protected:
     private:
         COMptr<ID3D11Device> m_device { };
         COMptr<IDXGISwapChain> m_swap { };
         COMptr<ID3D11DeviceContext> m_context { };
         COMptr<ID3D11RenderTargetView> m_target { };
+        COMptr<ID3D11DepthStencilView> m_depthStencilView { };
         #ifndef NDEBUG
         DebugInfo m_debugInfo;
         #endif

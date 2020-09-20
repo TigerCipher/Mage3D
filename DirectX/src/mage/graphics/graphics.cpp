@@ -23,6 +23,10 @@
 #include "mage/debug/infoexception.h"
 #include <d3dcompiler.h>
 
+#define MATH_HELPER_IMPL
+
+#include "mage/core/mathhelper.h"
+
 // probably should do this for my other libs since ultimately this won't be built with Cmake for release
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "D3DCompiler.lib")
@@ -47,8 +51,8 @@
 mage::Graphics::Graphics(HWND hwnd)
 {
     DXGI_SWAP_CHAIN_DESC swapDesc = { };
-    swapDesc.BufferDesc.Width = 0;
-    swapDesc.BufferDesc.Height = 0;
+    swapDesc.BufferDesc.Width = 1920;
+    swapDesc.BufferDesc.Height = 1080;
     swapDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
     swapDesc.BufferDesc.RefreshRate.Numerator = 0;
     swapDesc.BufferDesc.RefreshRate.Denominator = 0;
@@ -81,16 +85,36 @@ mage::Graphics::Graphics(HWND hwnd)
     GFX_THROW_INFO(m_swap->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
     GFX_THROW_INFO(m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_target));
 
-    //UINT flgs = D3DCOMPILE_ENABLE_STRICTNESS;
-    //#ifndef NDEBUG
-    //flgs |= D3DCOMPILE_DEBUG;
-    //#endif
-    //LPCSTR profile = "vs_5_0";
-    //COMptr<ID3DBlob> shaderBlob;
-    //COMptr<ID3DBlob> errBlob;
-    //GFX_THROW_INFO(
-    //        D3DCompileFromFile(L"vertex_shader.hlsl", nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main",
-    //                           profile, flgs, 0, &shaderBlob, &errBlob));
+    D3D11_DEPTH_STENCIL_DESC depth = { };
+    depth.DepthEnable = TRUE;
+    depth.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+    depth.DepthFunc = D3D11_COMPARISON_LESS;
+
+    COMptr<ID3D11DepthStencilState> depthState;
+    GFX_THROW_INFO(m_device->CreateDepthStencilState(&depth, &depthState));
+
+    m_context->OMSetDepthStencilState(depthState.Get(), 1);
+
+    COMptr<ID3D11Texture2D> depthStencil;
+    D3D11_TEXTURE2D_DESC texDesc = { };
+    texDesc.Width = 1920;
+    texDesc.Height = 1080;
+    texDesc.MipLevels = 1;
+    texDesc.ArraySize = 1;
+    texDesc.Format = DXGI_FORMAT_D32_FLOAT;
+    texDesc.SampleDesc.Count = 1;
+    texDesc.SampleDesc.Quality = 0;
+    texDesc.Usage = D3D11_USAGE_DEFAULT;
+    texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+    GFX_THROW_INFO(m_device->CreateTexture2D(&texDesc, nullptr, &depthStencil));
+
+    D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = { };
+    dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+    dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+    dsvDesc.Texture2D.MipSlice = 0;
+    GFX_THROW_INFO(m_device->CreateDepthStencilView(depthStencil.Get(), &dsvDesc, &m_depthStencilView));
+
+    m_context->OMSetRenderTargets(1, m_target.GetAddressOf(), m_depthStencilView.Get());
 
 }
 
@@ -113,35 +137,30 @@ void mage::Graphics::clear(float r, float g, float b) noexcept
 {
     const float color[] = { r, g, b, 1.0f };
     m_context->ClearRenderTargetView(m_target.Get(), color);
+    m_context->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void mage::Graphics::drawTriangle(float angle)
+void mage::Graphics::drawTriangle(float angle, float x, float y)
 {
     struct Vertex
     {
         struct
         {
-            float x, y;
-        } pos{};
-        struct
-        {
-            ubyte r, g, b;
-            ubyte a = 255;
-        } color{};
+            float x, y, z;
+        } pos { };
     };
-    Vertex verts[] = {
-            { 0,     0.5f,  255, 0,   0 },
-            { 0.5f,  -0.5f, 0,   255, 0 },
-            { -0.5f, -0.5f, 0,   0,   255 },
-            { -0.3f, 0.3f,  0,   255, 0 },
-            { 0.3f,  0.3f,  0,   0,   255 },
-            { 0,     -0.8f, 255, 0,   0 },
 
-            //{ 0.5f, 1.0f },
-            //{ 1, 0.5f },
-            //{ 0.5f, 0.5f },
+    Vertex verts[] = {
+            { -1.0f, -1.0f, -1.0f },
+            { 1.0f,  -1.0f, -1.0f },
+            { -1.0f, 1.0f,  -1.0f },
+            { 1.0f,  1.0f,  -1.0f },
+            { -1.0f, -1.0f, 1.0f },
+            { 1.0f,  -1.0f, 1.0f },
+            { -1.0f, 1.0f,  1.0f },
+            { 1.0f,  1.0f,  1.0f },
     };
-    verts[ 0 ].color.g = 255;
+
     COMptr<ID3D11Buffer> vertexBuffer;
     D3D11_BUFFER_DESC desc = { };
     desc.Usage = D3D11_USAGE_DEFAULT;
@@ -161,10 +180,12 @@ void mage::Graphics::drawTriangle(float angle)
     m_context->IASetVertexBuffers(0, 1, vertexBuffer.GetAddressOf(), &stride, &offset);
 
     const ushort ints[] = {
-            0, 1, 2,
-            0, 2, 3,
-            0, 4, 1,
-            2, 1, 5
+            0, 2, 1, 2, 3, 1,
+            1, 3, 5, 3, 7, 5,
+            2, 6, 3, 3, 6, 7,
+            4, 5, 7, 4, 7, 6,
+            0, 4, 2, 2, 4, 6,
+            0, 1, 4, 1, 5, 4
     };
     COMptr<ID3D11Buffer> iBuf;
     D3D11_BUFFER_DESC iDesc = { };
@@ -184,18 +205,37 @@ void mage::Graphics::drawTriangle(float angle)
     // Constant buffer
     struct ConstantBuffer
     {
-        struct
-        {
-            float element[4][4];
-        } transformation;
+        mat4f transform;
     };
 
     const ConstantBuffer cb = {
             {
-                    (9.0f / 16.0f) * std::cos(angle), std::sin(angle), 0.0f, 0.0f,
-                    (9.0f / 16.0f) * -std::sin(angle), std::cos(angle), 0.0f, 0.0f,
-                    0.0f, 0.0f, 1.0f, 0.0f,
-                    0.0f, 0.0f, 0.0f, 1.0f
+                    dx::XMMatrixTranspose(
+                            dx::XMMatrixRotationZ(angle) *
+                            dx::XMMatrixRotationX(angle) *
+                            dx::XMMatrixTranslation(x, 0, y + 4) *
+                            dx::XMMatrixPerspectiveLH(1.0f, 9.0f / 16.0f, 0.5f, 10.0f)
+                                         )
+            }
+    };
+
+    struct ColorBuffer
+    {
+        struct
+        {
+            float r { }, g { }, b { };
+            float a = 1.0f;
+        } face_colors[6];
+    };
+
+    const ColorBuffer colBuf = {
+            {
+                    { 1.0f, 0.0f, 1.0f },
+                    { 1.0f, 0.0f, 0.0f },
+                    { 0.0f, 1.0f, 1.0f },
+                    { 0.0f, 0.0f, 1.0f },
+                    { 1.0f, 1.0f, 0.0f },
+                    { 0.0f, 1.0f, 1.0f }
             }
     };
 
@@ -212,9 +252,22 @@ void mage::Graphics::drawTriangle(float angle)
     cbsd.pSysMem = &cb;
     GFX_THROW_INFO(m_device->CreateBuffer(&cbd, &cbsd, &cBuf));
 
+    COMptr<ID3D11Buffer> cBuf2;
+    D3D11_BUFFER_DESC colbd;
+    colbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    colbd.Usage = D3D11_USAGE_DEFAULT;
+    colbd.CPUAccessFlags = 0;
+    colbd.MiscFlags = 0;
+    colbd.StructureByteStride = 0;
+    colbd.ByteWidth = sizeof(colBuf);
+    D3D11_SUBRESOURCE_DATA colbsd = { };
+    colbsd.pSysMem = &colBuf;
+    GFX_THROW_INFO(m_device->CreateBuffer(&colbd, &colbsd, &cBuf2));
+
+
     // Bind constant buffer
     m_context->VSSetConstantBuffers(0, 1, cBuf.GetAddressOf());
-
+    m_context->PSSetConstantBuffers(0, 1, cBuf2.GetAddressOf());
     COMptr<ID3DBlob> blob;
     // Pixel
     COMptr<ID3D11PixelShader> pixelShader;
@@ -239,20 +292,14 @@ void mage::Graphics::drawTriangle(float angle)
     COMptr<ID3D11InputLayout> layout;
     const D3D11_INPUT_ELEMENT_DESC eleDesc[] = {
             {
-                    "Position", 0, DXGI_FORMAT_R32G32_FLOAT,
-                    0, 0,                 D3D11_INPUT_PER_VERTEX_DATA, 0
-            },
-            {
-                    "Color",    0, DXGI_FORMAT_R8G8B8A8_UNORM,
-                    0, sizeof(float) * 2, D3D11_INPUT_PER_VERTEX_DATA, 0
+                    "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT,
+                    0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0
             },
     };
     GFX_THROW_INFO(m_device->CreateInputLayout(eleDesc, (UINT) std::size(eleDesc), blob->GetBufferPointer(),
                                                blob->GetBufferSize(), &layout));
 
     m_context->IASetInputLayout(layout.Get());
-
-    m_context->OMSetRenderTargets(1, m_target.GetAddressOf(), nullptr);
 
     m_context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 

@@ -37,6 +37,11 @@ void mage::App::update()
 {
     const float c = sin(m_timer.peek()) / 2.0f + 0.5f;
     m_display.getGraphics().clear(1.0f, c, c);
-    m_display.getGraphics().drawTriangle(m_timer.peek());
+    m_display.getGraphics().drawTriangle(m_timer.peek(),
+                                         (float)m_display.m_mouse.getX() / (1920.0f / 2.0f) - 1.0f,
+                                         -(float)m_display.m_mouse.getY() / (1080.0f / 2.0f) + 1.0f);
+    m_display.getGraphics().drawTriangle(-m_timer.peek(),
+                                         0,
+                                         0);
     m_display.getGraphics().swap();
 }
