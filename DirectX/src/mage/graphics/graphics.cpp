@@ -115,19 +115,19 @@ void mage::Graphics::clear(float r, float g, float b) noexcept
     m_context->ClearRenderTargetView(m_target.Get(), color);
 }
 
-void mage::Graphics::drawTriangle()
+void mage::Graphics::drawTriangle(float angle)
 {
     struct Vertex
     {
         struct
         {
             float x, y;
-        } pos;
+        } pos{};
         struct
         {
             ubyte r, g, b;
             ubyte a = 255;
-        } color;
+        } color{};
     };
     Vertex verts[] = {
             { 0,     0.5f,  255, 0,   0 },
@@ -180,6 +180,41 @@ void mage::Graphics::drawTriangle()
 
     m_context->IASetIndexBuffer(iBuf.Get(), DXGI_FORMAT_R16_UINT, 0);
 
+
+    // Constant buffer
+    struct ConstantBuffer
+    {
+        struct
+        {
+            float element[4][4];
+        } transformation;
+    };
+
+    const ConstantBuffer cb = {
+            {
+                    (9.0f / 16.0f) * std::cos(angle), std::sin(angle), 0.0f, 0.0f,
+                    (9.0f / 16.0f) * -std::sin(angle), std::cos(angle), 0.0f, 0.0f,
+                    0.0f, 0.0f, 1.0f, 0.0f,
+                    0.0f, 0.0f, 0.0f, 1.0f
+            }
+    };
+
+
+    COMptr<ID3D11Buffer> cBuf;
+    D3D11_BUFFER_DESC cbd;
+    cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    cbd.Usage = D3D11_USAGE_DYNAMIC;
+    cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    cbd.MiscFlags = 0;
+    cbd.StructureByteStride = 0;
+    cbd.ByteWidth = sizeof(cb);
+    D3D11_SUBRESOURCE_DATA cbsd = { };
+    cbsd.pSysMem = &cb;
+    GFX_THROW_INFO(m_device->CreateBuffer(&cbd, &cbsd, &cBuf));
+
+    // Bind constant buffer
+    m_context->VSSetConstantBuffers(0, 1, cBuf.GetAddressOf());
+
     COMptr<ID3DBlob> blob;
     // Pixel
     COMptr<ID3D11PixelShader> pixelShader;
@@ -223,12 +258,12 @@ void mage::Graphics::drawTriangle()
 
 
     D3D11_VIEWPORT vp;
-    vp.Width = 1280;
-    vp.Height = 720;
+    vp.Width = 1920;
+    vp.Height = 1080;
     vp.MinDepth = 0;
     vp.MaxDepth = 1;
-    vp.TopLeftX = 100;
-    vp.TopLeftY = 100;
+    vp.TopLeftX = 0;
+    vp.TopLeftY = 0;
     m_context->RSSetViewports(1, &vp);
 
     GFX_THROW_INFO_ONLY(m_context->DrawIndexed((UINT) std::size(ints), 0, 0));

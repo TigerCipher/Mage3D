@@ -40,7 +40,7 @@ namespace mage
         void clear(float r, float g, float b) noexcept;
 
         // Test functions
-        void drawTriangle();
+        void drawTriangle(float angle);
     protected:
     private:
         COMptr<ID3D11Device> m_device { };

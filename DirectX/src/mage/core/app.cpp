@@ -30,7 +30,6 @@ int mage::App::run()
             return *exitCode;
         update();
     }
-
     return 0;
 }
 
@@ -38,6 +37,6 @@ void mage::App::update()
 {
     const float c = sin(m_timer.peek()) / 2.0f + 0.5f;
     m_display.getGraphics().clear(1.0f, c, c);
-    m_display.getGraphics().drawTriangle();
+    m_display.getGraphics().drawTriangle(m_timer.peek());
     m_display.getGraphics().swap();
 }

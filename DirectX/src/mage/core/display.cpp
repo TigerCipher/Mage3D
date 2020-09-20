@@ -72,6 +72,7 @@ mage::Display::Display(int width, int height, const char* title)
     region.bottom = height + region.top;
     m_width = width;
     m_height = height;
+    m_aspectRatio = (float) m_height / (float) m_width;
     if (!AdjustWindowRect(&region, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, false))
     {
         throw DISPLAY_LAST_EXCEPTION();

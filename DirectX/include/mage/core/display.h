@@ -43,6 +43,11 @@ namespace mage
 
         Graphics& getGraphics();
 
+        [[nodiscard]] inline int getWidth() const noexcept { return m_width; }
+        [[nodiscard]] inline int getHeight() const noexcept { return m_height; }
+
+        [[nodiscard]] inline float getAspectRatio() const noexcept { return m_aspectRatio; }
+
         Keyboard m_keyboard;
         Mouse m_mouse;
     protected:
@@ -54,6 +59,7 @@ namespace mage
 
         int m_width;
         int m_height;
+        float m_aspectRatio;
         HWND m_hwnd;
         UniquePtr<Graphics> m_gfx;
 

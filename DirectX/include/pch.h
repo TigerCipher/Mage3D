@@ -27,6 +27,7 @@
     #define FMT_HEADER_ONLY
 #endif
 
+
 #include "mage/common.h"
 #include "mage/debug/log.h"
 
