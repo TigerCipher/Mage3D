@@ -14,38 +14,32 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: infoexception.h
- * Date File Created: 9/18/2020 at 2:55 PM
+ * File Name: indexbuffer.h
+ * Date File Created: 9/20/2020 at 9:45 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_INFOEXCEPTION_H
-#define MAGE3DX_INFOEXCEPTION_H
+#ifndef MAGE3DX_INDEXBUFFER_H
+#define MAGE3DX_INDEXBUFFER_H
 
 
 #include "pch.h"
-#include "mageexception.h"
-
-#if MAGE_DEBUG
-    #define GFX_THROW_INFO_ONLY(func) m_debugInfo.set(); (func); {auto l = m_debugInfo.getMessages(); if(!l.empty()) {throw InfoException(__LINE__, __FILE__, l);}}
-#else
-    #define GFX_THROW_INFO_ONLY(func) (func)
-#endif
+#include "bindable.h"
 
 namespace mage
 {
-    class InfoException : public MageException
+    class IndexBuffer : public Bindable
     {
     public:
-        InfoException(int line, const char* file, const list<std::string>& msgs) noexcept;
-        const char * what() const noexcept override;
-        const char * getType() const noexcept override;
-        std::string getErrorInfo() const noexcept;
-    private:
-        std::string m_info;
+        IndexBuffer(Graphics& gfx, const list<ushort>& indices);
+        void bind(Graphics &gfx) noexcept override;
+        [[nodiscard]] inline UINT getCount() const noexcept { return m_count; }
+    protected:
+        UINT m_count;
+        COMptr<ID3D11Buffer> m_buffer;
     };
 
 }
 
 
-#endif //MAGE3DX_INFOEXCEPTION_H
+#endif //MAGE3DX_INDEXBUFFER_H

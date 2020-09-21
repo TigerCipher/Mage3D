@@ -14,37 +14,15 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: transformconstantbuffer.cpp
+ * Date File Created: 9/20/2020 at 10:37 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
+#include "mage/graphics/transformconstantbuffer.h"
 
-#include "display.h"
-#include "timer.h"
-#include "mage/entities/box.h"
-
-namespace mage
+void mage::TransformConstantBuffer::bind(mage::Graphics& gfx) noexcept
 {
-    class App
-    {
-    public:
-        App(int width, int height, const char* title);
-        virtual ~App() = default;
-        int run();
-        inline void stop() { m_running = false; }
-    private:
-        void update();
-        Display m_display;
-        Timer m_timer;
-        bool m_running;
-
-        list<UniquePtr<Box>> m_boxes;
-    };
-
+    m_vertexBuffer.update(gfx, dx::XMMatrixTranspose(m_parent.getTransformMatrix() * gfx.getProjection()));
+    m_vertexBuffer.bind(gfx);
 }
-
-
-#endif //MAGE3DX_APP_H

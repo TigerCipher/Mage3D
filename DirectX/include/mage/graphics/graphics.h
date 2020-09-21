@@ -22,13 +22,17 @@
 #ifndef MAGE3DX_GRAPHICS_H
 #define MAGE3DX_GRAPHICS_H
 
-#include "mage/debug/graphicsexception.h"
+#include "mage/debug/debuginfo.h"
+#include "mage/core/mathhelper.h"
+
 #include <d3d11.h>
 
 namespace mage
 {
     class Graphics
     {
+        friend class Bindable;
+
     public:
         explicit Graphics(HWND hwnd);
         virtual ~Graphics() = default;
@@ -39,8 +43,10 @@ namespace mage
         void swap();
         void clear(float r, float g, float b) noexcept;
 
-        // Test functions
-        void drawTriangle(float angle, float x, float y);
+        void drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG);
+
+        void setProjection(mat4f proj) noexcept { m_projection = proj; }
+        [[nodiscard]] mat4f getProjection() const noexcept { return m_projection; }
     protected:
     private:
         COMptr<ID3D11Device> m_device { };
@@ -48,7 +54,10 @@ namespace mage
         COMptr<ID3D11DeviceContext> m_context { };
         COMptr<ID3D11RenderTargetView> m_target { };
         COMptr<ID3D11DepthStencilView> m_depthStencilView { };
-        #ifndef NDEBUG
+
+        mat4f m_projection;
+
+        #if MAGE_DEBUG
         DebugInfo m_debugInfo;
         #endif
     };

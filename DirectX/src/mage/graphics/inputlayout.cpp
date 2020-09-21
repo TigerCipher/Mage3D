@@ -14,37 +14,26 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: inputlayout.cpp
+ * Date File Created: 9/20/2020 at 9:50 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
+#include "mage/graphics/inputlayout.h"
+#include "mage/debug/graphicsexception.h"
 
-#include "display.h"
-#include "timer.h"
-#include "mage/entities/box.h"
-
-namespace mage
+mage::InputLayout::InputLayout(mage::Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout,
+                               ID3DBlob* vertexBytecode)
 {
-    class App
-    {
-    public:
-        App(int width, int height, const char* title);
-        virtual ~App() = default;
-        int run();
-        inline void stop() { m_running = false; }
-    private:
-        void update();
-        Display m_display;
-        Timer m_timer;
-        bool m_running;
+    DEBUG_INFO(gfx);
 
-        list<UniquePtr<Box>> m_boxes;
-    };
-
+    GFX_THROW_INFO(getDevice(gfx)->CreateInputLayout(layout.data(), (UINT) layout.size(),
+                                                     vertexBytecode->GetBufferPointer(),
+                                                     vertexBytecode->GetBufferSize(), &m_layout));
 }
 
 
-#endif //MAGE3DX_APP_H
+void mage::InputLayout::bind(mage::Graphics& gfx) noexcept
+{
+    getContext(gfx)->IASetInputLayout(m_layout.Get());
+}

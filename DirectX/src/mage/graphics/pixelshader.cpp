@@ -14,37 +14,27 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: pixelshader.cpp
+ * Date File Created: 9/20/2020 at 9:54 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
+#include <d3dcompiler.h>
+#include "mage/graphics/pixelshader.h"
+#include "mage/debug/graphicsexception.h"
 
-#include "display.h"
-#include "timer.h"
-#include "mage/entities/box.h"
-
-namespace mage
+mage::PixelShader::PixelShader(mage::Graphics& gfx, const std::wstring& path)
 {
-    class App
-    {
-    public:
-        App(int width, int height, const char* title);
-        virtual ~App() = default;
-        int run();
-        inline void stop() { m_running = false; }
-    private:
-        void update();
-        Display m_display;
-        Timer m_timer;
-        bool m_running;
+    DEBUG_INFO(gfx);
 
-        list<UniquePtr<Box>> m_boxes;
-    };
+    COMptr<ID3DBlob> blob;
+    GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &blob));
+    GFX_THROW_INFO(getDevice(gfx)->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_shader));
 
 }
 
 
-#endif //MAGE3DX_APP_H
+void mage::PixelShader::bind(mage::Graphics& gfx) noexcept
+{
+    getContext(gfx)->PSSetShader(m_shader.Get(), nullptr, 0);
+}

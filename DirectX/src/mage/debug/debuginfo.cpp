@@ -21,6 +21,7 @@
 
 #include "mage/debug/debuginfo.h"
 #include "mage/core/display.h"
+#include "mage/debug/graphicsexception.h"
 
 #pragma comment(lib, "dxguid.lib")
 

@@ -14,38 +14,31 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: infoexception.h
- * Date File Created: 9/18/2020 at 2:55 PM
+ * File Name: pixelshader.h
+ * Date File Created: 9/20/2020 at 9:54 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_INFOEXCEPTION_H
-#define MAGE3DX_INFOEXCEPTION_H
+#ifndef MAGE3DX_PIXELSHADER_H
+#define MAGE3DX_PIXELSHADER_H
 
 
 #include "pch.h"
-#include "mageexception.h"
+#include "bindable.h"
 
-#if MAGE_DEBUG
-    #define GFX_THROW_INFO_ONLY(func) m_debugInfo.set(); (func); {auto l = m_debugInfo.getMessages(); if(!l.empty()) {throw InfoException(__LINE__, __FILE__, l);}}
-#else
-    #define GFX_THROW_INFO_ONLY(func) (func)
-#endif
 
 namespace mage
 {
-    class InfoException : public MageException
+    class PixelShader : public Bindable
     {
     public:
-        InfoException(int line, const char* file, const list<std::string>& msgs) noexcept;
-        const char * what() const noexcept override;
-        const char * getType() const noexcept override;
-        std::string getErrorInfo() const noexcept;
-    private:
-        std::string m_info;
+        PixelShader(Graphics& gfx, const std::wstring& path);
+        void bind(Graphics &gfx) noexcept override;
+    protected:
+        COMptr<ID3D11PixelShader> m_shader;
     };
 
 }
 
 
-#endif //MAGE3DX_INFOEXCEPTION_H
+#endif //MAGE3DX_PIXELSHADER_H

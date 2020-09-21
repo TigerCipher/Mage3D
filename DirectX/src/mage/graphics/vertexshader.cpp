@@ -14,37 +14,34 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: vertexshader.cpp
+ * Date File Created: 9/20/2020 at 10:48 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
+#include <d3dcompiler.h>
+#include "mage/graphics/vertexshader.h"
+#include "mage/debug/graphicsexception.h"
 
-#include "display.h"
-#include "timer.h"
-#include "mage/entities/box.h"
-
-namespace mage
+mage::VertexShader::VertexShader(mage::Graphics& gfx, const std::wstring& path)
 {
-    class App
-    {
-    public:
-        App(int width, int height, const char* title);
-        virtual ~App() = default;
-        int run();
-        inline void stop() { m_running = false; }
-    private:
-        void update();
-        Display m_display;
-        Timer m_timer;
-        bool m_running;
+    DEBUG_INFO(gfx);
 
-        list<UniquePtr<Box>> m_boxes;
-    };
-
+    GFX_THROW_INFO( D3DReadFileToBlob( path.c_str(),&m_bytecode ) );
+	GFX_THROW_INFO( getDevice( gfx )->CreateVertexShader(
+		m_bytecode->GetBufferPointer(),
+		m_bytecode->GetBufferSize(),
+		nullptr,
+		&m_shader
+	) );
 }
 
+void mage::VertexShader::bind(mage::Graphics& gfx) noexcept
+{
+    getContext(gfx)->VSSetShader(m_shader.Get(), nullptr, 0);
+}
 
-#endif //MAGE3DX_APP_H
+ID3DBlob* mage::VertexShader::getBytecode() const noexcept
+{
+    return m_bytecode.Get();
+}

@@ -24,9 +24,9 @@
 int mage::App::run()
 {
     LOG_INFO("Main loop beginning");
-    while(m_running)
+    while (m_running)
     {
-        if(const auto exitCode = Display::processMessages())
+        if (const auto exitCode = Display::processMessages())
             return *exitCode;
         update();
     }
@@ -35,13 +35,35 @@ int mage::App::run()
 
 void mage::App::update()
 {
-    const float c = sin(m_timer.peek()) / 2.0f + 0.5f;
-    m_display.getGraphics().clear(1.0f, c, c);
-    m_display.getGraphics().drawTriangle(m_timer.peek(),
-                                         (float)m_display.m_mouse.getX() / (1920.0f / 2.0f) - 1.0f,
-                                         -(float)m_display.m_mouse.getY() / (1080.0f / 2.0f) + 1.0f);
-    m_display.getGraphics().drawTriangle(-m_timer.peek(),
-                                         0,
-                                         0);
+    float delta = m_timer.markPoint();
+    m_display.getGraphics().clear(0.07f, 0, 0.12f);
+
+    for(auto& b : m_boxes)
+    {
+        b->update(delta);
+        b->render(m_display.getGraphics());
+    }
+
     m_display.getGraphics().swap();
+}
+
+mage::App::App(int width, int height, const char* title) :
+        m_display(width, height, title),
+        m_running(true)
+{
+    std::mt19937 rng(std::random_device { }());
+    std::uniform_real_distribution<float> adist(0.0f, 3.1415f * 2.0f);
+    std::uniform_real_distribution<float> ddist(0.0f, 3.1415f * 2.0f);
+    std::uniform_real_distribution<float> odist(0.0f, 3.1415f * 0.3f);
+    std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
+
+    for (auto i = 0; i < 80; i++)
+    {
+        m_boxes.push_back(createScope<Box>(
+                m_display.getGraphics(), rng, adist,
+                ddist, odist, rdist
+                                          ));
+    }
+    m_display.getGraphics()
+             .setProjection(dx::XMMatrixPerspectiveLH(1.0f, m_display.getAspectRatio(), 0.5f, 40.0f));
 }

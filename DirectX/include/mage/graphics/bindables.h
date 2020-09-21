@@ -14,37 +14,25 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: bindables.h
+ * Date File Created: 9/20/2020 at 11:04 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
-
-#include "display.h"
-#include "timer.h"
-#include "mage/entities/box.h"
-
-namespace mage
-{
-    class App
-    {
-    public:
-        App(int width, int height, const char* title);
-        virtual ~App() = default;
-        int run();
-        inline void stop() { m_running = false; }
-    private:
-        void update();
-        Display m_display;
-        Timer m_timer;
-        bool m_running;
-
-        list<UniquePtr<Box>> m_boxes;
-    };
-
-}
+#ifndef MAGE3DX_BINDABLES_H
+#define MAGE3DX_BINDABLES_H
 
 
-#endif //MAGE3DX_APP_H
+#include "pch.h"
+
+#include "constantbuffer.h"
+#include "indexbuffer.h"
+#include "inputlayout.h"
+#include "pixelshader.h"
+#include "topology.h"
+#include "transformconstantbuffer.h"
+#include "vertexbuffer.h"
+#include "vertexshader.h"
+
+
+#endif //MAGE3DX_BINDABLES_H

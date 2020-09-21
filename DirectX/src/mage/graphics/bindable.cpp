@@ -14,37 +14,29 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: bindable.cpp
+ * Date File Created: 9/20/2020 at 9:14 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
+#include "mage/graphics/bindable.h"
 
-#include "display.h"
-#include "timer.h"
-#include "mage/entities/box.h"
-
-namespace mage
+ID3D11DeviceContext* mage::Bindable::getContext(mage::Graphics& gfx) noexcept
 {
-    class App
-    {
-    public:
-        App(int width, int height, const char* title);
-        virtual ~App() = default;
-        int run();
-        inline void stop() { m_running = false; }
-    private:
-        void update();
-        Display m_display;
-        Timer m_timer;
-        bool m_running;
-
-        list<UniquePtr<Box>> m_boxes;
-    };
-
+    return gfx.m_context.Get();
 }
 
+ID3D11Device* mage::Bindable::getDevice(mage::Graphics& gfx) noexcept
+{
+    return gfx.m_device.Get();
+}
 
-#endif //MAGE3DX_APP_H
+mage::DebugInfo& mage::Bindable::getDebugInfo(mage::Graphics& gfx) noexcept(!MAGE_DEBUG)
+{
+    #if MAGE_DEBUG
+    return gfx.m_debugInfo;
+    #else
+    throw std::logic_error("The Debug Info system is only available in debug builds. You are using a release build");
+    #endif
+
+}

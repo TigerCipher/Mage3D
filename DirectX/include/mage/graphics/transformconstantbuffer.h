@@ -14,38 +14,32 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: infoexception.h
- * Date File Created: 9/18/2020 at 2:55 PM
+ * File Name: transformconstantbuffer.h
+ * Date File Created: 9/20/2020 at 10:37 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_INFOEXCEPTION_H
-#define MAGE3DX_INFOEXCEPTION_H
+#ifndef MAGE3DX_TRANSFORMCONSTANTBUFFER_H
+#define MAGE3DX_TRANSFORMCONSTANTBUFFER_H
 
 
 #include "pch.h"
-#include "mageexception.h"
-
-#if MAGE_DEBUG
-    #define GFX_THROW_INFO_ONLY(func) m_debugInfo.set(); (func); {auto l = m_debugInfo.getMessages(); if(!l.empty()) {throw InfoException(__LINE__, __FILE__, l);}}
-#else
-    #define GFX_THROW_INFO_ONLY(func) (func)
-#endif
+#include "constantbuffer.h"
+#include "renderable.h"
 
 namespace mage
 {
-    class InfoException : public MageException
+    class TransformConstantBuffer : public Bindable
     {
     public:
-        InfoException(int line, const char* file, const list<std::string>& msgs) noexcept;
-        const char * what() const noexcept override;
-        const char * getType() const noexcept override;
-        std::string getErrorInfo() const noexcept;
+        TransformConstantBuffer(Graphics& gfx, const Renderable& parent) : m_vertexBuffer(gfx), m_parent(parent) {}
+        void bind(Graphics &gfx) noexcept override;
     private:
-        std::string m_info;
+        VertexConstantBuffer<mat4f> m_vertexBuffer;
+        const Renderable& m_parent;
     };
 
 }
 
 
-#endif //MAGE3DX_INFOEXCEPTION_H
+#endif //MAGE3DX_TRANSFORMCONSTANTBUFFER_H

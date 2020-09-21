@@ -1,0 +1,59 @@
+/*
+ * Mage3DX
+ * Copyright (C) 2020 Blue Moon Development. All rights reserved.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * Contact: team@bluemoondev.org
+ * 
+ * File Name: renderable.h
+ * Date File Created: 9/20/2020 at 10:28 PM
+ * Author: Matt
+ */
+
+#ifndef MAGE3DX_RENDERABLE_H
+#define MAGE3DX_RENDERABLE_H
+
+
+#include "pch.h"
+#include "graphics.h"
+#include "mage/core/mathhelper.h"
+
+
+namespace mage
+{
+    class Bindable;
+
+    class Renderable
+    {
+    public:
+        Renderable() = default;
+        virtual ~Renderable() = default;
+        Renderable(const Renderable& rhs) = delete;
+        Renderable& operator=(const Renderable& rhs) = delete;
+
+        [[nodiscard]] virtual mat4f getTransformMatrix() const noexcept = 0;
+
+        void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
+        virtual void update(float delta) noexcept = 0;
+
+        void addBindable(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG);
+        void addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept;
+
+    private:
+        const IndexBuffer* m_indexBuffer = nullptr;
+        list<UniquePtr<Bindable>> m_bindables;
+    };
+
+}
+
+
+#endif //MAGE3DX_RENDERABLE_H
