@@ -31,7 +31,7 @@ ID3D11Device* mage::Bindable::getDevice(mage::Graphics& gfx) noexcept
     return gfx.m_device.Get();
 }
 
-mage::DebugInfo& mage::Bindable::getDebugInfo(mage::Graphics& gfx) noexcept(!MAGE_DEBUG)
+mage::DebugInfo& mage::Bindable::getDebugInfo(mage::Graphics& gfx) noexcept(MAGE_DEBUG)
 {
     #if MAGE_DEBUG
     return gfx.m_debugInfo;

@@ -14,13 +14,13 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: box.h
- * Date File Created: 9/20/2020 at 11:01 PM
+ * File Name: melon.h
+ * Date File Created: 9/21/2020 at 11:37 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_BOX_H
-#define MAGE3DX_BOX_H
+#ifndef MAGE3DX_MELON_H
+#define MAGE3DX_MELON_H
 
 
 #include "pch.h"
@@ -28,36 +28,39 @@
 
 namespace mage
 {
-    class Box : public Renderable<Box>
+    class Melon : public Renderable<Melon>
     {
     public:
-        Box(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
-            std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
-            std::uniform_real_distribution<float>& rdist, std::uniform_real_distribution<float>& bdist);
+        Melon( Graphics& gfx,std::mt19937& rng,
+		std::uniform_real_distribution<float>& adist,
+		std::uniform_real_distribution<float>& ddist,
+		std::uniform_real_distribution<float>& odist,
+		std::uniform_real_distribution<float>& rdist,
+		std::uniform_int_distribution<int>& longdist,
+		std::uniform_int_distribution<int>& latdist );
+
+        mat4f getTransformMatrix() const noexcept override;
         void update(float delta) noexcept override;
-        [[nodiscard]] mat4f getTransformMatrix() const noexcept override;
 
     private:
         // positional
-        float r;
-        float roll = 0.0f;
-        float pitch = 0.0f;
-        float yaw = 0.0f;
-        float theta;
-        float phi;
-        float chi;
-        // speed (delta/s)
-        float droll;
-        float dpitch;
-        float dyaw;
-        float dtheta;
-        float dphi;
-        float dchi;
-
-        dx::XMFLOAT3X3 mt;
+	float r;
+	float roll = 0.0f;
+	float pitch = 0.0f;
+	float yaw = 0.0f;
+	float theta;
+	float phi;
+	float chi;
+	// speed (delta/s)
+	float droll;
+	float dpitch;
+	float dyaw;
+	float dtheta;
+	float dphi;
+	float dchi;
     };
 
 }
 
 
-#endif //MAGE3DX_BOX_H
+#endif //MAGE3DX_MELON_H

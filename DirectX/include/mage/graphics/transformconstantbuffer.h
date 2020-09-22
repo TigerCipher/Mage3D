@@ -25,18 +25,18 @@
 
 #include "pch.h"
 #include "constantbuffer.h"
-#include "renderable.h"
+#include "irenderable.h"
 
 namespace mage
 {
     class TransformConstantBuffer : public Bindable
     {
     public:
-        TransformConstantBuffer(Graphics& gfx, const Renderable& parent) : m_vertexBuffer(gfx), m_parent(parent) {}
+        TransformConstantBuffer(Graphics& gfx, const IRenderable& parent);
         void bind(Graphics &gfx) noexcept override;
     private:
-        VertexConstantBuffer<mat4f> m_vertexBuffer;
-        const Renderable& m_parent;
+        static UniquePtr<VertexConstantBuffer<mat4f>> m_vertexBuffer;
+        const IRenderable& m_parent;
     };
 
 }

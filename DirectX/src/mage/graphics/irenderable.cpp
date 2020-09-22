@@ -19,15 +19,19 @@
  * Author: Matt
  */
 
-#include "mage/graphics/renderable.h"
+#include "mage/graphics/irenderable.h"
 #include "mage/debug/graphicsexception.h"
 #include "mage/graphics/indexbuffer.h"
 #include <cassert>
 #include <typeinfo>
 
-void mage::Renderable::render(mage::Graphics& gfx) const noexcept(!MAGE_DEBUG)
+void mage::IRenderable::render(mage::Graphics& gfx) const noexcept(!MAGE_DEBUG)
 {
     for(auto& b : m_bindables)
+    {
+        b->bind(gfx);
+    }
+    for(auto& b : getStaticBinds())
     {
         b->bind(gfx);
     }
@@ -35,13 +39,13 @@ void mage::Renderable::render(mage::Graphics& gfx) const noexcept(!MAGE_DEBUG)
 }
 
 
-void mage::Renderable::addBindable(UniquePtr<mage::Bindable> bindable) noexcept(!MAGE_DEBUG)
+void mage::IRenderable::addBindable(UniquePtr<mage::Bindable> bindable) noexcept(!MAGE_DEBUG)
 {
     assert("MUST use addIndexBuffer when binding an IndexBuffer" && typeid(*bindable) != typeid(IndexBuffer));
     m_bindables.push_back(std::move(bindable));
 }
 
-void mage::Renderable::addIndexBuffer(UniquePtr<struct IndexBuffer> ibuf) noexcept
+void mage::IRenderable::addIndexBuffer(UniquePtr<struct IndexBuffer> ibuf) noexcept
 {
     assert("Do not add a second IndexBuffer" && !m_indexBuffer);
     m_indexBuffer = ibuf.get();

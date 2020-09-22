@@ -19,7 +19,10 @@
  * Author: Matt
  */
 
+#include <mage/entities/box.h>
+#include <mage/entities/melon.h>
 #include "mage/core/app.h"
+#include "mage/entities/pyramid.h"
 
 int mage::App::run()
 {
@@ -38,7 +41,7 @@ void mage::App::update()
     float delta = m_timer.markPoint();
     m_display.getGraphics().clear(0.07f, 0, 0.12f);
 
-    for(auto& b : m_boxes)
+    for (auto& b : m_renderables)
     {
         b->update(delta);
         b->render(m_display.getGraphics());
@@ -51,19 +54,55 @@ mage::App::App(int width, int height, const char* title) :
         m_display(width, height, title),
         m_running(true)
 {
-    std::mt19937 rng(std::random_device { }());
-    std::uniform_real_distribution<float> adist(0.0f, 3.1415f * 2.0f);
-    std::uniform_real_distribution<float> ddist(0.0f, 3.1415f * 2.0f);
-    std::uniform_real_distribution<float> odist(0.0f, 3.1415f * 0.3f);
-    std::uniform_real_distribution<float> rdist(6.0f, 20.0f);
-
-    for (auto i = 0; i < 80; i++)
+    class Factory
     {
-        m_boxes.push_back(createScope<Box>(
-                m_display.getGraphics(), rng, adist,
-                ddist, odist, rdist
-                                          ));
-    }
+    public:
+        explicit Factory(Graphics& gfx)
+                :
+                gfx(gfx) { }
+
+        std::unique_ptr<IRenderable> operator()()
+        {
+            switch (typedist(rng))
+            {
+                case 0:
+                    return createScope<Pyramid>(
+                            gfx, rng, adist, ddist,
+                            odist, rdist
+                                               );
+                case 1:
+                    return createScope<Box>(
+                            gfx, rng, adist, ddist,
+                            odist, rdist, bdist
+                                           );
+                case 2:
+                    return createScope<Melon>(
+                            gfx, rng, adist, ddist,
+                            odist, rdist, longdist, latdist
+                                             );
+                default:
+                    assert(false && "bad drawable type in factory");
+                    return { };
+            }
+        }
+
+    private:
+        Graphics& gfx;
+        std::mt19937 rng { std::random_device { }() };
+        std::uniform_real_distribution<float> adist { 0.0f, PI * 2.0f };
+        std::uniform_real_distribution<float> ddist { 0.0f, PI * 0.5f };
+        std::uniform_real_distribution<float> odist { 0.0f, PI * 0.08f };
+        std::uniform_real_distribution<float> rdist { 6.0f, 20.0f };
+        std::uniform_real_distribution<float> bdist { 0.4f, 3.0f };
+        std::uniform_int_distribution<int> latdist { 5, 20 };
+        std::uniform_int_distribution<int> longdist { 10, 40 };
+        std::uniform_int_distribution<int> typedist { 0, 2 };
+    };
+
+    Factory f(m_display.getGraphics());
+    m_renderables.reserve(NUM_RENDERS);
+    std::generate_n(std::back_inserter(m_renderables), NUM_RENDERS, f);
+
     m_display.getGraphics()
              .setProjection(dx::XMMatrixPerspectiveLH(1.0f, m_display.getAspectRatio(), 0.5f, 40.0f));
 }

@@ -37,7 +37,7 @@ namespace mage
     protected:
         static ID3D11DeviceContext* getContext(Graphics& gfx) noexcept;
         static ID3D11Device* getDevice(Graphics& gfx) noexcept;
-        static DebugInfo& getDebugInfo(Graphics& gfx) noexcept(!MAGE_DEBUG);
+        static DebugInfo& getDebugInfo(Graphics& gfx) noexcept(MAGE_DEBUG);
     };
 
 }

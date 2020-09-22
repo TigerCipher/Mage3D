@@ -15,7 +15,7 @@
  * Contact: team@bluemoondev.org
  * 
  * File Name: renderable.h
- * Date File Created: 9/20/2020 at 10:28 PM
+ * Date File Created: 9/21/2020 at 10:02 PM
  * Author: Matt
  */
 
@@ -24,36 +24,60 @@
 
 
 #include "pch.h"
-#include "graphics.h"
-#include "mage/core/mathhelper.h"
+#include "irenderable.h"
+#include "indexbuffer.h"
 
 
 namespace mage
 {
-    class Bindable;
-
-    class Renderable
+    template<class T>
+    class Renderable : public IRenderable
     {
-    public:
-        Renderable() = default;
-        virtual ~Renderable() = default;
-        Renderable(const Renderable& rhs) = delete;
-        Renderable& operator=(const Renderable& rhs) = delete;
+    protected:
+        static bool isInitialized() noexcept
+        {
+            return !staticBinds.empty();
+        }
 
-        [[nodiscard]] virtual mat4f getTransformMatrix() const noexcept = 0;
+        static void addStaticBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG)
+        {
+            assert("MUST use addStaticIndexBuffer for IndexBuffer types" && typeid(*bindable) != typeid(IndexBuffer));
+            staticBinds.push_back(std::move(bindable));
+        }
 
-        void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
-        virtual void update(float delta) noexcept = 0;
+        void addStaticIndexBuffer(UniquePtr<IndexBuffer> ibuf) noexcept(!MAGE_DEBUG)
+        {
+            assert("Do not add a second IndexBuffer" && !m_indexBuffer);
+            m_indexBuffer = ibuf.get();
+            staticBinds.push_back(std::move(ibuf));
+        }
 
-        void addBindable(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG);
-        void addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept;
-
+        void setIndexStatic() noexcept(!MAGE_DEBUG)
+        {
+            assert("Do not add a second IndexBuffer" && !m_indexBuffer);
+            for(const auto& b : staticBinds)
+            {
+                if(const auto p = dynamic_cast<IndexBuffer*>(b.get()))
+                {
+                    m_indexBuffer = p;
+                    return;
+                }
+            }
+            assert("Failed to find index buffer from static bindables" && m_indexBuffer);
+        }
     private:
-        const IndexBuffer* m_indexBuffer = nullptr;
-        list<UniquePtr<Bindable>> m_bindables;
+
+        [[nodiscard]] const list<UniquePtr<Bindable>>& getStaticBinds() const noexcept override
+        {
+            return staticBinds;
+        }
+
+        static list<UniquePtr<Bindable>> staticBinds;
     };
 
 }
 
+template<class T>
+list<UniquePtr<mage::Bindable>> mage::Renderable<T>::staticBinds;
 
 #endif //MAGE3DX_RENDERABLE_H

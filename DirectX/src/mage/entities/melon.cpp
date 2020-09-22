@@ -14,18 +14,19 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: box.cpp
- * Date File Created: 9/20/2020 at 11:01 PM
+ * File Name: melon.cpp
+ * Date File Created: 9/21/2020 at 11:37 PM
  * Author: Matt
  */
 
-#include "mage/entities/box.h"
+#include "mage/entities/melon.h"
 #include "mage/graphics/bindables.h"
-#include "mage/entities/cube.h"
+#include "mage/entities/sphere.h"
 
-mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
-               std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
-               std::uniform_real_distribution<float>& rdist, std::uniform_real_distribution<float>& bdist) :
+mage::Melon::Melon(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+                   std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
+                   std::uniform_real_distribution<float>& rdist, std::uniform_int_distribution<int>& longdist,
+                   std::uniform_int_distribution<int>& latdist) :
         r(rdist(rng)),
         droll(ddist(rng)),
         dpitch(ddist(rng)),
@@ -37,17 +38,9 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
         theta(adist(rng)),
         phi(adist(rng))
 {
-
     if (!isInitialized())
     {
-        struct Vertex
-        {
-            vec3f pos;
-        };
-        auto model = Cube::make<Vertex>();
-        //model.transform( dx::XMMatrixScaling( 1.0f,1.0f,1.2f ) );
 
-        addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
 
         auto pvs = createScope<VertexShader>(gfx, L"basicVS.cso");
         auto pvsbc = pvs->getBytecode();
@@ -55,7 +48,6 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
 
         addStaticBind(createScope<PixelShader>(gfx, L"basicPS.cso"));
 
-        addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
         struct ConstantBuffer2
         {
@@ -70,14 +62,14 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
         const ConstantBuffer2 cb2 =
                 {
                         {
-                                { 1.0f, 1.0f, 1.0f },
-                                { 1.0f, 0.0f, 0.0f },
-                                { 0.0f, 1.0f, 0.0f },
+                                { 0.0f, 0.5f, 0.0f },
                                 { 1.0f, 1.0f, 0.0f },
-                                { 0.0f, 0.0f, 1.0f },
-                                { 1.0f, 0.0f, 1.0f },
-                                { 0.0f, 1.0f, 1.0f },
-                                { 0.0f, 0.0f, 0.0f },
+                                { 0.0f, 0.5f, 0.0f },
+                                { 1.0f, 1.0f, 0.0f },
+                                { 0.0f, 0.5f, 0.0f },
+                                { 1.0f, 1.0f, 0.0f },
+                                { 0.0f, 0.5f, 0.0f },
+                                { 1.0f, 1.0f, 0.0f },
                         }
                 };
         addStaticBind(createScope<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
@@ -89,16 +81,30 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
         addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
 
         addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-    } else
-    {
-        setIndexStatic();
     }
+
+    struct Vertex
+    {
+        vec3f pos;
+    };
+    auto model = Sphere::makeTesselated<Vertex>(latdist(rng), longdist(rng));
+    model.transform(dx::XMMatrixScaling(1.0f, 1.0f, 1.2f));
+
+    addBindable(createScope<VertexBuffer>(gfx, model.vertices));
+    addIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
     addBindable(createScope<TransformConstantBuffer>(gfx, *this));
 
-    dx::XMStoreFloat3x3(&mt, dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng)));
 }
 
-void mage::Box::update(float delta) noexcept
+mat4f mage::Melon::getTransformMatrix() const noexcept
+{
+    return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
+           dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
+           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
+           dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+}
+
+void mage::Melon::update(float delta) noexcept
 {
     roll += droll * delta;
     pitch += dpitch * delta;
@@ -108,10 +114,4 @@ void mage::Box::update(float delta) noexcept
     chi += dchi * delta;
 }
 
-mat4f mage::Box::getTransformMatrix() const noexcept
-{
-    return dx::XMLoadFloat3x3(&mt) * dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-           dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
-           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
-           dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
-}
+

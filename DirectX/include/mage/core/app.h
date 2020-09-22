@@ -24,7 +24,8 @@
 
 #include "display.h"
 #include "timer.h"
-#include "mage/entities/box.h"
+
+#include "mage/graphics/irenderable.h"
 
 namespace mage
 {
@@ -41,7 +42,8 @@ namespace mage
         Timer m_timer;
         bool m_running;
 
-        list<UniquePtr<Box>> m_boxes;
+        list<UniquePtr<IRenderable>> m_renderables;
+        static constexpr size_t NUM_RENDERS = 180;
     };
 
 }

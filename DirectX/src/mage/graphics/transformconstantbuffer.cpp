@@ -21,8 +21,21 @@
 
 #include "mage/graphics/transformconstantbuffer.h"
 
+
+UniquePtr<mage::VertexConstantBuffer<mat4f>> mage::TransformConstantBuffer::m_vertexBuffer;
+
+mage::TransformConstantBuffer::TransformConstantBuffer(mage::Graphics& gfx, const mage::IRenderable& parent): m_parent(parent)
+{
+    if(!m_vertexBuffer)
+    {
+        m_vertexBuffer = createScope<VertexConstantBuffer<mat4f>>(gfx);
+    }
+}
+
+
 void mage::TransformConstantBuffer::bind(mage::Graphics& gfx) noexcept
 {
-    m_vertexBuffer.update(gfx, dx::XMMatrixTranspose(m_parent.getTransformMatrix() * gfx.getProjection()));
-    m_vertexBuffer.bind(gfx);
+    m_vertexBuffer->update(gfx, dx::XMMatrixTranspose(m_parent.getTransformMatrix() * gfx.getProjection()));
+    m_vertexBuffer->bind(gfx);
 }
+

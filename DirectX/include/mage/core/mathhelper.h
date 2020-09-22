@@ -26,15 +26,50 @@
 #include "pch.h"
 
 #include <DirectXMath.h>
+#include <cmath>
 
 namespace dx = DirectX;
 
 typedef dx::XMMATRIX mat4f;
-typedef dx::XMVECTOR vec;
+typedef dx::XMVECTOR vec4f;
+typedef dx::XMFLOAT3 vec3f;
+typedef dx::XMFLOAT2 vec2f;
+
+constexpr float PI = 3.14159265f;
+constexpr double PI_D = 3.1415926535897932;
+
+
+template<typename T>
+constexpr auto pow2(const T& x)
+{
+    return x * x;
+}
+
+template<typename T>
+constexpr T interpolate(const T& src, const T& dest, float alpha)
+{
+    return src + (dest - src) * alpha;
+}
+
+template<typename T>
+constexpr T toRadians(T degrees)
+{
+    return degrees * PI / (T) 180.0;
+}
+
+template<typename T>
+T wrapAngle(T theta)
+{
+    const T modded = fmod(theta, (T) 2.0 * (T) PI_D);
+    return (modded > (T) PI_D) ? (modded - (T) 2.0 * (T)PI_D) : modded;
+}
+
+
+
 
 namespace mage
 {
-    float dot(vec v1, vec v2);
+    float dot(vec4f v1, vec4f v2);
 }
 
 #ifdef MATH_HELPER_IMPL
@@ -42,7 +77,7 @@ namespace mage
     #define MATH_HELPER_IMPL_ONCE
 namespace mage
 {
-    float dot(vec v1, vec v2)
+    float dot(vec4f v1, vec4f v2)
     {
         auto result = dx::XMVector4Dot(v1, v2);
         auto d = dx::XMVectorGetX(result);

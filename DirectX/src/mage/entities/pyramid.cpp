@@ -14,18 +14,19 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: box.cpp
- * Date File Created: 9/20/2020 at 11:01 PM
+ * File Name: pyramid.cpp
+ * Date File Created: 9/21/2020 at 11:44 PM
  * Author: Matt
  */
 
-#include "mage/entities/box.h"
+#include "mage/entities/pyramid.h"
 #include "mage/graphics/bindables.h"
-#include "mage/entities/cube.h"
+#include "mage/entities/cone.h"
 
-mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
-               std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
-               std::uniform_real_distribution<float>& rdist, std::uniform_real_distribution<float>& bdist) :
+mage::Pyramid::Pyramid(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+                       std::uniform_real_distribution<float>& ddist,
+                       std::uniform_real_distribution<float>& odist,
+                       std::uniform_real_distribution<float>& rdist) :
         r(rdist(rng)),
         droll(ddist(rng)),
         dpitch(ddist(rng)),
@@ -37,54 +38,46 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
         theta(adist(rng)),
         phi(adist(rng))
 {
-
     if (!isInitialized())
     {
         struct Vertex
         {
             vec3f pos;
+            struct
+            {
+                ubyte r;
+                ubyte g;
+                ubyte b;
+                ubyte a;
+            } color;
         };
-        auto model = Cube::make<Vertex>();
-        //model.transform( dx::XMMatrixScaling( 1.0f,1.0f,1.2f ) );
+        auto model = Cone::makeTesselated<Vertex>(4);
+        model.vertices[ 0 ].color = { 255, 255, 0 };
+        model.vertices[ 1 ].color = { 255, 255, 0 };
+        model.vertices[ 2 ].color = { 255, 255, 0 };
+        model.vertices[ 3 ].color = { 255, 255, 0 };
+        model.vertices[ 4 ].color = { 255, 255, 80 };
+        model.vertices[ 5 ].color = { 255, 10, 0 };
+        model.transform(dx::XMMatrixScaling(1.0f, 1.0f, 0.7f));
 
         addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
 
-        auto pvs = createScope<VertexShader>(gfx, L"basicVS.cso");
+        auto pvs = createScope<VertexShader>(gfx, L"basicColorBlendVS.cso");
         auto pvsbc = pvs->getBytecode();
         addStaticBind(std::move(pvs));
 
-        addStaticBind(createScope<PixelShader>(gfx, L"basicPS.cso"));
+        addStaticBind(createScope<PixelShader>(gfx, L"basicColorBlendPS.cso"));
 
         addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
-        struct ConstantBuffer2
-        {
-            struct
-            {
-                float r;
-                float g;
-                float b;
-                float a;
-            } face_colors[8];
-        };
-        const ConstantBuffer2 cb2 =
-                {
-                        {
-                                { 1.0f, 1.0f, 1.0f },
-                                { 1.0f, 0.0f, 0.0f },
-                                { 0.0f, 1.0f, 0.0f },
-                                { 1.0f, 1.0f, 0.0f },
-                                { 0.0f, 0.0f, 1.0f },
-                                { 1.0f, 0.0f, 1.0f },
-                                { 0.0f, 1.0f, 1.0f },
-                                { 0.0f, 0.0f, 0.0f },
-                        }
-                };
-        addStaticBind(createScope<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
 
         const list<D3D11_INPUT_ELEMENT_DESC> ied =
                 {
                         { "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+                        {
+                          "Color",    0, DXGI_FORMAT_R8G8B8A8_UNORM,  0, sizeof(float) *
+                                                                         3, D3D11_INPUT_PER_VERTEX_DATA, 0
+                        },
                 };
         addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
 
@@ -94,11 +87,18 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
         setIndexStatic();
     }
     addBindable(createScope<TransformConstantBuffer>(gfx, *this));
-
-    dx::XMStoreFloat3x3(&mt, dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng)));
 }
 
-void mage::Box::update(float delta) noexcept
+
+mat4f mage::Pyramid::getTransformMatrix() const noexcept
+{
+    return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
+           dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
+           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
+           dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+}
+
+void mage::Pyramid::update(float delta) noexcept
 {
     roll += droll * delta;
     pitch += dpitch * delta;
@@ -108,10 +108,3 @@ void mage::Box::update(float delta) noexcept
     chi += dchi * delta;
 }
 
-mat4f mage::Box::getTransformMatrix() const noexcept
-{
-    return dx::XMLoadFloat3x3(&mt) * dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-           dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
-           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
-           dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
-}
