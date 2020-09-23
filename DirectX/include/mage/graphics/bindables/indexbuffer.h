@@ -14,32 +14,32 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: transformconstantbuffer.h
- * Date File Created: 9/20/2020 at 10:37 PM
+ * File Name: indexbuffer.h
+ * Date File Created: 9/20/2020 at 9:45 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TRANSFORMCONSTANTBUFFER_H
-#define MAGE3DX_TRANSFORMCONSTANTBUFFER_H
+#ifndef MAGE3DX_INDEXBUFFER_H
+#define MAGE3DX_INDEXBUFFER_H
 
 
 //#include "pch.h"
-#include "constantbuffer.h"
-#include "irenderable.h"
+#include "mage/graphics/bindable.h"
 
 namespace mage
 {
-    class TransformConstantBuffer : public Bindable
+    class IndexBuffer : public Bindable
     {
     public:
-        TransformConstantBuffer(Graphics& gfx, const IRenderable& parent);
+        IndexBuffer(Graphics& gfx, const list<ushort>& indices);
         void bind(Graphics &gfx) noexcept override;
-    private:
-        static UniquePtr<VertexConstantBuffer<mat4f>> m_vertexBuffer;
-        const IRenderable& m_parent;
+        [[nodiscard]] inline UINT getCount() const noexcept { return m_count; }
+    protected:
+        UINT m_count;
+        COMptr<ID3D11Buffer> m_buffer;
     };
 
 }
 
 
-#endif //MAGE3DX_TRANSFORMCONSTANTBUFFER_H
+#endif //MAGE3DX_INDEXBUFFER_H

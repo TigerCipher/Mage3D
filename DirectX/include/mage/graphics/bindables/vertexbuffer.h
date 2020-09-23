@@ -24,7 +24,7 @@
 
 
 //#include "pch.h"
-#include "bindable.h"
+#include "mage/graphics/bindable.h"
 #include "mage/debug/graphicsexception.h"
 
 namespace mage

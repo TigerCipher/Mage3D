@@ -14,31 +14,32 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: pixelshader.h
- * Date File Created: 9/20/2020 at 9:54 PM
+ * File Name: transformconstantbuffer.h
+ * Date File Created: 9/20/2020 at 10:37 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_PIXELSHADER_H
-#define MAGE3DX_PIXELSHADER_H
+#ifndef MAGE3DX_TRANSFORMCONSTANTBUFFER_H
+#define MAGE3DX_TRANSFORMCONSTANTBUFFER_H
 
 
 //#include "pch.h"
-#include "bindable.h"
-
+#include "constantbuffer.h"
+#include "mage/graphics/irenderable.h"
 
 namespace mage
 {
-    class PixelShader : public Bindable
+    class TransformConstantBuffer : public Bindable
     {
     public:
-        PixelShader(Graphics& gfx, const std::wstring& path);
+        TransformConstantBuffer(Graphics& gfx, const IRenderable& parent);
         void bind(Graphics &gfx) noexcept override;
-    protected:
-        COMptr<ID3D11PixelShader> m_shader;
+    private:
+        static UniquePtr<VertexConstantBuffer<mat4f>> m_vertexBuffer;
+        const IRenderable& m_parent;
     };
 
 }
 
 
-#endif //MAGE3DX_PIXELSHADER_H
+#endif //MAGE3DX_TRANSFORMCONSTANTBUFFER_H

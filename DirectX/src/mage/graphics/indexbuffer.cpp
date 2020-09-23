@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "mage/graphics/indexbuffer.h"
+#include "mage/graphics/bindables/indexbuffer.h"
 #include "mage/debug/graphicsexception.h"
 
 mage::IndexBuffer::IndexBuffer(mage::Graphics& gfx, const list<ushort>& indices) :

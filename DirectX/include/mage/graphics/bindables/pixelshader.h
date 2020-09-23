@@ -14,32 +14,31 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: indexbuffer.h
- * Date File Created: 9/20/2020 at 9:45 PM
+ * File Name: pixelshader.h
+ * Date File Created: 9/20/2020 at 9:54 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_INDEXBUFFER_H
-#define MAGE3DX_INDEXBUFFER_H
+#ifndef MAGE3DX_PIXELSHADER_H
+#define MAGE3DX_PIXELSHADER_H
 
 
 //#include "pch.h"
-#include "bindable.h"
+#include "mage/graphics/bindable.h"
+
 
 namespace mage
 {
-    class IndexBuffer : public Bindable
+    class PixelShader : public Bindable
     {
     public:
-        IndexBuffer(Graphics& gfx, const list<ushort>& indices);
+        PixelShader(Graphics& gfx, const std::wstring& path);
         void bind(Graphics &gfx) noexcept override;
-        [[nodiscard]] inline UINT getCount() const noexcept { return m_count; }
     protected:
-        UINT m_count;
-        COMptr<ID3D11Buffer> m_buffer;
+        COMptr<ID3D11PixelShader> m_shader;
     };
 
 }
 
 
-#endif //MAGE3DX_INDEXBUFFER_H
+#endif //MAGE3DX_PIXELSHADER_H

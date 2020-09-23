@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "mage/graphics/topology.h"
+#include "mage/graphics/bindables/topology.h"
 
 
 void mage::Topology::bind(mage::Graphics& gfx) noexcept

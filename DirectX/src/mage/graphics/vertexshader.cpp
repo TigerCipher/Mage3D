@@ -20,7 +20,7 @@
  */
 
 #include <d3dcompiler.h>
-#include "mage/graphics/vertexshader.h"
+#include "mage/graphics/bindables/vertexshader.h"
 #include "mage/debug/graphicsexception.h"
 
 mage::VertexShader::VertexShader(mage::Graphics& gfx, const std::wstring& path)

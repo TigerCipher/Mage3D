@@ -14,33 +14,30 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: vertexshader.h
- * Date File Created: 9/20/2020 at 10:48 PM
+ * File Name: inputlayout.h
+ * Date File Created: 9/20/2020 at 9:50 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_VERTEXSHADER_H
-#define MAGE3DX_VERTEXSHADER_H
+#ifndef MAGE3DX_INPUTLAYOUT_H
+#define MAGE3DX_INPUTLAYOUT_H
 
 
 //#include "pch.h"
-#include "bindable.h"
-
+#include "mage/graphics/bindable.h"
 
 namespace mage
 {
-    class VertexShader : public Bindable
+    class InputLayout : public Bindable
     {
     public:
-        VertexShader(Graphics& gfx, const std::wstring& path);
+        InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout, ID3DBlob* vertexBytecode);
         void bind(Graphics &gfx) noexcept override;
-        [[nodiscard]] ID3DBlob* getBytecode() const noexcept;
     protected:
-        COMptr<ID3DBlob> m_bytecode;
-        COMptr<ID3D11VertexShader> m_shader;
+        COMptr<ID3D11InputLayout> m_layout;
     };
 
 }
 
 
-#endif //MAGE3DX_VERTEXSHADER_H
+#endif //MAGE3DX_INPUTLAYOUT_H

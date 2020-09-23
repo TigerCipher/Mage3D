@@ -24,7 +24,7 @@
 
 
 //#include "pch.h"
-#include "graphics.h"
+#include "mage/graphics/graphics.h"
 
 
 namespace mage

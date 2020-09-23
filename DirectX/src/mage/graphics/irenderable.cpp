@@ -21,7 +21,7 @@
 
 #include "mage/graphics/irenderable.h"
 #include "mage/debug/graphicsexception.h"
-#include "mage/graphics/indexbuffer.h"
+#include "mage/graphics/bindables/indexbuffer.h"
 #include <cassert>
 #include <typeinfo>
 

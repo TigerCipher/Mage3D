@@ -20,7 +20,7 @@
  */
 
 #include <d3dcompiler.h>
-#include "mage/graphics/pixelshader.h"
+#include "mage/graphics/bindables/pixelshader.h"
 #include "mage/debug/graphicsexception.h"
 
 mage::PixelShader::PixelShader(mage::Graphics& gfx, const std::wstring& path)

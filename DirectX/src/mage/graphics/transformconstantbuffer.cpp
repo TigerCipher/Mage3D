@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "mage/graphics/transformconstantbuffer.h"
+#include "mage/graphics/bindables/transformconstantbuffer.h"
 
 
 UniquePtr<mage::VertexConstantBuffer<mat4f>> mage::TransformConstantBuffer::m_vertexBuffer;

@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "mage/graphics/inputlayout.h"
+#include "mage/graphics/bindables/inputlayout.h"
 #include "mage/debug/graphicsexception.h"
 
 mage::InputLayout::InputLayout(mage::Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout,

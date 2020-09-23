@@ -25,14 +25,14 @@
 
 //#include "pch.h"
 
-#include "constantbuffer.h"
-#include "indexbuffer.h"
-#include "inputlayout.h"
-#include "pixelshader.h"
-#include "topology.h"
-#include "transformconstantbuffer.h"
-#include "vertexbuffer.h"
-#include "vertexshader.h"
+#include "mage/graphics/bindables/constantbuffer.h"
+#include "mage/graphics/bindables/indexbuffer.h"
+#include "mage/graphics/bindables/inputlayout.h"
+#include "mage/graphics/bindables/pixelshader.h"
+#include "mage/graphics/bindables/topology.h"
+#include "mage/graphics/bindables/transformconstantbuffer.h"
+#include "mage/graphics/bindables/vertexbuffer.h"
+#include "mage/graphics/bindables/vertexshader.h"
 
 
 #endif //MAGE3DX_BINDABLES_H

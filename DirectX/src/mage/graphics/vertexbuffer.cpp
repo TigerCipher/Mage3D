@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "mage/graphics/vertexbuffer.h"
+#include "mage/graphics/bindables/vertexbuffer.h"
 
 void mage::VertexBuffer::bind(mage::Graphics& gfx) noexcept
 {
