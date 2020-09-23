@@ -5,7 +5,7 @@ VERSION 0.1
 DESCRIPTION "A DirectX 11 version of my Mage3D engine. Mostly for my own learning purposes"
 LANGUAGES CXX)
 
-#set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE ON)
 # I haven't decided yet if my main opengl engine will have an editor or be a pure API,
 # But I plan to make this directX version an editor to some degree, so at least for now

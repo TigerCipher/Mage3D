@@ -4,6 +4,8 @@ file(GLOB_RECURSE HEADER_LIST CONFIGURE_DEPENDS
         ${Mage3DX_SOURCE_DIR}/include/*.hpp
         )
 
+list(REMOVE_ITEM HEADER_LIST "${Mage3DX_SOURCE_DIR}/include/pch.h")
+
 file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS
         ${Mage3DX_SOURCE_DIR}/src/*.cpp
         ${Mage3DX_SOURCE_DIR}/src/*.cc
@@ -54,8 +56,15 @@ foreach(CompilerFlag ${CompilerFlags})
   string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
 endforeach()
 
-target_compile_options(mage3dx PUBLIC /MP /Ot /fp:fast)# -MTd)
+
+target_compile_options(mage3dx PUBLIC /MP /Ot /fp:fast "/FI${Mage3DX_SOURCE_DIR}/include/pch.h")# -MTd)
 target_precompile_headers(mage3dx PRIVATE "../include/pch.h")
+
+#foreach(hdrFile ${HEADER_LIST})
+#    if(NOT ${hdrFile} STREQUAL "${Mage3DX_SOURCE_DIR}/include/pch.h")
+#        set_source_files_properties(${hdrFile} PROPERTIES COMPILE_FLAGS "-include ../include/pch.h")
+#    endif()
+#endforeach()
 
 
 include(shaders)
@@ -75,3 +84,10 @@ target_source_group(
         ROOT_DIR "${CMAKE_SOURCE_DIR}/src" "${CMAKE_SOURCE_DIR}/include"
         TARGET mage3dx
         PREFIX "Source Files" "Header Files")
+
+
+
+get_target_property(MAIN_CFLAGS mage3dx COMPILE_OPTIONS)
+# also see: COMPILE_DEFINITIONS INCLUDE_DIRECTORIES
+message(STATUS "-- Target compiler flags are: ${MAIN_CFLAGS}")
+message(STATUS "CXX Flags are: ${CMAKE_CXX_FLAGS_DEBUG}")
