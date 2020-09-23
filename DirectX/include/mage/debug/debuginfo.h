@@ -22,7 +22,7 @@
 #ifndef MAGE3DX_DEBUGINFO_H
 #define MAGE3DX_DEBUGINFO_H
 
-#include "pch.h"
+//#include "pch.h"
 #include <dxgidebug.h>
 
 namespace mage

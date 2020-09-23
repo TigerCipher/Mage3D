@@ -7,4 +7,9 @@
       <file path="$PROJECT_DIR$/src" />
     </sourceRoots>
   </component>
+  <component name="ProjectResources">
+    <resource url="http://schemas.microsoft.com/SMI/2005/WindowsSettings" location="$PROJECT_DIR$" />
+    <resource url="http://schemas.microsoft.com/SMI/2016/WindowsSettings" location="$PROJECT_DIR$" />
+    <resource url="urn:schemas-microsoft-com:asm.v1" location="$PROJECT_DIR$" />
+  </component>
 </project>

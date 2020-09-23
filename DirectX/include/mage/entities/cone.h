@@ -23,7 +23,7 @@
 #define MAGE3DX_CONE_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "mage/core/mathhelper.h"
 #include "indexedtrianglelist.h"
 

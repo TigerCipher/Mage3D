@@ -23,7 +23,7 @@
 #define MAGE3DX_IRENDERABLE_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "graphics.h"
 #include "mage/core/mathhelper.h"
 

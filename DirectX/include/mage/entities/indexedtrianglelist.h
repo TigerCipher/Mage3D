@@ -25,7 +25,7 @@
 
 #include <utility>
 
-#include "pch.h"
+//#include "pch.h"
 #include "mage/core/mathhelper.h"
 
 namespace mage

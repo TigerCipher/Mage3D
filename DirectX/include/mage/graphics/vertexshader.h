@@ -23,7 +23,7 @@
 #define MAGE3DX_VERTEXSHADER_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "bindable.h"
 
 

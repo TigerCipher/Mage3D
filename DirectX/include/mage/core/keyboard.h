@@ -22,7 +22,7 @@
 #ifndef MAGE3DX_KEYBOARD_H
 #define MAGE3DX_KEYBOARD_H
 
-#include "pch.h"
+//#include "pch.h"
 #include <bitset>
 
 namespace mage
@@ -41,6 +41,7 @@ namespace mage
 
             Event() noexcept : m_type(Type::INVALID), m_code(0) {}
             Event(Type type, uchar code) noexcept : m_type(type), m_code(code) {}
+
 
             [[nodiscard]] bool isPress() const noexcept { return m_type == Type::PRESS; }
             [[nodiscard]] bool isRelease() const noexcept { return m_type == Type::RELEASE; }

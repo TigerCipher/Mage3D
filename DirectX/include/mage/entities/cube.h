@@ -23,7 +23,7 @@
 #define MAGE3DX_CUBE_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "indexedtrianglelist.h"
 #include "mage/core/mathhelper.h"
 

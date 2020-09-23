@@ -23,7 +23,7 @@
 #define MAGE3DX_CONSTANTBUFFER_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "bindable.h"
 #include "mage/debug/graphicsexception.h"
 

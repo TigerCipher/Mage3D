@@ -63,6 +63,12 @@ HINSTANCE mage::Display::Window::getInstance() noexcept
 mage::Display::Display(int width, int height, const char* title)
 {
     LOG_INFO("Creating display of size: ({}, {})", width, height);
+    //LOG_TRACE("Enabling Process DPI awareness");
+    //if(!SetProcessDPIAware())
+    //{
+    //    throw DISPLAY_LAST_EXCEPTION();
+    //}
+    LOG_TRACE("Is process dpi aware? {}", IsProcessDPIAware());
     RECT region;
     // Center our window to the desktop
     GetClientRect(GetDesktopWindow(), &region);
@@ -79,7 +85,7 @@ mage::Display::Display(int width, int height, const char* title)
     }
     //RECT screenRegion;
     //GetClientRect(GetDesktopWindow(), &screenRegion);
-    m_hwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, region.left,
+    m_hwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU, region.left,
                           region.top, width, height, nullptr,
                           nullptr, Window::getInstance(), this);
 

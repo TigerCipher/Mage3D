@@ -25,7 +25,7 @@ set(MAGE3D_LINKS PUBLIC ${BMD_LIBRARIES} ${SPDLOG_LIBRARIES} ${FMT_LIBRARIES})
 set(MAGE3D_INCLUDES "../include" ${BMD_INCLUDE_DIRS} ${SPDLOG_INCLUDE_DIRS} ${FMT_INCLUDE_DIRS})
 
 message(Blue "Creating Mage3DX executable")
-add_executable(mage3dx WIN32 ${SRC_LIST} ${HEADER_LIST})
+add_executable(mage3dx WIN32 ${SRC_LIST} ${HEADER_LIST} "${Mage3DX_SOURCE_DIR}/assets/application.manifest")
 define_property(TARGET PROPERTY HEADERS BRIEF_DOCS "Header files for the target" FULL_DOCS "Header files for the target to be used in source grouping")
 set_property(TARGET mage3dx PROPERTY HEADERS ${HEADER_LIST})
 

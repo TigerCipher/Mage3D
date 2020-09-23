@@ -23,7 +23,7 @@
 #define MAGE3DX_TRANSFORMCONSTANTBUFFER_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "constantbuffer.h"
 #include "irenderable.h"
 

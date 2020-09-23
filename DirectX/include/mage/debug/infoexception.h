@@ -23,7 +23,7 @@
 #define MAGE3DX_INFOEXCEPTION_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "mageexception.h"
 
 #if MAGE_DEBUG

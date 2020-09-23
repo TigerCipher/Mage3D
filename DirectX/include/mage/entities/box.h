@@ -23,7 +23,7 @@
 #define MAGE3DX_BOX_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "mage/graphics/renderable.h"
 
 namespace mage

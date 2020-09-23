@@ -23,7 +23,7 @@
 #define MAGE3DX_RENDERABLE_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "irenderable.h"
 #include "indexbuffer.h"
 

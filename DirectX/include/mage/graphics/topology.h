@@ -23,7 +23,7 @@
 #define MAGE3DX_TOPOLOGY_H
 
 
-#include "pch.h"
+//#include "pch.h"
 #include "bindable.h"
 
 namespace mage
