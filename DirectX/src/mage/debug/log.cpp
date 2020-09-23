@@ -20,7 +20,7 @@
  */
 
 #include "mage/debug/log.h"
-#include <spdlog/sinks/stdout_color_sinks.h>
+//#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
 SharedPtr<spdlog::logger> mage::Log::s_logger;

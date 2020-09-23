@@ -28,7 +28,6 @@
 
 #include "mage/common.h"
 #include <spdlog/spdlog.h>
-#include <spdlog/fmt/ostr.h>
 
 namespace mage
 {
@@ -51,6 +50,7 @@ namespace mage
 #define LOG_WARN(...) SPDLOG_LOGGER_WARN(mage::Log::getLogger(), __VA_ARGS__)
 #define LOG_ERROR(...) SPDLOG_LOGGER_ERROR(mage::Log::getLogger(), __VA_ARGS__)
 #define LOG_CRITICAL(...) SPDLOG_LOGGER_CRITICAL(mage::Log::getLogger(), __VA_ARGS__)
+
 
 
 #endif //MAGE3DX_LOG_H

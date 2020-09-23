@@ -22,10 +22,8 @@
 #include "mage/graphics/graphics.h"
 #include "mage/debug/graphicsexception.h"
 #include "mage/debug/infoexception.h"
-#include <d3dcompiler.h>
 
 #define MATH_HELPER_IMPL
-
 #include "mage/core/mathhelper.h"
 
 // probably should do this for my other libs since ultimately this won't be built with Cmake for release
