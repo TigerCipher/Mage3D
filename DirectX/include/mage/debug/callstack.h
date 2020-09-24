@@ -14,37 +14,51 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: mageexception.h
- * Date File Created: 9/12/2020 at 3:01 PM
+ * File Name: callstack.h
+ * Date File Created: 9/24/2020 at 10:04 AM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_MAGEEXCEPTION_H
-#define MAGE3DX_MAGEEXCEPTION_H
+#ifndef MAGE3DX_CALLSTACK_H
+#define MAGE3DX_CALLSTACK_H
 
-//#include "pch.h"
-
-#include "stacktraceexception.h"
 
 namespace mage
 {
-    class MageException : public std::exception, public StacktraceExceptionBase
+    struct Entry
     {
-    public:
-        MageException(int line, const char* file) noexcept : StacktraceExceptionBase(true), m_line(line), m_file(file) {}
-        [[nodiscard]] const char* what() const noexcept override;
-        virtual const char* getType() const noexcept;
-        inline int getLine() const noexcept { return m_line; }
-        inline const std::string& getFile() const noexcept { return m_file; }
-        std::string getOrigin() const noexcept;
-    protected:
-        mutable std::string m_what;
-    private:
-        int m_line;
-        std::string m_file;
+        std::string file;
+        uint line;
+        std::string function;
+
+        Entry() : line(0) {}
+
+        [[nodiscard]] std::string asString() const
+        {
+            return fmt::format("{} ({}): {}", file, line, function);
+        }
     };
 
+    class Callstack
+    {
+    public:
+        explicit Callstack(int numDiscard = 0);
+        virtual ~Callstack() noexcept = default;
+
+        [[nodiscard]] std::string asString() const
+        {
+            std::ostringstream oss;
+            for(const auto & i : m_stack)
+            {
+                oss << i.asString() << "\n";
+            }
+
+            return oss.str();
+        }
+
+    private:
+        list<Entry> m_stack;
+    };
 }
 
-
-#endif //MAGE3DX_MAGEEXCEPTION_H
+#endif//MAGE3DX_CALLSTACK_H

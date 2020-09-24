@@ -23,7 +23,7 @@ file(GLOB_RECURSE PIXEL_SHADER_LIST CONFIGURE_DEPENDS
 
 include(filter)
 
-set(MAGE3D_LINKS PUBLIC ${BMD_LIBRARIES} ${SPDLOG_LIBRARIES} ${FMT_LIBRARIES} d3d11 D3DCompiler gdiplus)
+set(MAGE3D_LINKS PUBLIC ${BMD_LIBRARIES} ${SPDLOG_LIBRARIES} ${FMT_LIBRARIES} d3d11 D3DCompiler gdiplus dxguid)
 set(MAGE3D_INCLUDES "../include" ${BMD_INCLUDE_DIRS} ${SPDLOG_INCLUDE_DIRS} ${FMT_INCLUDE_DIRS})
 
 message(Blue "Creating Mage3DX executable")
@@ -44,20 +44,39 @@ target_compile_features(mage3dx PUBLIC cxx_std_17)
 # NEEDS TO BE DIFFERENT FOR RELEASE! (but for release I'll probably just build on Visual Studio instead of cmake)
 #set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
-set(CompilerFlags
-        CMAKE_CXX_FLAGS
-        CMAKE_CXX_FLAGS_DEBUG
-        CMAKE_CXX_FLAGS_RELEASE
-        CMAKE_C_FLAGS
-        CMAKE_C_FLAGS_DEBUG
-        CMAKE_C_FLAGS_RELEASE
-        )
-foreach(CompilerFlag ${CompilerFlags})
-  string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
-endforeach()
+#if(MSVC)
+#    add_compile_options(
+#        $<$<CONFIG:>:/MT> #---------|
+#        $<$<CONFIG:Debug>:/MTd> #---|-- Statically link the runtime libraries
+#        $<$<CONFIG:Release>:/MT> #--|
+#    )
+#endif()
+
+#set(CompilerFlags
+#        CMAKE_CXX_FLAGS
+#        CMAKE_CXX_FLAGS_DEBUG
+#        CMAKE_CXX_FLAGS_RELEASE
+#        CMAKE_CXX_FLAGS_MINSIZEREL
+#        CMAKE_CXX_FLAGS_RELWITHDEBINFO
+#        CMAKE_C_FLAGS
+#        CMAKE_C_FLAGS_DEBUG
+#        CMAKE_C_FLAGS_RELEASE
+#        CMAKE_C_FLAGS_MINSIZEREL
+#        CMAKE_C_FLAGS_RELWITHDEBINFO
+#        )
+#foreach(CompilerFlag ${CompilerFlags})
+#  string(REPLACE "/MD" "/MT" ${CompilerFlag} "${${CompilerFlag}}")
+#  set(${CompilerFlag} "${${CompilerFlag}}" CACHE STRING "msvc compiler flags" FORCE)
+#  message(Yellow "MSVC flags: ${CompilerFlag}:${${CompilerFlag}}")
+#endforeach()
 
 
-target_compile_options(mage3dx PUBLIC /MP /Ot /fp:fast "/FI${Mage3DX_SOURCE_DIR}/include/pch.h")# -MTd)
+
+target_compile_options(mage3dx PUBLIC /MP /Ot /fp:fast "/FI${Mage3DX_SOURCE_DIR}/include/pch.h")
+#ucm_print_flags()
+#    ucm_set_runtime(STATIC)
+#    ucm_print_flags()
+
 target_precompile_headers(mage3dx PRIVATE "../include/pch.h")
 
 #foreach(hdrFile ${HEADER_LIST})

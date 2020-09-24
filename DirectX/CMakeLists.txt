@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.16...3.18)
-
+cmake_policy(SET CMP0091 NEW)
 project(Mage3DX
-VERSION 0.1
-DESCRIPTION "A DirectX 11 version of my Mage3D engine. Mostly for my own learning purposes"
-LANGUAGES CXX)
+        VERSION 0.1
+        DESCRIPTION "A DirectX 11 version of my Mage3D engine. Mostly for my own learning purposes"
+        LANGUAGES CXX)
 
 #set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_COLOR_MAKEFILE ON)
@@ -19,33 +19,34 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 INCLUDE(coloredmessage)
 INCLUDE(buildtype)
 
-
 message(STATUS "Beginning build...")
 
 
 # Only do these if this is the main project, and not if it is included through add_subdirectory
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
-  # Could do things like CMAKE_CXX_STANDARD here
+if (CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    # Could do things like CMAKE_CXX_STANDARD here
 
-  # We want std=c++xx not g++
-  set(CMAKE_CXX_EXTENSIONS OFF)
-#  set(CMAKE_CXX_FLAGS "/O2")
+    # We want std=c++xx not g++
+    set(CMAKE_CXX_EXTENSIONS OFF)
+    #  set(CMAKE_CXX_FLAGS "/O2")
+#    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
 
-  # Lets us use folders in IDEs
-  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    # Lets us use folders in IDEs
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-  # Enable testing for the main application
-  #include(CTest)
+    # Enable testing for the main application
+    #include(CTest)
 
-# Will deal with doxygen and documentation much later
-  find_package(Doxygen)
-  if(Doxygen_FOUND)
-      message(STATUS "Found Doxygen")
-    add_subdirectory(docs)
-  else()
-    message(STATUS "Doxygen not found, cannot build docs")
-  endif()
-endif()
+    # Will deal with doxygen and documentation much later
+    find_package(Doxygen)
+    if (Doxygen_FOUND)
+        message(STATUS "Found Doxygen")
+        add_subdirectory(docs)
+    else ()
+        message(STATUS "Doxygen not found, cannot build docs")
+    endif ()
+endif ()
 
 
 include(find_bmd)

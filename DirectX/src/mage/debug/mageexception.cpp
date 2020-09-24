@@ -23,9 +23,7 @@
 
 const char* mage::MageException::what() const noexcept
 {
-    std::ostringstream oss;
-    oss << getType() << "\n" << getOrigin();
-    m_what = oss.str();
+    m_what = fmt::format("{}\n{}", getType(), getOrigin());
     return m_what.c_str();
 }
 
@@ -36,7 +34,10 @@ const char* mage::MageException::getType() const noexcept
 
 std::string mage::MageException::getOrigin() const noexcept
 {
-    std::ostringstream oss;
-    oss << "[File] " << m_file << "\n[Line] " << m_line;
-    return oss.str();
+    if(m_showStack)
+    {
+        LOG_ERROR("An exception [{}] was caught. Stack trace:\n{}", getType(), asString());
+        return fmt::format("[File] {}\n[Line] {}\n[Stack Trace]\n{}", m_file, m_line, asString());
+    }
+    return fmt::format("[File] {}\n[Line] {}", m_file, m_line);
 }

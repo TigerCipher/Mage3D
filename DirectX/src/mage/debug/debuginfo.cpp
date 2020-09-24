@@ -23,7 +23,6 @@
 #include "mage/core/display.h"
 #include "mage/debug/graphicsexception.h"
 
-#pragma comment(lib, "dxguid.lib")
 
 #define GFX_THROW_FAILED(hrcall) if( FAILED( hr = (hrcall) ) ) throw GraphicsException( __LINE__,__FILE__,hr )
 
