@@ -27,7 +27,13 @@
 #include "mageexception.h"
 
 #if MAGE_DEBUG
-    #define GFX_THROW_INFO_ONLY(func) m_debugInfo.set(); (func); {auto l = m_debugInfo.getMessages(); if(!l.empty()) {throw InfoException(__LINE__, __FILE__, l);}}
+    #define GFX_THROW_INFO_ONLY(func)                                       \
+        m_debugInfo.set();                                                  \
+        (func);                                                             \
+        {                                                                   \
+            auto l = m_debugInfo.getMessages();                             \
+            if (!l.empty()) { throw InfoException(__LINE__, __FILE__, l); } \
+        }
 #else
     #define GFX_THROW_INFO_ONLY(func) (func)
 #endif
@@ -38,14 +44,15 @@ namespace mage
     {
     public:
         InfoException(int line, const char* file, const list<std::string>& msgs) noexcept;
-        const char * what() const noexcept override;
-        const char * getType() const noexcept override;
+        const char* what() const noexcept override;
+        const char* getType() const noexcept override;
         std::string getErrorInfo() const noexcept;
+
     private:
         std::string m_info;
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_INFOEXCEPTION_H
+#endif//MAGE3DX_INFOEXCEPTION_H

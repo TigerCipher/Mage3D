@@ -24,8 +24,8 @@
 
 
 //#include "pch.h"
-#include "mage/graphics/bindable.h"
 #include "mage/debug/graphicsexception.h"
+#include "mage/graphics/bindable.h"
 
 namespace mage
 {
@@ -57,7 +57,7 @@ namespace mage
             desc.ByteWidth = sizeof(consts);
             desc.StructureByteStride = 0;
 
-            D3D11_SUBRESOURCE_DATA subData = { };
+            D3D11_SUBRESOURCE_DATA subData = {};
             subData.pSysMem = &consts;
 
             GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, &subData, &m_buffer));
@@ -97,6 +97,7 @@ namespace mage
     {
         using ConstantBuffer<C>::m_buffer;
         using Bindable::getContext;
+
     public:
         using ConstantBuffer<C>::ConstantBuffer;
 
@@ -107,7 +108,7 @@ namespace mage
     };
 
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_CONSTANTBUFFER_H
+#endif//MAGE3DX_CONSTANTBUFFER_H

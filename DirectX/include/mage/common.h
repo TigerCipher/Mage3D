@@ -22,9 +22,9 @@
 #ifndef MAGE3DX_COMMON_H
 #define MAGE3DX_COMMON_H
 
-#include "winwrapper.h"
-#define BMD_PROFILE 1
-#include <bmd/core.h>
+//#define BMD_PROFILE 1
+
+#include <bmd/types.h>
 
 
 #ifndef MAGE_DEBUG

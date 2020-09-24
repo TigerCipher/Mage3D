@@ -32,14 +32,15 @@ namespace mage
     {
     public:
         IndexBuffer(Graphics& gfx, const list<ushort>& indices);
-        void bind(Graphics &gfx) noexcept override;
+        void bind(Graphics& gfx) noexcept override;
         [[nodiscard]] inline UINT getCount() const noexcept { return m_count; }
+
     protected:
         UINT m_count;
         COMptr<ID3D11Buffer> m_buffer;
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_INDEXBUFFER_H
+#endif//MAGE3DX_INDEXBUFFER_H

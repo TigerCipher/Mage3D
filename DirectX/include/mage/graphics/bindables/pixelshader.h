@@ -33,12 +33,13 @@ namespace mage
     {
     public:
         PixelShader(Graphics& gfx, const std::wstring& path);
-        void bind(Graphics &gfx) noexcept override;
+        void bind(Graphics& gfx) noexcept override;
+
     protected:
         COMptr<ID3D11PixelShader> m_shader;
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_PIXELSHADER_H
+#endif//MAGE3DX_PIXELSHADER_H

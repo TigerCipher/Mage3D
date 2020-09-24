@@ -22,7 +22,9 @@
 #ifndef MAGE3DX_PCH_H
 #define MAGE3DX_PCH_H
 
-
+// target Windows 7 or later
+#define _WIN32_WINNT 0x0601
+#define STRICT
 
 #include "mage/common.h"
 #include "mage/debug/log.h"

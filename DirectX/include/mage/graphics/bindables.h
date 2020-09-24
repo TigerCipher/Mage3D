@@ -35,4 +35,4 @@
 #include "mage/graphics/bindables/vertexshader.h"
 
 
-#endif //MAGE3DX_BINDABLES_H
+#endif//MAGE3DX_BINDABLES_H

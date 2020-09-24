@@ -23,6 +23,8 @@
 #define MAGE3DX_DEBUGINFO_H
 
 //#include "pch.h"
+#include "mage/winwrapper.h"
+
 #include <dxgidebug.h>
 
 namespace mage

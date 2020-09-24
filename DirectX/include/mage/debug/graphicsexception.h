@@ -22,27 +22,36 @@
 #ifndef MAGE3DX_GRAPHICSEXCEPTION_H
 #define MAGE3DX_GRAPHICSEXCEPTION_H
 
-#include <utility>
 
 //#include "pch.h"
-#include "mageexception.h"
 #include "mage/debug/debuginfo.h"
+#include "mageexception.h"
 
-#define GFX_THROW_NOINFO(hrcall) {HRESULT hr; if( FAILED( hr = (hrcall) ) ) throw GraphicsException( __LINE__,__FILE__,hr ); }
-#define GFX_EXCEPT_NOINFO(hr) GraphicsException( __LINE__,__FILE__,hr )
+#define GFX_THROW_NOINFO(hrcall)                                                    \
+    {                                                                               \
+        HRESULT hr;                                                                 \
+        if (FAILED(hr = (hrcall))) throw GraphicsException(__LINE__, __FILE__, hr); \
+    }
+#define GFX_EXCEPT_NOINFO(hr) GraphicsException(__LINE__, __FILE__, hr)
 
 #if MAGE_DEBUG
     #define GFX_EXCEPT(hr) GraphicsException(__LINE__, __FILE__, (hr), m_debugInfo.getMessages())
-    #define GFX_THROW_INFO(hrcall) {HRESULT hr; m_debugInfo.set(); if(FAILED(hr = (hrcall))) throw GFX_EXCEPT(hr);}
-    #define GFX_DEVICE_REMOVED_EXCEPT(hr) GraphicsDeviceRemovedException( __LINE__,__FILE__,(hr), m_debugInfo.getMessages())
+    #define GFX_THROW_INFO(hrcall)                           \
+        {                                                    \
+            HRESULT hr;                                      \
+            m_debugInfo.set();                               \
+            if (FAILED(hr = (hrcall))) throw GFX_EXCEPT(hr); \
+        }
+    #define GFX_DEVICE_REMOVED_EXCEPT(hr) \
+        GraphicsDeviceRemovedException(__LINE__, __FILE__, (hr), m_debugInfo.getMessages())
 #else
-    #define GFX_EXCEPT(hr) GraphicsException(__LINE__, __FILE__, (hr))
-    #define GFX_THROW_INFO(hrcall) GFX_THROW_NOINFO(hrcall)
-    #define GFX_DEVICE_REMOVED_EXCEPT(hr) GraphicsDeviceRemovedException( __LINE__,__FILE__,(hr) )
+    #define GFX_EXCEPT(hr)                GraphicsException(__LINE__, __FILE__, (hr))
+    #define GFX_THROW_INFO(hrcall)        GFX_THROW_NOINFO(hrcall)
+    #define GFX_DEVICE_REMOVED_EXCEPT(hr) GraphicsDeviceRemovedException(__LINE__, __FILE__, (hr))
 #endif
 
 #if MAGE_DEBUG
-#define DEBUG_INFO(gfx) DebugInfo& m_debugInfo = getDebugInfo((gfx))
+    #define DEBUG_INFO(gfx) DebugInfo& m_debugInfo = getDebugInfo((gfx))
 #else
     #define DEBUG_INFO(gfx)
 #endif
@@ -60,6 +69,7 @@ namespace mage
         std::string getErrorString() const noexcept;
         std::string getErrorDescription() const noexcept;
         std::string getErrorInfo() const noexcept;
+
     private:
         HRESULT m_result;
         std::string m_info;
@@ -68,13 +78,14 @@ namespace mage
     class GraphicsDeviceRemovedException : public GraphicsException
     {
     public:
-        GraphicsDeviceRemovedException(int line, const char* file, HRESULT hr, list<std::string> msgs) noexcept:
-                GraphicsException(line, file, hr, std::move(msgs)) { }
+        GraphicsDeviceRemovedException(int line, const char* file, HRESULT hr, const list<std::string>& msgs) noexcept :
+            GraphicsException(line, file, hr, msgs)
+        { }
 
         const char* getType() const noexcept override;
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_GRAPHICSEXCEPTION_H
+#endif//MAGE3DX_GRAPHICSEXCEPTION_H

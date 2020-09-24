@@ -7,7 +7,7 @@ AlignConsecutiveMacros: true
 AlignEscapedNewlines: Left
 AlignOperands: true
 AlignTrailingComments: false
-AllowAllArgumentsOnNextLine: false
+AllowAllArgumentsOnNextLine: true
 AllowAllConstructorInitializersOnNextLine: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Always
@@ -42,6 +42,9 @@ BreakStringLiterals: true
 ColumnLimit: 120
 CompactNamespaces: true
 ContinuationIndentWidth: 8
+Cpp11BracedListStyle: false
+ConstructorInitializerAllOnOneLineOrOnePerLine: true
+SpacesInContainerLiterals: true
 FixNamespaceComments: true
 IndentCaseLabels: true
 IndentPPDirectives: BeforeHash
@@ -65,6 +68,7 @@ SpaceBeforeParens: ControlStatements
 SpaceBeforeRangeBasedForLoopColon: true
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 0
+SpaceInEmptyBlock: true
 SpacesInAngles: false
 SpacesInCStyleCastParentheses: false
 SpacesInContainerLiterals: false

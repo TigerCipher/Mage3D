@@ -14,31 +14,20 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: topology.h
- * Date File Created: 9/20/2020 at 10:09 PM
+ * File Name: textureexception.cpp
+ * Date File Created: 9/23/2020 at 9:33 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TOPOLOGY_H
-#define MAGE3DX_TOPOLOGY_H
+#include "mage/debug/textureexception.h"
 
-
-//#include "pch.h"
-#include "mage/graphics/bindable.h"
-
-namespace mage
+const char* mage::TextureException::what() const noexcept
 {
-    class Topology : public Bindable
-    {
-    public:
-        Topology(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type) : m_type(type) { }
-        void bind(Graphics& gfx) noexcept override;
+    m_what = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
+    return m_what.c_str();
+}
 
-    protected:
-        D3D11_PRIMITIVE_TOPOLOGY m_type;
-    };
-
-}// namespace mage
-
-
-#endif//MAGE3DX_TOPOLOGY_H
+const char* mage::TextureException::getType() const noexcept
+{
+    return "Mage Texture Exception";
+}

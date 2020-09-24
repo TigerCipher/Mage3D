@@ -32,12 +32,13 @@ namespace mage
     {
     public:
         InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout, ID3DBlob* vertexBytecode);
-        void bind(Graphics &gfx) noexcept override;
+        void bind(Graphics& gfx) noexcept override;
+
     protected:
         COMptr<ID3D11InputLayout> m_layout;
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_INPUTLAYOUT_H
+#endif//MAGE3DX_INPUTLAYOUT_H

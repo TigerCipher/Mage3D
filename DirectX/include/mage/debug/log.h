@@ -26,7 +26,6 @@
 #define SPDLOG_DEBUG_ON
 #define SPDLOG_TRACE_ON
 
-#include "mage/common.h"
 #include <spdlog/spdlog.h>
 
 namespace mage
@@ -41,16 +40,15 @@ namespace mage
         static SharedPtr<spdlog::logger> s_logger;
     };
 
-}
+}// namespace mage
 
 
-#define LOG_TRACE(...) SPDLOG_LOGGER_TRACE(mage::Log::getLogger(), __VA_ARGS__)
-#define LOG_DEBUG(...) SPDLOG_LOGGER_DEBUG(mage::Log::getLogger(), __VA_ARGS__)
-#define LOG_INFO(...) SPDLOG_LOGGER_INFO(mage::Log::getLogger(), __VA_ARGS__)
-#define LOG_WARN(...) SPDLOG_LOGGER_WARN(mage::Log::getLogger(), __VA_ARGS__)
-#define LOG_ERROR(...) SPDLOG_LOGGER_ERROR(mage::Log::getLogger(), __VA_ARGS__)
+#define LOG_TRACE(...)    SPDLOG_LOGGER_TRACE(mage::Log::getLogger(), __VA_ARGS__)
+#define LOG_DEBUG(...)    SPDLOG_LOGGER_DEBUG(mage::Log::getLogger(), __VA_ARGS__)
+#define LOG_INFO(...)     SPDLOG_LOGGER_INFO(mage::Log::getLogger(), __VA_ARGS__)
+#define LOG_WARN(...)     SPDLOG_LOGGER_WARN(mage::Log::getLogger(), __VA_ARGS__)
+#define LOG_ERROR(...)    SPDLOG_LOGGER_ERROR(mage::Log::getLogger(), __VA_ARGS__)
 #define LOG_CRITICAL(...) SPDLOG_LOGGER_CRITICAL(mage::Log::getLogger(), __VA_ARGS__)
 
 
-
-#endif //MAGE3DX_LOG_H
+#endif//MAGE3DX_LOG_H

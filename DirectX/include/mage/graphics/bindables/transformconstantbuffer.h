@@ -33,13 +33,14 @@ namespace mage
     {
     public:
         TransformConstantBuffer(Graphics& gfx, const IRenderable& parent);
-        void bind(Graphics &gfx) noexcept override;
+        void bind(Graphics& gfx) noexcept override;
+
     private:
         static UniquePtr<VertexConstantBuffer<mat4f>> m_vertexBuffer;
         const IRenderable& m_parent;
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_TRANSFORMCONSTANTBUFFER_H
+#endif//MAGE3DX_TRANSFORMCONSTANTBUFFER_H

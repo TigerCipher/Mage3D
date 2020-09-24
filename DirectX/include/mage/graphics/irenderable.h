@@ -36,6 +36,7 @@ namespace mage
     {
         template<class T>
         friend class Renderable;
+
     public:
         IRenderable() = default;
         virtual ~IRenderable() = default;
@@ -52,7 +53,6 @@ namespace mage
         void addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept;
 
     private:
-
         [[nodiscard]] virtual const list<UniquePtr<Bindable>>& getStaticBinds() const noexcept = 0;
 
         const class IndexBuffer* m_indexBuffer = nullptr;
@@ -60,7 +60,7 @@ namespace mage
     };
 
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_IRENDERABLE_H
+#endif//MAGE3DX_IRENDERABLE_H

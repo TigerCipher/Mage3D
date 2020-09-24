@@ -14,31 +14,29 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: topology.h
- * Date File Created: 9/20/2020 at 10:09 PM
+ * File Name: texture.h
+ * Date File Created: 9/23/2020 at 10:48 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TOPOLOGY_H
-#define MAGE3DX_TOPOLOGY_H
+#ifndef MAGE3DX_TEXTURE_H
+#define MAGE3DX_TEXTURE_H
 
-
-//#include "pch.h"
-#include "mage/graphics/bindable.h"
+#include "bindable.h"
 
 namespace mage
 {
-    class Topology : public Bindable
+    class Texture : public Bindable
     {
     public:
-        Topology(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type) : m_type(type) { }
-        void bind(Graphics& gfx) noexcept override;
+        Texture(Graphics& gfx, const class TextureSurface& surface);
+        void bind(Graphics &gfx) noexcept override;
 
     protected:
-        D3D11_PRIMITIVE_TOPOLOGY m_type;
+        COMptr<ID3D11ShaderResourceView> m_textureView;
     };
 
 }// namespace mage
 
 
-#endif//MAGE3DX_TOPOLOGY_H
+#endif//MAGE3DX_TEXTURE_H

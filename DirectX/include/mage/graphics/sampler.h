@@ -14,31 +14,28 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: topology.h
- * Date File Created: 9/20/2020 at 10:09 PM
+ * File Name: sampler.h
+ * Date File Created: 9/23/2020 at 10:37 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TOPOLOGY_H
-#define MAGE3DX_TOPOLOGY_H
+#ifndef MAGE3DX_SAMPLER_H
+#define MAGE3DX_SAMPLER_H
 
-
-//#include "pch.h"
-#include "mage/graphics/bindable.h"
+#include "bindable.h"
 
 namespace mage
 {
-    class Topology : public Bindable
+    class Sampler : public Bindable
     {
     public:
-        Topology(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type) : m_type(type) { }
-        void bind(Graphics& gfx) noexcept override;
-
+        explicit Sampler(Graphics& gfx);
+        void bind(Graphics &gfx) noexcept override;
     protected:
-        D3D11_PRIMITIVE_TOPOLOGY m_type;
+        COMptr<ID3D11SamplerState> m_sampler;
     };
 
 }// namespace mage
 
 
-#endif//MAGE3DX_TOPOLOGY_H
+#endif//MAGE3DX_SAMPLER_H

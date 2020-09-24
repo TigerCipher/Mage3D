@@ -30,7 +30,7 @@ namespace mage
     {
     public:
         MageException(int line, const char* file) noexcept : m_line(line), m_file(file) {}
-        [[nodiscard]] virtual const char* what() const noexcept;
+        [[nodiscard]] const char* what() const noexcept override;
         virtual const char* getType() const noexcept;
         inline int getLine() const noexcept { return m_line; }
         inline const std::string& getFile() const noexcept { return m_file; }

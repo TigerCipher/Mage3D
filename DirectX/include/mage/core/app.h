@@ -22,6 +22,9 @@
 #ifndef MAGE3DX_APP_H
 #define MAGE3DX_APP_H
 
+
+
+
 #include "display.h"
 #include "timer.h"
 

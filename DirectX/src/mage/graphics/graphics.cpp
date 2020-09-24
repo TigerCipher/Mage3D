@@ -26,9 +26,9 @@
 #define MATH_HELPER_IMPL
 #include "mage/core/mathhelper.h"
 
-// probably should do this for my other libs since ultimately this won't be built with Cmake for release
-#pragma comment(lib, "d3d11.lib")
-#pragma comment(lib, "D3DCompiler.lib")
+// might do this since for release id be using visual studio to build, likely with different compiler flags than set up in cmake currently
+//#pragma comment(lib, "d3d11.lib")
+//#pragma comment(lib, "D3DCompiler.lib")
 
 
 

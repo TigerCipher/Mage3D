@@ -22,6 +22,7 @@
 #ifndef MAGE3DX_DISPLAY_H
 #define MAGE3DX_DISPLAY_H
 
+#include "mage/winwrapper.h"
 #include "mage/debug/displayexception.h"
 #include "keyboard.h"
 #include "mouse.h"

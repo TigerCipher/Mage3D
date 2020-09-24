@@ -19,10 +19,14 @@
  * Author: Matt
  */
 
-#include <mage/entities/box.h>
-#include <mage/entities/melon.h>
 #include "mage/core/app.h"
+#include "mage/entities/box.h"
+#include "mage/entities/sheet.h"
+#include "mage/entities/melon.h"
 #include "mage/entities/pyramid.h"
+#include "mage/graphics/texturesurface.h"
+
+mage::GDIPlusManager gdipManager;
 
 int mage::App::run()
 {
@@ -43,7 +47,7 @@ void mage::App::update()
 
     for (auto& b : m_renderables)
     {
-        b->update(delta);
+        b->update(m_display.m_keyboard.isPressed(VK_SPACE) ? 0.0f : delta);
         b->render(m_display.getGraphics());
     }
 
@@ -80,6 +84,10 @@ mage::App::App(int width, int height, const char* title) :
                             gfx, rng, adist, ddist,
                             odist, rdist, longdist, latdist
                                              );
+                case 3:
+                    return createScope<Sheet>(gfx, rng, adist, ddist, odist, rdist);
+                case 4:
+                    return createScope<SkinnedBox>(gfx, rng, adist, ddist, odist, rdist);
                 default:
                     assert(false && "bad drawable type in factory");
                     return { };
@@ -96,12 +104,13 @@ mage::App::App(int width, int height, const char* title) :
         std::uniform_real_distribution<float> bdist { 0.4f, 3.0f };
         std::uniform_int_distribution<int> latdist { 5, 20 };
         std::uniform_int_distribution<int> longdist { 10, 40 };
-        std::uniform_int_distribution<int> typedist { 0, 2 };
+        std::uniform_int_distribution<int> typedist { 0, 4 };
     };
 
     Factory f(m_display.getGraphics());
     m_renderables.reserve(NUM_RENDERS);
     std::generate_n(std::back_inserter(m_renderables), NUM_RENDERS, f);
+
 
     m_display.getGraphics()
              .setProjection(dx::XMMatrixPerspectiveLH(1.0f, m_display.getAspectRatio(), 0.5f, 40.0f));

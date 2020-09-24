@@ -31,17 +31,14 @@ namespace mage
     class Pyramid : public Renderable<Pyramid>
     {
     public:
-        Pyramid(Graphics& gfx, std::mt19937& rng,
-                std::uniform_real_distribution<float>& adist,
-                std::uniform_real_distribution<float>& ddist,
-                std::uniform_real_distribution<float>& odist,
+        Pyramid(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+                std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
                 std::uniform_real_distribution<float>& rdist);
 
         mat4f getTransformMatrix() const noexcept override;
         void update(float delta) noexcept override;
 
     private:
-
         // positional
         float r;
         float roll = 0.0f;
@@ -59,7 +56,7 @@ namespace mage
         float dchi;
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_PYRAMID_H
+#endif//MAGE3DX_PYRAMID_H

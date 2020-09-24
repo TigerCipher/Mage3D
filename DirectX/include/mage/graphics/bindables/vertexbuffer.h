@@ -24,8 +24,8 @@
 
 
 //#include "pch.h"
-#include "mage/graphics/bindable.h"
 #include "mage/debug/graphicsexception.h"
+#include "mage/graphics/bindable.h"
 
 namespace mage
 {
@@ -33,25 +33,24 @@ namespace mage
     {
     public:
         template<typename V>
-        VertexBuffer(Graphics& gfx, const list<V>& vertices) :
-                m_stride(sizeof(V))
+        VertexBuffer(Graphics& gfx, const list<V>& vertices) : m_stride(sizeof(V))
         {
             DEBUG_INFO(gfx);
 
-            D3D11_BUFFER_DESC bd = { };
+            D3D11_BUFFER_DESC bd = {};
             bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
             bd.Usage = D3D11_USAGE_DEFAULT;
             bd.CPUAccessFlags = 0u;
             bd.MiscFlags = 0u;
             bd.ByteWidth = UINT(sizeof(V) * vertices.size());
             bd.StructureByteStride = sizeof(V);
-            D3D11_SUBRESOURCE_DATA sd = { };
+            D3D11_SUBRESOURCE_DATA sd = {};
             sd.pSysMem = vertices.data();
 
             GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &m_buffer));
         }
 
-        void bind(Graphics &gfx) noexcept override;
+        void bind(Graphics& gfx) noexcept override;
 
     protected:
         UINT m_stride;
@@ -59,7 +58,7 @@ namespace mage
     };
 
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_VERTEXBUFFER_H
+#endif//MAGE3DX_VERTEXBUFFER_H

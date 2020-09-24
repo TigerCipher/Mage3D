@@ -22,8 +22,8 @@
 #ifndef MAGE3DX_GRAPHICS_H
 #define MAGE3DX_GRAPHICS_H
 
-#include "mage/debug/debuginfo.h"
 #include "mage/core/mathhelper.h"
+#include "mage/debug/debuginfo.h"
 
 #include <d3d11.h>
 
@@ -47,22 +47,23 @@ namespace mage
 
         void setProjection(mat4f proj) noexcept { m_projection = proj; }
         [[nodiscard]] mat4f getProjection() const noexcept { return m_projection; }
+
     protected:
     private:
-        COMptr<ID3D11Device> m_device { };
-        COMptr<IDXGISwapChain> m_swap { };
-        COMptr<ID3D11DeviceContext> m_context { };
-        COMptr<ID3D11RenderTargetView> m_target { };
-        COMptr<ID3D11DepthStencilView> m_depthStencilView { };
+        COMptr<ID3D11Device> m_device {};
+        COMptr<IDXGISwapChain> m_swap {};
+        COMptr<ID3D11DeviceContext> m_context {};
+        COMptr<ID3D11RenderTargetView> m_target {};
+        COMptr<ID3D11DepthStencilView> m_depthStencilView {};
 
         mat4f m_projection;
 
-        #if MAGE_DEBUG
+#if MAGE_DEBUG
         DebugInfo m_debugInfo;
-        #endif
+#endif
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_GRAPHICS_H
+#endif//MAGE3DX_GRAPHICS_H

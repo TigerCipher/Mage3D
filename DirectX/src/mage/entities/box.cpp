@@ -20,28 +20,30 @@
  */
 
 #include "mage/entities/box.h"
+#include "mage/graphics/primitives.h"
 #include "mage/graphics/bindables.h"
-#include "mage/entities/cube.h"
+#include "mage/graphics/texture.h"
+#include "mage/graphics/texturesurface.h"
+#include "mage/graphics/sampler.h"
 
 mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
                std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
                std::uniform_real_distribution<float>& rdist, std::uniform_real_distribution<float>& bdist) :
-        r(rdist(rng)),
-        droll(ddist(rng)),
-        dpitch(ddist(rng)),
-        dyaw(ddist(rng)),
-        dphi(odist(rng)),
-        dtheta(odist(rng)),
-        dchi(odist(rng)),
-        chi(adist(rng)),
-        theta(adist(rng)),
-        phi(adist(rng))
+    r(rdist(rng)),
+    droll(ddist(rng)),
+    dpitch(ddist(rng)),
+    dyaw(ddist(rng)),
+    dphi(odist(rng)),
+    dtheta(odist(rng)),
+    dchi(odist(rng)),
+    chi(adist(rng)),
+    theta(adist(rng)),
+    phi(adist(rng))
 {
 
     if (!isInitialized())
     {
-        struct Vertex
-        {
+        struct Vertex {
             vec3f pos;
         };
         auto model = Cube::make<Vertex>();
@@ -57,35 +59,29 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
 
         addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
-        struct ConstantBuffer2
-        {
-            struct
-            {
+        struct ConstantBuffer2 {
+            struct {
                 float r;
                 float g;
                 float b;
                 float a;
-            } face_colors[8];
+            } face_colors[ 8 ];
         };
-        const ConstantBuffer2 cb2 =
-                {
-                        {
-                                { 1.0f, 1.0f, 1.0f },
-                                { 1.0f, 0.0f, 0.0f },
-                                { 0.0f, 1.0f, 0.0f },
-                                { 1.0f, 1.0f, 0.0f },
-                                { 0.0f, 0.0f, 1.0f },
-                                { 1.0f, 0.0f, 1.0f },
-                                { 0.0f, 1.0f, 1.0f },
-                                { 0.0f, 0.0f, 0.0f },
-                        }
-                };
+        const ConstantBuffer2 cb2 = { {
+                { 1.0f, 1.0f, 1.0f },
+                { 1.0f, 0.0f, 0.0f },
+                { 0.0f, 1.0f, 0.0f },
+                { 1.0f, 1.0f, 0.0f },
+                { 0.0f, 0.0f, 1.0f },
+                { 1.0f, 0.0f, 1.0f },
+                { 0.0f, 1.0f, 1.0f },
+                { 0.0f, 0.0f, 0.0f },
+        } };
         addStaticBind(createScope<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
 
-        const list<D3D11_INPUT_ELEMENT_DESC> ied =
-                {
-                        { "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-                };
+        const list<D3D11_INPUT_ELEMENT_DESC> ied = {
+            { "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        };
         addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
 
         addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
@@ -111,7 +107,74 @@ void mage::Box::update(float delta) noexcept
 mat4f mage::Box::getTransformMatrix() const noexcept
 {
     return dx::XMLoadFloat3x3(&mt) * dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-           dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
-           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
+           dx::XMMatrixTranslation(r, 0.0f, 0.0f) * dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
            dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+}
+mat4f mage::SkinnedBox::getTransformMatrix() const noexcept
+{
+    return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) * dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
+           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) * dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+}
+void mage::SkinnedBox::update(float delta) noexcept
+{
+    roll += droll * delta;
+    pitch += dpitch * delta;
+    yaw += dyaw * delta;
+    theta += dtheta * delta;
+    phi += dphi * delta;
+    chi += dchi * delta;
+}
+
+mage::SkinnedBox::SkinnedBox(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+                             std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
+                             std::uniform_real_distribution<float>& rdist) :
+    r(rdist(rng)),
+    droll(ddist(rng)),
+    dpitch(ddist(rng)),
+    dyaw(ddist(rng)),
+    dphi(odist(rng)),
+    dtheta(odist(rng)),
+    dchi(odist(rng)),
+    chi(adist(rng)),
+    theta(adist(rng)),
+    phi(adist(rng))
+{
+    if (!isInitialized())
+    {
+        struct Vertex {
+            vec3f pos;
+            struct {
+                float u, v;
+            } tex;
+        };
+
+        auto model = Cube::makeSkinned<Vertex>();
+
+        addStaticBind(createScope<Texture>(gfx, TextureSurface::loadFromFile("assets\\textures\\cube.png")));
+
+        addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
+
+        addStaticBind(createScope<Sampler>(gfx));
+
+        auto pvs = createScope<VertexShader>(gfx, L"textureVS.cso");
+        auto pvsbc = pvs->getBytecode();
+        addStaticBind(std::move(pvs));
+
+        addStaticBind(createScope<PixelShader>(gfx, L"texturePS.cso"));
+
+        addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
+
+        const std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
+            { "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+        };
+        addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
+
+        addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+    } else
+    {
+        setIndexStatic();
+    }
+
+    addBindable(createScope<TransformConstantBuffer>(gfx, *this));
 }

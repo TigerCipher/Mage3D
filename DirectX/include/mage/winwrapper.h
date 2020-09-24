@@ -22,12 +22,11 @@
 #ifndef MAGE3DX_WINWRAPPER_H
 #define MAGE3DX_WINWRAPPER_H
 
-// target Windows 7 or later
-#define _WIN32_WINNT 0x0601
-
+//// target Windows 7 or later
+//#define _WIN32_WINNT 0x0601
 #include <sdkddkver.h>
 
-//#ifndef FULL_WINTARD
+#ifndef FULL_WINTARD
 #define WIN32_LEAN_AND_MEAN
 #define NOGDICAPMASKS
 #define NOSYSMETRICS
@@ -61,11 +60,10 @@
 #define NOPROXYSTUB
 #define NOIMAGE
 #define NOTAPE
-//#endif
+#endif
 
 #define NOMINMAX
 
-#define STRICT
 
 #include <Windows.h>
 

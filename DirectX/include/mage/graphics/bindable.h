@@ -34,13 +34,14 @@ namespace mage
     public:
         virtual ~Bindable() = default;
         virtual void bind(Graphics& gfx) noexcept = 0;
+
     protected:
         static ID3D11DeviceContext* getContext(Graphics& gfx) noexcept;
         static ID3D11Device* getDevice(Graphics& gfx) noexcept;
         static DebugInfo& getDebugInfo(Graphics& gfx) noexcept(MAGE_DEBUG);
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_BINDABLE_H
+#endif//MAGE3DX_BINDABLE_H

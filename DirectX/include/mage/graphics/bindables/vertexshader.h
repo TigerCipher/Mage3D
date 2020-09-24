@@ -33,14 +33,15 @@ namespace mage
     {
     public:
         VertexShader(Graphics& gfx, const std::wstring& path);
-        void bind(Graphics &gfx) noexcept override;
+        void bind(Graphics& gfx) noexcept override;
         [[nodiscard]] ID3DBlob* getBytecode() const noexcept;
+
     protected:
         COMptr<ID3DBlob> m_bytecode;
         COMptr<ID3D11VertexShader> m_shader;
     };
 
-}
+}// namespace mage
 
 
-#endif //MAGE3DX_VERTEXSHADER_H
+#endif//MAGE3DX_VERTEXSHADER_H
