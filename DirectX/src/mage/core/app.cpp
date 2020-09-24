@@ -21,14 +21,14 @@
 
 #include "mage/core/app.h"
 #include "mage/entities/box.h"
-#include "mage/entities/sheet.h"
 #include "mage/entities/melon.h"
 #include "mage/entities/pyramid.h"
-#include "mage/graphics/texturesurface.h"
+#include "mage/entities/sheet.h"
+#include "mage/graphics/texture_surface.h"
 
-#include "../../3rdParty/imgui/imgui.h"
-#include "../../3rdParty/imgui/imgui_impl_win32.h"
-#include "../../3rdParty/imgui/imgui_impl_dx11.h"
+#include "3rdParty/imgui/imgui.h"
+#include "3rdParty/imgui/imgui_impl_win32.h"
+#include "3rdParty/imgui/imgui_impl_dx11.h"
 
 mage::GDIPlusManager gdipManager;
 
@@ -66,6 +66,7 @@ void mage::App::update()
     }
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
 
     m_display.getGraphics().swap();
 }

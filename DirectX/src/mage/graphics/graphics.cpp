@@ -20,12 +20,12 @@
  */
 
 #include "mage/graphics/graphics.h"
-#include "mage/debug/graphicsexception.h"
-#include "mage/debug/infoexception.h"
+#include "mage/debug/graphics_exception.h"
+#include "mage/debug/info_exception.h"
 
 #define MATH_HELPER_IMPL
-#include "mage/core/mathhelper.h"
-#include "../../3rdParty/imgui/imgui_impl_dx11.h"
+#include "3rdParty/imgui/imgui_impl_dx11.h"
+#include "mage/core/math_helper.h"
 
 // might do this since for release id be using visual studio to build, likely with different compiler flags than set up in cmake currently
 //#pragma comment(lib, "d3d11.lib")

@@ -14,28 +14,34 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: infoexception.cpp
+ * Date File Created: 9/18/2020 at 2:55 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
-#include "mage/debug/graphics_exception.h"
+#include "mage/debug/info_exception.h"
+#include "mage/core/util.h"
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+mage::InfoException::InfoException(int line, const char* file, const list<std::string>& msgs) noexcept:
+MageException(line, file)
 {
-    DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+    fromList(m_info, msgs);
 }
 
-
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
+const char* mage::InfoException::what() const noexcept
 {
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+    std::ostringstream oss;
+    oss << getType() << "\n[Error Info]\n" << getErrorInfo() << "\n\n" << getOrigin();
+    m_what = oss.str();
+    return m_what.c_str();
+}
+
+const char* mage::InfoException::getType() const noexcept
+{
+    return "Mage Info Exception";
+}
+
+std::string mage::InfoException::getErrorInfo() const noexcept
+{
+    return m_info;
 }

@@ -20,7 +20,7 @@
  */
 
 #include "mage/debug/callstack.h"
-#include "../../3rdParty/StackWalker/StackWalker.h"
+#include "3rdParty/StackWalker/StackWalker.h"
 
 class StackWalkerImpl : public StackWalker
 {

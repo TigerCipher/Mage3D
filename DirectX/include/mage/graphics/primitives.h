@@ -22,7 +22,7 @@
 #ifndef MAGE3DX_PRIMITIVES_H
 #define MAGE3DX_PRIMITIVES_H
 
-#include "mage/core/mathhelper.h"
+#include "mage/core/math_helper.h"
 
 namespace mage
 {

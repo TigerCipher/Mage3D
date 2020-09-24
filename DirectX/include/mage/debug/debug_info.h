@@ -14,28 +14,37 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: debuginfo.h
+ * Date File Created: 9/16/2020 at 11:05 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
-#include "mage/debug/graphics_exception.h"
+#ifndef MAGE3DX_DEBUG_INFO_H
+#define MAGE3DX_DEBUG_INFO_H
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+//#include "pch.h"
+#include "mage/winwrapper.h"
+
+#include <dxgidebug.h>
+
+namespace mage
 {
-    DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    class DebugInfo
+    {
+    public:
+        DebugInfo();
+        virtual ~DebugInfo() = default;
+        DebugInfo(const DebugInfo& rhs) = delete;
+        DebugInfo& operator=(const DebugInfo& rhs) = delete;
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+        void set() noexcept;
+        [[nodiscard]] list<std::string> getMessages() const;
+    private:
+        ulonglong m_next = 0;
+        COMptr<IDXGIInfoQueue> m_infoQueue{};
+    };
+
 }
 
 
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
-{
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
-}
+#endif//MAGE3DX_DEBUG_INFO_H

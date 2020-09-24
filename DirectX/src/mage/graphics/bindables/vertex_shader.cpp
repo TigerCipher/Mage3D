@@ -14,28 +14,34 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: vertexshader.cpp
+ * Date File Created: 9/20/2020 at 10:48 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
+#include "mage/graphics/bindables/vertex_shader.h"
 #include "mage/debug/graphics_exception.h"
+#include <d3dcompiler.h>
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+mage::VertexShader::VertexShader(mage::Graphics& gfx, const std::wstring& path)
 {
     DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+    GFX_THROW_INFO( D3DReadFileToBlob( path.c_str(),&m_bytecode ) );
+	GFX_THROW_INFO( getDevice( gfx )->CreateVertexShader(
+		m_bytecode->GetBufferPointer(),
+		m_bytecode->GetBufferSize(),
+		nullptr,
+		&m_shader
+	) );
 }
 
-
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
+void mage::VertexShader::bind(mage::Graphics& gfx) noexcept
 {
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+    getContext(gfx)->VSSetShader(m_shader.Get(), nullptr, 0);
+}
+
+ID3DBlob* mage::VertexShader::getBytecode() const noexcept
+{
+    return m_bytecode.Get();
 }

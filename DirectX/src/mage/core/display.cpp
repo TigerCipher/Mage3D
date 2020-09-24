@@ -20,9 +20,9 @@
  */
 
 #include "mage/core/display.h"
-#include "mage/debug/debugmessagemap.h"
+#include "3rdParty/imgui/imgui_impl_win32.h"
+#include "mage/debug/debug_message_map.h"
 #include "mage/resource.h"
-#include "../../3rdParty/imgui/imgui_impl_win32.h"
 
 
 mage::Display::Window mage::Display::Window::s_winClass;

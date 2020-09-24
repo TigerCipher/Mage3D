@@ -14,45 +14,37 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: mageexception.h
+ * Date File Created: 9/12/2020 at 3:01 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
+#ifndef MAGE3DX_MAGE_EXCEPTION_H
+#define MAGE3DX_MAGE_EXCEPTION_H
 
+//#include "pch.h"
 
-
-
-#include "display.h"
-#include "timer.h"
-
-#include "mage/graphics/imgui_manager.h"
-#include "mage/graphics/irenderable.h"
+#include "stacktrace_exception.h"
 
 namespace mage
 {
-    class App
+    class MageException : public std::exception, public StacktraceExceptionBase
     {
     public:
-        App(int width, int height, const char* title);
-        virtual ~App() = default;
-        int run();
-        inline void stop() { m_running = false; }
+        MageException(int line, const char* file) noexcept : StacktraceExceptionBase(true), m_line(line), m_file(file) {}
+        [[nodiscard]] const char* what() const noexcept override;
+        virtual const char* getType() const noexcept;
+        inline int getLine() const noexcept { return m_line; }
+        inline const std::string& getFile() const noexcept { return m_file; }
+        std::string getOrigin() const noexcept;
+    protected:
+        mutable std::string m_what;
     private:
-        void update();
-        ImguiManager m_imgui;
-        Display m_display;
-        Timer m_timer;
-        bool m_running;
-
-
-        list<UniquePtr<IRenderable>> m_renderables;
-        static constexpr size_t NUM_RENDERS = 180;
+        int m_line;
+        std::string m_file;
     };
 
 }
 
 
-#endif //MAGE3DX_APP_H
+#endif//MAGE3DX_MAGE_EXCEPTION_H

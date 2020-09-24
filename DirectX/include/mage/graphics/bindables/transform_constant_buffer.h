@@ -14,28 +14,33 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: transformconstantbuffer.h
+ * Date File Created: 9/20/2020 at 10:37 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
-#include "mage/debug/graphics_exception.h"
+#ifndef MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
+#define MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+
+//#include "pch.h"
+#include "constant_buffer.h"
+#include "mage/graphics/irenderable.h"
+
+namespace mage
 {
-    DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    class TransformConstantBuffer : public Bindable
+    {
+    public:
+        TransformConstantBuffer(Graphics& gfx, const IRenderable& parent);
+        void bind(Graphics& gfx) noexcept override;
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
-}
+    private:
+        static UniquePtr<VertexConstantBuffer<mat4f>> m_vertexBuffer;
+        const IRenderable& m_parent;
+    };
+
+}// namespace mage
 
 
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
-{
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
-}
+#endif//MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H

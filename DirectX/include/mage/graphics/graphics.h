@@ -22,8 +22,8 @@
 #ifndef MAGE3DX_GRAPHICS_H
 #define MAGE3DX_GRAPHICS_H
 
-#include "mage/core/mathhelper.h"
-#include "mage/debug/debuginfo.h"
+#include "mage/core/math_helper.h"
+#include "mage/debug/debug_info.h"
 
 #include <d3d11.h>
 

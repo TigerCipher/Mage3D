@@ -20,8 +20,8 @@
  */
 
 #include "mage/graphics/texture.h"
-#include "mage/debug/graphicsexception.h"
-#include "mage/graphics/texturesurface.h"
+#include "mage/debug/graphics_exception.h"
+#include "mage/graphics/texture_surface.h"
 
 
 mage::Texture::Texture(mage::Graphics& gfx, const TextureSurface& surface)

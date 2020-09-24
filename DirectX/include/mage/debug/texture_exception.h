@@ -14,28 +14,34 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: textureexception.h
+ * Date File Created: 9/23/2020 at 9:33 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
-#include "mage/debug/graphics_exception.h"
+#ifndef MAGE3DX_TEXTURE_EXCEPTION_H
+#define MAGE3DX_TEXTURE_EXCEPTION_H
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+#include "mage_exception.h"
+
+namespace mage
 {
-    DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    class TextureException : public MageException
+    {
+    public:
+        TextureException(int line, const char* file, std::string info) noexcept :
+            MageException(line, file), m_info(std::move(info))
+        { }
+        const char* what() const noexcept override;
+        const char* getType() const noexcept override;
+        const std::string& getInfo() const noexcept { return m_info; }
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
-}
+    protected:
+    private:
+        std::string m_info;
+    };
+
+}// namespace mage
 
 
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
-{
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
-}
+#endif//MAGE3DX_TEXTURE_EXCEPTION_H

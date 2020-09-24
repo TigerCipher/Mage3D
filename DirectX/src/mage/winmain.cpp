@@ -19,10 +19,10 @@
  * Author: Matt
  */
 
-#include <sstream>
-#include "mage/debug/mageexception.h"
-#include "mage/core/display.h"
 #include "mage/core/app.h"
+#include "mage/core/display.h"
+#include "mage/debug/mage_exception.h"
+#include <sstream>
 
 using namespace mage;
 

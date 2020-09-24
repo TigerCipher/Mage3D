@@ -14,28 +14,28 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: transformconstantbuffer.cpp
+ * Date File Created: 9/20/2020 at 10:37 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
-#include "mage/debug/graphics_exception.h"
+#include "mage/graphics/bindables/transform_constant_buffer.h"
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+
+UniquePtr<mage::VertexConstantBuffer<mat4f>> mage::TransformConstantBuffer::m_vertexBuffer;
+
+mage::TransformConstantBuffer::TransformConstantBuffer(mage::Graphics& gfx, const mage::IRenderable& parent): m_parent(parent)
 {
-    DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+    if(!m_vertexBuffer)
+    {
+        m_vertexBuffer = createScope<VertexConstantBuffer<mat4f>>(gfx);
+    }
 }
 
 
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
+void mage::TransformConstantBuffer::bind(mage::Graphics& gfx) noexcept
 {
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+    m_vertexBuffer->update(gfx, dx::XMMatrixTranspose(m_parent.getTransformMatrix() * gfx.getProjection()));
+    m_vertexBuffer->bind(gfx);
 }
+

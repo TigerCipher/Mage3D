@@ -12,6 +12,10 @@ file(GLOB_RECURSE SRC_LIST CONFIGURE_DEPENDS
         ${Mage3DX_SOURCE_DIR}/src/*.cxx
         ${Mage3DX_SOURCE_DIR}/src/*.c
         ${Mage3DX_SOURCE_DIR}/src/*.rc
+        ${Mage3DX_SOURCE_DIR}/include/*.cpp
+        ${Mage3DX_SOURCE_DIR}/include/*.cc
+        ${Mage3DX_SOURCE_DIR}/include/*.cxx
+        ${Mage3DX_SOURCE_DIR}/include/*.c
         )
 
 file(GLOB_RECURSE VERTEX_SHADER_LIST CONFIGURE_DEPENDS

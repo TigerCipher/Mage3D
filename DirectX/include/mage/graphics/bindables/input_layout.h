@@ -14,28 +14,31 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: inputlayout.h
+ * Date File Created: 9/20/2020 at 9:50 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
-#include "mage/debug/graphics_exception.h"
+#ifndef MAGE3DX_INPUT_LAYOUT_H
+#define MAGE3DX_INPUT_LAYOUT_H
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+
+//#include "pch.h"
+#include "mage/graphics/bindable.h"
+
+namespace mage
 {
-    DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    class InputLayout : public Bindable
+    {
+    public:
+        InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout, ID3DBlob* vertexBytecode);
+        void bind(Graphics& gfx) noexcept override;
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
-}
+    protected:
+        COMptr<ID3D11InputLayout> m_layout;
+    };
+
+}// namespace mage
 
 
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
-{
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
-}
+#endif//MAGE3DX_INPUT_LAYOUT_H

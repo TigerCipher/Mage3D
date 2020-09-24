@@ -20,8 +20,8 @@
  */
 
 #include "mage/graphics/irenderable.h"
-#include "mage/debug/graphicsexception.h"
-#include "mage/graphics/bindables/indexbuffer.h"
+#include "mage/debug/graphics_exception.h"
+#include "mage/graphics/bindables/index_buffer.h"
 #include <cassert>
 #include <typeinfo>
 

@@ -14,28 +14,30 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: mageexception.cpp
+ * Date File Created: 9/12/2020 at 3:01 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
-#include "mage/debug/graphics_exception.h"
+#include "mage/debug/mage_exception.h"
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+const char* mage::MageException::what() const noexcept
 {
-    DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+    m_what = fmt::format("{}\n{}", getType(), getOrigin());
+    return m_what.c_str();
 }
 
-
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
+const char* mage::MageException::getType() const noexcept
 {
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+    return "Mage Exception";
+}
+
+std::string mage::MageException::getOrigin() const noexcept
+{
+    if(m_showStack)
+    {
+        LOG_ERROR("An exception [{}] was caught. Stack trace:\n{}", getType(), asString());
+        return fmt::format("[File] {}\n[Line] {}\n[Stack Trace]\n{}", m_file, m_line, asString());
+    }
+    return fmt::format("[File] {}\n[Line] {}", m_file, m_line);
 }

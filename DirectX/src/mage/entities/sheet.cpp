@@ -20,11 +20,11 @@
  */
 
 #include "mage/entities/sheet.h"
-#include "mage/graphics/primitives.h"
 #include "mage/graphics/bindables.h"
+#include "mage/graphics/primitives.h"
 #include "mage/graphics/sampler.h"
 #include "mage/graphics/texture.h"
-#include "mage/graphics/texturesurface.h"
+#include "mage/graphics/texture_surface.h"
 
 mage::Sheet::Sheet(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
                    std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,

@@ -14,28 +14,27 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: pixelshader.cpp
+ * Date File Created: 9/20/2020 at 9:54 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
+#include "mage/graphics/bindables/pixel_shader.h"
 #include "mage/debug/graphics_exception.h"
+#include <d3dcompiler.h>
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+mage::PixelShader::PixelShader(mage::Graphics& gfx, const std::wstring& path)
 {
     DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+    COMptr<ID3DBlob> blob;
+    GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &blob));
+    GFX_THROW_INFO(getDevice(gfx)->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_shader));
+
 }
 
 
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
+void mage::PixelShader::bind(mage::Graphics& gfx) noexcept
 {
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+    getContext(gfx)->PSSetShader(m_shader.Get(), nullptr, 0);
 }

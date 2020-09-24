@@ -14,28 +14,26 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: inputlayout.cpp
+ * Date File Created: 9/20/2020 at 9:50 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
+#include "mage/graphics/bindables/input_layout.h"
 #include "mage/debug/graphics_exception.h"
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+mage::InputLayout::InputLayout(mage::Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout,
+                               ID3DBlob* vertexBytecode)
 {
     DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+    GFX_THROW_INFO(getDevice(gfx)->CreateInputLayout(layout.data(), (UINT) layout.size(),
+                                                     vertexBytecode->GetBufferPointer(),
+                                                     vertexBytecode->GetBufferSize(), &m_layout));
 }
 
 
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
+void mage::InputLayout::bind(mage::Graphics& gfx) noexcept
 {
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+    getContext(gfx)->IASetInputLayout(m_layout.Get());
 }

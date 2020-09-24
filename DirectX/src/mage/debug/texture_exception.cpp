@@ -14,28 +14,20 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: textureexception.cpp
+ * Date File Created: 9/23/2020 at 9:33 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
-#include "mage/debug/graphics_exception.h"
+#include "mage/debug/texture_exception.h"
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+const char* mage::TextureException::what() const noexcept
 {
-    DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+    m_what = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
+    return m_what.c_str();
 }
 
-
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
+const char* mage::TextureException::getType() const noexcept
 {
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+    return "Mage Texture Exception";
 }

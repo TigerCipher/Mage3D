@@ -14,28 +14,32 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.cpp
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: indexbuffer.cpp
+ * Date File Created: 9/20/2020 at 9:45 PM
  * Author: Matt
  */
 
-#include "mage/graphics/sampler.h"
+#include "mage/graphics/bindables/index_buffer.h"
 #include "mage/debug/graphics_exception.h"
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+mage::IndexBuffer::IndexBuffer(mage::Graphics& gfx, const list<ushort>& indices) :
+        m_count((UINT) indices.size())
 {
     DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+    D3D11_BUFFER_DESC ibd = { };
+    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    ibd.Usage = D3D11_USAGE_DEFAULT;
+    ibd.CPUAccessFlags = 0u;
+    ibd.MiscFlags = 0u;
+    ibd.ByteWidth = UINT(m_count * sizeof(ushort));
+    ibd.StructureByteStride = sizeof(ushort);
+    D3D11_SUBRESOURCE_DATA isd = { };
+    isd.pSysMem = indices.data();
+    GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&ibd, &isd, &m_buffer));
 }
 
-
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
+void mage::IndexBuffer::bind(mage::Graphics& gfx) noexcept
 {
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+    getContext(gfx)->IASetIndexBuffer(m_buffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 }
