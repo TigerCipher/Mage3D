@@ -26,6 +26,10 @@
 #include "mage/entities/pyramid.h"
 #include "mage/graphics/texturesurface.h"
 
+#include "../../3rdParty/imgui/imgui.h"
+#include "../../3rdParty/imgui/imgui_impl_win32.h"
+#include "../../3rdParty/imgui/imgui_impl_dx11.h"
+
 mage::GDIPlusManager gdipManager;
 
 int mage::App::run()
@@ -50,6 +54,18 @@ void mage::App::update()
         b->update(m_display.m_keyboard.isPressed(VK_SPACE) ? 0.0f : delta);
         b->render(m_display.getGraphics());
     }
+
+    ImGui_ImplDX11_NewFrame();
+    ImGui_ImplWin32_NewFrame();
+    ImGui::NewFrame();
+
+    static bool showDemoWindow = true;
+    if(showDemoWindow)
+    {
+        ImGui::ShowDemoWindow(&showDemoWindow);
+    }
+    ImGui::Render();
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
     m_display.getGraphics().swap();
 }

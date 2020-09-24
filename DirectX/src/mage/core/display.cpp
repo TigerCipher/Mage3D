@@ -22,6 +22,7 @@
 #include "mage/core/display.h"
 #include "mage/debug/debugmessagemap.h"
 #include "mage/resource.h"
+#include "../../3rdParty/imgui/imgui_impl_win32.h"
 
 
 mage::Display::Window mage::Display::Window::s_winClass;
@@ -95,11 +96,14 @@ mage::Display::Display(int width, int height, const char* title)
     }
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
+    ImGui_ImplWin32_Init(m_hwnd);
+
     m_gfx = createScope<Graphics>(m_hwnd);
 }
 
 mage::Display::~Display()
 {
+    ImGui_ImplWin32_Shutdown();
     DestroyWindow(m_hwnd);
 }
 
@@ -129,6 +133,11 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
     static mage::DebugMessageMap dmm;
     OutputDebugString(dmm(msg, lParam, wParam).c_str());
     #endif
+
+    if(ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+    {
+        return true;
+    }
 
     switch (msg)
     {

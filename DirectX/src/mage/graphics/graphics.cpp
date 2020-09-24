@@ -25,6 +25,7 @@
 
 #define MATH_HELPER_IMPL
 #include "mage/core/mathhelper.h"
+#include "../../3rdParty/imgui/imgui_impl_dx11.h"
 
 // might do this since for release id be using visual studio to build, likely with different compiler flags than set up in cmake currently
 //#pragma comment(lib, "d3d11.lib")
@@ -109,6 +110,7 @@ mage::Graphics::Graphics(HWND hwnd)
 	vp.TopLeftY = 0.0f;
 	m_context->RSSetViewports( 1,&vp );
 
+    ImGui_ImplDX11_Init(m_device.Get(), m_context.Get());
 }
 
 void mage::Graphics::swap()

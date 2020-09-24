@@ -14,45 +14,33 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: imguimanager.h
+ * Date File Created: 9/24/2020 at 2:00 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
+#ifndef MAGE3DX_IMGUIMANAGER_H
+#define MAGE3DX_IMGUIMANAGER_H
 
-
-
-
-#include "display.h"
-#include "timer.h"
-
-#include "mage/graphics/irenderable.h"
-#include "mage/graphics/imguimanager.h"
+#include "../src/3rdParty/imgui/imgui.h"
 
 namespace mage
 {
-    class App
+    class ImguiManager
     {
     public:
-        App(int width, int height, const char* title);
-        virtual ~App() = default;
-        int run();
-        inline void stop() { m_running = false; }
-    private:
-        void update();
-        ImguiManager m_imgui;
-        Display m_display;
-        Timer m_timer;
-        bool m_running;
+        ImguiManager()
+        {
+            IMGUI_CHECKVERSION();
+            ImGui::CreateContext();
+            ImGui::StyleColorsDark();
+        }
 
-
-        list<UniquePtr<IRenderable>> m_renderables;
-        static constexpr size_t NUM_RENDERS = 180;
+        virtual ~ImguiManager()
+        {
+            ImGui::DestroyContext();
+        }
     };
-
 }
 
-
-#endif //MAGE3DX_APP_H
+#endif//MAGE3DX_IMGUIMANAGER_H
