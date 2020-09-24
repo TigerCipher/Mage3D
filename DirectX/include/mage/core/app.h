@@ -41,13 +41,13 @@ namespace mage
         int run();
         inline void stop() { m_running = false; }
     private:
-        void update();
+        void runFrame();
         ImguiManager m_imgui;
         Display m_display;
         Timer m_timer;
+        Timer m_performanceTimer;
         bool m_running;
-
-
+        float globalSpeed = 1.0f;
         list<UniquePtr<IRenderable>> m_renderables;
         static constexpr size_t NUM_RENDERS = 180;
     };

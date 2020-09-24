@@ -27,8 +27,8 @@
 #include "mage/graphics/texture_surface.h"
 
 #include "3rdParty/imgui/imgui.h"
-#include "3rdParty/imgui/imgui_impl_win32.h"
 #include "3rdParty/imgui/imgui_impl_dx11.h"
+#include "3rdParty/imgui/imgui_impl_win32.h"
 
 mage::GDIPlusManager gdipManager;
 
@@ -37,17 +37,45 @@ int mage::App::run()
     LOG_INFO("Main loop beginning");
     while (m_running)
     {
-        if (const auto exitCode = Display::processMessages())
-            return *exitCode;
-        update();
+        if (const auto exitCode = Display::processMessages()) return *exitCode;
+        runFrame();
     }
     return 0;
 }
 
-void mage::App::update()
+static void calculateFrameStatistics(mage::Timer& timer)
 {
-    float delta = m_timer.markPoint();
+    static float fps = 0;
+    static float avgFps = 0;
+    static int frameCount = 0;
+    static float prntAvgFps = 0;
+    static int prntFrameCount = 0;
+    if (ImGui::Begin("Performance Statistics"))
+    {
+        frameCount++;
+        fps = ImGui::GetIO().Framerate;
+        avgFps += fps;
+        if (timer.peek() >= 1.0f)
+        {
+            prntAvgFps = avgFps / (float) frameCount;
+            avgFps = 0;
+            prntFrameCount = frameCount;
+            frameCount = 0;
+            timer.markPoint();
+        }
+        ImGui::Text("Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / fps, fps);
+        ImGui::Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps);
+        ImGui::TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount);
+    }
+    ImGui::End();
+}
+
+void mage::App::runFrame()
+{
+    float delta = m_timer.markPoint() * globalSpeed;
+
     m_display.getGraphics().clear(0.07f, 0, 0.12f);
+
 
     for (auto& b : m_renderables)
     {
@@ -55,65 +83,41 @@ void mage::App::update()
         b->render(m_display.getGraphics());
     }
 
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
 
-    static bool showDemoWindow = true;
-    if(showDemoWindow)
-    {
-        ImGui::ShowDemoWindow(&showDemoWindow);
-    }
-    ImGui::Render();
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    //if (showDemo) { ImGui::ShowDemoWindow(&showDemo); }
 
+    static char buffer[ 1024 ];
+    if (ImGui::Begin("Global Simulation Speed")) { ImGui::SliderFloat("Speed Factor", &globalSpeed, 0.0f, 5.0f); }
+    ImGui::End();
+
+    calculateFrameStatistics(m_performanceTimer);
 
     m_display.getGraphics().swap();
 }
 
-mage::App::App(int width, int height, const char* title) :
-        m_display(width, height, title),
-        m_running(true)
+mage::App::App(int width, int height, const char* title) : m_display(width, height, title), m_running(true)
 {
     class Factory
     {
     public:
-        explicit Factory(Graphics& gfx)
-                :
-                gfx(gfx) { }
+        explicit Factory(Graphics& gfx) : gfx(gfx) { }
 
         std::unique_ptr<IRenderable> operator()()
         {
             switch (typedist(rng))
             {
-                case 0:
-                    return createScope<Pyramid>(
-                            gfx, rng, adist, ddist,
-                            odist, rdist
-                                               );
-                case 1:
-                    return createScope<Box>(
-                            gfx, rng, adist, ddist,
-                            odist, rdist, bdist
-                                           );
-                case 2:
-                    return createScope<Melon>(
-                            gfx, rng, adist, ddist,
-                            odist, rdist, longdist, latdist
-                                             );
-                case 3:
-                    return createScope<Sheet>(gfx, rng, adist, ddist, odist, rdist);
-                case 4:
-                    return createScope<SkinnedBox>(gfx, rng, adist, ddist, odist, rdist);
-                default:
-                    assert(false && "bad drawable type in factory");
-                    return { };
+                case 0: return createScope<Pyramid>(gfx, rng, adist, ddist, odist, rdist);
+                case 1: return createScope<Box>(gfx, rng, adist, ddist, odist, rdist, bdist);
+                case 2: return createScope<Melon>(gfx, rng, adist, ddist, odist, rdist, longdist, latdist);
+                case 3: return createScope<Sheet>(gfx, rng, adist, ddist, odist, rdist);
+                case 4: return createScope<SkinnedBox>(gfx, rng, adist, ddist, odist, rdist);
+                default: assert(false && "bad drawable type in factory"); return {};
             }
         }
 
     private:
         Graphics& gfx;
-        std::mt19937 rng { std::random_device { }() };
+        std::mt19937 rng { std::random_device {}() };
         std::uniform_real_distribution<float> adist { 0.0f, PI * 2.0f };
         std::uniform_real_distribution<float> ddist { 0.0f, PI * 0.5f };
         std::uniform_real_distribution<float> odist { 0.0f, PI * 0.08f };
@@ -129,6 +133,5 @@ mage::App::App(int width, int height, const char* title) :
     std::generate_n(std::back_inserter(m_renderables), NUM_RENDERS, f);
 
 
-    m_display.getGraphics()
-             .setProjection(dx::XMMatrixPerspectiveLH(1.0f, m_display.getAspectRatio(), 0.5f, 40.0f));
+    m_display.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f, m_display.getAspectRatio(), 0.5f, 40.0f));
 }

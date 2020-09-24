@@ -139,6 +139,8 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
         return true;
     }
 
+    const auto& imio = ImGui::GetIO();
+
     switch (msg)
     {
         case WM_CLOSE:
@@ -147,6 +149,7 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
             return 0;
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
+            if(imio.WantCaptureKeyboard) break;
             if (!(lParam & 0x40000000) || m_keyboard.isAutoRepeat())
             {
                 m_keyboard.onKeyPressed(static_cast<uchar>(wParam));
@@ -154,13 +157,16 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
             break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
+            if(imio.WantCaptureKeyboard) break;
             m_keyboard.onKeyReleased(static_cast<uchar>(wParam));
             break;
         case WM_CHAR:
+            if(imio.WantCaptureMouse) break;
             m_keyboard.onChar(static_cast<char>(wParam));
             break;
         case WM_MOUSEMOVE:
         {
+            if(imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             if (pt.x >= 0 && pt.x < m_width && pt.y >= 0 && pt.y < m_height)
             {
@@ -185,12 +191,14 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
         }
         case WM_LBUTTONDOWN:
         {
+            if(imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             m_mouse.onLeftPressed(pt.x, pt.y);
             break;
         }
         case WM_LBUTTONUP:
         {
+            if(imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             m_mouse.onLeftReleased(pt.x, pt.y);
             if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height)
@@ -202,12 +210,14 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
         }
         case WM_RBUTTONDOWN:
         {
+            if(imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             m_mouse.onRightPressed(pt.x, pt.y);
             break;
         }
         case WM_RBUTTONUP:
         {
+            if(imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             m_mouse.onRightReleased(pt.x, pt.y);
             if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height)
@@ -219,6 +229,7 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
         }
         case WM_MOUSEWHEEL:
         {
+            if(imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
             m_mouse.onWheelDelta(pt.x, pt.y, delta);

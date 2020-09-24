@@ -25,19 +25,24 @@
 
 #define MATH_HELPER_IMPL
 #include "3rdParty/imgui/imgui_impl_dx11.h"
+#include "3rdParty/imgui/imgui_impl_win32.h"
 #include "mage/core/math_helper.h"
 
 // might do this since for release id be using visual studio to build, likely with different compiler flags than set up in cmake currently
 //#pragma comment(lib, "d3d11.lib")
 //#pragma comment(lib, "D3DCompiler.lib")
 
-
+#ifdef MAGE_USE_VSYNC
+constexpr int vsync_flag = 1;
+#else
+constexpr int vsync_flag = 0;
+#endif
 
 mage::Graphics::Graphics(HWND hwnd)
 {
     DXGI_SWAP_CHAIN_DESC swapDesc = { };
-    swapDesc.BufferDesc.Width = 1920;
-    swapDesc.BufferDesc.Height = 1080;
+    swapDesc.BufferDesc.Width = 0;
+    swapDesc.BufferDesc.Height = 0;
     swapDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
     swapDesc.BufferDesc.RefreshRate.Numerator = 0;
     swapDesc.BufferDesc.RefreshRate.Denominator = 0;
@@ -111,15 +116,26 @@ mage::Graphics::Graphics(HWND hwnd)
 	m_context->RSSetViewports( 1,&vp );
 
     ImGui_ImplDX11_Init(m_device.Get(), m_context.Get());
+    constexpr float uiScale = 2.0f;
+    ImGui::GetIO().FontGlobalScale = uiScale;
+    ImGui::GetIO().FontAllowUserScaling = true;
+    ImGui::GetStyle().ScaleAllSizes(uiScale);
 }
 
 void mage::Graphics::swap()
 {
+
+    if(m_imguiEnabled)
+    {
+        ImGui::Render();
+        ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+    }
+
     HRESULT hr;
     #if MAGE_DEBUG
     m_debugInfo.set();
     #endif
-    if (FAILED(hr = m_swap->Present(1, 0)))
+    if (FAILED(hr = m_swap->Present(vsync_flag, 0)))
     {
         LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(m_debugInfo.getMessages(), "\n"));
         if (hr == DXGI_ERROR_DEVICE_REMOVED)
@@ -130,6 +146,12 @@ void mage::Graphics::swap()
 
 void mage::Graphics::clear(float r, float g, float b) noexcept
 {
+    if(m_imguiEnabled)
+    {
+        ImGui_ImplDX11_NewFrame();
+        ImGui_ImplWin32_NewFrame();
+        ImGui::NewFrame();
+    }
     const float color[] = { r, g, b, 1.0f };
     m_context->ClearRenderTargetView(m_target.Get(), color);
     m_context->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);

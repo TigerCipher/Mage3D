@@ -48,6 +48,10 @@ namespace mage
         void setProjection(mat4f proj) noexcept { m_projection = proj; }
         [[nodiscard]] mat4f getProjection() const noexcept { return m_projection; }
 
+        void enableImgui() noexcept { m_imguiEnabled = true; }
+        void disableImgui() noexcept { m_imguiEnabled = false; }
+        [[nodiscard]] bool isImguiEnabled() const noexcept { return m_imguiEnabled; }
+
     protected:
     private:
         COMptr<ID3D11Device> m_device {};
@@ -57,6 +61,7 @@ namespace mage
         COMptr<ID3D11DepthStencilView> m_depthStencilView {};
 
         mat4f m_projection;
+        bool m_imguiEnabled = true;
 
 #if MAGE_DEBUG
         DebugInfo m_debugInfo;
