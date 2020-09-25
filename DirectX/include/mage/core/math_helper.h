@@ -66,26 +66,12 @@ T wrapAngle(T theta)
 
 
 
-
 namespace mage
 {
     float dot(vec4f v1, vec4f v2);
 }
 
-#ifdef MATH_HELPER_IMPL
-#ifndef MATH_HELPER_IMPL_ONCE
-    #define MATH_HELPER_IMPL_ONCE
-namespace mage
-{
-    float dot(vec4f v1, vec4f v2)
-    {
-        auto result = dx::XMVector4Dot(v1, v2);
-        auto d = dx::XMVectorGetX(result);
-        return d;
-    }
-}
-#endif
-#endif
+
 
 
 #endif//MAGE3DX_MATH_HELPER_H

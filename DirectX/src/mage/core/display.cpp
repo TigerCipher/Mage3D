@@ -75,18 +75,23 @@ mage::Display::Display(int width, int height, const char* title)
     region.top = (region.bottom / 2) - (height / 2);
     region.right = width + region.left;
     region.bottom = height + region.top;
+    LOG_INFO("Centered window to position ({}, {})", region.left, region.top);
     m_width = width;
     m_height = height;
     m_aspectRatio = (float) m_height / (float) m_width;
-    if (!AdjustWindowRect(&region, WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU, false))
+    if (!AdjustWindowRect(&region, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU, false))
     {
         throw DISPLAY_LAST_EXCEPTION();
     }
+    LOG_INFO("Adjusted window to size ({}, {}) to make the render area be ({}, {})",
+             region.right - region.left,
+             region.bottom - region.top,
+             width, height);
     //RECT screenRegion;
     //GetClientRect(GetDesktopWindow(), &screenRegion);
     m_hwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU,
                           region.left,
-                          region.top, width, height, nullptr,
+                          region.top, region.right - region.left, region.bottom - region.top, nullptr,
                           nullptr, Window::getInstance(), this);
 
     if (!m_hwnd)
@@ -102,7 +107,6 @@ mage::Display::Display(int width, int height, const char* title)
 
 mage::Display::~Display()
 {
-    ImguiManager::destroyWin32();
     DestroyWindow(m_hwnd);
 }
 

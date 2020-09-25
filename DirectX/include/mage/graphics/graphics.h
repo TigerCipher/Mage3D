@@ -35,7 +35,7 @@ namespace mage
 
     public:
         explicit Graphics(HWND hwnd);
-        virtual ~Graphics();
+        virtual ~Graphics() = default;
 
         Graphics(const Graphics& rhs) = delete;
         Graphics& operator=(const Graphics& rhs) = delete;
@@ -64,8 +64,8 @@ namespace mage
         COMptr<ID3D11RenderTargetView> m_target {};
         COMptr<ID3D11DepthStencilView> m_depthStencilView {};
 
-        mat4f m_projection;
-        mat4f m_camera;
+        mat4f m_projection{};
+        mat4f m_camera{};
         bool m_imguiEnabled = true;
 
 #if MAGE_DEBUG

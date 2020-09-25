@@ -112,6 +112,8 @@ static void calculateFrameStatistics(mage::Timer& timer)
 
     if (mage::ImguiManager::isEnabled())
     {
+        static bool metrics = true;
+        ImGui::ShowMetricsWindow(&metrics);
         frameCount++;
         fps = ImGui::GetIO().Framerate;
         avgFps += fps;
@@ -130,26 +132,6 @@ static void calculateFrameStatistics(mage::Timer& timer)
                ImGui::Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps),
                ImGui::TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount)
                );
-
-    //if (ImGui::Begin("Performance Statistics"))
-    //{
-    //    frameCount++;
-    //    fps = ImGui::GetIO().Framerate;
-    //    avgFps += fps;
-    //    if (timer.peek() >= 1.0f)
-    //    {
-    //        prntAvgFps = avgFps / (float) frameCount;
-    //        avgFps = 0;
-    //        prntFrameCount = frameCount;
-    //        frameCount = 0;
-    //        timer.markPoint();
-    //    }
-    //    ImGui::Text("Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / fps, fps);
-    //    ImGui::Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps,
-    //                prntAvgFps);
-    //    ImGui::TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount);
-    //}
-    //ImGui::End();
 }
 
 void mage::App::runFrame()
@@ -173,14 +155,6 @@ void mage::App::runFrame()
     IMGUI_WRAP("Global Simulation Speed",
                ImGui::SliderFloat("Speed Factor", &globalSpeed, 0.0f, 5.0f));
     calculateFrameStatistics(m_performanceTimer);
-    //if (m_display.getGraphics().isImguiEnabled())
-    //{
-    //    static char buffer[1024];
-    //    if (ImGui::Begin("Global Simulation Speed"))
-    //    { ImGui::SliderFloat("Speed Factor", &globalSpeed, 0.0f, 5.0f); }
-    //    ImGui::End();
-    //    calculateFrameStatistics(m_performanceTimer);
-    //}
 
 
     m_display.getGraphics().swap();

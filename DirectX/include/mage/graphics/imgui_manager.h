@@ -53,6 +53,8 @@ namespace mage
 
         static void stop()
         {
+            destroyDx11();
+            destroyWin32();
             ImGui::DestroyContext();
         }
 
