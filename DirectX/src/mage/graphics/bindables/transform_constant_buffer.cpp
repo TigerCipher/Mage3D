@@ -35,7 +35,7 @@ mage::TransformConstantBuffer::TransformConstantBuffer(mage::Graphics& gfx, cons
 
 void mage::TransformConstantBuffer::bind(mage::Graphics& gfx) noexcept
 {
-    m_vertexBuffer->update(gfx, dx::XMMatrixTranspose(m_parent.getTransformMatrix() * gfx.getProjection()));
+    m_vertexBuffer->update(gfx, dx::XMMatrixTranspose(m_parent.getTransformMatrix() * gfx.getCamera() * gfx.getProjection()));
     m_vertexBuffer->bind(gfx);
 }
 

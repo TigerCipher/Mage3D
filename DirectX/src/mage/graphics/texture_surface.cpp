@@ -23,6 +23,7 @@
 #include "mage/debug/texture_exception.h"
 
 #define FULL_WINTARD
+
 #include "mage/winwrapper.h"
 
 namespace Gdiplus
@@ -60,7 +61,8 @@ mage::Color mage::TextureSurface::getPixel(uint x, uint y) const noexcept(!MAGE_
 
 void mage::TextureSurface::save(const std::string& fileName) const
 {
-    auto getEncoder = [ &fileName ](const WCHAR* format, CLSID* clsid) -> void {
+    auto getEncoder = [ &fileName ](const WCHAR* format, CLSID* clsid) -> void
+    {
         UINT num = 0;
         UINT size = 0;
 
@@ -103,7 +105,7 @@ void mage::TextureSurface::save(const std::string& fileName) const
     CLSID bmp;
     getEncoder(L"image/bmp", &bmp);
 
-    wchar_t wideName[ 512 ];
+    wchar_t wideName[512];
     mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
 
     Gdiplus::Bitmap bitmap(m_width, m_height, m_width * sizeof(Color), PixelFormat32bppARGB, (BYTE*) m_buffer.get());
@@ -111,7 +113,8 @@ void mage::TextureSurface::save(const std::string& fileName) const
     { throw TextureException(__LINE__, __FILE__, fmt::format("Could not save texture surface to [{}]", fileName)); }
 }
 
-void mage::TextureSurface::copy(const mage::TextureSurface& src) noexcept(!MAGE_DEBUG) {
+void mage::TextureSurface::copy(const mage::TextureSurface& src) noexcept(!MAGE_DEBUG)
+{
     assert(m_width == src.m_width);
     assert(m_height == src.m_height);
     memcpy(m_buffer.get(), src.m_buffer.get(), m_width * m_height * sizeof(Color));
@@ -126,7 +129,7 @@ mage::TextureSurface mage::TextureSurface::loadFromFile(const std::string& fileN
     wchar_t wideName[512];
     mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
     Gdiplus::Bitmap bitmap(wideName);
-    if(bitmap.GetLastStatus() != Gdiplus::Status::Ok)
+    if (bitmap.GetLastStatus() != Gdiplus::Status::Ok)
     {
         throw TextureException(__LINE__, __FILE__, fmt::format("Failed to load texture [{}]", fileName));
     }
@@ -135,13 +138,13 @@ mage::TextureSurface mage::TextureSurface::loadFromFile(const std::string& fileN
     height = bitmap.GetHeight();
     buf = createScope<Color[]>(width * height);
 
-    for(uint y = 0; y < height; y++)
+    for (uint y = 0; y < height; y++)
     {
-        for(uint x = 0; x < width; x++)
+        for (uint x = 0; x < width; x++)
         {
             Gdiplus::Color c;
             bitmap.GetPixel(x, y, &c);
-            buf[y * width + x] = c.GetValue();
+            buf[ y * width + x ] = c.GetValue();
         }
     }
 
@@ -149,24 +152,16 @@ mage::TextureSurface mage::TextureSurface::loadFromFile(const std::string& fileN
 }
 
 ULONG_PTR mage::GDIPlusManager::s_token = 0;
-int mage::GDIPlusManager::s_count = 0;
 
-mage::GDIPlusManager::GDIPlusManager()
+void mage::GDIPlusManager::start() noexcept
 {
-    if(s_count++ == 0)
-    {
-        Gdiplus::GdiplusStartupInput input;
-        input.GdiplusVersion = 1;
-        input.DebugEventCallback = nullptr;
-        input.SuppressBackgroundThread = false;
-        Gdiplus::GdiplusStartup(&s_token, &input, nullptr);
-    }
+    Gdiplus::GdiplusStartupInput input;
+    input.GdiplusVersion = 1;
+    input.DebugEventCallback = nullptr;
+    input.SuppressBackgroundThread = false;
+    Gdiplus::GdiplusStartup(&s_token, &input, nullptr);
 }
-
-mage::GDIPlusManager::~GDIPlusManager()
+void mage::GDIPlusManager::stop() noexcept
 {
-    if(--s_count == 0)
-    {
-        Gdiplus::GdiplusShutdown(s_token);
-    }
+    Gdiplus::GdiplusShutdown(s_token);
 }

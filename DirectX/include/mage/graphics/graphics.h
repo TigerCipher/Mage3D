@@ -35,7 +35,7 @@ namespace mage
 
     public:
         explicit Graphics(HWND hwnd);
-        virtual ~Graphics() = default;
+        virtual ~Graphics();
 
         Graphics(const Graphics& rhs) = delete;
         Graphics& operator=(const Graphics& rhs) = delete;
@@ -48,6 +48,10 @@ namespace mage
         void setProjection(mat4f proj) noexcept { m_projection = proj; }
         [[nodiscard]] mat4f getProjection() const noexcept { return m_projection; }
 
+        void setCamera(mat4f cam) noexcept { m_camera = cam; }
+        [[nodiscard]] mat4f getCamera() const noexcept { return m_camera; }
+
+        void toggleImgui() noexcept { m_imguiEnabled = !m_imguiEnabled; }
         void enableImgui() noexcept { m_imguiEnabled = true; }
         void disableImgui() noexcept { m_imguiEnabled = false; }
         [[nodiscard]] bool isImguiEnabled() const noexcept { return m_imguiEnabled; }
@@ -61,6 +65,7 @@ namespace mage
         COMptr<ID3D11DepthStencilView> m_depthStencilView {};
 
         mat4f m_projection;
+        mat4f m_camera;
         bool m_imguiEnabled = true;
 
 #if MAGE_DEBUG

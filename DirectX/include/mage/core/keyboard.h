@@ -59,20 +59,21 @@ namespace mage
         Keyboard(const Keyboard& rhs) = delete;
         Keyboard& operator=(const Keyboard& rhs) = delete;
 
-        bool isPressed(uchar keycode) const noexcept;
+        [[nodiscard]] bool isPressed(uchar keycode) const noexcept;
+        [[nodiscard]] bool isPressedOnce(uchar keycode) const noexcept;
         Event readKey() noexcept;
-        bool isKeyBufferEmpty() const noexcept;
+        [[nodiscard]] bool isKeyBufferEmpty() const noexcept;
         void clearKeyBuffer() noexcept;
 
 
         char readChar() noexcept;
-        bool isCharBufferEmpty() const noexcept;
+        [[nodiscard]] bool isCharBufferEmpty() const noexcept;
         void clearCharBuffer() noexcept;
         void clearBuffers() noexcept;
 
         void enableAutoRepeat() noexcept;
         void disableAutoRepeat() noexcept;
-        bool isAutoRepeat() const noexcept;
+        [[nodiscard]] bool isAutoRepeat() const noexcept;
 
     private:
 
@@ -90,6 +91,7 @@ namespace mage
         static constexpr uint BUFFER_SIZE = 16;
 
         bool m_autoRepeat = false;
+        mutable ushort m_pressCount = 0;
         std::bitset<NUM_KEYS> m_keyStates;
         std::queue<Event> m_keyBuffer;
         std::queue<char> m_charBuffer;

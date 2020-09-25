@@ -26,6 +26,15 @@ bool mage::Keyboard::isPressed(uchar keycode) const noexcept
     return m_keyStates[ keycode ];
 }
 
+bool mage::Keyboard::isPressedOnce(uchar keycode) const noexcept
+{
+    bool down = m_keyStates[keycode];
+    if(down && m_pressCount++ == 0) return down;
+    else if(!down) m_pressCount = 0;
+    return false;
+}
+
+
 mage::Keyboard::Event mage::Keyboard::readKey() noexcept
 {
     if (!m_keyBuffer.empty())

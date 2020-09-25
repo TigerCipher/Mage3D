@@ -23,23 +23,58 @@
 #define MAGE3DX_IMGUI_MANAGER_H
 
 #include "3rdParty/imgui/imgui.h"
+#include <d3d11.h>
+
+//#define _GET_NTH_ARG(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, N, ...) N
+//#define COUNT_VARARGS(...) _GET_NTH_ARG(__VA_ARGS__, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
+
+#define IMGUI_WRAP(name, ...)       \
+if(mage::ImguiManager::isEnabled()) \
+{                                   \
+    ImGui::Begin(name);             \
+    (__VA_ARGS__);                  \
+    ImGui::End();                   \
+}
+
+
 
 namespace mage
 {
     class ImguiManager
     {
     public:
-        ImguiManager()
+
+        static void start()
         {
             IMGUI_CHECKVERSION();
             ImGui::CreateContext();
             ImGui::StyleColorsDark();
         }
 
-        virtual ~ImguiManager()
+        static void stop()
         {
             ImGui::DestroyContext();
         }
+
+        static void initDx11(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+        static void initWin32(HWND hwnd);
+        static void destroyWin32();
+        static void destroyDx11();
+
+        static LRESULT  wndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+        static void renderDx11();
+        static void newFrame();
+
+        static bool isEnabled() noexcept { return s_enabled; }
+
+        static void enable() noexcept { s_enabled = true; }
+        static void disable() noexcept { s_enabled = false; }
+        static void toggle() noexcept { s_enabled = !s_enabled; }
+
+
+    private:
+        static bool s_enabled;
     };
 }
 

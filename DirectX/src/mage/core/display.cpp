@@ -20,9 +20,12 @@
  */
 
 #include "mage/core/display.h"
-#include "3rdParty/imgui/imgui_impl_win32.h"
-#include "mage/debug/debug_message_map.h"
 #include "mage/resource.h"
+#include "mage/graphics/imgui_manager.h"
+
+#if MAGE_VERBOSE
+#include "mage/debug/debug_message_map.h"
+#endif
 
 
 mage::Display::Window mage::Display::Window::s_winClass;
@@ -63,13 +66,8 @@ HINSTANCE mage::Display::Window::getInstance() noexcept
 
 mage::Display::Display(int width, int height, const char* title)
 {
+    ImguiManager::start();
     LOG_INFO("Creating display of size: ({}, {})", width, height);
-    //LOG_TRACE("Enabling Process DPI awareness");
-    //if(!SetProcessDPIAware())
-    //{
-    //    throw DISPLAY_LAST_EXCEPTION();
-    //}
-    LOG_TRACE("Is process dpi aware? {}", IsProcessDPIAware());
     RECT region;
     // Center our window to the desktop
     GetClientRect(GetDesktopWindow(), &region);
@@ -86,7 +84,8 @@ mage::Display::Display(int width, int height, const char* title)
     }
     //RECT screenRegion;
     //GetClientRect(GetDesktopWindow(), &screenRegion);
-    m_hwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU, region.left,
+    m_hwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU,
+                          region.left,
                           region.top, width, height, nullptr,
                           nullptr, Window::getInstance(), this);
 
@@ -96,14 +95,14 @@ mage::Display::Display(int width, int height, const char* title)
     }
     ShowWindow(m_hwnd, SW_SHOWDEFAULT);
 
-    ImGui_ImplWin32_Init(m_hwnd);
+    ImguiManager::initWin32(m_hwnd);
 
     m_gfx = createScope<Graphics>(m_hwnd);
 }
 
 mage::Display::~Display()
 {
-    ImGui_ImplWin32_Shutdown();
+    ImguiManager::destroyWin32();
     DestroyWindow(m_hwnd);
 }
 
@@ -134,7 +133,7 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
     OutputDebugString(dmm(msg, lParam, wParam).c_str());
     #endif
 
-    if(ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
+    if (ImguiManager::wndProcHandler(hWnd, msg, wParam, lParam))
     {
         return true;
     }
@@ -149,7 +148,7 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
             return 0;
         case WM_KEYDOWN:
         case WM_SYSKEYDOWN:
-            if(imio.WantCaptureKeyboard) break;
+            if (imio.WantCaptureKeyboard) break;
             if (!(lParam & 0x40000000) || m_keyboard.isAutoRepeat())
             {
                 m_keyboard.onKeyPressed(static_cast<uchar>(wParam));
@@ -157,16 +156,16 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
             break;
         case WM_KEYUP:
         case WM_SYSKEYUP:
-            if(imio.WantCaptureKeyboard) break;
+            if (imio.WantCaptureKeyboard) break;
             m_keyboard.onKeyReleased(static_cast<uchar>(wParam));
             break;
         case WM_CHAR:
-            if(imio.WantCaptureMouse) break;
+            if (imio.WantCaptureMouse) break;
             m_keyboard.onChar(static_cast<char>(wParam));
             break;
         case WM_MOUSEMOVE:
         {
-            if(imio.WantCaptureMouse) break;
+            if (imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             if (pt.x >= 0 && pt.x < m_width && pt.y >= 0 && pt.y < m_height)
             {
@@ -191,14 +190,14 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
         }
         case WM_LBUTTONDOWN:
         {
-            if(imio.WantCaptureMouse) break;
+            if (imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             m_mouse.onLeftPressed(pt.x, pt.y);
             break;
         }
         case WM_LBUTTONUP:
         {
-            if(imio.WantCaptureMouse) break;
+            if (imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             m_mouse.onLeftReleased(pt.x, pt.y);
             if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height)
@@ -210,14 +209,14 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
         }
         case WM_RBUTTONDOWN:
         {
-            if(imio.WantCaptureMouse) break;
+            if (imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             m_mouse.onRightPressed(pt.x, pt.y);
             break;
         }
         case WM_RBUTTONUP:
         {
-            if(imio.WantCaptureMouse) break;
+            if (imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             m_mouse.onRightReleased(pt.x, pt.y);
             if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height)
@@ -229,7 +228,7 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
         }
         case WM_MOUSEWHEEL:
         {
-            if(imio.WantCaptureMouse) break;
+            if (imio.WantCaptureMouse) break;
             const POINTS pt = MAKEPOINTS(lParam);
             const int delta = GET_WHEEL_DELTA_WPARAM(wParam);
             m_mouse.onWheelDelta(pt.x, pt.y, delta);

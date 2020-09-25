@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: primitives.h
  * Date File Created: 9/24/2020 at 12:08 AM
  * Author: Matt
@@ -32,7 +32,9 @@ namespace mage
     public:
         IndexedTriangleList() = default;
 
-        IndexedTriangleList(list<T> verts, list<ushort> ints) : vertices(std::move(verts)), indices(std::move(ints))
+        IndexedTriangleList(list<T> verts, list<ushort> ints) :
+                vertices(std::move(verts)),
+                indices(std::move(ints))
         {
             assert(vertices.size() > 2);
             assert(indices.size() % 3 == 0);
@@ -73,11 +75,11 @@ namespace mage
             // the center
             vertices.emplace_back();
             vertices.back().pos = { 0.0f, 0.0f, -1.0f };
-            const auto iCenter = (ushort)(vertices.size() - 1);
+            const auto iCenter = (ushort) (vertices.size() - 1);
             // the tip :darkness:
             vertices.emplace_back();
             vertices.back().pos = { 0.0f, 0.0f, 1.0f };
-            const auto iTip = (ushort)(vertices.size() - 1);
+            const auto iTip = (ushort) (vertices.size() - 1);
 
 
             // base indices
@@ -128,9 +130,25 @@ namespace mage
             vertices.emplace_back(side, side, side);
 
             list<V> verts(vertices.size());
-            for (size_t i = 0; i < vertices.size(); i++) { verts[ i ].pos = vertices[ i ]; }
-            return { std::move(verts), { 0, 2, 1, 2, 3, 1, 1, 3, 5, 3, 7, 5, 2, 6, 3, 3, 6, 7,
-                                         4, 5, 7, 4, 7, 6, 0, 4, 2, 2, 4, 6, 0, 1, 4, 1, 5, 4 } };
+            for (size_t i = 0; i < vertices.size(); i++)
+            { verts[ i ].pos = vertices[ i ]; }
+            return {
+                    std::move(verts),
+                    {
+                            0, 2, 1,
+                            2, 3, 1,
+                            1, 3, 5,
+                            3, 7, 5,
+                            2, 6, 3,
+                            3, 6, 7,
+                            4, 5, 7,
+                            4, 7, 6,
+                            0, 4, 2,
+                            2, 4, 6,
+                            0, 1, 4,
+                            1, 5, 4
+                    }
+            };
         }
 
         template<class V>
@@ -169,15 +187,17 @@ namespace mage
             vertices[ 13 ].pos = { side, -side, side };
             vertices[ 13 ].tex = { 0.0f / 3.0f, 2.0f / 4.0f };
 
-            return { std::move(vertices),
-                     {
-                             0,  2,  1,  2,  3,  1,//
-                             4,  8,  5,  5,  8,  9,//
-                             2,  6,  3,  3,  6,  7,//
-                             4,  5,  7,  4,  7,  6,//
-                             2,  10, 11, 2,  11, 6,//
-                             12, 3,  7,  12, 7,  13//
-                     } };
+            return {
+                    std::move(vertices),
+                    {
+                            0, 2, 1, 2, 3, 1,
+                            4, 8, 5, 5, 8, 9,
+                            2, 6, 3, 3, 6, 7,
+                            4, 5, 7, 4, 7, 6,
+                            2, 10, 11, 2, 11, 6,
+                            12, 3, 7, 12, 7, 13
+                    }
+            };
         }
     };
 
@@ -218,13 +238,15 @@ namespace mage
             list<ushort> indices;
             indices.reserve(pow2(divisionsX * divisionsY) * 6);
             {
-                const auto vxy2i = [ numVertsX ](size_t x, size_t y) { return (ushort)(y * numVertsX + x); };
+                const auto vxy2i = [ numVertsX ](size_t x, size_t y) { return (ushort) (y * numVertsX + x); };
                 for (size_t y = 0; y < divisionsY; y++)
                 {
                     for (size_t x = 0; x < divisionsX; x++)
                     {
-                        const std::array<ushort, 4> indexArray = { vxy2i(x, y), vxy2i(x + 1, y), vxy2i(x, y + 1),
-                                                                   vxy2i(x + 1, y + 1) };
+                        const std::array<ushort, 4> indexArray = {
+                                vxy2i(x, y), vxy2i(x + 1, y), vxy2i(x, y + 1),
+                                vxy2i(x + 1, y + 1)
+                        };
                         indices.push_back(indexArray[ 0 ]);
                         indices.push_back(indexArray[ 2 ]);
                         indices.push_back(indexArray[ 1 ]);
@@ -261,11 +283,11 @@ namespace mage
             list<V> vertices;
             vertices.emplace_back();
             vertices.back().pos = { 0.0f, 0.0f, -1.0f };
-            const auto iCenterNear = (ushort)(vertices.size() - 1);
+            const auto iCenterNear = (ushort) (vertices.size() - 1);
             // far center
             vertices.emplace_back();
             vertices.back().pos = { 0.0f, 0.0f, 1.0f };
-            const auto iCenterFar = (ushort)(vertices.size() - 1);
+            const auto iCenterFar = (ushort) (vertices.size() - 1);
 
             // base vertices
             for (int iLong = 0; iLong < longDiv; iLong++)

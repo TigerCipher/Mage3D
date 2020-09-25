@@ -37,12 +37,12 @@ namespace mage
     {
     public:
         App(int width, int height, const char* title);
-        virtual ~App() = default;
+        virtual ~App();
         int run();
         inline void stop() { m_running = false; }
     private:
         void runFrame();
-        ImguiManager m_imgui;
+
         Display m_display;
         Timer m_timer;
         Timer m_performanceTimer;

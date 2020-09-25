@@ -68,15 +68,15 @@ namespace mage
         uint m_height;
     };
 
+    // TODO: Move to own file
     class GDIPlusManager
     {
     public:
-        GDIPlusManager();
-        virtual ~GDIPlusManager();
+        static void start() noexcept;
+        static void stop() noexcept;
 
     private:
         static ULONG_PTR s_token;
-        static int s_count;
     };
 
 }// namespace mage

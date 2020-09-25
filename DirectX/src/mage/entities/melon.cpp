@@ -100,8 +100,7 @@ mat4f mage::Melon::getTransformMatrix() const noexcept
 {
     return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
            dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
-           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
-           dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
 }
 
 void mage::Melon::update(float delta) noexcept

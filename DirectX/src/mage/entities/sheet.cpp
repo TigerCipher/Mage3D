@@ -80,7 +80,7 @@ mage::Sheet::Sheet(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_dis
 mat4f mage::Sheet::getTransformMatrix() const noexcept
 {
     return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) * dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
-           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) * dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
 }
 
 void mage::Sheet::update(float delta) noexcept
