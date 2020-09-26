@@ -121,7 +121,7 @@ mage::Graphics::Graphics(HWND hwnd)
     m_context->RSSetViewports(1, &vp);
 
     ImguiManager::initDx11(m_device.Get(), m_context.Get());
-    constexpr float uiScale = 2.0f;
+    constexpr float uiScale = 1.5f;
     ImGui::GetIO().FontGlobalScale = uiScale;
     ImGui::GetIO().FontAllowUserScaling = true;
     ImGui::GetStyle().ScaleAllSizes(uiScale);

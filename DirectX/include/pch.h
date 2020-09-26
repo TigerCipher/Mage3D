@@ -26,8 +26,10 @@
 #define _WIN32_WINNT 0x0601
 #define STRICT
 
+#include <bmd/types.h>
 #include "mage/common.h"
 #include "mage/debug/log.h"
+
 
 #include <functional>
 #include <exception>

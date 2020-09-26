@@ -14,48 +14,41 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: camera.h
+ * Date File Created: 9/25/2020 at 8:10 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
+#ifndef MAGE3DX_CAMERA_H
+#define MAGE3DX_CAMERA_H
 
-
-
-
-#include "display.h"
-#include "timer.h"
-
-#include "mage/graphics/imgui_manager.h"
-#include "mage/graphics/irenderable.h"
-#include "camera.h"
+#include "mage/graphics/graphics.h"
+#include "math_helper.h"
 
 namespace mage
 {
-    class App
+    class Camera
     {
     public:
-        App(int width, int height, const char* title);
-        virtual ~App();
-        int run();
-        inline void stop() { m_running = false; }
+        Camera() = default;
+        virtual ~Camera() = default;
+
+        void spawnControlWindow() noexcept;
+        void reset() noexcept;
+
+        [[nodiscard]] mat4f getViewMatrix() const noexcept;
+
+
     private:
-        void runFrame();
-
-        Display m_display;
-        Camera m_camera;
-
-        Timer m_timer;
-        Timer m_performanceTimer;
-        bool m_running;
-        float globalSpeed = 1.0f;
-        list<UniquePtr<IRenderable>> m_renderables;
-        static constexpr size_t NUM_RENDERS = 180;
+        float m_r = 20.0f;
+        float m_theta = 0.0f;
+        float m_phi = 0.0f;
+        float m_pitch = 0.0f;
+        float m_yaw = 0.0f;
+        float m_roll = 0.0f;
     };
 
 }
 
 
-#endif //MAGE3DX_APP_H
+#endif //MAGE3DX_CAMERA_H

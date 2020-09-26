@@ -81,7 +81,6 @@ mage::App::App(int width, int height, const char* title) :
                                                                     m_display.getAspectRatio(),
                                                                     0.5f, 40.0f));
 
-    m_display.getGraphics().setCamera(dx::XMMatrixTranslation(0, 0, 20));
 }
 
 mage::App::~App()
@@ -141,7 +140,7 @@ void mage::App::runFrame()
     if (m_display.m_keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
 
     m_display.getGraphics().clear(0.07f, 0, 0.12f);
-
+    m_display.getGraphics().setCamera(m_camera.getViewMatrix());
 
     for (auto& b : m_renderables)
     {
@@ -156,6 +155,7 @@ void mage::App::runFrame()
                ImGui::SliderFloat("Speed Factor", &globalSpeed, 0.0f, 5.0f));
     calculateFrameStatistics(m_performanceTimer);
 
+    m_camera.spawnControlWindow();
 
     m_display.getGraphics().swap();
 }

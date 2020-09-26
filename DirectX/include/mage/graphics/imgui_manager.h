@@ -28,14 +28,17 @@
 //#define _GET_NTH_ARG(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, N, ...) N
 //#define COUNT_VARARGS(...) _GET_NTH_ARG(__VA_ARGS__, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
 
-#define IMGUI_WRAP(name, ...)       \
-if(mage::ImguiManager::isEnabled()) \
-{                                   \
-    ImGui::Begin(name);             \
-    (__VA_ARGS__);                  \
-    ImGui::End();                   \
-}
-
+#if MAGE_IMGUI
+    #define IMGUI_WRAP(name, ...)       \
+    if(mage::ImguiManager::isEnabled()) \
+    {                                   \
+        ImGui::Begin(name);             \
+        (__VA_ARGS__);                  \
+        ImGui::End();                   \
+    }
+#else
+    #define IMGUI_WRAP(...)
+#endif
 
 
 namespace mage
@@ -63,7 +66,7 @@ namespace mage
         static void destroyWin32();
         static void destroyDx11();
 
-        static LRESULT  wndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+        static LRESULT wndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
         static void renderDx11();
         static void newFrame();

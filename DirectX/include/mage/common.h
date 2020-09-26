@@ -22,18 +22,28 @@
 #ifndef MAGE3DX_COMMON_H
 #define MAGE3DX_COMMON_H
 
-//#define BMD_PROFILE 1
-
-#include <bmd/types.h>
-
 
 #ifndef MAGE_DEBUG
+    #define MAGE_DEBUG 0
+#else
+    #undef MAGE_DEBUG
     #define MAGE_DEBUG 1
 #endif
 
 #ifndef MAGE_VERBOSE
     #define MAGE_VERBOSE 0
+#else
+    #undef MAGE_VERBOSE
+    #define MAGE_VERBOSE 1
 #endif
+
+#ifndef MAGE_IMGUI
+    #define MAGE_IMGUI 0
+#else
+    #undef MAGE_IMGUI
+    #define MAGE_IMGUI 1
+#endif
+
 
 
 #define VOIDPP(x) reinterpret_cast<void**>(x)
