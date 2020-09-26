@@ -2,7 +2,7 @@
 *.slo
 *.lo
 *.o
-# *.obj # allow model files. So far obj is the only format ive found that exports at least some texture maps with the mtl file (at least when using blender)
+*.obj
 
 # Precompiled Headers
 *.gch
@@ -26,10 +26,8 @@
 *.exe
 *.out
 *.app
+*.cso
 
-*.vcxproj
-*.filters
-*.user
 
 **/*build*/
 **/*Build*/
@@ -41,3 +39,7 @@ mage.properties
 
 reminders.txt
 
+**/*.vs/
+Mage3DX/x64
+
+/Mage3DX/Mage3DX.aps

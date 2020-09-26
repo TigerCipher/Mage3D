@@ -1,8 +1,0 @@
-Package: spdlog
-Version: 1.6.1
-Depends: fmt
-Architecture: x64-windows
-Multi-Arch: same
-Abi: 25dfdb84d80db0a7d5efc56adb0c8178b1e6b1a0
-Description: Very fast, header only, C++ logging library
-Type: Port

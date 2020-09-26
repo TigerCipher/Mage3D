@@ -1,0 +1,422 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\3rdParty">
+      <UniqueIdentifier>{1d85b8ab-8262-4dcb-9eb0-dd008b5e354d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\3rdParty">
+      <UniqueIdentifier>{e1d35c55-6b1e-4686-a30d-f829ced1b966}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\3rdParty\ImGui">
+      <UniqueIdentifier>{ecaae888-9aed-479f-8bd2-289cb1a52541}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\3rdParty\StackWalker">
+      <UniqueIdentifier>{f6ae6906-aad4-415b-95c3-e111d2fce492}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\3rdParty\ImGui">
+      <UniqueIdentifier>{0909db46-2da8-4c41-929e-9dabe5086fe7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\3rdParty\StackWalker">
+      <UniqueIdentifier>{f202f8c0-a684-4411-9a9c-1c89b5ec5c6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\3rdParty\DXErr">
+      <UniqueIdentifier>{1dd45c59-24e7-487b-b494-b3a1fb9feffe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\3rdParty\DXErr">
+      <UniqueIdentifier>{cea3ac83-2157-4f52-af45-9d1e554c883e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\core">
+      <UniqueIdentifier>{c5d7498b-f353-4c06-abf2-556413316ef8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\debug">
+      <UniqueIdentifier>{bfee66a4-73de-4480-9938-445b5b20755b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\entities">
+      <UniqueIdentifier>{83d33a17-a598-49f3-8d15-e6a532fedd04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\graphics">
+      <UniqueIdentifier>{5dba5abf-d03a-48e9-84ab-06bfef29fd41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{dca518fc-3abf-47e4-8dca-e4060c0b1665}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\debug">
+      <UniqueIdentifier>{b6e6c907-54df-45d5-a15e-4251c43266aa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\entities">
+      <UniqueIdentifier>{86d468bb-0e67-42e3-bed3-7844bc7f6e73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{df9330fe-8313-454f-a192-c4c36ad2e841}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\bindables">
+      <UniqueIdentifier>{5a9edb8a-c4fc-4841-b733-8347d288d071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\bindables">
+      <UniqueIdentifier>{59665726-26b8-4abf-9e71-5dc4ab09f0b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{a32f1e22-b6b0-4b60-a612-57ab98401327}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{accb6412-465f-45ef-a2df-fd0d3dc42ea4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="winmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui.cpp">
+      <Filter>Source Files\3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_demo.cpp">
+      <Filter>Source Files\3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_draw.cpp">
+      <Filter>Source Files\3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_impl_dx11.cpp">
+      <Filter>Source Files\3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_impl_win32.cpp">
+      <Filter>Source Files\3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_widgets.cpp">
+      <Filter>Source Files\3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\dxerr.cpp">
+      <Filter>Source Files\3rdParty\DXErr</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\StackWalker\StackWalker.cpp">
+      <Filter>Source Files\3rdParty\StackWalker</Filter>
+    </ClCompile>
+    <ClCompile Include="app.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="display.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="math_helper.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="mouse.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="timer.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="util.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="bindable.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="index_buffer.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="input_layout.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="pixel_shader.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="topology.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="transform_constant_buffer.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="vertex_buffer.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="vertex_shader.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="box.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="melon.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="pyramid.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="sheet.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="callstack.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_info.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="debug_message_map.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="display_exception.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics_exception.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="info_exception.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="log.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="mage_exception.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="texture_exception.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="graphics.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_manager.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="irenderable.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="sampler.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="texture.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="texture_surface.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="3rdParty\dxerr.h">
+      <Filter>Header Files\3rdParty\DXErr</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imconfig.h">
+      <Filter>Header Files\3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imgui.h">
+      <Filter>Header Files\3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imgui_impl_dx11.h">
+      <Filter>Header Files\3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imgui_impl_win32.h">
+      <Filter>Header Files\3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imgui_internal.h">
+      <Filter>Header Files\3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imstb_rectpack.h">
+      <Filter>Header Files\3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imstb_textedit.h">
+      <Filter>Header Files\3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imstb_truetype.h">
+      <Filter>Header Files\3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\StackWalker\StackWalker.h">
+      <Filter>Header Files\3rdParty\StackWalker</Filter>
+    </ClInclude>
+    <ClInclude Include="winwrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="app.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Matt\Desktop\DirectX\include\mage\common.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="display.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="math_helper.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="mouse.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="timer.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="util.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="bindable.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="bindables.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="constant_buffer.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="index_buffer.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="input_layout.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="pixel_shader.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="topology.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="transform_constant_buffer.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex_buffer.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="vertex_shader.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_manager.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="irenderable.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="renderable.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="sampler.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="texture_surface.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="texture.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="box.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="melon.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="pyramid.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="sheet.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="primitives.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="callstack.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_info.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="debug_message_map.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="display_exception.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="graphics_exception.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="info_exception.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="mage_exception.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="stacktrace_exception.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="texture_exception.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="3rdParty\DXGetErrorDescription.inl">
+      <Filter>Header Files\3rdParty\DXErr</Filter>
+    </None>
+    <None Include="3rdParty\DXGetErrorString.inl">
+      <Filter>Header Files\3rdParty\DXErr</Filter>
+    </None>
+    <None Include="3rdParty\DXTrace.inl">
+      <Filter>Header Files\3rdParty\DXErr</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Mage3DX.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="mage3dx.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="textureVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="texturePS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="basicVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="basicPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="basicColorBlendVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="basicColorBlendPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+  </ItemGroup>
+</Project>
