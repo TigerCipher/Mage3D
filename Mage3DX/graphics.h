@@ -54,7 +54,9 @@ namespace mage
         void toggleImgui() noexcept { m_imguiEnabled = !m_imguiEnabled; }
         void enableImgui() noexcept { m_imguiEnabled = true; }
         void disableImgui() noexcept { m_imguiEnabled = false; }
+
         [[nodiscard]] bool isImguiEnabled() const noexcept { return m_imguiEnabled; }
+
 
     protected:
     private:

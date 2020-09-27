@@ -43,6 +43,7 @@ void mage::ImguiManager::destroyDx11()
     ImGui_ImplDX11_Shutdown();
 }
 
+
 LRESULT mage::ImguiManager::wndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     return ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
