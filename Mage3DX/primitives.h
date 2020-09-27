@@ -15,10 +15,9 @@
  * Contact: team@bluemoondev.org
  *
  * File Name: primitives.h
- * Date File Created: 9/24/2020 at 12:08 AM
+ * Date File Created: 9/25/2020 at 11:43 PM
  * Author: Matt
  */
-
 #ifndef MAGE3DX_PRIMITIVES_H
 #define MAGE3DX_PRIMITIVES_H
 
@@ -46,6 +45,28 @@ namespace mage
 			{
 				const vec4f pos = dx::XMLoadFloat3(&v.pos);
 				dx::XMStoreFloat3(&v.pos, dx::XMVector3Transform(pos, matrix));
+			}
+		}
+
+		void setNormalsFlat() noexcept(!MAGE_DEBUG)
+		{
+			assert(indices.size() % 3 == 0 && indices.size() > 0);
+			for (size_t i = 0; i < indices.size(); i += 3)
+			{
+				auto& v0 = vertices[ indices[ i ] ];
+				auto& v1 = vertices[ indices[ i + 1 ] ];
+				auto& v2 = vertices[ indices[ i + 2 ] ];
+				const auto p0 = dx::XMLoadFloat3(&v0.pos);
+				const auto p1 = dx::XMLoadFloat3(&v1.pos);
+				const auto p2 = dx::XMLoadFloat3(&v2.pos);
+
+				const auto n = dx::XMVector3Normalize(
+					dx::XMVector3Cross(dx::XMVectorSubtract(p1, p0),
+									   dx::XMVectorSubtract(p2, p0)));
+
+				dx::XMStoreFloat3(&v0.normal, n);
+				dx::XMStoreFloat3(&v1.normal, n);
+				dx::XMStoreFloat3(&v2.normal, n);
 			}
 		}
 
@@ -198,6 +219,62 @@ namespace mage
 							2, 10, 11,  2, 11, 6,
 							12, 3, 7,   12, 7, 13
 					}
+			};
+		}
+
+		template<class V>
+		static IndexedTriangleList<V> makeIndependent()
+		{
+			constexpr float side = 1.0f / 2.0f;
+
+			std::vector<V> vertices(24);
+
+			// Near
+			vertices[ 0 ].pos = { -side,-side,-side };
+			vertices[ 1 ].pos = { side,-side,-side };
+			vertices[ 2 ].pos = { -side,side,-side };
+			vertices[ 3 ].pos = { side,side,-side };
+
+			// Far
+			vertices[ 4 ].pos = { -side,-side,side };
+			vertices[ 5 ].pos = { side,-side,side };
+			vertices[ 6 ].pos = { -side,side,side };
+			vertices[ 7 ].pos = { side,side,side };
+
+			// Left
+			vertices[ 8 ].pos = { -side,-side,-side };
+			vertices[ 9 ].pos = { -side,side,-side };
+			vertices[ 10 ].pos = { -side,-side,side };
+			vertices[ 11 ].pos = { -side,side,side };
+
+			// Right
+			vertices[ 12 ].pos = { side,-side,-side };
+			vertices[ 13 ].pos = { side,side,-side };
+			vertices[ 14 ].pos = { side,-side,side };
+			vertices[ 15 ].pos = { side,side,side };
+
+			// Bottom
+			vertices[ 16 ].pos = { -side,-side,-side };
+			vertices[ 17 ].pos = { side,-side,-side };
+			vertices[ 18 ].pos = { -side,-side,side };
+			vertices[ 19 ].pos = { side,-side,side };
+
+			// Top
+			vertices[ 20 ].pos = { -side,side,-side };
+			vertices[ 21 ].pos = { side,side,-side };
+			vertices[ 22 ].pos = { -side,side,side };
+			vertices[ 23 ].pos = { side,side,side };
+
+			return{
+				std::move(vertices),
+				{
+					0, 2, 1,		2, 3, 1,
+					4, 5, 7,		4, 7, 6,
+					8, 10, 9,		10, 11, 9,
+					12, 13, 15,		12, 15, 14,
+					16, 17, 18,		18, 17, 19,
+					20, 23, 21,		20, 22, 23
+				}
 			};
 		}
 	};

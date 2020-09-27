@@ -41,6 +41,15 @@
 #endif
 
 
+#define IMGUI_WRAP_RD(name, ...)        \
+    if(mage::ImguiManager::isEnabled()) \
+    {                                   \
+        ImGui::Begin(name, 0, ImGuiWindowFlags_AlwaysAutoResize);             \
+        (__VA_ARGS__);                  \
+        ImGui::End();                   \
+    }
+
+
 namespace mage
 {
     class ImguiManager

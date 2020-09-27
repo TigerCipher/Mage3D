@@ -11,42 +11,27 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
- * File Name: transformconstantbuffer.h
- * Date File Created: 9/20/2020 at 10:37 PM
+ *
+ * File Name: SolidSphere.h
+ * Date File Created: 9/26/2020 at 4:14 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
-#define MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
-
-
-//#include "pch.h"
-#include "constant_buffer.h"
-#include "irenderable.h"
-#include "math_helper.h"
+#pragma once
+#include "renderable.h"
 
 namespace mage
 {
-    class TransformConstantBuffer : public Bindable
-    {
-    public:
-        TransformConstantBuffer(Graphics& gfx, const IRenderable& parent);
-        void bind(Graphics& gfx) noexcept override;
+	class SolidSphere : public Renderable<SolidSphere>
+	{
+	public:
+		SolidSphere(Graphics& gfx, float radius);
+		void update(float delta) noexcept override { }
+		mat4f getTransformMatrix() const noexcept override;
+		void setPosition(vec3f pos) noexcept { m_position = pos; }
+	private:
+		vec3f m_position = { 1.0f, 1.0f, 1.0f };
+	};
+}
 
-    private:
-        struct Transforms
-        {
-            mat4f model;
-            mat4f mvp;
-        };
-        static UniquePtr<VertexConstantBuffer<Transforms>> m_vertexBuffer;
-        const IRenderable& m_parent;
-    };
-
-}// namespace mage
-
-
-#endif//MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H

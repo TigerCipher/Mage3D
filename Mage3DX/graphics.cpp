@@ -137,10 +137,12 @@ void mage::Graphics::swap()
     #endif
     if (FAILED(hr = m_swap->Present(vsync_flag, 0)))
     {
+    #if MAGE_DEBUG
         LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(m_debugInfo.getMessages(), "\n"));
         if (hr == DXGI_ERROR_DEVICE_REMOVED)
             throw GFX_DEVICE_REMOVED_EXCEPT(m_device->GetDeviceRemovedReason());
         else throw GFX_EXCEPT(hr);
+    #endif
     }
 }
 
@@ -152,7 +154,7 @@ void mage::Graphics::clear(float r, float g, float b) noexcept
     m_context->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void mage::Graphics::drawIndexed(UINT numIndices)
+void mage::Graphics::drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG)
 {
     GFX_THROW_INFO_ONLY(m_context->DrawIndexed(numIndices, 0, 0));
 }

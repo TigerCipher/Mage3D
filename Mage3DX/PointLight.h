@@ -11,42 +11,42 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
- * File Name: transformconstantbuffer.h
- * Date File Created: 9/20/2020 at 10:37 PM
+ *
+ * File Name: PointLight.h
+ * Date File Created: 9/26/2020 at 4:43 PM
  * Author: Matt
  */
+#pragma once
 
-#ifndef MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
-#define MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
-
-
-//#include "pch.h"
+#include "graphics.h"
+#include "SolidSphere.h"
 #include "constant_buffer.h"
-#include "irenderable.h"
-#include "math_helper.h"
 
 namespace mage
 {
-    class TransformConstantBuffer : public Bindable
-    {
-    public:
-        TransformConstantBuffer(Graphics& gfx, const IRenderable& parent);
-        void bind(Graphics& gfx) noexcept override;
+	class PointLight
+	{
+	public:
+		explicit PointLight(Graphics& gfx, float radius = 0.5f) : m_mesh(gfx, radius), m_buffer(gfx) { }
+		
+		void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
+		void bind(Graphics& gfx) const noexcept;
+		
+		void spawnControlWindow() noexcept;
+		void reset() noexcept;
 
-    private:
-        struct Transforms
-        {
-            mat4f model;
-            mat4f mvp;
-        };
-        static UniquePtr<VertexConstantBuffer<Transforms>> m_vertexBuffer;
-        const IRenderable& m_parent;
-    };
+	private:
+		struct PointLightCBuf
+		{
+			vec3f pos;
+			float padding;
+		};
 
-}// namespace mage
+		vec3f m_position = { 0, 0, 0 };
+		mutable SolidSphere m_mesh;
+		mutable PixelConstantBuffer<PointLightCBuf> m_buffer;
+	};
+}
 
-
-#endif//MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H

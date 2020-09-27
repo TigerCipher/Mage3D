@@ -31,6 +31,7 @@
 #include "imgui_manager.h"
 #include "irenderable.h"
 #include "camera.h"
+#include "PointLight.h"
 
 namespace mage
 {
@@ -46,6 +47,7 @@ namespace mage
 
         Display m_display;
         Camera m_camera;
+        PointLight m_light;
 
         Timer m_timer;
         Timer m_performanceTimer;

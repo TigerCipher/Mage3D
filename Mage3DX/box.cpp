@@ -45,42 +45,26 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
     {
         struct Vertex {
             vec3f pos;
+            vec3f normal;
         };
-        auto model = Cube::make<Vertex>();
+        auto model = Cube::makeIndependent<Vertex>();
+        model.setNormalsFlat();
         //model.transform( dx::XMMatrixScaling( 1.0f,1.0f,1.2f ) );
 
         addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
 
-        auto pvs = createScope<VertexShader>(gfx, L"basicVS.cso");
+        auto pvs = createScope<VertexShader>(gfx, L"phongVS.cso");
         auto pvsbc = pvs->getBytecode();
         addStaticBind(std::move(pvs));
 
-        addStaticBind(createScope<PixelShader>(gfx, L"basicPS.cso"));
+        addStaticBind(createScope<PixelShader>(gfx, L"phongPS.cso"));
 
         addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
-        struct ConstantBuffer2 {
-            struct {
-                float r;
-                float g;
-                float b;
-                float a;
-            } face_colors[ 8 ];
-        };
-        const ConstantBuffer2 cb2 = { {
-                { 1.0f, 1.0f, 1.0f },
-                { 1.0f, 0.0f, 0.0f },
-                { 0.0f, 1.0f, 0.0f },
-                { 1.0f, 1.0f, 0.0f },
-                { 0.0f, 0.0f, 1.0f },
-                { 1.0f, 0.0f, 1.0f },
-                { 0.0f, 1.0f, 1.0f },
-                { 0.0f, 0.0f, 0.0f },
-        } };
-        addStaticBind(createScope<PixelConstantBuffer<ConstantBuffer2>>(gfx, cb2));
 
         const list<D3D11_INPUT_ELEMENT_DESC> ied = {
             { "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+            { "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
         };
         addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
 
@@ -107,8 +91,7 @@ void mage::Box::update(float delta) noexcept
 mat4f mage::Box::getTransformMatrix() const noexcept
 {
     return dx::XMLoadFloat3x3(&mt) * dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-           dx::XMMatrixTranslation(r, 0.0f, 0.0f) * dx::XMMatrixRotationRollPitchYaw(theta, phi, chi) *
-           dx::XMMatrixTranslation(0.0f, 0.0f, 20.0f);
+        dx::XMMatrixTranslation(r, 0.0f, 0.0f) * dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
 }
 mat4f mage::SkinnedBox::getTransformMatrix() const noexcept
 {
