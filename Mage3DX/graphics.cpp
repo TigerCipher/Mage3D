@@ -11,11 +11,11 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * Contact: team@bluemoondev.org
- *
+ * 
  * File Name: graphics.cpp
- * Date File Created: 9/25/2020 at 11:49 PM
+ * Date File Created: 9/27/2020 at 3:28 PM
  * Author: Matt
  */
 #include "graphics.h"
@@ -67,10 +67,10 @@ mage::Graphics::Graphics(HWND hwnd)
 	flg |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 	GFX_THROW_INFO(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-		flg,
-		nullptr, 0,
-		D3D11_SDK_VERSION, &swapDesc, &m_swap, &m_device, nullptr,
-		&m_context));
+	                                             flg,
+	                                             nullptr, 0,
+	                                             D3D11_SDK_VERSION, &swapDesc, &m_swap, &m_device, nullptr,
+	                                             &m_context));
 
 	COMptr<ID3D11Resource> backBuffer;
 	GFX_THROW_INFO(m_swap->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
@@ -127,7 +127,6 @@ mage::Graphics::Graphics(HWND hwnd)
 
 void mage::Graphics::swap()
 {
-
 	ImguiManager::renderDx11();
 
 	HRESULT hr;
@@ -136,12 +135,12 @@ void mage::Graphics::swap()
 #endif
 	if (FAILED(hr = m_swap->Present(vsync_flag, 0)))
 	{
-	#if MAGE_DEBUG
+#if MAGE_DEBUG
 		LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(m_debugInfo.getMessages(), "\n"));
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)
 			throw GFX_DEVICE_REMOVED_EXCEPT(m_device->GetDeviceRemovedReason());
 		else throw GFX_EXCEPT(hr);
-	#endif
+#endif
 	}
 }
 

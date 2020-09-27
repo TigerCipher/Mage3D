@@ -400,6 +400,7 @@
     <None Include="3rdParty\DXTrace.inl">
       <Filter>Header Files\3rdParty\DXErr</Filter>
     </None>
+    <None Include="uncrustify.cfg" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Mage3DX.rc">
