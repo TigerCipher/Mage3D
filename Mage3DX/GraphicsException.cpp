@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "graphics_exception.h"
+#include "GraphicsException.h"
 #include "3rdParty/dxerr.h"
 
 mage::GraphicsException::GraphicsException(int line, const char* file, HRESULT hr,

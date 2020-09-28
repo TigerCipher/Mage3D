@@ -20,7 +20,7 @@
  */
 
 #include "InputLayout.h"
-#include "graphics_exception.h"
+#include "GraphicsException.h"
 
 mage::InputLayout::InputLayout(mage::Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout,
                                ID3DBlob* vertexBytecode)

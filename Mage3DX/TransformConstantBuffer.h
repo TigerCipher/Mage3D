@@ -25,7 +25,7 @@
 
 //#include "pch.h"
 #include "ConstantBuffer.h"
-#include "irenderable.h"
+#include "IRenderable.h"
 #include "MathHelper.h"
 
 namespace mage

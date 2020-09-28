@@ -24,7 +24,7 @@
 
 //#include "pch.h"
 
-#include "stacktrace_exception.h"
+#include "StacktraceException.h"
 
 namespace mage
 {

@@ -19,8 +19,8 @@
  * Author: Matt
  */
 
-#include "irenderable.h"
-#include "graphics_exception.h"
+#include "IRenderable.h"
+#include "GraphicsException.h"
 #include "IndexBuffer.h"
 #include <cassert>
 #include <typeinfo>

@@ -20,10 +20,10 @@
  */
 #include "Box.h"
 #include "Bindables.h"
-#include "primitives.h"
-#include "sampler.h"
-#include "texture.h"
-#include "texture_surface.h"
+#include "Primitives.h"
+#include "Sampler.h"
+#include "Texture.h"
+#include "TextureSurface.h"
 
 mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
                std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,

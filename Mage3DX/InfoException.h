@@ -14,29 +14,40 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: textureexception.h
- * Date File Created: 9/23/2020 at 9:33 PM
+ * File Name: infoexception.h
+ * Date File Created: 9/18/2020 at 2:55 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TEXTURE_EXCEPTION_H
-#define MAGE3DX_TEXTURE_EXCEPTION_H
+#ifndef MAGE3DX_INFO_EXCEPTION_H
+#define MAGE3DX_INFO_EXCEPTION_H
 
-#include "mage_exception.h"
+
+//#include "pch.h"
+#include "MageException.h"
+
+#if MAGE_DEBUG
+    #define GFX_THROW_INFO_ONLY(func)                                       \
+        m_debugInfo.set();                                                  \
+        (func);                                                             \
+        {                                                                   \
+            auto l = m_debugInfo.getMessages();                             \
+            if (!l.empty()) { throw InfoException(__LINE__, __FILE__, l); } \
+        }
+#else
+    #define GFX_THROW_INFO_ONLY(func) (func)
+#endif
 
 namespace mage
 {
-    class TextureException : public MageException
+    class InfoException : public MageException
     {
     public:
-        TextureException(int line, const char* file, std::string info) noexcept :
-            MageException(line, file), m_info(std::move(info))
-        { }
+        InfoException(int line, const char* file, const list<std::string>& msgs) noexcept;
         const char* what() const noexcept override;
         const char* getType() const noexcept override;
-        const std::string& getInfo() const noexcept { return m_info; }
+        std::string getErrorInfo() const noexcept;
 
-    protected:
     private:
         std::string m_info;
     };
@@ -44,4 +55,4 @@ namespace mage
 }// namespace mage
 
 
-#endif//MAGE3DX_TEXTURE_EXCEPTION_H
+#endif//MAGE3DX_INFO_EXCEPTION_H

@@ -22,7 +22,7 @@
 #ifndef MAGE3DX_TEXTURE_SURFACE_H
 #define MAGE3DX_TEXTURE_SURFACE_H
 
-#include "color.h"
+#include "Color.h"
 
 namespace mage
 {

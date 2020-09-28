@@ -22,8 +22,6 @@
 #ifndef MAGE3DX_INDEX_BUFFER_H
 #define MAGE3DX_INDEX_BUFFER_H
 
-
-//#include "pch.h"
 #include "Bindable.h"
 
 namespace mage

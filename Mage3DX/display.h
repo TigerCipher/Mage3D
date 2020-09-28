@@ -22,8 +22,8 @@
 #define MAGE3DX_DISPLAY_H
 
 #include "Keyboard.h"
-#include "display_exception.h"
-#include "graphics.h"
+#include "DisplayException.h"
+#include "Graphics.h"
 #include "winwrapper.h"
 #include "Mouse.h"
 

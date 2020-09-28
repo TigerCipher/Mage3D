@@ -19,8 +19,8 @@
  * Author: Matt
  */
 
-#include "sampler.h"
-#include "graphics_exception.h"
+#include "Sampler.h"
+#include "GraphicsException.h"
 
 mage::Sampler::Sampler(mage::Graphics& gfx)
 {

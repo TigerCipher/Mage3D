@@ -18,14 +18,14 @@
  * Date File Created: 9/27/2020 at 3:28 PM
  * Author: Matt
  */
-#include "graphics.h"
-#include "graphics_exception.h"
-#include "info_exception.h"
+#include "Graphics.h"
+#include "GraphicsException.h"
+#include "InfoException.h"
 
 
 #include "MathHelper.h"
 
-#include "imgui_manager.h"
+#include "ImguiManager.h"
 
 // might do this since for release id be using visual studio to build, likely with different
 //compiler flags than set up in cmake currently

@@ -20,7 +20,7 @@
  */
 
 #include "IndexBuffer.h"
-#include "graphics_exception.h"
+#include "GraphicsException.h"
 
 mage::IndexBuffer::IndexBuffer(mage::Graphics& gfx, const list<ushort>& indices) :
         m_count((UINT) indices.size())

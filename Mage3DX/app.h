@@ -23,13 +23,11 @@
 #define MAGE3DX_APP_H
 
 
-
-
 #include "Display.h"
 #include "Timer.h"
 
-#include "imgui_manager.h"
-#include "irenderable.h"
+#include "ImguiManager.h"
+#include "IRenderable.h"
 #include "Camera.h"
 #include "PointLight.h"
 

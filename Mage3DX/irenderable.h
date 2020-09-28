@@ -24,7 +24,7 @@
 
 
 //#include "pch.h"
-#include "graphics.h"
+#include "Graphics.h"
 #include "MathHelper.h"
 
 

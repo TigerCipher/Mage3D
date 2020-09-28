@@ -21,7 +21,7 @@
 
 #include "App.h"
 #include "Display.h"
-#include "mage_exception.h"
+#include "MageException.h"
 
 using namespace mage;
 

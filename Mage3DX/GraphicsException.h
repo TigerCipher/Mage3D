@@ -24,8 +24,8 @@
 
 
 //#include "pch.h"
-#include "debug_info.h"
-#include "mage_exception.h"
+#include "DebugInfo.h"
+#include "MageException.h"
 
 #define GFX_THROW_NOINFO(hrcall)                                                    \
     {                                                                               \

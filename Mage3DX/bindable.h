@@ -23,8 +23,7 @@
 #define MAGE3DX_BINDABLE_H
 
 
-//#include "pch.h"
-#include "graphics.h"
+#include "Graphics.h"
 
 
 namespace mage

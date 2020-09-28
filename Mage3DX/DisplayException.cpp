@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "display_exception.h"
+#include "DisplayException.h"
 
 const char* mage::DisplayException::what() const noexcept
 {

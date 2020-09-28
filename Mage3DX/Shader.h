@@ -14,30 +14,35 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: mageexception.cpp
- * Date File Created: 9/12/2020 at 3:01 PM
+ * File Name: Shader.h
+ * Date File Created: 9/28/2020 at 12:19 PM
  * Author: Matt
  */
+#pragma once
 
-#include "mage_exception.h"
+#include "Bindable.h"
 
-const char* mage::MageException::what() const noexcept
+namespace mage
 {
-    m_what = fmt::format("{}\n{}", getType(), getOrigin());
-    return m_what.c_str();
-}
+	class VertexShader : public Bindable
+	{
+	public:
+		VertexShader(Graphics& gfx, const std::wstring& path);
+		void bind(Graphics& gfx) noexcept override;
+		[[nodiscard]] ID3DBlob* getBytecode() const noexcept { return m_bytecode.Get(); }
 
-const char* mage::MageException::getType() const noexcept
-{
-    return "Mage Exception";
-}
+	protected:
+		COMptr<ID3DBlob> m_bytecode;
+		COMptr<ID3D11VertexShader> m_shader;
+	};
 
-std::string mage::MageException::getOrigin() const noexcept
-{
-    if(m_showStack)
-    {
-        LOG_ERROR("An exception [{}] was caught. Stack trace:\n{}", getType(), asString());
-        return fmt::format("[File] {}\n[Line] {}\n[Stack Trace]\n{}", m_file, m_line, asString());
-    }
-    return fmt::format("[File] {}\n[Line] {}", m_file, m_line);
-}
+	class PixelShader : public Bindable
+	{
+	public:
+		PixelShader(Graphics& gfx, const std::wstring& path);
+		void bind(Graphics& gfx) noexcept override;
+
+	protected:
+		COMptr<ID3D11PixelShader> m_shader;
+	};
+}// namespace mage

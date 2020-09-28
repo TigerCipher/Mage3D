@@ -21,7 +21,7 @@
 
 #include "Camera.h"
 
-#include "imgui_manager.h"
+#include "ImguiManager.h"
 
 void mage::Camera::spawnControlWindow() noexcept
 {

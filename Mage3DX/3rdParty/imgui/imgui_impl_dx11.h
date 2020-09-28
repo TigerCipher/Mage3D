@@ -14,7 +14,7 @@
 //struct ID3D11DeviceContext;
 // Replaced structs with headers - Matt
 #include "../../winwrapper.h"
-#include "../../graphics.h"
+#include "../../Graphics.h"
 #include "imgui.h"
 
 IMGUI_IMPL_API bool     ImGui_ImplDX11_Init(ID3D11Device* device, ID3D11DeviceContext* device_context);

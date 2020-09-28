@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "info_exception.h"
+#include "InfoException.h"
 #include "Util.h"
 
 mage::InfoException::InfoException(int line, const char* file, const list<std::string>& msgs) noexcept:

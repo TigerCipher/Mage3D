@@ -19,7 +19,7 @@
  * Author: Matt
  */
 #include "PointLight.h"
-#include "imgui_manager.h"
+#include "ImguiManager.h"
 
 mage::PointLight::PointLight(Graphics& gfx, float radius) :
 	m_mesh(gfx, radius),

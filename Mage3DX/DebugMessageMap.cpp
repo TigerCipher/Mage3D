@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "debug_message_map.h"
+#include "DebugMessageMap.h"
 
 // secret messages
 #define WM_UAHDESTROYWINDOW 0x0090

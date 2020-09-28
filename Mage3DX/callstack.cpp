@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "callstack.h"
+#include "Callstack.h"
 #include "3rdParty/StackWalker/StackWalker.h"
 
 class StackWalkerImpl : public StackWalker

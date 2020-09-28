@@ -22,7 +22,7 @@
 #ifndef MAGE3DX_STACKTRACE_EXCEPTION_H
 #define MAGE3DX_STACKTRACE_EXCEPTION_H
 
-#include "callstack.h"
+#include "Callstack.h"
 #include <stdexcept>
 
 namespace mage

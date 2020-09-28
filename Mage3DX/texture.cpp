@@ -19,9 +19,9 @@
  * Author: Matt
  */
 
-#include "texture.h"
-#include "graphics_exception.h"
-#include "texture_surface.h"
+#include "Texture.h"
+#include "GraphicsException.h"
+#include "TextureSurface.h"
 
 
 mage::Texture::Texture(mage::Graphics& gfx, const TextureSurface& surface)

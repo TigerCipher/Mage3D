@@ -19,9 +19,9 @@
  * Author: Matt
  */
 
-#include "melon.h"
+#include "Melon.h"
 #include "Bindables.h"
-#include "primitives.h"
+#include "Primitives.h"
 
 mage::Melon::Melon(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
                    std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,

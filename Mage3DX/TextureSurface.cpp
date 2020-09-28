@@ -19,8 +19,8 @@
  * Author: Matt
  */
 
-#include "texture_surface.h"
-#include "texture_exception.h"
+#include "TextureSurface.h"
+#include "TextureException.h"
 
 #define FULL_WINTARD
 

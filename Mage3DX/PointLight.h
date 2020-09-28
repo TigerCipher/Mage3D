@@ -20,7 +20,7 @@
  */
 #pragma once
 
-#include "graphics.h"
+#include "Graphics.h"
 #include "SolidSphere.h"
 #include "ConstantBuffer.h"
 

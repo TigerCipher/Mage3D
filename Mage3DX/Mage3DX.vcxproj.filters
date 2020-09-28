@@ -102,63 +102,6 @@
     <ClCompile Include="3rdParty\StackWalker\StackWalker.cpp">
       <Filter>Source Files\3rdParty\StackWalker</Filter>
     </ClCompile>
-    <ClCompile Include="pixel_shader.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
-    <ClCompile Include="vertex_shader.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
-    <ClCompile Include="melon.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
-    <ClCompile Include="pyramid.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
-    <ClCompile Include="callstack.cpp">
-      <Filter>Source Files\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="debug_info.cpp">
-      <Filter>Source Files\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="debug_message_map.cpp">
-      <Filter>Source Files\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="display_exception.cpp">
-      <Filter>Source Files\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="graphics_exception.cpp">
-      <Filter>Source Files\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="info_exception.cpp">
-      <Filter>Source Files\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="log.cpp">
-      <Filter>Source Files\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="mage_exception.cpp">
-      <Filter>Source Files\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="texture_exception.cpp">
-      <Filter>Source Files\debug</Filter>
-    </ClCompile>
-    <ClCompile Include="graphics.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="imgui_manager.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="irenderable.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="sampler.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="texture.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="texture_surface.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="pch.cpp">
       <Filter>PCH</Filter>
     </ClCompile>
@@ -213,6 +156,60 @@
     <ClCompile Include="Util.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="Callstack.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugInfo.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugMessageMap.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="DisplayException.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsException.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="InfoException.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Log.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="MageException.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureException.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="Melon.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Pyramid.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="ImguiManager.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="IRenderable.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Sampler.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureSurface.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rdParty\dxerr.h">
@@ -247,78 +244,6 @@
     </ClInclude>
     <ClInclude Include="winwrapper.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="C:\Users\Matt\Desktop\DirectX\include\mage\common.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="pixel_shader.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="vertex_shader.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="color.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="imgui_manager.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="irenderable.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="renderable.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="sampler.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="texture_surface.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="texture.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="melon.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
-    <ClInclude Include="pyramid.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
-    <ClInclude Include="primitives.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
-    <ClInclude Include="callstack.h">
-      <Filter>Header Files\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="debug_info.h">
-      <Filter>Header Files\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="debug_message_map.h">
-      <Filter>Header Files\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="display_exception.h">
-      <Filter>Header Files\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="graphics_exception.h">
-      <Filter>Header Files\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="info_exception.h">
-      <Filter>Header Files\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="log.h">
-      <Filter>Header Files\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="mage_exception.h">
-      <Filter>Header Files\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="stacktrace_exception.h">
-      <Filter>Header Files\debug</Filter>
-    </ClInclude>
-    <ClInclude Include="texture_exception.h">
-      <Filter>Header Files\debug</Filter>
     </ClInclude>
     <ClInclude Include="pch.h">
       <Filter>PCH</Filter>
@@ -385,6 +310,75 @@
     </ClInclude>
     <ClInclude Include="Util.h">
       <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="C:\Users\Matt\Desktop\DirectX\include\mage\Common.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Callstack.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugInfo.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugMessageMap.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="DisplayException.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsException.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="InfoException.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Log.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="MageException.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="StacktraceException.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureException.h">
+      <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Melon.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Primitives.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Pyramid.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Color.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="ImguiManager.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="IRenderable.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderable.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Sampler.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureSurface.h">
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

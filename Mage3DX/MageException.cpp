@@ -14,34 +14,30 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: vertexshader.cpp
- * Date File Created: 9/20/2020 at 10:48 PM
+ * File Name: mageexception.cpp
+ * Date File Created: 9/12/2020 at 3:01 PM
  * Author: Matt
  */
 
-#include "vertex_shader.h"
-#include "graphics_exception.h"
-#include <d3dcompiler.h>
+#include "MageException.h"
 
-mage::VertexShader::VertexShader(mage::Graphics& gfx, const std::wstring& path)
+const char* mage::MageException::what() const noexcept
 {
-    DEBUG_INFO(gfx);
-
-    GFX_THROW_INFO( D3DReadFileToBlob( path.c_str(),&m_bytecode ) );
-	GFX_THROW_INFO( getDevice( gfx )->CreateVertexShader(
-		m_bytecode->GetBufferPointer(),
-		m_bytecode->GetBufferSize(),
-		nullptr,
-		&m_shader
-	) );
+    m_what = fmt::format("{}\n{}", getType(), getOrigin());
+    return m_what.c_str();
 }
 
-void mage::VertexShader::bind(mage::Graphics& gfx) noexcept
+const char* mage::MageException::getType() const noexcept
 {
-    getContext(gfx)->VSSetShader(m_shader.Get(), nullptr, 0);
+    return "Mage Exception";
 }
 
-ID3DBlob* mage::VertexShader::getBytecode() const noexcept
+std::string mage::MageException::getOrigin() const noexcept
 {
-    return m_bytecode.Get();
+    if(m_showStack)
+    {
+        LOG_ERROR("An exception [{}] was caught. Stack trace:\n{}", getType(), asString());
+        return fmt::format("[File] {}\n[Line] {}\n[Stack Trace]\n{}", m_file, m_line, asString());
+    }
+    return fmt::format("[File] {}\n[Line] {}", m_file, m_line);
 }

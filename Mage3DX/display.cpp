@@ -21,10 +21,10 @@
 
 #include "Display.h"
 #include "resource.h"
-#include "imgui_manager.h"
+#include "ImguiManager.h"
 
 #if MAGE_VERBOSE
-#include "debug_message_map.h"
+#include "DebugMessageMap.h"
 #endif
 
 

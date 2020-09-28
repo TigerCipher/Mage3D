@@ -23,16 +23,14 @@
 #define MAGE3DX_BINDABLES_H
 
 
-//#include "pch.h"
 
 #include "ConstantBuffer.h"
 #include "IndexBuffer.h"
 #include "InputLayout.h"
-#include "pixel_shader.h"
 #include "Topology.h"
 #include "TransformConstantBuffer.h"
 #include "VertexBuffer.h"
-#include "vertex_shader.h"
+#include "Shader.h"
 
 
 #endif//MAGE3DX_BINDABLES_H

@@ -14,27 +14,20 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: pixelshader.cpp
- * Date File Created: 9/20/2020 at 9:54 PM
+ * File Name: textureexception.cpp
+ * Date File Created: 9/23/2020 at 9:33 PM
  * Author: Matt
  */
 
-#include "pixel_shader.h"
-#include "graphics_exception.h"
-#include <d3dcompiler.h>
+#include "TextureException.h"
 
-mage::PixelShader::PixelShader(mage::Graphics& gfx, const std::wstring& path)
+const char* mage::TextureException::what() const noexcept
 {
-    DEBUG_INFO(gfx);
-
-    COMptr<ID3DBlob> blob;
-    GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &blob));
-    GFX_THROW_INFO(getDevice(gfx)->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_shader));
-
+    m_what = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
+    return m_what.c_str();
 }
 
-
-void mage::PixelShader::bind(mage::Graphics& gfx) noexcept
+const char* mage::TextureException::getType() const noexcept
 {
-    getContext(gfx)->PSSetShader(m_shader.Get(), nullptr, 0);
+    return "Mage Texture Exception";
 }

@@ -18,9 +18,9 @@
  * Date File Created: 9/25/2020 at 11:49 PM
  * Author: Matt
  */
-#include "debug_info.h"
+#include "DebugInfo.h"
 #include "Display.h"
-#include "graphics_exception.h"
+#include "GraphicsException.h"
 
 
 #define GFX_THROW_FAILED(hrcall) \

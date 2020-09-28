@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "imgui_manager.h"
+#include "ImguiManager.h"
 #include "3rdParty/imgui/imgui_impl_dx11.h"
 #include "3rdParty/imgui/imgui_impl_win32.h"
 

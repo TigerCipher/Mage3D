@@ -23,7 +23,7 @@
 #define MAGE3DX_GRAPHICS_H
 
 #include "MathHelper.h"
-#include "debug_info.h"
+#include "DebugInfo.h"
 
 #include <d3d11.h>
 

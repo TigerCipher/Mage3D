@@ -18,11 +18,12 @@
  * Date File Created: 9/27/2020 at 3:29 PM
  * Author: Matt
  */
+
 #include "App.h"
 #include "Box.h"
-#include "melon.h"
-#include "pyramid.h"
-#include "texture_surface.h"
+#include "Melon.h"
+#include "Pyramid.h"
+#include "TextureSurface.h"
 
 
 mage::App::App(int width, int height, const char* title) :
