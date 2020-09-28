@@ -314,9 +314,6 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
-    <ClInclude Include="C:\Users\Matt\Desktop\DirectX\include\mage\Common.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
     <ClInclude Include="Callstack.h">
       <Filter>Header Files\debug</Filter>
     </ClInclude>
@@ -379,6 +376,9 @@
     </ClInclude>
     <ClInclude Include="TextureSurface.h">
       <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
