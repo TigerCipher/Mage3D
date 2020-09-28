@@ -46,7 +46,7 @@ void mage::IRenderable::addBindable(UniquePtr<mage::Bindable> bindable) noexcept
     m_bindables.push_back(std::move(bindable));
 }
 
-void mage::IRenderable::addIndexBuffer(UniquePtr<struct IndexBuffer> ibuf) noexcept
+void mage::IRenderable::addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept
 {
     assert("Do not add a second IndexBuffer" && !m_indexBuffer);
     m_indexBuffer = ibuf.get();
