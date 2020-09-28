@@ -43,11 +43,11 @@ mage::Melon::Melon(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_dis
     {
 
 
-        auto pvs = createScope<VertexShader>(gfx, L"basicVS.cso");
+        auto pvs = createScope<VertexShader>(gfx, L"shaders\\basicVS.cso");
         auto pvsbc = pvs->getBytecode();
         addStaticBind(std::move(pvs));
 
-        addStaticBind(createScope<PixelShader>(gfx, L"basicPS.cso"));
+        addStaticBind(createScope<PixelShader>(gfx, L"shaders\\basicPS.cso"));
 
 
         struct ConstantBuffer2

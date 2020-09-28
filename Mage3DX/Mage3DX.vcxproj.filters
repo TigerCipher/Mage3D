@@ -105,9 +105,6 @@
     <ClCompile Include="pch.cpp">
       <Filter>PCH</Filter>
     </ClCompile>
-    <ClCompile Include="SolidSphere.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="PointLight.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -210,6 +207,9 @@
     <ClCompile Include="TextureSurface.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="SolidSphere.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rdParty\dxerr.h">
@@ -250,9 +250,6 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Resource Files</Filter>
-    </ClInclude>
-    <ClInclude Include="SolidSphere.h">
-      <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="PointLight.h">
       <Filter>Header Files\graphics</Filter>
@@ -380,6 +377,9 @@
     <ClInclude Include="Common.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
+    <ClInclude Include="SolidSphere.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdParty\DXGetErrorDescription.inl">
@@ -410,28 +410,28 @@
     <FxCompile Include="texturePS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="basicVS.hlsl">
+    <FxCompile Include="assets\shaders\basicColorBlendPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="basicPS.hlsl">
+    <FxCompile Include="assets\shaders\basicColorBlendVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="basicColorBlendVS.hlsl">
+    <FxCompile Include="assets\shaders\basicPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="basicColorBlendPS.hlsl">
+    <FxCompile Include="assets\shaders\basicVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="phongPS.hlsl">
+    <FxCompile Include="assets\shaders\phongVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="phongVS.hlsl">
+    <FxCompile Include="assets\shaders\phongPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="solidVS.hlsl">
+    <FxCompile Include="assets\shaders\solidVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="solidPS.hlsl">
+    <FxCompile Include="assets\shaders\solidPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

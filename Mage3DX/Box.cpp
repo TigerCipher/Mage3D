@@ -45,11 +45,11 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
 
 		addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
 
-		auto pvs = createScope<VertexShader>(gfx, L"phongVS.cso");
+		auto pvs = createScope<VertexShader>(gfx, L"shaders\\phongVS.cso");
 		auto pvsbc = pvs->getBytecode();
 		addStaticBind(std::move(pvs));
 
-		addStaticBind(createScope<PixelShader>(gfx, L"phongPS.cso"));
+		addStaticBind(createScope<PixelShader>(gfx, L"shaders\\phongPS.cso"));
 
 		addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
@@ -133,11 +133,11 @@ mage::SkinnedBox::SkinnedBox(mage::Graphics& gfx, std::mt19937& rng, std::unifor
 
 		addStaticBind(createScope<Sampler>(gfx));
 
-		auto pvs = createScope<VertexShader>(gfx, L"textureVS.cso");
+		auto pvs = createScope<VertexShader>(gfx, L"shaders\\textureVS.cso");
 		auto pvsbc = pvs->getBytecode();
 		addStaticBind(std::move(pvs));
 
-		addStaticBind(createScope<PixelShader>(gfx, L"texturePS.cso"));
+		addStaticBind(createScope<PixelShader>(gfx, L"shaders\\texturePS.cso"));
 
 		addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 

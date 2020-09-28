@@ -38,11 +38,11 @@ mage::SolidSphere::SolidSphere(Graphics& gfx, float radius)
 		addBindable(createScope<VertexBuffer>(gfx, model.vertices));
 		addIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
-		auto pvs = createScope<VertexShader>(gfx, L"solidVS.cso");
+		auto pvs = createScope<VertexShader>(gfx, L"shaders\\solidVS.cso");
 		auto pvsbc = pvs->getBytecode();
 		addStaticBind(std::move(pvs));
 
-		addStaticBind(createScope<PixelShader>(gfx, L"solidPS.cso"));
+		addStaticBind(createScope<PixelShader>(gfx, L"shaders\\solidPS.cso"));
 
 		struct ColorConst
 		{

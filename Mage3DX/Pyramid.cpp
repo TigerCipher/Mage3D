@@ -63,11 +63,11 @@ mage::Pyramid::Pyramid(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real
 
         addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
 
-        auto pvs = createScope<VertexShader>(gfx, L"basicColorBlendVS.cso");
+        auto pvs = createScope<VertexShader>(gfx, L"shaders\\basicColorBlendVS.cso");
         auto pvsbc = pvs->getBytecode();
         addStaticBind(std::move(pvs));
 
-        addStaticBind(createScope<PixelShader>(gfx, L"basicColorBlendPS.cso"));
+        addStaticBind(createScope<PixelShader>(gfx, L"shaders\\basicColorBlendPS.cso"));
 
         addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
