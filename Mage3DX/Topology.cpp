@@ -14,32 +14,15 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: bindable.h
- * Date File Created: 9/20/2020 at 9:14 PM
+ * File Name: topology.cpp
+ * Date File Created: 9/20/2020 at 10:09 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_BINDABLE_H
-#define MAGE3DX_BINDABLE_H
-
-#include "Graphics.h"
+#include "Topology.h"
 
 
-namespace mage
+void mage::Topology::bind(mage::Graphics& gfx) noexcept
 {
-    class Bindable
-    {
-    public:
-        virtual ~Bindable() = default;
-        virtual void bind(Graphics& gfx) noexcept = 0;
-
-    protected:
-        static ID3D11DeviceContext* getContext(Graphics& gfx) noexcept;
-        static ID3D11Device* getDevice(Graphics& gfx) noexcept;
-        static DebugInfo& getDebugInfo(Graphics& gfx) noexcept(MAGE_DEBUG);
-    };
-
-}// namespace mage
-
-
-#endif//MAGE3DX_BINDABLE_H
+    getContext(gfx)->IASetPrimitiveTopology(m_type);
+}

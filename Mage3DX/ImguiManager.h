@@ -18,6 +18,7 @@
  * Date File Created: 9/25/2020 at 11:43 PM
  * Author: Matt
  */
+
 #ifndef MAGE3DX_IMGUI_MANAGER_H
 #define MAGE3DX_IMGUI_MANAGER_H
 
