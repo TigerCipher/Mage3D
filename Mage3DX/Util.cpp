@@ -21,7 +21,6 @@
 
 #include "Util.h"
 
-
 namespace mage
 {
     void fromList(std::string& str, const list<std::string>& strList)
