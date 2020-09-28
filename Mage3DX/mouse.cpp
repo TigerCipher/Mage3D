@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "mouse.h"
+#include "Mouse.h"
 
 
 mage::Mouse::Event mage::Mouse::read() noexcept

@@ -102,64 +102,16 @@
     <ClCompile Include="3rdParty\StackWalker\StackWalker.cpp">
       <Filter>Source Files\3rdParty\StackWalker</Filter>
     </ClCompile>
-    <ClCompile Include="app.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
-    <ClCompile Include="camera.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
-    <ClCompile Include="display.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
-    <ClCompile Include="keyboard.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
-    <ClCompile Include="math_helper.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
-    <ClCompile Include="mouse.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
-    <ClCompile Include="timer.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
-    <ClCompile Include="util.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
-    <ClCompile Include="bindable.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
-    <ClCompile Include="index_buffer.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
-    <ClCompile Include="input_layout.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
     <ClCompile Include="pixel_shader.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
-    <ClCompile Include="topology.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
-    <ClCompile Include="transform_constant_buffer.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
-    <ClCompile Include="vertex_buffer.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
     <ClCompile Include="vertex_shader.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
-    <ClCompile Include="box.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
     <ClCompile Include="melon.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
     <ClCompile Include="pyramid.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
-    <ClCompile Include="sheet.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
     <ClCompile Include="callstack.cpp">
@@ -214,7 +166,52 @@
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="PointLight.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TransformConstantBuffer.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="Box.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
+    <ClCompile Include="Bindable.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexBuffer.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="InputLayout.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="Topology.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Display.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Mouse.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Util.cpp">
+      <Filter>Source Files\core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -251,58 +248,10 @@
     <ClInclude Include="winwrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="app.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="camera.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
     <ClInclude Include="C:\Users\Matt\Desktop\DirectX\include\mage\common.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
-    <ClInclude Include="display.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="keyboard.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="math_helper.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="mouse.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="timer.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="util.h">
-      <Filter>Header Files\core</Filter>
-    </ClInclude>
-    <ClInclude Include="bindable.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="bindables.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="constant_buffer.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="index_buffer.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="input_layout.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
     <ClInclude Include="pixel_shader.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="topology.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="transform_constant_buffer.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="vertex_buffer.h">
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
     <ClInclude Include="vertex_shader.h">
@@ -332,16 +281,10 @@
     <ClInclude Include="texture.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="box.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
     <ClInclude Include="melon.h">
       <Filter>Header Files\entities</Filter>
     </ClInclude>
     <ClInclude Include="pyramid.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
-    <ClInclude Include="sheet.h">
       <Filter>Header Files\entities</Filter>
     </ClInclude>
     <ClInclude Include="primitives.h">
@@ -387,7 +330,61 @@
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="PointLight.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TransformConstantBuffer.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="DummyObject.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Box.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Bindable.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="Bindables.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexBuffer.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="InputLayout.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="Topology.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="App.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Display.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Mouse.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Util.h">
+      <Filter>Header Files\core</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

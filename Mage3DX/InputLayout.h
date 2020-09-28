@@ -14,16 +14,31 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: math_helper.cpp
- * Date File Created: 9/25/2020 at 5:55 PM
+ * File Name: inputlayout.h
+ * Date File Created: 9/20/2020 at 9:50 PM
  * Author: Matt
  */
 
-#include "math_helper.h"
+#ifndef MAGE3DX_INPUT_LAYOUT_H
+#define MAGE3DX_INPUT_LAYOUT_H
 
-float mage::dot(vec4f v1, vec4f v2)
+
+//#include "pch.h"
+#include "Bindable.h"
+
+namespace mage
 {
-    auto result = dx::XMVector4Dot(v1, v2);
-    auto d = dx::XMVectorGetX(result);
-    return d;
-}
+    class InputLayout : public Bindable
+    {
+    public:
+        InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout, ID3DBlob* vertexBytecode);
+        void bind(Graphics& gfx) noexcept override;
+
+    protected:
+        COMptr<ID3D11InputLayout> m_layout;
+    };
+
+}// namespace mage
+
+
+#endif//MAGE3DX_INPUT_LAYOUT_H

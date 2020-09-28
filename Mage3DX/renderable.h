@@ -25,7 +25,7 @@
 
 //#include "pch.h"
 #include "irenderable.h"
-#include "index_buffer.h"
+#include "IndexBuffer.h"
 
 
 namespace mage

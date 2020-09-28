@@ -14,32 +14,33 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: indexbuffer.cpp
+ * File Name: indexbuffer.h
  * Date File Created: 9/20/2020 at 9:45 PM
  * Author: Matt
  */
 
-#include "index_buffer.h"
-#include "graphics_exception.h"
+#ifndef MAGE3DX_INDEX_BUFFER_H
+#define MAGE3DX_INDEX_BUFFER_H
 
-mage::IndexBuffer::IndexBuffer(mage::Graphics& gfx, const list<ushort>& indices) :
-        m_count((UINT) indices.size())
+
+//#include "pch.h"
+#include "Bindable.h"
+
+namespace mage
 {
-    DEBUG_INFO(gfx);
+    class IndexBuffer : public Bindable
+    {
+    public:
+        IndexBuffer(Graphics& gfx, const list<ushort>& indices);
+        void bind(Graphics& gfx) noexcept override;
+        [[nodiscard]] inline UINT getCount() const noexcept { return m_count; }
 
-    D3D11_BUFFER_DESC ibd = { };
-    ibd.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    ibd.Usage = D3D11_USAGE_DEFAULT;
-    ibd.CPUAccessFlags = 0u;
-    ibd.MiscFlags = 0u;
-    ibd.ByteWidth = UINT(m_count * sizeof(ushort));
-    ibd.StructureByteStride = sizeof(ushort);
-    D3D11_SUBRESOURCE_DATA isd = { };
-    isd.pSysMem = indices.data();
-    GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&ibd, &isd, &m_buffer));
-}
+    protected:
+        UINT m_count;
+        COMptr<ID3D11Buffer> m_buffer;
+    };
 
-void mage::IndexBuffer::bind(mage::Graphics& gfx) noexcept
-{
-    getContext(gfx)->IASetIndexBuffer(m_buffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-}
+}// namespace mage
+
+
+#endif//MAGE3DX_INDEX_BUFFER_H

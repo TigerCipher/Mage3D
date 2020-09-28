@@ -25,12 +25,12 @@
 
 
 
-#include "display.h"
-#include "timer.h"
+#include "Display.h"
+#include "Timer.h"
 
 #include "imgui_manager.h"
 #include "irenderable.h"
-#include "camera.h"
+#include "Camera.h"
 #include "PointLight.h"
 
 namespace mage

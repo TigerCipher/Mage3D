@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "util.h"
+#include "Util.h"
 
 namespace mage
 {

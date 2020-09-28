@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "bindable.h"
+#include "Bindable.h"
 
 ID3D11DeviceContext* mage::Bindable::getContext(mage::Graphics& gfx) noexcept
 {

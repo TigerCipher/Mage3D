@@ -20,14 +20,14 @@
  */
 cbuffer CBuf
 {
-	matrix model;
+	matrix modelView;
 	matrix mvp; // model * view * projection
 };
 
 
 struct VSOut
 {
-	float3 worldPos : Position;
+	float3 viewPos : Position;
 	float3 normal : Normal;
 	float4 pos : SV_Position;
 };
@@ -35,8 +35,8 @@ struct VSOut
 VSOut main(float3 pos : Position, float3 norm : Normal)
 {
 	VSOut vso;
-	vso.worldPos = (float3) mul(float4(pos, 1.0f), model);
-	vso.normal = mul(norm, (float3x3) model);
+    vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
+    vso.normal = mul(norm, (float3x3) modelView);
 	vso.pos = mul(float4(pos, 1.0f), mvp);
 	return vso;
 }

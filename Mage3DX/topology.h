@@ -24,7 +24,7 @@
 
 
 //#include "pch.h"
-#include "bindable.h"
+#include "Bindable.h"
 
 namespace mage
 {

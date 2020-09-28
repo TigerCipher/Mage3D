@@ -25,7 +25,7 @@
 
 //#include "pch.h"
 #include "graphics_exception.h"
-#include "bindable.h"
+#include "Bindable.h"
 
 namespace mage
 {
@@ -33,7 +33,7 @@ namespace mage
     class ConstantBuffer : public Bindable
     {
     public:
-        explicit ConstantBuffer(Graphics& gfx)
+        explicit ConstantBuffer(Graphics& gfx, UINT slot = 0) : m_slot(slot)
         {
             DEBUG_INFO(gfx);
             D3D11_BUFFER_DESC desc;
@@ -46,7 +46,7 @@ namespace mage
             GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, nullptr, &m_buffer));
         }
 
-        ConstantBuffer(Graphics& gfx, const C& consts)
+        ConstantBuffer(Graphics& gfx, const C& consts, UINT slot = 0) : m_slot(slot)
         {
             DEBUG_INFO(gfx);
             D3D11_BUFFER_DESC desc;
@@ -75,12 +75,14 @@ namespace mage
 
     protected:
         COMptr<ID3D11Buffer> m_buffer;
+        UINT m_slot;
     };
 
     template<typename C>
     class VertexConstantBuffer : public ConstantBuffer<C>
     {
         using ConstantBuffer<C>::m_buffer;
+        using ConstantBuffer<C>::m_slot;
         using Bindable::getContext;
 
     public:
@@ -88,7 +90,7 @@ namespace mage
 
         void bind(Graphics& gfx) noexcept override
         {
-            getContext(gfx)->VSSetConstantBuffers(0, 1, m_buffer.GetAddressOf());
+            getContext(gfx)->VSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
         }
     };
 
@@ -96,6 +98,7 @@ namespace mage
     class PixelConstantBuffer : public ConstantBuffer<C>
     {
         using ConstantBuffer<C>::m_buffer;
+        using ConstantBuffer<C>::m_slot;
         using Bindable::getContext;
 
     public:
@@ -103,7 +106,7 @@ namespace mage
 
         void bind(Graphics& gfx) noexcept override
         {
-            getContext(gfx)->PSSetConstantBuffers(0, 1, m_buffer.GetAddressOf());
+            getContext(gfx)->PSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
         }
     };
 

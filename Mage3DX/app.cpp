@@ -18,11 +18,10 @@
  * Date File Created: 9/27/2020 at 3:29 PM
  * Author: Matt
  */
-#include "app.h"
-#include "box.h"
+#include "App.h"
+#include "Box.h"
 #include "melon.h"
 #include "pyramid.h"
-#include "sheet.h"
 #include "texture_surface.h"
 
 
@@ -41,7 +40,8 @@ mage::App::App(int width, int height, const char* title) :
 
 			std::unique_ptr<IRenderable> operator()()
 			{
-				return createScope<Box>(gfx, rng, adist, ddist, odist, rdist, bdist);
+				const vec3f material = { cdist(rng), cdist(rng), cdist(rng) };
+				return createScope<Box>(gfx, rng, adist, ddist, odist, rdist, bdist, material);
 			}
 
 		private:
@@ -52,6 +52,7 @@ mage::App::App(int width, int height, const char* title) :
 			std::uniform_real_distribution<float> odist { 0.0f, PI* 0.08f };
 			std::uniform_real_distribution<float> rdist { 6.0f, 20.0f };
 			std::uniform_real_distribution<float> bdist { 0.4f, 3.0f };
+			std::uniform_real_distribution<float> cdist { 0, 1.0f };
 			std::uniform_int_distribution<int> latdist { 5, 20 };
 			std::uniform_int_distribution<int> longdist { 10, 40 };
 			std::uniform_int_distribution<int> typedist { 0, 4 };
@@ -125,7 +126,7 @@ void mage::App::runFrame()
 
 	m_display.getGraphics().clear(0.07f, 0, 0.12f);
 	m_display.getGraphics().setCamera(m_camera.getViewMatrix());
-	m_light.bind(m_display.getGraphics());
+	m_light.bind(m_display.getGraphics(), m_camera.getViewMatrix());
 
 	for (auto& b : m_renderables)
 	{

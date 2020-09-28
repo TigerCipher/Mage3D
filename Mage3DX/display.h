@@ -21,11 +21,11 @@
 #ifndef MAGE3DX_DISPLAY_H
 #define MAGE3DX_DISPLAY_H
 
-#include "keyboard.h"
+#include "Keyboard.h"
 #include "display_exception.h"
 #include "graphics.h"
 #include "winwrapper.h"
-#include "mouse.h"
+#include "Mouse.h"
 
 
 namespace mage

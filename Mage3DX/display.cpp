@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "display.h"
+#include "Display.h"
 #include "resource.h"
 #include "imgui_manager.h"
 

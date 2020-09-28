@@ -23,7 +23,7 @@
 #include "info_exception.h"
 
 
-#include "math_helper.h"
+#include "MathHelper.h"
 
 #include "imgui_manager.h"
 

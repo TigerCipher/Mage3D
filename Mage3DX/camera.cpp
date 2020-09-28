@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "camera.h"
+#include "Camera.h"
 
 #include "imgui_manager.h"
 

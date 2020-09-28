@@ -19,7 +19,7 @@
  * Author: Matt
  */
 #include "debug_info.h"
-#include "display.h"
+#include "Display.h"
 #include "graphics_exception.h"
 
 

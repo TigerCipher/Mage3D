@@ -15,76 +15,59 @@
  * Contact: team@bluemoondev.org
  * 
  * File Name: box.h
- * Date File Created: 9/20/2020 at 11:01 PM
+ * Date File Created: 9/25/2020 at 11:43 PM
  * Author: Matt
  */
-
 #ifndef MAGE3DX_BOX_H
 #define MAGE3DX_BOX_H
 
 
-//#include "pch.h"
-#include "renderable.h"
+#include "DummyObject.h"
 
 namespace mage
 {
-    class Box : public Renderable<Box>
-    {
-    public:
-        Box(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
-            std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
-            std::uniform_real_distribution<float>& rdist, std::uniform_real_distribution<float>& bdist);
-        void update(float delta) noexcept override;
-        [[nodiscard]] mat4f getTransformMatrix() const noexcept override;
+	class Box : public DummyObject<Box>
+	{
+	public:
+		Box(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+		    std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
+		    std::uniform_real_distribution<float>& rdist, std::uniform_real_distribution<float>& bdist,
+		    vec3f material);
 
-    private:
-        // positional
-        float r;
-        float roll = 0.0f;
-        float pitch = 0.0f;
-        float yaw = 0.0f;
-        float theta;
-        float phi;
-        float chi;
-        // speed (delta/s)
-        float droll;
-        float dpitch;
-        float dyaw;
-        float dtheta;
-        float dphi;
-        float dchi;
-
-        dx::XMFLOAT3X3 mt;
-    };
+		[[nodiscard]] mat4f getTransformMatrix() const noexcept override;
 
 
-    class SkinnedBox : public Renderable<SkinnedBox>
-    {
-    public:
-        SkinnedBox(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
-                   std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
-                   std::uniform_real_distribution<float>& rdist);
-        mat4f getTransformMatrix() const noexcept override;
-        void update(float delta) noexcept override;
+	private:
+		dx::XMFLOAT3X3 mt;
+	};
 
-    private:
-        // positional
-        float r;
-        float roll = 0.0f;
-        float pitch = 0.0f;
-        float yaw = 0.0f;
-        float theta;
-        float phi;
-        float chi;
-        // speed (delta/s)
-        float droll;
-        float dpitch;
-        float dyaw;
-        float dtheta;
-        float dphi;
-        float dchi;
-    };
 
+	class SkinnedBox : public Renderable<SkinnedBox>
+	{
+	public:
+		SkinnedBox(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+		           std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
+		           std::uniform_real_distribution<float>& rdist);
+		mat4f getTransformMatrix() const noexcept override;
+		void update(float delta) noexcept override;
+
+	private:
+		// positional
+		float r;
+		float roll = 0.0f;
+		float pitch = 0.0f;
+		float yaw = 0.0f;
+		float theta;
+		float phi;
+		float chi;
+		// speed (delta/s)
+		float droll;
+		float dpitch;
+		float dyaw;
+		float dtheta;
+		float dphi;
+		float dchi;
+	};
 }// namespace mage
 
 

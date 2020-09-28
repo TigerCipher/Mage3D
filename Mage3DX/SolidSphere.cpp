@@ -21,7 +21,7 @@
 #include "SolidSphere.h"
 
 #include "primitives.h"
-#include "bindables.h"
+#include "Bindables.h"
 #include "graphics_exception.h"
 
 mage::SolidSphere::SolidSphere(Graphics& gfx, float radius)

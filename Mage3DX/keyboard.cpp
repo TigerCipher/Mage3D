@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "keyboard.h"
+#include "Keyboard.h"
 
 bool mage::Keyboard::isPressed(uchar keycode) const noexcept
 {

@@ -24,8 +24,10 @@
 
 
 //#include "pch.h"
-#include "bindable.h"
+#include "Bindable.h"
 
+
+// TODO: #Note - Put vertex and pixel shader classes into one file
 
 namespace mage
 {

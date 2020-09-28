@@ -14,33 +14,39 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: transformconstantbuffer.cpp
+ * File Name: transformconstantbuffer.h
  * Date File Created: 9/20/2020 at 10:37 PM
  * Author: Matt
  */
 
-#include "transform_constant_buffer.h"
+#ifndef MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
+#define MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
 
 
-UniquePtr<mage::VertexConstantBuffer<mage::TransformConstantBuffer::Transforms>> mage::TransformConstantBuffer::m_vertexBuffer;
+//#include "pch.h"
+#include "ConstantBuffer.h"
+#include "irenderable.h"
+#include "MathHelper.h"
 
-mage::TransformConstantBuffer::TransformConstantBuffer(mage::Graphics& gfx, const mage::IRenderable& parent): m_parent(parent)
+namespace mage
 {
-    if(!m_vertexBuffer)
+    class TransformConstantBuffer : public Bindable
     {
-        m_vertexBuffer = createScope<VertexConstantBuffer<Transforms>>(gfx);
-    }
-}
+    public:
+        TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot = 0);
+        void bind(Graphics& gfx) noexcept override;
 
-
-void mage::TransformConstantBuffer::bind(mage::Graphics& gfx) noexcept
-{
-    const auto model = m_parent.getTransformMatrix();
-    const Transforms t = {
-        dx::XMMatrixTranspose(model),
-        dx::XMMatrixTranspose(model * gfx.getCamera() * gfx.getProjection())
+    private:
+        struct Transforms
+        {
+            mat4f model;
+            mat4f mvp;
+        };
+        static UniquePtr<VertexConstantBuffer<Transforms>> m_vertexBuffer;
+        const IRenderable& m_parent;
     };
-    m_vertexBuffer->update(gfx, t);
-    m_vertexBuffer->bind(gfx);
-}
 
+}// namespace mage
+
+
+#endif//MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H

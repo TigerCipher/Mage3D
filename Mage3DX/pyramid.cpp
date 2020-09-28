@@ -20,7 +20,7 @@
  */
 
 #include "pyramid.h"
-#include "bindables.h"
+#include "Bindables.h"
 #include "primitives.h"
 
 mage::Pyramid::Pyramid(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,

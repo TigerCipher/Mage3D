@@ -14,25 +14,34 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: bindables.h
- * Date File Created: 9/20/2020 at 11:04 PM
+ * File Name: TransformConstantBuffer.cpp
+ * Date File Created: 9/28/2020 at 1:34 AM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_BINDABLES_H
-#define MAGE3DX_BINDABLES_H
-
-
-//#include "pch.h"
-
-#include "ConstantBuffer.h"
-#include "IndexBuffer.h"
-#include "InputLayout.h"
-#include "pixel_shader.h"
-#include "Topology.h"
 #include "TransformConstantBuffer.h"
-#include "VertexBuffer.h"
-#include "vertex_shader.h"
 
 
-#endif//MAGE3DX_BINDABLES_H
+UniquePtr<mage::VertexConstantBuffer<mage::TransformConstantBuffer::Transforms> >
+mage::TransformConstantBuffer::m_vertexBuffer;
+
+mage::TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot /*= 0*/) :
+	m_parent(parent)
+{
+	if(!m_vertexBuffer)
+	{
+		m_vertexBuffer = createScope<VertexConstantBuffer<Transforms> >(gfx, slot);
+	}
+}
+
+
+void mage::TransformConstantBuffer::bind(mage::Graphics& gfx) noexcept
+{
+	const auto modelView = m_parent.getTransformMatrix() * gfx.getCamera();
+	const Transforms t = {
+		dx::XMMatrixTranspose(modelView),
+		dx::XMMatrixTranspose(modelView * gfx.getProjection())
+	};
+	m_vertexBuffer->update(gfx, t);
+	m_vertexBuffer->bind(gfx);
+}
+

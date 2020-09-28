@@ -20,7 +20,7 @@
  */
 
 #include "info_exception.h"
-#include "util.h"
+#include "Util.h"
 
 mage::InfoException::InfoException(int line, const char* file, const list<std::string>& msgs) noexcept:
 MageException(line, file)

@@ -19,8 +19,8 @@
  * Author: Matt
  */
 
-#include "app.h"
-#include "display.h"
+#include "App.h"
+#include "Display.h"
 #include "mage_exception.h"
 
 using namespace mage;

@@ -20,7 +20,7 @@
  */
 
 #include "melon.h"
-#include "bindables.h"
+#include "Bindables.h"
 #include "primitives.h"
 
 mage::Melon::Melon(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,

@@ -227,15 +227,15 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(ProjectDir)pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(ProjectDir)pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="app.cpp">
+    <ClCompile Include="App.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="bindable.cpp">
+    <ClCompile Include="Bindable.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="box.cpp">
+    <ClCompile Include="Box.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -243,7 +243,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="camera.cpp">
+    <ClCompile Include="Camera.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -255,7 +255,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="display.cpp">
+    <ClCompile Include="Display.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -275,7 +275,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="index_buffer.cpp">
+    <ClCompile Include="IndexBuffer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -283,7 +283,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="input_layout.cpp">
+    <ClCompile Include="InputLayout.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -291,7 +291,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="keyboard.cpp">
+    <ClCompile Include="Keyboard.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -303,7 +303,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="math_helper.cpp">
+    <ClCompile Include="MathHelper.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -311,7 +311,7 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="mouse.cpp">
+    <ClCompile Include="Mouse.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -338,10 +338,6 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="sheet.cpp">
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
-      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
-    </ClCompile>
     <ClCompile Include="SolidSphere.cpp" />
     <ClCompile Include="texture.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
@@ -355,23 +351,23 @@
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="timer.cpp">
+    <ClCompile Include="Timer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="topology.cpp">
+    <ClCompile Include="Topology.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="transform_constant_buffer.cpp">
+    <ClCompile Include="TransformConstantBuffer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="util.cpp">
+    <ClCompile Include="Util.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="vertex_buffer.cpp">
+    <ClCompile Include="VertexBuffer.cpp">
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">pch.h</PrecompiledHeaderFile>
       <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -395,32 +391,33 @@
     <ClInclude Include="3rdParty\imgui\imstb_textedit.h" />
     <ClInclude Include="3rdParty\imgui\imstb_truetype.h" />
     <ClInclude Include="3rdParty\StackWalker\StackWalker.h" />
-    <ClInclude Include="app.h" />
-    <ClInclude Include="bindable.h" />
-    <ClInclude Include="bindables.h" />
-    <ClInclude Include="box.h" />
+    <ClInclude Include="App.h" />
+    <ClInclude Include="Bindable.h" />
+    <ClInclude Include="Bindables.h" />
+    <ClInclude Include="Box.h" />
     <ClInclude Include="C:\Users\Matt\Desktop\DirectX\include\mage\common.h" />
     <ClInclude Include="callstack.h" />
-    <ClInclude Include="camera.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="color.h" />
-    <ClInclude Include="constant_buffer.h" />
+    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="debug_info.h" />
     <ClInclude Include="debug_message_map.h" />
-    <ClInclude Include="display.h" />
+    <ClInclude Include="Display.h" />
     <ClInclude Include="display_exception.h" />
+    <ClInclude Include="DummyObject.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="graphics_exception.h" />
     <ClInclude Include="imgui_manager.h" />
-    <ClInclude Include="index_buffer.h" />
+    <ClInclude Include="IndexBuffer.h" />
     <ClInclude Include="info_exception.h" />
-    <ClInclude Include="input_layout.h" />
+    <ClInclude Include="InputLayout.h" />
     <ClInclude Include="irenderable.h" />
-    <ClInclude Include="keyboard.h" />
+    <ClInclude Include="Keyboard.h" />
     <ClInclude Include="log.h" />
     <ClInclude Include="mage_exception.h" />
-    <ClInclude Include="math_helper.h" />
+    <ClInclude Include="MathHelper.h" />
     <ClInclude Include="melon.h" />
-    <ClInclude Include="mouse.h" />
+    <ClInclude Include="Mouse.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="pixel_shader.h" />
     <ClInclude Include="PointLight.h" />
@@ -429,17 +426,16 @@
     <ClInclude Include="renderable.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="sampler.h" />
-    <ClInclude Include="sheet.h" />
     <ClInclude Include="SolidSphere.h" />
     <ClInclude Include="stacktrace_exception.h" />
     <ClInclude Include="texture.h" />
     <ClInclude Include="texture_exception.h" />
     <ClInclude Include="texture_surface.h" />
-    <ClInclude Include="timer.h" />
-    <ClInclude Include="topology.h" />
-    <ClInclude Include="transform_constant_buffer.h" />
-    <ClInclude Include="util.h" />
-    <ClInclude Include="vertex_buffer.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="Topology.h" />
+    <ClInclude Include="TransformConstantBuffer.h" />
+    <ClInclude Include="Util.h" />
+    <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="vertex_shader.h" />
     <ClInclude Include="winwrapper.h" />
   </ItemGroup>

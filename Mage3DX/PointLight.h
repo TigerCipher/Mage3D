@@ -22,17 +22,17 @@
 
 #include "graphics.h"
 #include "SolidSphere.h"
-#include "constant_buffer.h"
+#include "ConstantBuffer.h"
 
 namespace mage
 {
 	class PointLight
 	{
 	public:
-		explicit PointLight(Graphics& gfx, float radius = 0.5f) : m_mesh(gfx, radius), m_buffer(gfx) { }
-		
+		explicit PointLight(Graphics& gfx, float radius = 0.5f);
+
 		void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
-		void bind(Graphics& gfx) const noexcept;
+		void bind(Graphics& gfx, mat4f view) const noexcept;
 		
 		void spawnControlWindow() noexcept;
 		void reset() noexcept;
@@ -40,11 +40,18 @@ namespace mage
 	private:
 		struct PointLightCBuf
 		{
-			vec3f pos;
-			float padding;
+			alignas(16) vec3f pos;
+			alignas(16) vec3f diffuseColor;
+			alignas(16) vec3f ambient;
+
+			float diffuseIntensity;
+			
+			float attConst;
+			float attLin;
+			float attQuad;
 		};
 
-		vec3f m_position = { 0, 0, 0 };
+		PointLightCBuf m_cbuf;
 		mutable SolidSphere m_mesh;
 		mutable PixelConstantBuffer<PointLightCBuf> m_buffer;
 	};

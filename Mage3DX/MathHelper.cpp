@@ -14,39 +14,16 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: transformconstantbuffer.h
- * Date File Created: 9/20/2020 at 10:37 PM
+ * File Name: math_helper.cpp
+ * Date File Created: 9/25/2020 at 5:55 PM
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
-#define MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
+#include "MathHelper.h"
 
-
-//#include "pch.h"
-#include "constant_buffer.h"
-#include "irenderable.h"
-#include "math_helper.h"
-
-namespace mage
+float mage::dot(vec4f v1, vec4f v2)
 {
-    class TransformConstantBuffer : public Bindable
-    {
-    public:
-        TransformConstantBuffer(Graphics& gfx, const IRenderable& parent);
-        void bind(Graphics& gfx) noexcept override;
-
-    private:
-        struct Transforms
-        {
-            mat4f model;
-            mat4f mvp;
-        };
-        static UniquePtr<VertexConstantBuffer<Transforms>> m_vertexBuffer;
-        const IRenderable& m_parent;
-    };
-
-}// namespace mage
-
-
-#endif//MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
+    auto result = dx::XMVector4Dot(v1, v2);
+    auto d = dx::XMVectorGetX(result);
+    return d;
+}

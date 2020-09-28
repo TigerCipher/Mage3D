@@ -23,7 +23,7 @@
 #define MAGE3DX_CAMERA_H
 
 #include "graphics.h"
-#include "math_helper.h"
+#include "MathHelper.h"
 
 namespace mage
 {

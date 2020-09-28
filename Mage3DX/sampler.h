@@ -22,7 +22,7 @@
 #ifndef MAGE3DX_SAMPLER_H
 #define MAGE3DX_SAMPLER_H
 
-#include "bindable.h"
+#include "Bindable.h"
 
 namespace mage
 {

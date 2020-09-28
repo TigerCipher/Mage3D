@@ -14,26 +14,15 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: inputlayout.cpp
- * Date File Created: 9/20/2020 at 9:50 PM
+ * File Name: vertexbuffer.cpp
+ * Date File Created: 9/20/2020 at 10:41 PM
  * Author: Matt
  */
 
-#include "input_layout.h"
-#include "graphics_exception.h"
+#include "VertexBuffer.h"
 
-mage::InputLayout::InputLayout(mage::Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout,
-                               ID3DBlob* vertexBytecode)
+void mage::VertexBuffer::bind(mage::Graphics& gfx) noexcept
 {
-    DEBUG_INFO(gfx);
-
-    GFX_THROW_INFO(getDevice(gfx)->CreateInputLayout(layout.data(), (UINT) layout.size(),
-                                                     vertexBytecode->GetBufferPointer(),
-                                                     vertexBytecode->GetBufferSize(), &m_layout));
-}
-
-
-void mage::InputLayout::bind(mage::Graphics& gfx) noexcept
-{
-    getContext(gfx)->IASetInputLayout(m_layout.Get());
+    static const UINT offset = 0;
+    getContext(gfx)->IASetVertexBuffers(0, 1, m_buffer.GetAddressOf(), &m_stride, &offset);
 }

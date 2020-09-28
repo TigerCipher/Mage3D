@@ -19,7 +19,7 @@
  * Author: Matt
  */
 
-#include "timer.h"
+#include "Timer.h"
 
 float mage::Timer::markPoint() noexcept
 {

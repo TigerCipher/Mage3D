@@ -21,7 +21,7 @@
 
 #include "irenderable.h"
 #include "graphics_exception.h"
-#include "index_buffer.h"
+#include "IndexBuffer.h"
 #include <cassert>
 #include <typeinfo>
 
