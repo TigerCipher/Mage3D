@@ -14,16 +14,13 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.cpp
- * Date File Created: 9/27/2020 at 3:29 PM
+ * File Name: App.cpp
+ * Date File Created: 9/28/2020 at 1:11 PM
  * Author: Matt
  */
-
-
 #include "App.h"
 #include "Box.h"
-#include "Melon.h"
-#include "Pyramid.h"
+#include "Cylinder.h"
 #include "TextureSurface.h"
 
 
@@ -35,29 +32,46 @@ mage::App::App(int width, int height, const char* title) :
 	GDIPlusManager::start();
 	class Factory
 	{
-		public:
-			explicit Factory(Graphics& gfx) :
-				gfx(gfx)
-			{ }
+	public:
+		explicit Factory(Graphics& gfx) :
+			gfx(gfx)
+		{ }
 
-			std::unique_ptr<IRenderable> operator()()
+		UniquePtr<IRenderable> operator()()
+		{
+			const vec3f material = { cdist(rng), cdist(rng), cdist(rng) };
+			switch (sdist(rng))
 			{
-				const vec3f material = { cdist(rng), cdist(rng), cdist(rng) };
-				return createScope<Box>(gfx, rng, adist, ddist, odist, rdist, bdist, material);
+			case 0:
+				return createScope<Box>(
+					gfx, rng, adist, ddist,
+					odist, rdist, bdist, material
+					);
+			case 1:
+				return createScope<Cylinder>(
+					gfx, rng, adist, ddist, odist,
+					rdist, bdist, tdist
+					);
+			default:
+				assert(false && "impossible drawable option in factory");
+				return { };
 			}
+		}
 
-		private:
-			Graphics& gfx;
-			std::mt19937 rng { std::random_device { } () };
-			std::uniform_real_distribution<float> adist { 0.0f, PI* 2.0f };
-			std::uniform_real_distribution<float> ddist { 0.0f, PI* 0.5f };
-			std::uniform_real_distribution<float> odist { 0.0f, PI* 0.08f };
-			std::uniform_real_distribution<float> rdist { 6.0f, 20.0f };
-			std::uniform_real_distribution<float> bdist { 0.4f, 3.0f };
-			std::uniform_real_distribution<float> cdist { 0, 1.0f };
-			std::uniform_int_distribution<int> latdist { 5, 20 };
-			std::uniform_int_distribution<int> longdist { 10, 40 };
-			std::uniform_int_distribution<int> typedist { 0, 4 };
+	private:
+		Graphics& gfx;
+		std::mt19937 rng { std::random_device { } () };
+		std::uniform_real_distribution<float> adist { 0.0f, PI* 2.0f };
+		std::uniform_real_distribution<float> ddist { 0.0f, PI* 0.5f };
+		std::uniform_real_distribution<float> odist { 0.0f, PI* 0.08f };
+		std::uniform_real_distribution<float> rdist { 6.0f, 20.0f };
+		std::uniform_real_distribution<float> bdist { 0.4f, 3.0f };
+		std::uniform_real_distribution<float> cdist { 0, 1.0f };
+		std::uniform_int_distribution<int> latdist { 5, 20 };
+		std::uniform_int_distribution<int> longdist { 10, 40 };
+		std::uniform_int_distribution<int> typedist { 0, 4 };
+		std::uniform_int_distribution<int> sdist{ 0,1 };
+		std::uniform_int_distribution<int> tdist{ 3,30 };
 	};
 
 	Factory f(m_display.getGraphics());
@@ -66,8 +80,8 @@ mage::App::App(int width, int height, const char* title) :
 
 
 	m_display.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
-	                                                                m_display.getAspectRatio(),
-	                                                                0.5f, 40.0f));
+		m_display.getAspectRatio(),
+		0.5f, 40.0f));
 }
 
 mage::App::~App()
@@ -114,10 +128,10 @@ static void calculateFrameStatistics(mage::Timer& timer)
 	}
 
 	IMGUI_WRAP_RD("Performance Statistics",
-	              ImGui::Text("Frame Stats: %.3f ms/frame (%.1f FPS)",         1000.0f / fps,        fps),
-	              ImGui::Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps),
-	              ImGui::TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount)
-	              );
+		ImGui::Text("Frame Stats: %.3f ms/frame (%.1f FPS)",         1000.0f / fps,        fps),
+		ImGui::Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps),
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount)
+		);
 }
 
 void mage::App::runFrame()
@@ -140,7 +154,7 @@ void mage::App::runFrame()
 	//if (showDemo) { ImGui::ShowDemoWindow(&showDemo); }
 
 	IMGUI_WRAP("Global Simulation Speed",
-	           ImGui::SliderFloat("Speed Factor", &globalSpeed, 0.0f, 5.0f));
+		ImGui::SliderFloat("Speed Factor", &globalSpeed, 0.0f, 5.0f));
 	calculateFrameStatistics(m_performanceTimer);
 
 	m_camera.spawnControlWindow();

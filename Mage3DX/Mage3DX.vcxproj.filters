@@ -210,6 +210,9 @@
     <ClCompile Include="SolidSphere.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="Cylinder.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="3rdParty\dxerr.h">
@@ -380,6 +383,9 @@
     <ClInclude Include="SolidSphere.h">
       <Filter>Header Files\entities</Filter>
     </ClInclude>
+    <ClInclude Include="Cylinder.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdParty\DXGetErrorDescription.inl">
@@ -432,6 +438,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="assets\shaders\solidPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\indexedPhongPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
