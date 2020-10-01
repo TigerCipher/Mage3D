@@ -44,6 +44,8 @@ namespace mage
     private:
         void runFrame();
 
+        void spawnWindows();
+
         Display m_display;
         Camera m_camera;
         PointLight m_light;
@@ -54,6 +56,10 @@ namespace mage
         float globalSpeed = 1.0f;
         list<UniquePtr<IRenderable>> m_renderables;
         static constexpr size_t NUM_RENDERS = 180;
+
+        list<class Box*> m_boxes;
+        std::optional<int> m_comboBoxIndex;
+        std::set<int> m_boxIds;
     };
 
 }

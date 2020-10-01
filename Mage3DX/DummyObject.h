@@ -57,15 +57,15 @@ namespace mage
 
 		void update(float delta) noexcept override
 		{
-			roll += droll * delta;
-			pitch += dpitch * delta;
-			yaw += dyaw * delta;
-			theta += dtheta * delta;
-			phi += dphi * delta;
-			chi += dchi * delta;
+			roll += wrapAngle(droll * delta);
+			pitch += wrapAngle(dpitch * delta);
+			yaw += wrapAngle(dyaw * delta);
+			theta += wrapAngle(dtheta * delta);
+			phi += wrapAngle(dphi * delta);
+			chi += wrapAngle(dchi * delta);
 		}
 
-	private:
+	protected:
 		// positional
 		float r;
 		float roll = 0.0f;

@@ -40,7 +40,7 @@ void mage::IRenderable::render(mage::Graphics& gfx) const noexcept(!MAGE_DEBUG)
 }
 
 
-void mage::IRenderable::addBindable(UniquePtr<mage::Bindable> bindable) noexcept(!MAGE_DEBUG)
+void mage::IRenderable::addBind(UniquePtr<mage::Bindable> bindable) noexcept(!MAGE_DEBUG)
 {
     assert("MUST use addIndexBuffer when binding an IndexBuffer" && typeid(*bindable) != typeid(IndexBuffer));
     m_bindables.push_back(std::move(bindable));

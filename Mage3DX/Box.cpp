@@ -19,11 +19,11 @@
  * Author: Matt
  */
 #include "Box.h"
-#include "Bindables.h"
 #include "Primitives.h"
 #include "Sampler.h"
 #include "Texture.h"
 #include "TextureSurface.h"
+#include "ImguiManager.h"
 
 
 mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
@@ -65,26 +65,48 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
 		setIndexStatic();
 	}
 
-	addBindable(createScope<TransformConstantBuffer>(gfx, *this));
+	addBind(createScope<TransformConstantBuffer>(gfx, *this));
 
-	struct MaterialConst
-	{
-		alignas(16) vec3f color;
-		float specularIntensity = 0.6f;
-		float specularPower = 30.0f;
+	matConstant.color = material;
+	addBind(createScope<MaterialConstBuffer>(gfx, matConstant, 1));
 
-		float padding[2];
-	} colConst;
-	colConst.color = material;
-	addBindable(createScope<PixelConstantBuffer<MaterialConst> >(gfx, colConst, 1));
-
-	dx::XMStoreFloat3x3(&mt, dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng)));
+	dx::XMStoreFloat3x3(&m_modelTransformation, dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng)));
 }
 
 
 mat4f mage::Box::getTransformMatrix() const noexcept
 {
-	return dx::XMLoadFloat3x3(&mt) * DummyObject::getTransformMatrix();
+	return dx::XMLoadFloat3x3(&m_modelTransformation) * DummyObject::getTransformMatrix();
+}
+
+bool mage::Box::spawnControlWindow(int id, Graphics& gfx) noexcept
+{
+	bool dirty = false;
+	bool open = true;
+	IMGUI_WRAP_CLOSABLE(("Box " + std::to_string(id)).c_str(), open,
+		ImGui::Text("Material"),
+		(dirty = ImGui::ColorEdit3("Material Color", &matConstant.color.x) || dirty),
+		(dirty = ImGui::SliderFloat("Specular Intensity", &matConstant.intensity, 0.05f, 4.0f, "%.2f", 2) || dirty),
+		(dirty = ImGui::SliderFloat("Specular Power", &matConstant.power, 1.0f, 200.0f, "%.2f", 2) || dirty),
+		ImGui::Text("Position"),
+		ImGui::SliderFloat("R", &r, 0.0f, 80.0f, "%.1f"),
+		ImGui::SliderAngle("Theta", &theta, -180.0f, 180.0f),
+		ImGui::SliderAngle("Phi",   &phi,   -180.0f, 180.0f),
+		ImGui::Text("Orientation"),
+		ImGui::SliderAngle("Roll",  &roll,  -180.0f, 180.0f),
+		ImGui::SliderAngle("Pitch", &pitch, -180.0f, 180.0f),
+		ImGui::SliderAngle("Yaw",   &yaw,   -180.0f, 180.0f)
+		);
+	if (dirty)
+		syncMaterial(gfx);
+	return open;
+}
+
+void mage::Box::syncMaterial(Graphics& gfx) noexcept(!MAGE_DEBUG)
+{
+	auto cBuf = queryBindable<MaterialConstBuffer>();
+	assert(cBuf != nullptr);
+	cBuf->update(gfx, matConstant);
 }
 
 
@@ -142,5 +164,5 @@ mage::SkinnedBox::SkinnedBox(mage::Graphics& gfx, std::mt19937& rng,
 		setIndexStatic();
 	}
 
-	addBindable(createScope<TransformConstantBuffer>(gfx, *this));
+	addBind(createScope<TransformConstantBuffer>(gfx, *this));
 }

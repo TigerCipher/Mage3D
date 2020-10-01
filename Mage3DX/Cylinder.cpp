@@ -72,8 +72,8 @@ mage::Cylinder::Cylinder(Graphics& gfx, std::mt19937& rng,
 	};
 	auto model = Prism::makeTesselatedNormalsNoCaps<Vertex>(tdist(rng));
 
-	addBindable(createScope<VertexBuffer>(gfx, model.vertices));
+	addBind(createScope<VertexBuffer>(gfx, model.vertices));
 	addIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
-	addBindable(createScope<TransformConstantBuffer>(gfx, *this));
+	addBind(createScope<TransformConstantBuffer>(gfx, *this));
 }

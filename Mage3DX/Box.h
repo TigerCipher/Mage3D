@@ -22,6 +22,7 @@
 #define MAGE3DX_BOX_H
 
 #include "DummyObject.h"
+#include "Bindables.h"
 
 namespace mage
 {
@@ -35,9 +36,23 @@ namespace mage
 
 		[[nodiscard]] mat4f getTransformMatrix() const noexcept override;
 
-
+		bool spawnControlWindow(int id, Graphics& gfx) noexcept;
 	private:
-		dx::XMFLOAT3X3 mt;
+		void syncMaterial(Graphics& gfx) noexcept(!MAGE_DEBUG);
+
+		struct MaterialConstant
+		{
+			vec3f color;
+			// Specular data
+			float intensity = 0.6f;
+			float power = 30.0f;
+
+			// Alignment to match what the shader expects
+			float padding[3];
+		} matConstant;
+
+		using MaterialConstBuffer = PixelConstantBuffer<MaterialConstant>;
+		dx::XMFLOAT3X3 m_modelTransformation;
 	};
 
 

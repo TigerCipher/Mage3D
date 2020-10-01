@@ -35,11 +35,20 @@
 		(__VA_ARGS__);                  \
 		ImGui::End();                   \
 	}
+	#define IMGUI_WRAP_CLOSABLE(name, openFlag, ...) \
+	if(mage::ImguiManager::isEnabled())              \
+	{                                                \
+		ImGui::Begin(name, &openFlag);               \
+		(__VA_ARGS__);                               \
+		ImGui::End();                                \
+	}
 #else
 	#define IMGUI_WRAP(...)
+	#define IMGUI_WRAP_CLOSABLE(...)
 #endif
 
-
+// Bit messy, but ultimately better than wrapping every single imgui function or doing the if check
+// every time
 #define IMGUI_WRAP_RD(name, ...)                                  \
 	if(mage::ImguiManager::isEnabled())                           \
 	{                                                             \

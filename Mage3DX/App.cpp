@@ -83,6 +83,13 @@ mage::App::App(int width, int height, const char* title) :
 	m_renderables.reserve(NUM_RENDERS);
 	std::generate_n(std::back_inserter(m_renderables), NUM_RENDERS, f);
 
+	for (auto& p : m_renderables)
+	{
+		if (auto pb = dynamic_cast<Box*>(p.get()))
+		{
+			m_boxes.push_back(pb);
+		}
+	}
 
 	m_display.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		m_display.getAspectRatio(),
@@ -107,7 +114,7 @@ int mage::App::run()
 	return 0;
 }
 
-static void calculateFrameStatistics(mage::Timer& timer)
+void calculateFrameStatistics(mage::Timer& timer)
 {
 	static float fps = 0;
 	static float avgFps = 0;
@@ -139,6 +146,7 @@ static void calculateFrameStatistics(mage::Timer& timer)
 		);
 }
 
+
 void mage::App::runFrame()
 {
 	float delta = m_timer.markPoint() * globalSpeed;
@@ -165,5 +173,51 @@ void mage::App::runFrame()
 	m_camera.spawnControlWindow();
 	m_light.spawnControlWindow();
 
+	spawnWindows();
+
 	m_display.getGraphics().swap();
+}
+
+void mage::App::spawnWindows()
+{
+	if (ImguiManager::isEnabled())
+	{
+		if (ImGui::Begin("Box Picker"))
+		{
+			const auto preview = m_comboBoxIndex ? std::to_string(*m_comboBoxIndex) : "Choose a box";
+			if (ImGui::BeginCombo("Box ID", preview.c_str()))
+			{
+				for (int i = 0; i < m_boxes.size(); i++)
+				{
+					const bool selected = *m_comboBoxIndex == i;
+					if (ImGui::Selectable(std::to_string(i).c_str(), selected))
+					{
+						m_comboBoxIndex = i;
+					}
+					if (selected)
+					{
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+
+			if (ImGui::Button("Spawn Control Window") && m_comboBoxIndex)
+			{
+				m_boxIds.insert(*m_comboBoxIndex);
+				m_comboBoxIndex.reset();
+			}
+		}
+
+		ImGui::End();
+	}
+
+	for(auto it = m_boxIds.begin(); it != m_boxIds.end();)
+	{
+		if (!m_boxes[*it]->spawnControlWindow(*it, m_display.getGraphics()))
+		{
+			it = m_boxIds.erase(it);
+		}
+		else it++;
+	}
 }

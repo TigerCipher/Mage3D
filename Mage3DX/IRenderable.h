@@ -49,8 +49,20 @@ namespace mage
         virtual void update(float delta) noexcept = 0;
 
     protected:
-        void addBindable(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG);
+        void addBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG);
         void addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept;
+
+        template<class T>
+        T* queryBindable() noexcept
+        {
+            for (auto& pixelBuffer : m_bindables)
+            {
+                if(auto pb = dynamic_cast<T*>(pixelBuffer.get()))
+                    return pb;
+            }
+
+            return nullptr;
+        }
 
     private:
         [[nodiscard]] virtual const list<UniquePtr<Bindable>>& getStaticBinds() const noexcept = 0;

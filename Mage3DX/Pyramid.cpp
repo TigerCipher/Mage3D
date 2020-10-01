@@ -79,9 +79,9 @@ mage::Pyramid::Pyramid(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real
 	model.transform(dx::XMMatrixScaling(1.0f, 1.0f, 0.7f));
 	model.setNormalsFlat();
 
-	addBindable(createScope<VertexBuffer>(gfx, model.vertices));
+	addBind(createScope<VertexBuffer>(gfx, model.vertices));
 
 	addIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
-	addBindable(createScope<TransformConstantBuffer>(gfx, *this));
+	addBind(createScope<TransformConstantBuffer>(gfx, *this));
 }
