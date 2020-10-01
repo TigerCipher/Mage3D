@@ -14,12 +14,10 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: box.cpp
- * Date File Created: 9/25/2020 at 11:49 PM
+ * File Name: Box.cpp
+ * Date File Created: 9/28/2020 at 1:11 PM
  * Author: Matt
  */
-
-
 #include "Box.h"
 #include "Bindables.h"
 #include "Primitives.h"
@@ -90,8 +88,10 @@ mat4f mage::Box::getTransformMatrix() const noexcept
 }
 
 
-mage::SkinnedBox::SkinnedBox(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
-                             std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
+mage::SkinnedBox::SkinnedBox(mage::Graphics& gfx, std::mt19937& rng,
+                             std::uniform_real_distribution<float>& adist,
+                             std::uniform_real_distribution<float>& ddist,
+                             std::uniform_real_distribution<float>& odist,
                              std::uniform_real_distribution<float>& rdist) :
 	DummyObject(gfx, rng, adist, ddist, odist, rdist)
 {
@@ -136,8 +136,7 @@ mage::SkinnedBox::SkinnedBox(mage::Graphics& gfx, std::mt19937& rng, std::unifor
 			float padding[2];
 		} colConst;
 
-		addStaticBind(createScope<PixelConstantBuffer<MaterialConst>>(gfx, colConst, 1));
-
+		addStaticBind(createScope<PixelConstantBuffer<MaterialConst> >(gfx, colConst, 1));
 	} else
 	{
 		setIndexStatic();

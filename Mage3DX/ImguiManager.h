@@ -11,14 +11,13 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * Contact: team@bluemoondev.org
- *
- * File Name: imgui_manager.h
- * Date File Created: 9/25/2020 at 11:43 PM
+ * 
+ * File Name: ImguiManager.h
+ * Date File Created: 9/27/2020 at 3:25 PM
  * Author: Matt
  */
-
 #ifndef MAGE3DX_IMGUI_MANAGER_H
 #define MAGE3DX_IMGUI_MANAGER_H
 
@@ -41,12 +40,12 @@
 #endif
 
 
-#define IMGUI_WRAP_RD(name, ...)        \
-	if(mage::ImguiManager::isEnabled()) \
-	{                                   \
-		ImGui::Begin(name, 0, ImGuiWindowFlags_AlwaysAutoResize);             \
-		(__VA_ARGS__);                  \
-		ImGui::End();                   \
+#define IMGUI_WRAP_RD(name, ...)                                  \
+	if(mage::ImguiManager::isEnabled())                           \
+	{                                                             \
+		ImGui::Begin(name, 0, ImGuiWindowFlags_AlwaysAutoResize); \
+		(__VA_ARGS__);                                            \
+		ImGui::End();                                             \
 	}
 
 
@@ -54,41 +53,41 @@ namespace mage
 {
 	class ImguiManager
 	{
-		public:
+	public:
 
-			static void start()
-			{
-				IMGUI_CHECKVERSION();
-				ImGui::CreateContext();
-				ImGui::StyleColorsDark();
-				//ImGui::GetIO().MouseDrawCursor = true;
-			}
+		static void start()
+		{
+			IMGUI_CHECKVERSION();
+			ImGui::CreateContext();
+			ImGui::StyleColorsDark();
+			//ImGui::GetIO().MouseDrawCursor = true;
+		}
 
-			static void stop()
-			{
-				destroyDx11();
-				destroyWin32();
-				ImGui::DestroyContext();
-			}
+		static void stop()
+		{
+			destroyDx11();
+			destroyWin32();
+			ImGui::DestroyContext();
+		}
 
-			static void initDx11(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-			static void initWin32(HWND hwnd);
-			static void destroyWin32();
-			static void destroyDx11();
+		static void initDx11(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+		static void initWin32(HWND hwnd);
+		static void destroyWin32();
+		static void destroyDx11();
 
-			static LRESULT wndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+		static LRESULT wndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-			static void renderDx11();
-			static void newFrame();
+		static void renderDx11();
+		static void newFrame();
 
-			static bool isEnabled() noexcept { return s_enabled; }
+		static bool isEnabled() noexcept { return s_enabled; }
 
-			static void enable() noexcept { s_enabled = true; }
-			static void disable() noexcept { s_enabled = false; }
-			static void toggle() noexcept { s_enabled = !s_enabled; }
+		static void enable() noexcept { s_enabled = true; }
+		static void disable() noexcept { s_enabled = false; }
+		static void toggle() noexcept { s_enabled = !s_enabled; }
 
-		private:
-			static bool s_enabled;
+	private:
+		static bool s_enabled;
 	};
 }
 
