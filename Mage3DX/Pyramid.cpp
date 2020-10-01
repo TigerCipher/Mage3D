@@ -14,11 +14,10 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: pyramid.cpp
- * Date File Created: 9/21/2020 at 11:44 PM
+ * File Name: Pyramid.cpp
+ * Date File Created: 9/28/2020 at 1:11 PM
  * Author: Matt
  */
-
 #include "Pyramid.h"
 #include "Bindables.h"
 #include "Primitives.h"
@@ -27,84 +26,62 @@
 mage::Pyramid::Pyramid(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
                        std::uniform_real_distribution<float>& ddist,
                        std::uniform_real_distribution<float>& odist,
-                       std::uniform_real_distribution<float>& rdist) :
-        r(rdist(rng)),
-        droll(ddist(rng)),
-        dpitch(ddist(rng)),
-        dyaw(ddist(rng)),
-        dphi(odist(rng)),
-        dtheta(odist(rng)),
-        dchi(odist(rng)),
-        chi(adist(rng)),
-        theta(adist(rng)),
-        phi(adist(rng))
+                       std::uniform_real_distribution<float>& rdist,
+                       std::uniform_int_distribution<int>& tdist) : DummyObject(gfx, rng, adist, ddist, odist, rdist)
 {
-    if (!isInitialized())
-    {
-        struct Vertex
-        {
-            vec3f pos;
-            struct
-            {
-                ubyte r;
-                ubyte g;
-                ubyte b;
-                ubyte a;
-            } color;
-        };
-        auto model = Cone::makeTesselated<Vertex>(4);
-        model.vertices[ 0 ].color = { 255, 255, 0 };
-        model.vertices[ 1 ].color = { 255, 255, 0 };
-        model.vertices[ 2 ].color = { 255, 255, 0 };
-        model.vertices[ 3 ].color = { 255, 255, 0 };
-        model.vertices[ 4 ].color = { 255, 255, 80 };
-        model.vertices[ 5 ].color = { 255, 10, 0 };
-        model.transform(dx::XMMatrixScaling(1.0f, 1.0f, 0.7f));
+	if (!isInitialized())
+	{
+		auto pvs = createScope<VertexShader>(gfx, L"shaders\\blendedPhongVS.cso");
+		auto pvsbc = pvs->getBytecode();
+		addStaticBind(std::move(pvs));
 
-        addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
+		addStaticBind(createScope<PixelShader>(gfx, L"shaders\\blendedPhongPS.cso"));
 
-        auto pvs = createScope<VertexShader>(gfx, L"shaders\\basicColorBlendVS.cso");
-        auto pvsbc = pvs->getBytecode();
-        addStaticBind(std::move(pvs));
+		const list<D3D11_INPUT_ELEMENT_DESC> ied =
+		{
+			{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "Color", 0, DXGI_FORMAT_R8G8B8A8_UNORM, 0, sizeof(float) * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		};
+		addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
 
-        addStaticBind(createScope<PixelShader>(gfx, L"shaders\\basicColorBlendPS.cso"));
+		addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+		struct MaterialConst
+		{
+			float specularIntensity = 0.6f;
+			float specularPower = 30.0f;
+			float padding[2];
+		} colConst;
 
-        addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
+		addStaticBind(createScope<PixelConstantBuffer<MaterialConst> >(gfx, colConst, 1));
+	}
 
+	struct Vertex
+	{
+		vec3f pos;
+		vec3f normal;
+		std::array<char, 4> color;
+		char padding;
+	};
+	const auto tesselation = tdist(rng);
+	auto model = Cone::makeTesselatedIndependentFaces<Vertex>(tesselation);
 
-        const list<D3D11_INPUT_ELEMENT_DESC> ied =
-                {
-                        { "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-                        {
-                          "Color",    0, DXGI_FORMAT_R8G8B8A8_UNORM,  0, sizeof(float) *
-                                                                         3, D3D11_INPUT_PER_VERTEX_DATA, 0
-                        },
-                };
-        addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
+	for (auto& v : model.vertices)
+	{
+		v.color = { (char) 10, (char) 10, (char) 255 };
+	}
 
-        addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-    } else
-    {
-        setIndexStatic();
-    }
-    addBindable(createScope<TransformConstantBuffer>(gfx, *this));
+	for (int i = 0; i < tesselation; i++)
+	{
+		model.vertices[i * 3].color = { (char) 255, (char) 20, (char) 20 };
+	}
+
+	model.transform(dx::XMMatrixScaling(1.0f, 1.0f, 0.7f));
+	model.setNormalsFlat();
+
+	addBindable(createScope<VertexBuffer>(gfx, model.vertices));
+
+	addIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
+
+	addBindable(createScope<TransformConstantBuffer>(gfx, *this));
 }
-
-
-mat4f mage::Pyramid::getTransformMatrix() const noexcept
-{
-    return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-           dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
-           dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
-}
-
-void mage::Pyramid::update(float delta) noexcept
-{
-    roll += droll * delta;
-    pitch += dpitch * delta;
-    yaw += dyaw * delta;
-    theta += dtheta * delta;
-    phi += dphi * delta;
-    chi += dchi * delta;
-}
-

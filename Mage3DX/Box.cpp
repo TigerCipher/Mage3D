@@ -19,6 +19,7 @@
  * Author: Matt
  */
 
+
 #include "Box.h"
 #include "Bindables.h"
 #include "Primitives.h"
@@ -87,67 +88,56 @@ mat4f mage::Box::getTransformMatrix() const noexcept
 {
 	return dx::XMLoadFloat3x3(&mt) * DummyObject::getTransformMatrix();
 }
-mat4f mage::SkinnedBox::getTransformMatrix() const noexcept
-{
-	return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) * dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
-	       dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
-}
-void mage::SkinnedBox::update(float delta) noexcept
-{
-	roll += droll * delta;
-	pitch += dpitch * delta;
-	yaw += dyaw * delta;
-	theta += dtheta * delta;
-	phi += dphi * delta;
-	chi += dchi * delta;
-}
+
 
 mage::SkinnedBox::SkinnedBox(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
                              std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
                              std::uniform_real_distribution<float>& rdist) :
-	r(rdist(rng)),
-	droll(ddist(rng)),
-	dpitch(ddist(rng)),
-	dyaw(ddist(rng)),
-	dphi(odist(rng)),
-	dtheta(odist(rng)),
-	dchi(odist(rng)),
-	chi(adist(rng)),
-	theta(adist(rng)),
-	phi(adist(rng))
+	DummyObject(gfx, rng, adist, ddist, odist, rdist)
 {
 	if (!isInitialized())
 	{
 		struct Vertex {
 			vec3f pos;
-			struct {
-				float u, v;
-			} tex;
+			vec3f normal;
+			vec2f texCoords;
 		};
 
-		auto model = Cube::makeSkinned<Vertex>();
+		auto model = Cube::makeIndependentTextured<Vertex>();
+		model.setNormalsFlat();
 
-		addStaticBind(createScope<Texture>(gfx, TextureSurface::loadFromFile("assets\\textures\\cube.png")));
+		addStaticBind(createScope<Texture>(gfx, TextureSurface::loadFromFile("assets\\textures\\metal_box.png")));
 
 		addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
 
 		addStaticBind(createScope<Sampler>(gfx));
 
-		auto pvs = createScope<VertexShader>(gfx, L"shaders\\textureVS.cso");
+		auto pvs = createScope<VertexShader>(gfx, L"shaders\\texturePhongVS.cso");
 		auto pvsbc = pvs->getBytecode();
 		addStaticBind(std::move(pvs));
 
-		addStaticBind(createScope<PixelShader>(gfx, L"shaders\\texturePS.cso"));
+		addStaticBind(createScope<PixelShader>(gfx, L"shaders\\texturePhongPS.cso"));
 
 		addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied = {
 			{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TexCoord", 0, DXGI_FORMAT_R32G32_FLOAT, 0, sizeof(float) * 6, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		};
 		addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
 
 		addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+
+		struct MaterialConst
+		{
+			float specularIntensity = 0.6f;
+			float specularPower = 30.0f;
+			float padding[2];
+		} colConst;
+
+		addStaticBind(createScope<PixelConstantBuffer<MaterialConst>>(gfx, colConst, 1));
+
 	} else
 	{
 		setIndexStatic();

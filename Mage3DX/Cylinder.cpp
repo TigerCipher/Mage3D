@@ -33,22 +33,12 @@ mage::Cylinder::Cylinder(Graphics& gfx, std::mt19937& rng,
 {
 	if (!isInitialized())
 	{
-		struct Vertex
-		{
-			vec3f pos;
-			vec3f n;
-		};
-		auto model = Prism::makeTesselatedNormalsNoCaps<Vertex>(tdist(rng));
-
-		addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
 
 		auto pvs = createScope<VertexShader>(gfx, L"shaders\\phongVS.cso");
 		auto pvsbc = pvs->getBytecode();
 		addStaticBind(std::move(pvs));
 
 		addStaticBind(createScope<PixelShader>(gfx, L"shaders\\indexedPhongPS.cso"));
-
-		addStaticIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
 		const std::vector<D3D11_INPUT_ELEMENT_DESC> ied =
 		{
@@ -74,10 +64,16 @@ mage::Cylinder::Cylinder(Graphics& gfx, std::mt19937& rng,
 		} matConst;
 		addStaticBind(createScope<PixelConstantBuffer<PSMaterialConstant> >(gfx, matConst, 1u));
 	}
-	else
+	
+	struct Vertex
 	{
-		setIndexStatic();
-	}
+		vec3f pos;
+		vec3f n;
+	};
+	auto model = Prism::makeTesselatedNormalsNoCaps<Vertex>(tdist(rng));
+
+	addBindable(createScope<VertexBuffer>(gfx, model.vertices));
+	addIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
 	addBindable(createScope<TransformConstantBuffer>(gfx, *this));
 }

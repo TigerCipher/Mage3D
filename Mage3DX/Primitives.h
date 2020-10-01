@@ -132,6 +132,66 @@ namespace mage
 			return { std::move(vertices), std::move(indices) };
 		}
 
+		template <class V>
+		static IndexedTriangleList<V> makeTesselatedIndependentFaces(int longDiv)
+		{
+			assert(longDiv >= 3);
+
+			const auto base = dx::XMVectorSet(1.0f, 0.0f, -1.0f, 0.0f);
+			const float longitudeAngle = 2.0f * PI / longDiv;
+
+			list<V> vertices;
+
+			// cone vertices
+			const auto iCone = (ushort) vertices.size();
+			for (int iLong = 0; iLong < longDiv; iLong++)
+			{
+				const float thetas[] = {
+					longitudeAngle* iLong,
+					longitudeAngle* (((iLong + 1) == longDiv) ? 0 : (iLong + 1))
+				};
+				vertices.emplace_back();
+				vertices.back().pos = { 0.0f,0.0f,1.0f };
+				for (auto theta : thetas)
+				{
+					vertices.emplace_back();
+					const auto v = dx::XMVector3Transform(base, dx::XMMatrixRotationZ(theta));
+					dx::XMStoreFloat3(&vertices.back().pos, v);
+				}
+			}
+			// base vertices
+			const auto iBaseCenter = (ushort) vertices.size();
+			vertices.emplace_back();
+			vertices.back().pos = { 0.0f,0.0f,-1.0f };
+			const auto iBaseEdge = (ushort) vertices.size();
+			for (int iLong = 0; iLong < longDiv; iLong++)
+			{
+				vertices.emplace_back();
+				auto v = dx::XMVector3Transform(
+					base,
+					dx::XMMatrixRotationZ(longitudeAngle * iLong)
+					);
+				dx::XMStoreFloat3(&vertices.back().pos, v);
+			}
+
+			list<ushort> indices;
+
+			// cone indices
+			for (ushort i = 0; i < longDiv * 3; i++)
+			{
+				indices.push_back(i + iCone);
+			}
+			// base indices
+			for (ushort iLong = 0; iLong < longDiv; iLong++)
+			{
+				indices.push_back(iBaseCenter);
+				indices.push_back((iLong + 1) % longDiv + iBaseEdge);
+				indices.push_back(iLong + iBaseEdge);
+			}
+
+			return { std::move(vertices),std::move(indices) };
+		}
+
 		template<class V>
 		static IndexedTriangleList<V> make()
 		{
@@ -284,6 +344,39 @@ namespace mage
 					20, 23, 21,     20, 22, 23
 				}
 			};
+		}
+
+		template <class V>
+		static IndexedTriangleList<V> makeIndependentTextured()
+		{
+			auto initial = makeIndependent<V>();
+
+			initial.vertices[0].texCoords = { 0.0f,0.0f };
+			initial.vertices[1].texCoords = { 1.0f,0.0f };
+			initial.vertices[2].texCoords = { 0.0f,1.0f };
+			initial.vertices[3].texCoords = { 1.0f,1.0f };
+			initial.vertices[4].texCoords = { 0.0f,0.0f };
+			initial.vertices[5].texCoords = { 1.0f,0.0f };
+			initial.vertices[6].texCoords = { 0.0f,1.0f };
+			initial.vertices[7].texCoords = { 1.0f,1.0f };
+			initial.vertices[8].texCoords = { 0.0f,0.0f };
+			initial.vertices[9].texCoords = { 1.0f,0.0f };
+			initial.vertices[10].texCoords = { 0.0f,1.0f };
+			initial.vertices[11].texCoords = { 1.0f,1.0f };
+			initial.vertices[12].texCoords = { 0.0f,0.0f };
+			initial.vertices[13].texCoords = { 1.0f,0.0f };
+			initial.vertices[14].texCoords = { 0.0f,1.0f };
+			initial.vertices[15].texCoords = { 1.0f,1.0f };
+			initial.vertices[16].texCoords = { 0.0f,0.0f };
+			initial.vertices[17].texCoords = { 1.0f,0.0f };
+			initial.vertices[18].texCoords = { 0.0f,1.0f };
+			initial.vertices[19].texCoords = { 1.0f,1.0f };
+			initial.vertices[20].texCoords = { 0.0f,0.0f };
+			initial.vertices[21].texCoords = { 1.0f,0.0f };
+			initial.vertices[22].texCoords = { 0.0f,1.0f };
+			initial.vertices[23].texCoords = { 1.0f,1.0f };
+
+			return initial;
 		}
 	};
 

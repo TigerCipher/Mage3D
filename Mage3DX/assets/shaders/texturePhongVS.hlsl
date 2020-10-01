@@ -14,28 +14,30 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: pyramid.h
- * Date File Created: 9/21/2020 at 11:44 PM
+ * File Name: texturePhongVS.hlsl
+ * Date File Created: 10/1/2020 at 3:55 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_PYRAMID_H
-#define MAGE3DX_PYRAMID_H
-
-
-#include "DummyObject.h"
-
-namespace mage
+cbuffer CBuf
 {
-    class Pyramid : public DummyObject<Pyramid>
-    {
-    public:
-        Pyramid(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
-                std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
-                std::uniform_real_distribution<float>& rdist, std::uniform_int_distribution<int>& tdist);
-    };
+    matrix modelView;
+    matrix modelViewProj;
+};
 
-}// namespace mage
+struct VSOut
+{
+    float3 worldPos : Position;
+    float3 normal : Normal;
+    float2 texCoords : Texcoord;
+    float4 pos : SV_Position;
+};
 
-
-#endif//MAGE3DX_PYRAMID_H
+VSOut main(float3 pos : Position, float3 n : Normal, float2 texCoords : Texcoord)
+{
+    VSOut vso;
+    vso.worldPos = (float3) mul(float4(pos, 1.0f), modelView);
+    vso.normal = mul(n, (float3x3) modelView);
+    vso.pos = mul(float4(pos, 1.0f), modelViewProj);
+    vso.texCoords = texCoords;
+    return vso;
+}

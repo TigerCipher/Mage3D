@@ -73,6 +73,9 @@
     <Filter Include="PCH">
       <UniqueIdentifier>{accb6412-465f-45ef-a2df-fd0d3dc42ea4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Scripts">
+      <UniqueIdentifier>{6a6ed535-b299-42c6-bcb0-9a3e3ea23e13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="winmain.cpp">
@@ -398,6 +401,9 @@
       <Filter>Header Files\3rdParty\DXErr</Filter>
     </None>
     <None Include="uncrustify.cfg" />
+    <None Include="scripts\prepare.bat">
+      <Filter>Scripts</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Mage3DX.rc">
@@ -441,6 +447,18 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="assets\shaders\indexedPhongPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\blendedPhongPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\blendedPhongVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\texturePhongPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\texturePhongVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
