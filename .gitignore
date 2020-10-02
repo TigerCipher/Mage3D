@@ -46,3 +46,5 @@ Mage3DX/x64
 /Debug
 /x64
 /Mage3DX/Debug
+
+!Mage3DX/assets/models/.*obj

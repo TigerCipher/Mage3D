@@ -18,7 +18,7 @@
  * Date File Created: 9/23/2020 at 10:37 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "Sampler.h"
 #include "GraphicsException.h"
 

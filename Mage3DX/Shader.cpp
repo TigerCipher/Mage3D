@@ -18,7 +18,7 @@
  * Date File Created: 9/28/2020 at 12:21 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "Shader.h"
 #include "GraphicsException.h"
 #include <d3dcompiler.h>

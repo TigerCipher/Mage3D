@@ -18,6 +18,7 @@
  * Date File Created: 9/28/2020 at 1:05 AM
  * Author: Matt
  */
+#include "pch.h"
 #include "PointLight.h"
 #include "ImguiManager.h"
 

@@ -174,7 +174,7 @@ void unpauseTimer(timer_t* timer)
 {
 	if(timer->stopped)
 	{
-		int64_f nowi;
+		int64_f nowi = 0;
 		if(QueryPerformanceCounter((LARGE_INTEGER*)nowi))
 		{
 			timer->totalIdleTime += (nowi - timer->pausedTime);
@@ -191,7 +191,7 @@ void pauseTimer(timer_t* timer)
 {
 	if(!timer->stopped)
 	{
-		int64_f nowi;
+		int64_f nowi = 0;
 		if(QueryPerformanceCounter((LARGE_INTEGER*)nowi))
 		{
 			timer->pausedTime = nowi;

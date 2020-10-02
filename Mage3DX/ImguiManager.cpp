@@ -18,7 +18,7 @@
  * Date File Created: 9/25/2020 at 3:08 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "ImguiManager.h"
 #include "3rdParty/imgui/imgui_impl_dx11.h"
 #include "3rdParty/imgui/imgui_impl_win32.h"

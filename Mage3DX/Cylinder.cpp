@@ -18,6 +18,7 @@
  * Date File Created: 9/30/2020 at 4:08 PM
  * Author: Matt
  */
+#include "pch.h"
 #include "Cylinder.h"
 #include "Primitives.h"
 #include "Bindables.h"

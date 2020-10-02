@@ -18,7 +18,7 @@
  * Date File Created: 9/20/2020 at 9:45 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "IndexBuffer.h"
 #include "GraphicsException.h"
 

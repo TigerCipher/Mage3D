@@ -18,7 +18,7 @@
  * Date File Created: 9/12/2020 at 3:12 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "DisplayException.h"
 
 const char* mage::DisplayException::what() const noexcept

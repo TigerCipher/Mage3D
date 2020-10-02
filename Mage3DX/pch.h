@@ -25,7 +25,9 @@
 #define _WIN32_WINNT 0x0601
 #define STRICT
 
+#include <bmd/common.h>
 #include <bmd/types.h>
+#include <bmd/strutil.h>
 
 #include "Common.h"
 #include "Log.h"

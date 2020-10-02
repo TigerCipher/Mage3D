@@ -14,15 +14,26 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: vertexbuffer.cpp
- * Date File Created: 9/20/2020 at 10:41 PM
+ * File Name: DummyModel.h
+ * Date File Created: 10/2/2020 at 4:06 PM
  * Author: Matt
  */
-#include "pch.h"
-#include "VertexBuffer.h"
+#pragma once
+#include "DummyObject.h"
 
-void mage::VertexBuffer::bind(mage::Graphics& gfx) noexcept
+
+namespace mage
 {
-    static const UINT offset = 0;
-    getContext(gfx)->IASetVertexBuffers(0, 1, m_buffer.GetAddressOf(), &m_stride, &offset);
+	class DummyModel : public DummyObject<DummyModel>
+	{
+	public:
+		DummyModel(Graphics& gfx, std::mt19937& rng,
+		           std::uniform_real_distribution<float>& adist,
+		           std::uniform_real_distribution<float>& ddist,
+		           std::uniform_real_distribution<float>& odist,
+		           std::uniform_real_distribution<float>& rdist,
+		           DirectX::XMFLOAT3 material,
+		           float scale);
+	};
 }
+

@@ -86,8 +86,8 @@ private:
 		m_stopped = true;
 	}
 
-	timer_t m_timer;
-	char m_name[512];
+	timer_t m_timer{};
+	char m_name[512]{};
 	bool m_stopped;
 };
 #endif

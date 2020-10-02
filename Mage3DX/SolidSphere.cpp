@@ -18,6 +18,7 @@
  * Date File Created: 9/26/2020 at 4:14 PM
  * Author: Matt
  */
+#include "pch.h"
 #include "SolidSphere.h"
 
 #include "Primitives.h"

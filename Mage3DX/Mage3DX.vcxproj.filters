@@ -93,9 +93,6 @@
     <ClCompile Include="VertexBuffer.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
-    <ClCompile Include="App.cpp">
-      <Filter>Source Files\core</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
@@ -207,6 +204,12 @@
     <ClCompile Include="pch.cpp">
       <Filter>PCH</Filter>
     </ClCompile>
+    <ClCompile Include="App.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="DummyModel.cpp">
+      <Filter>Source Files\entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointLight.h">
@@ -241,9 +244,6 @@
     </ClInclude>
     <ClInclude Include="VertexBuffer.h">
       <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="App.h">
-      <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
       <Filter>Header Files\core</Filter>
@@ -380,6 +380,12 @@
     <ClInclude Include="winwrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="App.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="DummyModel.h">
+      <Filter>Header Files\entities</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdParty\DXGetErrorDescription.inl">
@@ -397,8 +403,15 @@
     <None Include="uncrustify.cfg">
       <Filter>Misc</Filter>
     </None>
-    <None Include="..\.gitignore" />
-    <None Include="..\README.md" />
+    <None Include="Mage3DX.sln.licenseheader">
+      <Filter>Misc</Filter>
+    </None>
+    <None Include="..\.gitignore">
+      <Filter>Misc</Filter>
+    </None>
+    <None Include="..\README.md">
+      <Filter>Misc</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shaders\basicColorBlendPS.hlsl">

@@ -18,7 +18,7 @@
  * Date File Created: 9/25/2020 at 5:55 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "MathHelper.h"
 
 float mage::dot(vec4f v1, vec4f v2)

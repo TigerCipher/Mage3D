@@ -18,6 +18,7 @@
  * Date File Created: 9/28/2020 at 1:11 PM
  * Author: Matt
  */
+#include "pch.h"
 #include "Pyramid.h"
 #include "Bindables.h"
 #include "Primitives.h"

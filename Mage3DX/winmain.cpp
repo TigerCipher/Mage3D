@@ -18,7 +18,7 @@
  * Date File Created: 9/25/2020 at 11:03 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "App.h"
 #include "Display.h"
 #include "MageException.h"

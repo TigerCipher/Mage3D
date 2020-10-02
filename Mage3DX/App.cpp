@@ -18,18 +18,21 @@
  * Date File Created: 9/28/2020 at 1:11 PM
  * Author: Matt
  */
+#include "pch.h"
 #include "App.h"
 #include "Box.h"
 #include "Cylinder.h"
 #include "Pyramid.h"
 #include "TextureSurface.h"
-
+#include "DummyModel.h"
 
 mage::App::App(int width, int height, const char* title) :
 	m_display(width, height, title),
 	m_running(true),
 	m_light(m_display.getGraphics())
 {
+
+
 	GDIPlusManager::start();
 	class Factory
 	{
@@ -57,6 +60,8 @@ mage::App::App(int width, int height, const char* title) :
 				return createScope<Pyramid>(gfx, rng, adist, ddist, odist, rdist, tdist);
 			case 3:
 				return createScope<SkinnedBox>(gfx, rng, adist, ddist, odist, rdist);
+			case 4:
+				return createScope<DummyModel>(gfx, rng, adist, ddist, odist, rdist, material, 1.5f);
 			default:
 				assert(false && "impossible drawable option in factory");
 				return { };
@@ -75,7 +80,7 @@ mage::App::App(int width, int height, const char* title) :
 		std::uniform_int_distribution<int> latdist { 5, 20 };
 		std::uniform_int_distribution<int> longdist { 10, 40 };
 		std::uniform_int_distribution<int> typedist { 0, 4 };
-		std::uniform_int_distribution<int> sdist{ 0,3 };
+		std::uniform_int_distribution<int> sdist{ 0, 4 };
 		std::uniform_int_distribution<int> tdist{ 3,30 };
 	};
 

@@ -18,7 +18,7 @@
  * Date File Created: 9/23/2020 at 9:33 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "TextureException.h"
 
 const char* mage::TextureException::what() const noexcept

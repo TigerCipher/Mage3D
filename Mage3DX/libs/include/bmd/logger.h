@@ -86,27 +86,27 @@ void closeLog();
 
 file_t g_logFile;
 int g_initialized;
-fs_time lastTime;
-int count = 0;
+fs_time g_lastTime;
+int g_count = 0;
 
 void findOldestFile(file_t* file, void* data)
 {
 	fs_time time;
 	getLastModifiedTimeOfFile(file, &time);
-	if (count > 0)
+	if (g_count > 0)
 	{
-		int a = compareTimes(&time, &lastTime);
+		int a = compareTimes(&time, &g_lastTime);
 		if (a < 0)
 		{
-			getLastModifiedTimeOfFile(file, &lastTime);
+			getLastModifiedTimeOfFile(file, &g_lastTime);
 			copyStr((*(file_t*) data).path, file->path);
 		}
 	} else
 	{
-		getLastModifiedTimeOfFile(file, &lastTime);
+		getLastModifiedTimeOfFile(file, &g_lastTime);
 		copyStr((*(file_t*) data).path, file->path);
 	}
-	count++;
+	g_count++;
 }
 
 
@@ -135,7 +135,7 @@ void initLog(const char* logPath, int mode, int maxArchives)
 				if (!error)
 				{
 					traverse("./logs", findOldestFile, &oldestLog);
-					if (count >= maxArchives)
+					if (g_count >= maxArchives)
 					{
 						remove(oldestLog.path);
 						char bufTime[100];

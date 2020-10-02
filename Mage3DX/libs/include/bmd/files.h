@@ -169,7 +169,7 @@ int unloadFile(file_t* file);
 
 /**
 * Flushes the file stream contained in the FSFile struct
-* @param file The file to clearBuffers
+* @param file The file to flush
 * @return 0 if no error, non 0 if error
 */
 int flushFile(file_t* file);
@@ -289,7 +289,7 @@ int compareTimes(fs_time* a, fs_time* b);
 #endif // __cplusplus
 
 
-// TODO: Add function to flush the file
+// TODO: Add function to clear the file
 // TODO: On the loadFile and loadFileAndReadContents, maybe add callback so it can load the data as an image
 // Like, in Mage3D's case, callback(file_t* file, stuff) { file->contents = SOIL_load_image.... } ?
 
@@ -297,7 +297,7 @@ int compareTimes(fs_time* a, fs_time* b);
 
 #ifdef OS_WINDOWS
 
-#include <Windows.h>
+//#include <Windows.h>
 
 /**
 * Represents a file in the BMD file system api
@@ -331,6 +331,7 @@ struct FSFile
 
 	FILE* inStream;
 };
+
 
 /**
 * Represents a directory in the bmd file system api
@@ -403,6 +404,8 @@ struct FSTime
 #include "errors.h"
 #include "strutil.h"
 
+#include <Windows.h>
+
 
 const char* getExt(file_t* file)
 {
@@ -451,7 +454,7 @@ int loadFile_(const char* dirPath, const char* fileName, file_t* file)
 			file->isDir = temp.isDir;
 			file->isFile = temp.isFile;
 			file->size = temp.size;
-			dbgprintln("Loading file [path=%s, name=%s, dir=%i, file=%i, size=%i]", file->path, file->name,
+			dbgprintln("Loading file [path=%s, name=%s, dir=%i, file=%i, size=%zu]", file->path, file->name,
 					   file->isDir, file->isFile, file->size);
 			closeDir(&dir);
 			return error;
@@ -580,7 +583,7 @@ int flushFile(file_t* file)
 	if (file->outStream)
 	{
 		int err = fflush(file->outStream);
-		checkErrorMsg(err, "Error: Failed to clearBuffers file out stream\n");
+		checkErrorMsg(err, "Error: Failed to flush file out stream\n");
 	}
 	return BMD_NO_ERROR;
 }

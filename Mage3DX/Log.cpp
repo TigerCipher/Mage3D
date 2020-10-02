@@ -18,7 +18,7 @@
  * Date File Created: 9/16/2020 at 2:29 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "Log.h"
 //#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>

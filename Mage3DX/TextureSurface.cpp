@@ -18,7 +18,7 @@
  * Date File Created: 9/23/2020 at 4:07 PM
  * Author: Matt
  */
-
+#include "pch.h"
 #include "TextureSurface.h"
 #include "TextureException.h"
 
