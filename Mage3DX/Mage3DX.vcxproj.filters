@@ -13,101 +13,62 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\3rdParty">
-      <UniqueIdentifier>{1d85b8ab-8262-4dcb-9eb0-dd008b5e354d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\3rdParty">
-      <UniqueIdentifier>{e1d35c55-6b1e-4686-a30d-f829ced1b966}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\3rdParty\ImGui">
-      <UniqueIdentifier>{ecaae888-9aed-479f-8bd2-289cb1a52541}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\3rdParty\StackWalker">
-      <UniqueIdentifier>{f6ae6906-aad4-415b-95c3-e111d2fce492}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\3rdParty\ImGui">
-      <UniqueIdentifier>{0909db46-2da8-4c41-929e-9dabe5086fe7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\3rdParty\StackWalker">
-      <UniqueIdentifier>{f202f8c0-a684-4411-9a9c-1c89b5ec5c6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\3rdParty\DXErr">
-      <UniqueIdentifier>{1dd45c59-24e7-487b-b494-b3a1fb9feffe}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\3rdParty\DXErr">
-      <UniqueIdentifier>{cea3ac83-2157-4f52-af45-9d1e554c883e}</UniqueIdentifier>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{dceffc08-5826-41b5-b6d5-7a2ae88489cc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\core">
-      <UniqueIdentifier>{c5d7498b-f353-4c06-abf2-556413316ef8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\debug">
-      <UniqueIdentifier>{bfee66a4-73de-4480-9938-445b5b20755b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\entities">
-      <UniqueIdentifier>{83d33a17-a598-49f3-8d15-e6a532fedd04}</UniqueIdentifier>
+      <UniqueIdentifier>{94c33b2f-d707-41fb-ac40-21ec5ded2fc7}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\graphics">
-      <UniqueIdentifier>{5dba5abf-d03a-48e9-84ab-06bfef29fd41}</UniqueIdentifier>
+      <UniqueIdentifier>{581e805c-2a3f-4935-aaef-4da270f68f07}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\core">
-      <UniqueIdentifier>{dca518fc-3abf-47e4-8dca-e4060c0b1665}</UniqueIdentifier>
+    <Filter Include="Header Files\entities">
+      <UniqueIdentifier>{b81aba97-4ab7-44aa-b541-79b6dd5e1b3a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\debug">
-      <UniqueIdentifier>{b6e6c907-54df-45d5-a15e-4251c43266aa}</UniqueIdentifier>
+    <Filter Include="Header Files\debug">
+      <UniqueIdentifier>{2d7022c3-6f4e-43a5-a587-36f6a970ee4c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\entities">
-      <UniqueIdentifier>{86d468bb-0e67-42e3-bed3-7844bc7f6e73}</UniqueIdentifier>
+    <Filter Include="3rdParty">
+      <UniqueIdentifier>{7b761314-7f3f-4b6d-9142-e01509b848de}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\graphics">
-      <UniqueIdentifier>{df9330fe-8313-454f-a192-c4c36ad2e841}</UniqueIdentifier>
+    <Filter Include="3rdParty\ImGui">
+      <UniqueIdentifier>{79e7e184-083a-4e96-9e7c-33ac95915e12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rdParty\StackWalker">
+      <UniqueIdentifier>{f19f73cc-f43f-4ae4-856a-79c4ee910191}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="3rdParty\DXErr">
+      <UniqueIdentifier>{5fa8d5b5-14cc-405a-b315-59bec7a6deaf}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\bindables">
-      <UniqueIdentifier>{5a9edb8a-c4fc-4841-b733-8347d288d071}</UniqueIdentifier>
+      <UniqueIdentifier>{b51fd820-a014-4a64-a725-cef4ef3dc558}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\core">
+      <UniqueIdentifier>{cf7fe294-56c1-4760-87a7-747782d780f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\graphics">
+      <UniqueIdentifier>{0524e071-ed94-4e1e-b150-37ea3bcc002e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\entities">
+      <UniqueIdentifier>{bdde6268-773b-4fac-9d51-08ec15ed47c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\debug">
+      <UniqueIdentifier>{b093dde0-bc1a-4e8f-9ee2-ab6f501adef2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\bindables">
-      <UniqueIdentifier>{59665726-26b8-4abf-9e71-5dc4ab09f0b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{a32f1e22-b6b0-4b60-a612-57ab98401327}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="PCH">
-      <UniqueIdentifier>{accb6412-465f-45ef-a2df-fd0d3dc42ea4}</UniqueIdentifier>
+      <UniqueIdentifier>{d77cb775-f7a5-4baa-aa6f-1a21ba406ab6}</UniqueIdentifier>
     </Filter>
     <Filter Include="Scripts">
-      <UniqueIdentifier>{6a6ed535-b299-42c6-bcb0-9a3e3ea23e13}</UniqueIdentifier>
+      <UniqueIdentifier>{1b442df5-afdb-4319-bef2-b1f1d0edbaf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PCH">
+      <UniqueIdentifier>{1ab3586c-c566-4641-9556-bb3e2e639a02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Misc">
+      <UniqueIdentifier>{940d5101-cb57-43f0-b701-dd687b5985f6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="winmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\imgui\imgui.cpp">
-      <Filter>Source Files\3rdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\imgui\imgui_demo.cpp">
-      <Filter>Source Files\3rdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\imgui\imgui_draw.cpp">
-      <Filter>Source Files\3rdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\imgui\imgui_impl_dx11.cpp">
-      <Filter>Source Files\3rdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\imgui\imgui_impl_win32.cpp">
-      <Filter>Source Files\3rdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\imgui\imgui_widgets.cpp">
-      <Filter>Source Files\3rdParty\ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\dxerr.cpp">
-      <Filter>Source Files\3rdParty\DXErr</Filter>
-    </ClCompile>
-    <ClCompile Include="3rdParty\StackWalker\StackWalker.cpp">
-      <Filter>Source Files\3rdParty\StackWalker</Filter>
-    </ClCompile>
-    <ClCompile Include="pch.cpp">
-      <Filter>PCH</Filter>
-    </ClCompile>
     <ClCompile Include="PointLight.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -216,47 +177,38 @@
     <ClCompile Include="Cylinder.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="winmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui.cpp">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_demo.cpp">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_draw.cpp">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_impl_dx11.cpp">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_impl_win32.cpp">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\imgui\imgui_widgets.cpp">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\dxerr.cpp">
+      <Filter>3rdParty\DXErr</Filter>
+    </ClCompile>
+    <ClCompile Include="3rdParty\StackWalker\StackWalker.cpp">
+      <Filter>3rdParty\StackWalker</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>PCH</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="3rdParty\dxerr.h">
-      <Filter>Header Files\3rdParty\DXErr</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\imgui\imconfig.h">
-      <Filter>Header Files\3rdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\imgui\imgui.h">
-      <Filter>Header Files\3rdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\imgui\imgui_impl_dx11.h">
-      <Filter>Header Files\3rdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\imgui\imgui_impl_win32.h">
-      <Filter>Header Files\3rdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\imgui\imgui_internal.h">
-      <Filter>Header Files\3rdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\imgui\imstb_rectpack.h">
-      <Filter>Header Files\3rdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\imgui\imstb_textedit.h">
-      <Filter>Header Files\3rdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\imgui\imstb_truetype.h">
-      <Filter>Header Files\3rdParty\ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="3rdParty\StackWalker\StackWalker.h">
-      <Filter>Header Files\3rdParty\StackWalker</Filter>
-    </ClInclude>
-    <ClInclude Include="winwrapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="pch.h">
-      <Filter>PCH</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>Resource Files</Filter>
-    </ClInclude>
     <ClInclude Include="PointLight.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
@@ -389,39 +341,66 @@
     <ClInclude Include="Cylinder.h">
       <Filter>Header Files\entities</Filter>
     </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imconfig.h">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imgui.h">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imgui_impl_dx11.h">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imgui_impl_win32.h">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imgui_internal.h">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imstb_rectpack.h">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imstb_textedit.h">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\imgui\imstb_truetype.h">
+      <Filter>3rdParty\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\dxerr.h">
+      <Filter>3rdParty\DXErr</Filter>
+    </ClInclude>
+    <ClInclude Include="3rdParty\StackWalker\StackWalker.h">
+      <Filter>3rdParty\StackWalker</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Resource Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>PCH</Filter>
+    </ClInclude>
+    <ClInclude Include="winwrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdParty\DXGetErrorDescription.inl">
-      <Filter>Header Files\3rdParty\DXErr</Filter>
+      <Filter>3rdParty\DXErr</Filter>
     </None>
     <None Include="3rdParty\DXGetErrorString.inl">
-      <Filter>Header Files\3rdParty\DXErr</Filter>
+      <Filter>3rdParty\DXErr</Filter>
     </None>
     <None Include="3rdParty\DXTrace.inl">
-      <Filter>Header Files\3rdParty\DXErr</Filter>
+      <Filter>3rdParty\DXErr</Filter>
     </None>
-    <None Include="uncrustify.cfg" />
     <None Include="scripts\prepare.bat">
       <Filter>Scripts</Filter>
     </None>
+    <None Include="uncrustify.cfg">
+      <Filter>Misc</Filter>
+    </None>
+    <None Include="..\.gitignore" />
+    <None Include="..\README.md" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="Mage3DX.rc">
-      <Filter>Resource Files</Filter>
-    </ResourceCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="mage3dx.ico">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="textureVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="texturePS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
     <FxCompile Include="assets\shaders\basicColorBlendPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
@@ -434,25 +413,25 @@
     <FxCompile Include="assets\shaders\basicVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="assets\shaders\phongVS.hlsl">
+    <FxCompile Include="assets\shaders\blendedPhongPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="assets\shaders\phongPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="assets\shaders\solidVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="assets\shaders\solidPS.hlsl">
+    <FxCompile Include="assets\shaders\blendedPhongVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="assets\shaders\indexedPhongPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="assets\shaders\blendedPhongPS.hlsl">
+    <FxCompile Include="assets\shaders\phongPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="assets\shaders\blendedPhongVS.hlsl">
+    <FxCompile Include="assets\shaders\phongVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\solidPS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\solidVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="assets\shaders\texturePhongPS.hlsl">
@@ -461,5 +440,15 @@
     <FxCompile Include="assets\shaders\texturePhongVS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="mage3dx.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Mage3DX.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>
