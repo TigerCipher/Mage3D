@@ -21,6 +21,7 @@
 #include "pch.h"
 #include "DummyModel.h"
 #include "Bindables.h"
+#include "Vertex.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -36,11 +37,8 @@ mage::DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 {
 	if (!isInitialized())
 	{
-		struct Vertex
-		{
-			vec3f pos;
-			vec3f normal;
-		};
+		VertexData vData(std::move(VertexLayout().append<POSITION3D>().append<NORMAL>() ));
+
 
 		Assimp::Importer imp;
 		const auto model = imp.ReadFile("assets\\models\\suzanne.obj", aiProcess_Triangulate |
@@ -51,9 +49,8 @@ mage::DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 		vertices.reserve(mesh->mNumVertices);
 		for (uint i = 0; i < mesh->mNumVertices; i++)
 		{
-			vertices.push_back({ { mesh->mVertices[i].x * scale, mesh->mVertices[i].y * scale,
-					mesh->mVertices[i].z * scale },
-				    *reinterpret_cast<vec3f*>(&mesh->mNormals[i]) });
+			vData.emplaceBack(vec3f{ mesh->mVertices[i].x * scale, mesh->mVertices[i].y * scale,
+					mesh->mVertices[i].z * scale }, *reinterpret_cast<vec3f*>(&mesh->mNormals[i]));
 		}
 
 		list<ushort> indices;
@@ -67,7 +64,7 @@ mage::DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 			indices.push_back(face.mIndices[2]);
 		}
 
-		addStaticBind(createScope<VertexBuffer>(gfx, vertices));
+		addStaticBind(createScope<VertexBuffer>(gfx, vData));
 		addStaticIndexBuffer(createScope<IndexBuffer>(gfx, indices));
 
 		auto pvs = createScope<VertexShader>(gfx, L"shaders\\phongVS.cso");

@@ -22,7 +22,7 @@
 #define MAGE3DX_BOX_H
 
 #include "DummyObject.h"
-#include "ConstantBuffer.h"
+#include "Bindables.h"
 
 namespace mage
 {

@@ -26,6 +26,7 @@
 //#include "pch.h"
 #include "GraphicsException.h"
 #include "Bindable.h"
+#include "Vertex.h"
 
 namespace mage
 {
@@ -43,11 +44,28 @@ namespace mage
             bd.CPUAccessFlags = 0u;
             bd.MiscFlags = 0u;
             bd.ByteWidth = UINT(sizeof(V) * vertices.size());
-            bd.StructureByteStride = sizeof(V);
+            bd.StructureByteStride = m_stride;
             D3D11_SUBRESOURCE_DATA sd = {};
             sd.pSysMem = vertices.data();
 
             GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &m_buffer));
+        }
+
+        VertexBuffer(Graphics& gfx, const VertexData& vData) : m_stride((UINT)vData.getLayout().size())
+        {
+			DEBUG_INFO(gfx);
+
+			D3D11_BUFFER_DESC bd = {};
+			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+			bd.Usage = D3D11_USAGE_DEFAULT;
+			bd.CPUAccessFlags = 0u;
+			bd.MiscFlags = 0u;
+			bd.ByteWidth = UINT(vData.sizeInBytes());
+            bd.StructureByteStride = m_stride;
+			D3D11_SUBRESOURCE_DATA sd = {};
+            sd.pSysMem = vData.getData();
+
+			GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &m_buffer));
         }
 
         void bind(Graphics& gfx) noexcept override;

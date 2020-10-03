@@ -15,7 +15,7 @@ namespace mage
 		uchar b;
 	};
 
-	enum ElementType
+	enum AttributeType
 	{
 		POSITION2D,
 		POSITION3D,
@@ -26,25 +26,25 @@ namespace mage
 		COLORARGB
 	};
 
-	// Wrapper to retrieve information on the ElementType
-	class Element
+	// Wrapper to retrieve information on the AttributeType
+	class Attribute
 	{
 	public:
-		Element(ElementType type, size_t offset) : m_type(type),
+		Attribute(AttributeType type, size_t offset) : m_type(type),
 			m_offset(offset) { }
 
 
-		
+
 		//************************************
 		// Method:    sizeOf
-		// FullName:  mage::Element::sizeOf
-		// Access:    public static 
+		// FullName:  mage::Attribute::sizeOf
+		// Access:    public static
 		// Returns:   constexpr size_t
 		// Qualifier: noexcept(!MAGE_DEBUG)
-		// Parameter: ElementType type
-		// Size in bytes of the element type
+		// Parameter: AttributeType type
+		// Size in bytes of the attribute type
 		//************************************
-		static constexpr size_t sizeOf(ElementType type) noexcept(!MAGE_DEBUG)
+		static constexpr size_t sizeOf(AttributeType type) noexcept(!MAGE_DEBUG)
 		{
 			switch (type)
 			{
@@ -54,47 +54,47 @@ namespace mage
 			case NORMAL: return sizeof(vec3f);
 			case COLOR3F: return sizeof(vec3f);
 			case COLOR4F: return sizeof(vec4f);
-			case COLORARGB: return sizeof(uchar);
+			case COLORARGB: return sizeof(ColorARGB);
 			default:
-				LOG_ERROR("An invalid element type was used");
-				assert("Invalid element type" && false);
+				LOG_ERROR("An invalid attribute type was used");
+				assert("Invalid attribute type" && false);
 				return 0;
 			}
 		}
 
-		
+
 		//************************************
 		// Method:    size
-		// FullName:  mage::Element::size
-		// Access:    public 
+		// FullName:  mage::Attribute::size
+		// Access:    public
 		// Returns:   size_t
 		// Qualifier: const noexcept(!MAGE_DEBUG)
-		// Size in bytes of the ElementType this Element represents
+		// Size in bytes of the AttributeType this Attribute represents
 		//************************************
 		size_t size() const noexcept(!MAGE_DEBUG)
 		{
 			return sizeOf(getType());
 		}
 
-		
+
 		//************************************
 		// Method:    getOffset
-		// FullName:  mage::Element::getOffset
-		// Access:    public 
+		// FullName:  mage::Attribute::getOffset
+		// Access:    public
 		// Returns:   size_t
 		// Qualifier: const
-		// The offset where this element begins in the buffer
+		// The offset where this attribute begins in the buffer
 		//************************************
 		size_t getOffset() const { return m_offset; }
 
-		
+
 		//************************************
 		// Method:    getOffsetAfter
-		// FullName:  mage::Element::getOffsetAfter
-		// Access:    public 
+		// FullName:  mage::Attribute::getOffsetAfter
+		// Access:    public
 		// Returns:   size_t
 		// Qualifier: const noexcept(!MAGE_DEBUG)
-		// The offset to insert the next element at, also used to retrieve size of buffer
+		// The offset to insert the next attribute at, also used to retrieve size of buffer
 		//************************************
 		size_t getOffsetAfter() const noexcept(!MAGE_DEBUG)
 		{
@@ -102,10 +102,10 @@ namespace mage
 		}
 
 
-		ElementType getType() const noexcept { return m_type; }
+		AttributeType getType() const noexcept { return m_type; }
 
 	private:
-		ElementType m_type;
+		AttributeType m_type;
 		size_t m_offset;
 	};
 
@@ -118,23 +118,23 @@ namespace mage
 		// Method:    resolve
 		// FullName:  mage::VertexLayout::resolve
 		// Access:    public
-		// Returns:   const mage::Element&
+		// Returns:   const mage::Attribute&
 		// Qualifier: const noexcept(!MAGE_DEBUG)
 		// If the supplied type exists in the layout, return it, otherwise
-		// if possible return the element at the front of the layout
+		// if possible return the attribute at the front of the layout
 		//************************************
-		template<ElementType type>
-		const Element& resolve() const noexcept(!MAGE_DEBUG)
+		template<AttributeType type>
+		const Attribute& resolve() const noexcept(!MAGE_DEBUG)
 		{
 			// If the supplied type exists in the list, return it
-			for (auto& e : m_elements)
+			for (auto& e : m_attribs)
 			{
 				if (e.getType() == type)
 					return e;
 			}
-			LOG_ERROR("Failed to resolve element type");
-			assert("Could not resolve element type" && false);
-			return m_elements.front();
+			LOG_ERROR("Failed to resolve attribute type");
+			assert("Could not resolve attribute type" && false);
+			return m_attribs.front();
 		}
 
 
@@ -142,12 +142,12 @@ namespace mage
 		// Method:    resolve
 		// FullName:  mage::VertexLayout::resolve
 		// Access:    public
-		// Returns:   const mage::Element&
+		// Returns:   const mage::Attribute&
 		// Qualifier: const noexcept(!MAGE_DEBUG)
 		// Parameter: size_t index
-		// Retrieve the element at a specific index
+		// Retrieve the attribute at a specific index
 		//************************************
-		const Element& resolve(size_t index) const noexcept(!MAGE_DEBUG) { return m_elements[index]; }
+		const Attribute& resolve(size_t index) const noexcept(!MAGE_DEBUG) { return m_attribs[index]; }
 
 		//************************************
 		// Method:    append
@@ -155,50 +155,72 @@ namespace mage
 		// Access:    public
 		// Returns:   mage::VertexLayout&
 		// Qualifier: noexcept(!MAGE_DEBUG)
-		// Add an element to the layout
+		// Add an attribute to the layout
 		//************************************
-		template<ElementType type>
+		template<AttributeType type>
 		VertexLayout& append() noexcept(!MAGE_DEBUG)
 		{
-			m_elements.emplace_back(type, size());
+			m_attribs.emplace_back(type, size());
 			return *this;
 		}
 
 		//************************************
 		// Method:    size
 		// FullName:  mage::VertexLayout::size
-		// Access:    public 
+		// Access:    public
 		// Returns:   size_t
 		// Qualifier: const noexcept(!MAGE_DEBUG)
 		// Returns the number of vertices in the layout
 		//************************************
 		size_t size() const noexcept(!MAGE_DEBUG)
 		{
-			return m_elements.empty() ? 0 : m_elements.back().getOffsetAfter();
+			return m_attribs.empty() ? 0 : m_attribs.back().getOffsetAfter();
 		}
+
+
+		//************************************
+		// Method:    getNumAttributes
+		// FullName:  mage::VertexLayout::getNumAttributes
+		// Access:    public
+		// Returns:   size_t
+		// Qualifier: const noexcept
+		// Returns the number of attributes in this layout
+		//************************************
+
+
+
+		//************************************
+		//! \fn getNumAttributes
+		//! \brief FullName:  mage::VertexLayout::getNumAttributes
+		//! \brief Access:    public
+		//!	\brief Qualifier: const noexcept
+		//! \return size_t
+		//! \brief Returns the number of attributes in this layout
+		//************************************
+		size_t getNumAttributes() const noexcept { return m_attribs.size(); }
 
 
 
 	private:
-		list<Element> m_elements;
+		list<Attribute> m_attribs;
 	};
 
 
 	class Vertex
 	{
-	friend class VertexBuffer;
+	friend class VertexData;
 
 	public:
 
 		//************************************
 		// Method:    attribute
 		// FullName:  mage::Vertex::attribute
-		// Access:    public 
+		// Access:    public
 		// Returns:   auto&
 		// Qualifier: noexcept(!MAGE_DEBUG)
-		// Looks for the element so it can be modified
+		// Looks for the attribute so it can be modified
 		//************************************
-		template<ElementType type>
+		template<AttributeType type>
 		auto& attribute() noexcept(!MAGE_DEBUG)
 		{
 			const auto& elem = m_layout.resolve<type>();
@@ -219,23 +241,23 @@ namespace mage
 			else if constexpr (type == COLORARGB)
 				return *reinterpret_cast<ColorARGB*>(attrib);
 
-			LOG_ERROR("Bad element type. Could not resolve");
-			assert("Bad element type" && false);
+			LOG_ERROR("Bad attribute type. Could not resolve");
+			assert("Bad attribute type" && false);
 			return *reinterpret_cast<char*>(attrib);
 		}
 
 		//************************************
 		// Method:    setAttribute
 		// FullName:  mage::Vertex::setAttribute
-		// Access:    private 
+		// Access:    private
 		// Returns:   void
 		// Qualifier: noexcept(!MAGE_DEBUG)
 		// Parameter: size_t index
 		// Parameter: T & & value
-		// Sets the attribute at a specfic index
+		// Sets the attribute at a specific index
 		//************************************
 		template<typename T>
-		void setAttribute(size_t index, T&& value) noexcept(!MAGE_DEBUG)
+		void setAttribute(size_t index, T&& val) noexcept(!MAGE_DEBUG)
 		{
 			const auto& elem = m_layout.resolve(index);
 			auto attrib = m_data + elem.getOffset();
@@ -264,12 +286,12 @@ namespace mage
 				setAttribute<ColorARGB>(attrib, std::forward<T>(val));
 				break;
 			default:
-				LOG_ERROR("Bad element type. Could not resolve");
-				assert("Bad element type" && false);
+				LOG_ERROR("Bad attribute type. Could not resolve");
+				assert("Bad attribute type" && false);
 			}
 		}
 
-	private:
+	protected:
 
 
 		Vertex(char* data, const VertexLayout& layout) noexcept(!MAGE_DEBUG) :
@@ -279,11 +301,12 @@ namespace mage
 			assert(data);
 		}
 
+	private:
 		template<typename T, typename ... Args>
 		void setAttribute(size_t index, T&& first, Args&&... args) noexcept(!MAGE_DEBUG)
 		{
 			setAttribute(index, std::forward<T>(first));
-			setAttribute(index, std::forward<Args>(args)...);
+			setAttribute(index + 1, std::forward<Args>(args)...);
 		}
 
 		template<typename Dest, typename Src>
@@ -303,15 +326,31 @@ namespace mage
 	};
 
 
-	// TODO #POTENTIAL-BUG: Conflicts with VertexBuffer.h
-	class VertexBuffer
+	class ConstantVertex
 	{
 	public:
-		VertexBuffer(VertexLayout layout) noexcept(!MAGE_DEBUG) : m_layout(std::move(layout)) { }
+		ConstantVertex(const Vertex& v) noexcept(!MAGE_DEBUG) : m_vertex(v) {}
+
+		template<AttributeType type>
+		const auto& attribute() const noexcept(!MAGE_DEBUG)
+		{
+			return const_cast<Vertex&>(m_vertex).attribute<type>();
+		}
+	private:
+		Vertex m_vertex;
+	};
+
+	// TODO #POTENTIAL-BUG: Conflicts with VertexBuffer.h
+	class VertexData
+	{
+	public:
+		VertexData(VertexLayout layout) noexcept(!MAGE_DEBUG) : m_layout(std::move(layout)) { }
 
 		const VertexLayout& getLayout() const noexcept { return m_layout; }
 
 		size_t size() const noexcept(!MAGE_DEBUG) { return m_buffer.size() / m_layout.size(); }
+
+		size_t sizeInBytes() const noexcept(!MAGE_DEBUG) { return m_buffer.size(); }
 
 		Vertex back() noexcept(!MAGE_DEBUG)
 		{
@@ -325,18 +364,37 @@ namespace mage
 			return Vertex{ m_buffer.data(), m_layout };
 		}
 
-		template<typename ... Args>
-		void emplaceBack(Args&&... args) noexcept(!MAGE_DEBUG)
-		{
-			m_buffer.resize(m_buffer.size() + m_layout.size());
-			back().setAttribute(0, std::forward<Args>(args)...);
-		}
-
 		Vertex operator[](size_t i) noexcept(!MAGE_DEBUG)
 		{
 			assert(i < size());
 			return Vertex{ m_buffer.data() + m_layout.size() * i, m_layout };
 		}
+
+		ConstantVertex back() const noexcept(!MAGE_DEBUG)
+		{
+			return const_cast<VertexData*>(this)->back();
+		}
+
+		ConstantVertex front() const noexcept(!MAGE_DEBUG)
+		{
+			return const_cast<VertexData*>(this)->front();
+		}
+
+		ConstantVertex operator[](size_t i) const noexcept(!MAGE_DEBUG)
+		{
+			return const_cast<VertexData&>(*this)[i];
+		}
+
+		template<typename ... Args>
+		void emplaceBack(Args&&... args) noexcept(!MAGE_DEBUG)
+		{
+			assert(sizeof...(args) == m_layout.getNumAttributes() &&
+				"Argument count does not match expected number of vertex attributes");
+			m_buffer.resize(m_buffer.size() + m_layout.size());
+			back().setAttribute(0, std::forward<Args>(args)...);
+		}
+
+		const char* getData() const noexcept(!MAGE_DEBUG) { return m_buffer.data(); }
 
 	private:
 		VertexLayout m_layout;
