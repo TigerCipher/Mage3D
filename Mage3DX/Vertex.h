@@ -2,6 +2,9 @@
 
 #include "MathHelper.h"
 #include "Log.h"
+
+#include "Graphics.h"
+
 #include <bmd/types.h>
 
 
@@ -26,6 +29,61 @@ namespace mage
 		COLORARGB
 	};
 
+	// Compile time look up table for the attribute type D3D semantics/formats
+
+	template<AttributeType> struct Map;
+
+	template<> struct Map<POSITION2D>
+	{
+		static constexpr const char* semantic = "Position";
+		static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32_FLOAT;
+		using sysType = vec2f;
+	};
+
+	template<> struct Map<POSITION3D>
+	{
+		static constexpr const char* semantic = "Position";
+		static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32B32_FLOAT;
+		using sysType = vec3f;
+	};
+
+	template<> struct Map<TEXTURE2D>
+	{
+		static constexpr const char* semantic = "TexCoords";
+		static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32_FLOAT;
+		using sysType = vec2f;
+	};
+
+	template<> struct Map<NORMAL>
+	{
+		static constexpr const char* semantic = "Normal";
+		static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32B32_FLOAT;
+		using sysType = vec3f;
+	};
+
+	template<> struct Map<COLOR3F>
+	{
+		static constexpr const char* semantic = "Color";
+		static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32B32_FLOAT;
+		using sysType = vec3f;
+	};
+
+	template<> struct Map<COLOR4F>
+	{
+		static constexpr const char* semantic = "Color";
+		static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		using sysType = vec4f;
+	};
+
+	template<> struct Map<COLORARGB>
+	{
+		static constexpr const char* semantic = "Color";
+		static constexpr DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		using sysType = ColorARGB;
+	};
+
+
+
 	// Wrapper to retrieve information on the AttributeType
 	class Attribute
 	{
@@ -48,17 +106,35 @@ namespace mage
 		{
 			switch (type)
 			{
-			case POSITION2D: return sizeof(vec2f);
-			case POSITION3D: return sizeof(vec3f);
-			case TEXTURE2D: return sizeof(vec2f);
-			case NORMAL: return sizeof(vec3f);
-			case COLOR3F: return sizeof(vec3f);
-			case COLOR4F: return sizeof(vec4f);
-			case COLORARGB: return sizeof(ColorARGB);
+			case POSITION2D: return sizeof(Map<POSITION2D>::sysType);
+			case POSITION3D: return sizeof(Map<POSITION3D>::sysType);
+			case TEXTURE2D: return sizeof(Map<TEXTURE2D>::sysType);
+			case NORMAL: return sizeof(Map<NORMAL>::sysType);
+			case COLOR3F: return sizeof(Map<COLOR3F>::sysType);
+			case COLOR4F: return sizeof(Map<COLOR4F>::sysType);
+			case COLORARGB: return sizeof(Map<COLORARGB>::sysType);
 			default:
 				LOG_ERROR("An invalid attribute type was used");
 				assert("Invalid attribute type" && false);
 				return 0;
+			}
+		}
+
+		D3D11_INPUT_ELEMENT_DESC getDesc() const noexcept(!MAGE_DEBUG)
+		{
+			switch (m_type)
+			{
+			case POSITION2D: return getDesc<POSITION2D>(getOffset());
+			case POSITION3D: return getDesc<POSITION3D>(getOffset());
+			case TEXTURE2D: return getDesc<TEXTURE2D>(getOffset());
+			case NORMAL: return getDesc<NORMAL>(getOffset());
+			case COLOR3F: return getDesc<COLOR3F>(getOffset());
+			case COLOR4F: return getDesc<COLOR4F>(getOffset());
+			case COLORARGB: return getDesc<COLORARGB>(getOffset());
+			default:
+				LOG_ERROR("Invalid attribute type");
+				assert("Invalid attribute type" && false);
+				return { "INVALID", 0, DXGI_FORMAT_UNKNOWN, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 			}
 		}
 
@@ -105,6 +181,13 @@ namespace mage
 		AttributeType getType() const noexcept { return m_type; }
 
 	private:
+
+		template<AttributeType type>
+		static constexpr D3D11_INPUT_ELEMENT_DESC getDesc(size_t offset) noexcept(!MAGE_DEBUG)
+		{
+			return { Map<type>::semantic, 0, Map<type>::format, 0, (UINT) offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+		}
+
 		AttributeType m_type;
 		size_t m_offset;
 	};
@@ -149,16 +232,17 @@ namespace mage
 		//************************************
 		const Attribute& resolve(size_t index) const noexcept(!MAGE_DEBUG) { return m_attribs[index]; }
 
+
 		//************************************
-		// Method:    append
-		// FullName:  mage::VertexLayout::append
-		// Access:    public
-		// Returns:   mage::VertexLayout&
-		// Qualifier: noexcept(!MAGE_DEBUG)
-		// Add an attribute to the layout
+		//! \fn append
+		//! \brief FullName:  mage::VertexLayout::append
+		//! \brief Access:    public
+		//!	\brief Qualifier: noexcept(!MAGE_DEBUG)
+		//! \return mage::VertexLayout&
+		//! \param AttributeType type The attribute type being added to the layout
+		//! \brief Add an attribute to the layout
 		//************************************
-		template<AttributeType type>
-		VertexLayout& append() noexcept(!MAGE_DEBUG)
+		VertexLayout& append(AttributeType type) noexcept(!MAGE_DEBUG)
 		{
 			m_attribs.emplace_back(type, size());
 			return *this;
@@ -200,6 +284,17 @@ namespace mage
 		size_t getNumAttributes() const noexcept { return m_attribs.size(); }
 
 
+		list<D3D11_INPUT_ELEMENT_DESC> getD3dLayout() const noexcept(!MAGE_DEBUG)
+		{
+			list< D3D11_INPUT_ELEMENT_DESC> desc;
+			for (const auto& a : m_attribs)
+			{
+				desc.push_back(a.getDesc());
+			}
+			return desc;
+		}
+
+
 
 	private:
 		list<Attribute> m_attribs;
@@ -225,25 +320,7 @@ namespace mage
 		{
 			const auto& elem = m_layout.resolve<type>();
 			auto attrib = m_data + elem.getOffset();
-
-			if constexpr (type == POSITION2D)
-				return *reinterpret_cast<vec2f*>(attrib);
-			else if constexpr (type == POSITION3D)
-				return *reinterpret_cast<vec3f*>(attrib);
-			else if constexpr (type == TEXTURE2D)
-				return *reinterpret_cast<vec2f*>(attrib);
-			else if constexpr (type == NORMAL)
-				return *reinterpret_cast<vec3f*>(attrib);
-			else if constexpr (type == COLOR3F)
-				return *reinterpret_cast<vec3f*>(attrib);
-			else if constexpr (type == COLOR4F)
-				return *reinterpret_cast<vec4f*>(attrib);
-			else if constexpr (type == COLORARGB)
-				return *reinterpret_cast<ColorARGB*>(attrib);
-
-			LOG_ERROR("Bad attribute type. Could not resolve");
-			assert("Bad attribute type" && false);
-			return *reinterpret_cast<char*>(attrib);
+			return *reinterpret_cast<typename Map<type>::sysType*>(attrib);
 		}
 
 		//************************************
@@ -257,7 +334,7 @@ namespace mage
 		// Sets the attribute at a specific index
 		//************************************
 		template<typename T>
-		void setAttribute(size_t index, T&& val) noexcept(!MAGE_DEBUG)
+		void setAttributeByIndex(size_t index, T&& val) noexcept(!MAGE_DEBUG)
 		{
 			const auto& elem = m_layout.resolve(index);
 			auto attrib = m_data + elem.getOffset();
@@ -265,25 +342,25 @@ namespace mage
 			switch (elem.getType())
 			{
 			case POSITION2D:
-				setAttribute<vec2f>(attrib, std::forward<T>(val));
+				setAttribute<POSITION2D>(attrib, std::forward<T>(val));
 				break;
 			case POSITION3D:
-				setAttribute<vec3f>(attrib, std::forward<T>(val));
+				setAttribute<POSITION3D>(attrib, std::forward<T>(val));
 				break;
 			case TEXTURE2D:
-				setAttribute<vec2f>(attrib, std::forward<T>(val));
+				setAttribute<TEXTURE2D>(attrib, std::forward<T>(val));
 				break;
 			case NORMAL:
-				setAttribute<vec3f>(attrib, std::forward<T>(val));
+				setAttribute<NORMAL>(attrib, std::forward<T>(val));
 				break;
 			case COLOR3F:
-				setAttribute<vec3f>(attrib, std::forward<T>(val));
+				setAttribute<COLOR3F>(attrib, std::forward<T>(val));
 				break;
 			case COLOR4F:
-				setAttribute<vec4f>(attrib, std::forward<T>(val));
+				setAttribute<COLOR4F>(attrib, std::forward<T>(val));
 				break;
 			case COLORARGB:
-				setAttribute<ColorARGB>(attrib, std::forward<T>(val));
+				setAttribute<COLORARGB>(attrib, std::forward<T>(val));
 				break;
 			default:
 				LOG_ERROR("Bad attribute type. Could not resolve");
@@ -303,15 +380,16 @@ namespace mage
 
 	private:
 		template<typename T, typename ... Args>
-		void setAttribute(size_t index, T&& first, Args&&... args) noexcept(!MAGE_DEBUG)
+		void setAttributeByIndex(size_t index, T&& first, Args&&... args) noexcept(!MAGE_DEBUG)
 		{
-			setAttribute(index, std::forward<T>(first));
-			setAttribute(index + 1, std::forward<Args>(args)...);
+			setAttributeByIndex(index, std::forward<T>(first));
+			setAttributeByIndex(index + 1, std::forward<Args>(args)...);
 		}
 
-		template<typename Dest, typename Src>
+		template<AttributeType DestType, typename Src>
 		void setAttribute(char* attrib, Src&& val) noexcept(!MAGE_DEBUG)
 		{
+			using Dest = typename Map<DestType>::sysType;
 			if constexpr (std::is_assignable<Dest, Src>::value)
 				*reinterpret_cast<Dest*>(attrib) = val;
 			else
@@ -329,7 +407,7 @@ namespace mage
 	class ConstantVertex
 	{
 	public:
-		ConstantVertex(const Vertex& v) noexcept(!MAGE_DEBUG) : m_vertex(v) {}
+		ConstantVertex(const Vertex& v) noexcept(!MAGE_DEBUG) : m_vertex(v) { }
 
 		template<AttributeType type>
 		const auto& attribute() const noexcept(!MAGE_DEBUG)
@@ -348,8 +426,24 @@ namespace mage
 
 		const VertexLayout& getLayout() const noexcept { return m_layout; }
 
+		//************************************
+		//! \fn size
+		//! \brief FullName:  mage::VertexData::size
+		//! \brief Access:    public
+		//!	\brief Qualifier: const noexcept(!MAGE_DEBUG)
+		//! \return size_t
+		//! \brief Returns the number of vertices in the buffer
+		//************************************
 		size_t size() const noexcept(!MAGE_DEBUG) { return m_buffer.size() / m_layout.size(); }
 
+		//************************************
+		//! \fn sizeInBytes
+		//! \brief FullName:  mage::VertexData::sizeInBytes
+		//! \brief Access:    public
+		//!	\brief Qualifier: const noexcept(!MAGE_DEBUG)
+		//! \return size_t
+		//! \brief Returns the size of the buffer in bytes
+		//************************************
 		size_t sizeInBytes() const noexcept(!MAGE_DEBUG) { return m_buffer.size(); }
 
 		Vertex back() noexcept(!MAGE_DEBUG)
@@ -391,7 +485,7 @@ namespace mage
 			assert(sizeof...(args) == m_layout.getNumAttributes() &&
 				"Argument count does not match expected number of vertex attributes");
 			m_buffer.resize(m_buffer.size() + m_layout.size());
-			back().setAttribute(0, std::forward<Args>(args)...);
+			back().setAttributeByIndex(0, std::forward<Args>(args)...);
 		}
 
 		const char* getData() const noexcept(!MAGE_DEBUG) { return m_buffer.data(); }

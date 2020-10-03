@@ -37,7 +37,7 @@ mage::DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 {
 	if (!isInitialized())
 	{
-		VertexData vData(std::move(VertexLayout().append<POSITION3D>().append<NORMAL>() ));
+		VertexData vData(std::move(VertexLayout().append(POSITION3D).append(NORMAL) ));
 
 
 		Assimp::Importer imp;
@@ -45,8 +45,7 @@ mage::DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 			aiProcess_JoinIdenticalVertices);
 		const auto mesh = model->mMeshes[0];
 
-		list<Vertex> vertices;
-		vertices.reserve(mesh->mNumVertices);
+
 		for (uint i = 0; i < mesh->mNumVertices; i++)
 		{
 			vData.emplaceBack(vec3f{ mesh->mVertices[i].x * scale, mesh->mVertices[i].y * scale,
@@ -73,12 +72,7 @@ mage::DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 
 		addStaticBind(createScope<PixelShader>(gfx, L"shaders\\phongPS.cso"));
 
-		const list<D3D11_INPUT_ELEMENT_DESC> ied = {
-			{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-			{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, sizeof(float) * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		};
-
-		addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
+		addStaticBind(createScope<InputLayout>(gfx, vData.getLayout().getD3dLayout(), pvsbc));
 		addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
 
