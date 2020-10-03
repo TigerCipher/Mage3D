@@ -340,6 +340,7 @@
     <ClInclude Include="TransformConstantBuffer.h" />
     <ClInclude Include="Util.h" />
     <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexLayout.h" />
     <ClInclude Include="winwrapper.h" />
   </ItemGroup>
   <ItemGroup>

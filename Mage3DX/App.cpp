@@ -26,6 +26,7 @@
 #include "TextureSurface.h"
 #include "DummyModel.h"
 
+
 mage::App::App(int width, int height, const char* title) :
 	m_display(width, height, title),
 	m_running(true),
@@ -34,6 +35,7 @@ mage::App::App(int width, int height, const char* title) :
 
 
 	GDIPlusManager::start();
+
 	class Factory
 	{
 	public:
