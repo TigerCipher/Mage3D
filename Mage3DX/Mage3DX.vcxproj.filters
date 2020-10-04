@@ -406,15 +406,13 @@
     <None Include="uncrustify.cfg">
       <Filter>Misc</Filter>
     </None>
-    <None Include="Mage3DX.sln.licenseheader">
-      <Filter>Misc</Filter>
-    </None>
     <None Include="..\.gitignore">
       <Filter>Misc</Filter>
     </None>
     <None Include="..\README.md">
       <Filter>Misc</Filter>
     </None>
+    <None Include="Mage3DX.sln.licenseheader" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shaders\basicColorBlendPS.hlsl">
