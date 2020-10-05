@@ -19,10 +19,8 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_CAMERA_H
-#define MAGE3DX_CAMERA_H
+#pragma once
 
-#include "Graphics.h"
 #include "MathHelper.h"
 
 
@@ -50,6 +48,3 @@ namespace mage
     };
 
 }
-
-
-#endif //MAGE3DX_CAMERA_H

@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_SAMPLER_H
-#define MAGE3DX_SAMPLER_H
+#pragma once
 
 
 #include "Bindable.h"
@@ -39,4 +38,3 @@ namespace mage
 }// namespace mage
 
 
-#endif//MAGE3DX_SAMPLER_H

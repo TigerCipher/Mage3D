@@ -18,8 +18,7 @@
  * Date File Created: 9/25/2020 at 10:59 PM
  * Author: Matt
  */
-#ifndef MAGE3DX_PCH_H
-#define MAGE3DX_PCH_H
+#pragma once
 
 // target Windows 7 or later
 #define _WIN32_WINNT 0x0601
@@ -56,4 +55,3 @@
 #include <queue>
 #include <algorithm>
 
-#endif //MAGE3DX_PCH_H

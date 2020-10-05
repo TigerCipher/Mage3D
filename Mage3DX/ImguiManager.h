@@ -18,8 +18,7 @@
  * Date File Created: 9/27/2020 at 3:25 PM
  * Author: Matt
  */
-#ifndef MAGE3DX_IMGUI_MANAGER_H
-#define MAGE3DX_IMGUI_MANAGER_H
+#pragma once
 
 #include "3rdParty/imgui/imgui.h"
 #include <d3d11.h>
@@ -100,4 +99,3 @@ namespace mage
 	};
 }
 
-#endif//MAGE3DX_IMGUI_MANAGER_H

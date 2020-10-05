@@ -18,11 +18,7 @@
  * Date File Created: 9/13/2020 at 2:39 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_MOUSE_H
-#define MAGE3DX_MOUSE_H
-
-
+#pragma once
 
 namespace mage
 {
@@ -122,6 +118,3 @@ namespace mage
     };
 
 }
-
-
-#endif //MAGE3DX_MOUSE_H

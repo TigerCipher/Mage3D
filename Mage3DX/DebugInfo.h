@@ -19,10 +19,8 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_DEBUG_INFO_H
-#define MAGE3DX_DEBUG_INFO_H
+#pragma once
 
-//#include "pch.h"
 #include "winwrapper.h"
 
 #include <dxgidebug.h>
@@ -45,6 +43,3 @@ namespace mage
     };
 
 }
-
-
-#endif//MAGE3DX_DEBUG_INFO_H

@@ -18,9 +18,7 @@
  * Date File Created: 9/20/2020 at 11:04 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_BINDABLES_H
-#define MAGE3DX_BINDABLES_H
+#pragma once
 
 #include "ConstantBuffer.h"
 #include "IndexBuffer.h"
@@ -29,6 +27,3 @@
 #include "TransformConstantBuffer.h"
 #include "VertexBuffer.h"
 #include "Shader.h"
-
-
-#endif//MAGE3DX_BINDABLES_H

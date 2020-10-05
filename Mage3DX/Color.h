@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_COLOR_H
-#define MAGE3DX_COLOR_H
+#pragma once
 
 
 
@@ -62,4 +61,3 @@ namespace mage
     };
 }// namespace mage
 
-#endif//MAGE3DX_COLOR_H

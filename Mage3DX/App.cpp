@@ -19,12 +19,14 @@
  * Author: Matt
  */
 #include "pch.h"
+
 #include "App.h"
 #include "Box.h"
 #include "Cylinder.h"
 #include "Pyramid.h"
 #include "TextureSurface.h"
 #include "DummyModel.h"
+#include "ImguiManager.h"
 
 
 mage::App::App(int width, int height, const char* title) :
@@ -71,17 +73,21 @@ mage::App::App(int width, int height, const char* title) :
 	private:
 		Graphics& gfx;
 		std::mt19937 rng { std::random_device { } () };
-		std::uniform_real_distribution<float> adist { 0.0f, PI* 2.0f };
-		std::uniform_real_distribution<float> ddist { 0.0f, PI* 0.5f };
-		std::uniform_real_distribution<float> odist { 0.0f, PI* 0.08f };
+		
+		std::uniform_real_distribution<float> adist { 0.0f, PI * 2.0f };
+		std::uniform_real_distribution<float> ddist { 0.0f, PI * 0.5f };
+		std::uniform_real_distribution<float> odist { 0.0f, PI * 0.08f };
 		std::uniform_real_distribution<float> rdist { 6.0f, 20.0f };
 		std::uniform_real_distribution<float> bdist { 0.4f, 3.0f };
 		std::uniform_real_distribution<float> cdist { 0, 1.0f };
+		
 		std::uniform_int_distribution<int> latdist { 5, 20 };
 		std::uniform_int_distribution<int> longdist { 10, 40 };
 		std::uniform_int_distribution<int> typedist { 0, 4 };
-		std::uniform_int_distribution<int> sdist{ 0, 4 };
 		std::uniform_int_distribution<int> tdist{ 3,30 };
+
+		
+		std::uniform_int_distribution<int> sdist{ 0, 4 };
 	};
 
 	Factory f(m_display.getGraphics());
@@ -154,7 +160,7 @@ void calculateFrameStatistics(mage::Timer& timer)
 
 void mage::App::runFrame()
 {
-	const auto delta = m_timer.markPoint() * globalSpeed;
+	const auto delta = m_timer.markPoint() * m_globalSpeed;
 
 	if (m_display.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
 
@@ -172,7 +178,7 @@ void mage::App::runFrame()
 	//if (showDemo) { ImGui::ShowDemoWindow(&showDemo); }
 
 	IMGUI_WRAP("Global Simulation Speed",
-		ImGui::SliderFloat("Speed Factor", &globalSpeed, 0.0f, 5.0f));
+		ImGui::SliderFloat("Speed Factor", &m_globalSpeed, 0.0f, 5.0f));
 	calculateFrameStatistics(m_performanceTimer);
 
 	m_camera.spawnControlWindow();

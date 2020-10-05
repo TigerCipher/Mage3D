@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_MELON_H
-#define MAGE3DX_MELON_H
+#pragma once
 
 
 #include "Renderable.h"
@@ -57,6 +56,3 @@ namespace mage
     };
 
 }// namespace mage
-
-
-#endif//MAGE3DX_MELON_H

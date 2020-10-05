@@ -18,9 +18,7 @@
  * Date File Created: 9/24/2020 at 10:04 AM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_CALLSTACK_H
-#define MAGE3DX_CALLSTACK_H
+#pragma once
 
 namespace mage
 {
@@ -59,5 +57,3 @@ namespace mage
         list<Entry> m_stack;
     };
 }
-
-#endif//MAGE3DX_CALLSTACK_H

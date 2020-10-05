@@ -18,8 +18,7 @@
  * Date File Created: 9/28/2020 at 1:11 PM
  * Author: Matt
  */
-#ifndef MAGE3DX_PRIMITIVES_H
-#define MAGE3DX_PRIMITIVES_H
+#pragma once
 
 
 #include "MathHelper.h"
@@ -726,4 +725,3 @@ namespace mage
 	};
 }// namespace mage
 
-#endif//MAGE3DX_PRIMITIVES_H

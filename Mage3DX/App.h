@@ -19,15 +19,11 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_APP_H
-#define MAGE3DX_APP_H
-
-
+#pragma once
 
 #include "Display.h"
 #include "Timer.h"
 
-#include "ImguiManager.h"
 #include "IRenderable.h"
 #include "Camera.h"
 #include "PointLight.h"
@@ -40,7 +36,7 @@ namespace mage
         App(int width, int height, const char* title);
         virtual ~App();
         int run();
-        inline void stop() { m_running = false; }
+        void stop() { m_running = false; }
     private:
         void runFrame();
 
@@ -53,16 +49,13 @@ namespace mage
         Timer m_timer;
         Timer m_performanceTimer;
         bool m_running;
-        float globalSpeed = 1.0f;
-        list<UniquePtr<IRenderable>> m_renderables;
+        float m_globalSpeed = 1.0f;
+        list<UniquePtr<IRenderable>> m_renderables{};
         static constexpr size_t NUM_RENDERS = 180;
 
-        list<class Box*> m_boxes;
+        list<class Box*> m_boxes{};
         std::optional<int> m_comboBoxIndex;
-        std::set<int> m_boxIds;
+        std::set<int> m_boxIds{};
     };
 
 }
-
-
-#endif //MAGE3DX_APP_H

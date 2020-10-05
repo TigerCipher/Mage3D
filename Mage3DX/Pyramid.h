@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_PYRAMID_H
-#define MAGE3DX_PYRAMID_H
+#pragma once
 
 
 #include "DummyObject.h"
@@ -38,4 +37,3 @@ namespace mage
 }// namespace mage
 
 
-#endif//MAGE3DX_PYRAMID_H

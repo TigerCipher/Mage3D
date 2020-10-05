@@ -19,11 +19,9 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_INPUT_LAYOUT_H
-#define MAGE3DX_INPUT_LAYOUT_H
+#pragma once
 
 
-//#include "pch.h"
 #include "Bindable.h"
 
 namespace mage
@@ -39,6 +37,3 @@ namespace mage
     };
 
 }// namespace mage
-
-
-#endif//MAGE3DX_INPUT_LAYOUT_H

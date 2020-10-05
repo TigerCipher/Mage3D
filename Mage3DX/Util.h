@@ -18,16 +18,9 @@
  * Date File Created: 9/18/2020 at 3:00 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_UTIL_H
-#define MAGE3DX_UTIL_H
-
-
+#pragma once
 
 namespace mage
 {
     void fromList(std::string& str, const list<std::string>& strList);
 }
-
-
-#endif //MAGE3DX_UTIL_H

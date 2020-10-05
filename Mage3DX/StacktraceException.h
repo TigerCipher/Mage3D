@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_STACKTRACE_EXCEPTION_H
-#define MAGE3DX_STACKTRACE_EXCEPTION_H
+#pragma once
 
 #include "Callstack.h"
 #include <stdexcept>
@@ -79,5 +78,3 @@ namespace mage
 
 }// namespace mage
 
-
-#endif//MAGE3DX_STACKTRACE_EXCEPTION_H

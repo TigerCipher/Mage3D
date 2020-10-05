@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_WINWRAPPER_H
-#define MAGE3DX_WINWRAPPER_H
+#pragma once
 
 //// target Windows 7 or later
 //#define _WIN32_WINNT 0x0601
@@ -86,4 +85,3 @@ constexpr COMptr<T> createCOM(Args&& ...args)
     return Microsoft::WRL::Make<T>(std::forward<Args>(args)...);
 }
 
-#endif //MAGE3DX_WINWRAPPER_H

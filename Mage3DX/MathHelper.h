@@ -19,11 +19,8 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_MATH_HELPER_H
-#define MAGE3DX_MATH_HELPER_H
+#pragma once
 
-
-//#include "pch.h"
 
 #include <DirectXMath.h>
 #include <cmath>
@@ -71,7 +68,3 @@ namespace mage
     float dot(vec4f v1, vec4f v2);
 }
 
-
-
-
-#endif//MAGE3DX_MATH_HELPER_H

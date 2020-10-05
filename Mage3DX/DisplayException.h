@@ -19,9 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_DISPLAY_EXCEPTION_H
-#define MAGE3DX_DISPLAY_EXCEPTION_H
-
+#pragma once
 
 #include "MageException.h"
 
@@ -56,6 +54,3 @@ namespace mage
     };
 
 }
-
-
-#endif//MAGE3DX_DISPLAY_EXCEPTION_H

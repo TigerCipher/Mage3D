@@ -18,8 +18,7 @@
  * Date File Created: 9/25/2020 at 11:43 PM
  * Author: Matt
  */
-#ifndef MAGE3DX_BOX_H
-#define MAGE3DX_BOX_H
+#pragma once
 
 #include "DummyObject.h"
 #include "Bindables.h"
@@ -64,6 +63,3 @@ namespace mage
 		           std::uniform_real_distribution<float>& rdist);
 	};
 }// namespace mage
-
-
-#endif//MAGE3DX_BOX_H

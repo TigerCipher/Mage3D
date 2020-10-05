@@ -18,12 +18,8 @@
  * Date File Created: 9/20/2020 at 10:09 PM
  * Author: Matt
  */
+#pragma once
 
-#ifndef MAGE3DX_TOPOLOGY_H
-#define MAGE3DX_TOPOLOGY_H
-
-
-//#include "pch.h"
 #include "Bindable.h"
 
 namespace mage
@@ -39,6 +35,3 @@ namespace mage
     };
 
 }// namespace mage
-
-
-#endif//MAGE3DX_TOPOLOGY_H

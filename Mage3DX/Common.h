@@ -18,9 +18,8 @@
  * Date File Created: 9/25/2020 at 10:59 PM
  * Author: Matt
  */
-#ifndef MAGE3DX_COMMON_H
-#define MAGE3DX_COMMON_H
 
+#pragma once
 
 #ifndef MAGE_DEBUG
     #define MAGE_DEBUG 0
@@ -46,6 +45,3 @@
 
 
 #define VOIDPP(x) reinterpret_cast<void**>(x)
-
-
-#endif //MAGE3DX_COMMON_H

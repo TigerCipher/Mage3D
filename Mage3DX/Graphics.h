@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_GRAPHICS_H
-#define MAGE3DX_GRAPHICS_H
+#pragma once
 
 #include "MathHelper.h"
 #include "DebugInfo.h"
@@ -79,4 +78,3 @@ namespace mage
 }// namespace mage
 
 
-#endif//MAGE3DX_GRAPHICS_H

@@ -18,9 +18,7 @@
  * Date File Created: 9/20/2020 at 10:37 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
-#define MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H
+#pragma once
 
 
 //#include "pch.h"
@@ -47,6 +45,3 @@ namespace mage
     };
 
 }// namespace mage
-
-
-#endif//MAGE3DX_TRANSFORM_CONSTANT_BUFFER_H

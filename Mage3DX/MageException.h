@@ -19,10 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_MAGE_EXCEPTION_H
-#define MAGE3DX_MAGE_EXCEPTION_H
-
-//#include "pch.h"
+#pragma once
 
 #include "StacktraceException.h"
 
@@ -46,5 +43,3 @@ namespace mage
 
 }
 
-
-#endif//MAGE3DX_MAGE_EXCEPTION_H

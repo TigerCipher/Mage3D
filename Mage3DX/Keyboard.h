@@ -18,9 +18,7 @@
  * Date File Created: 9/13/2020 at 12:51 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_KEYBOARD_H
-#define MAGE3DX_KEYBOARD_H
+#pragma once
 
 
 #include <bitset>
@@ -99,6 +97,3 @@ namespace mage
     };
 
 }
-
-
-#endif //MAGE3DX_KEYBOARD_H

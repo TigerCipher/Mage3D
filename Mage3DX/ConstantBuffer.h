@@ -18,12 +18,8 @@
  * Date File Created: 9/20/2020 at 9:24 PM
  * Author: Matt
  */
+#pragma once
 
-#ifndef MAGE3DX_CONSTANT_BUFFER_H
-#define MAGE3DX_CONSTANT_BUFFER_H
-
-
-//#include "pch.h"
 #include "GraphicsException.h"
 #include "Bindable.h"
 
@@ -114,6 +110,3 @@ namespace mage
 
 
 }// namespace mage
-
-
-#endif//MAGE3DX_CONSTANT_BUFFER_H

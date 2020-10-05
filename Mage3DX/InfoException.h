@@ -18,12 +18,8 @@
  * Date File Created: 9/18/2020 at 2:55 PM
  * Author: Matt
  */
+#pragma once
 
-#ifndef MAGE3DX_INFO_EXCEPTION_H
-#define MAGE3DX_INFO_EXCEPTION_H
-
-
-//#include "pch.h"
 #include "MageException.h"
 
 #if MAGE_DEBUG
@@ -53,6 +49,3 @@ namespace mage
     };
 
 }// namespace mage
-
-
-#endif//MAGE3DX_INFO_EXCEPTION_H

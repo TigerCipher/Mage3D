@@ -18,9 +18,7 @@
  * Date File Created: 9/20/2020 at 9:45 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_INDEX_BUFFER_H
-#define MAGE3DX_INDEX_BUFFER_H
+#pragma once
 
 #include "Bindable.h"
 
@@ -39,6 +37,3 @@ namespace mage
     };
 
 }// namespace mage
-
-
-#endif//MAGE3DX_INDEX_BUFFER_H

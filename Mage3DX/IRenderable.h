@@ -19,10 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_IRENDERABLE_H
-#define MAGE3DX_IRENDERABLE_H
-
-
+#pragma once
 
 #include "Graphics.h"
 #include "MathHelper.h"
@@ -74,5 +71,3 @@ namespace mage
 
 }// namespace mage
 
-
-#endif//MAGE3DX_IRENDERABLE_H

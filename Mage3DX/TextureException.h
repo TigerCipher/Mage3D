@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TEXTURE_EXCEPTION_H
-#define MAGE3DX_TEXTURE_EXCEPTION_H
+#pragma once
 
 #include "MageException.h"
 
@@ -36,7 +35,6 @@ namespace mage
         const char* getType() const noexcept override;
         const std::string& getInfo() const noexcept { return m_info; }
 
-    protected:
     private:
         std::string m_info;
     };
@@ -44,4 +42,3 @@ namespace mage
 }// namespace mage
 
 
-#endif//MAGE3DX_TEXTURE_EXCEPTION_H

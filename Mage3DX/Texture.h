@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TEXTURE_H
-#define MAGE3DX_TEXTURE_H
+#pragma once
 
 #include "Bindable.h"
 
@@ -40,4 +39,3 @@ namespace mage
 }// namespace mage
 
 
-#endif//MAGE3DX_TEXTURE_H

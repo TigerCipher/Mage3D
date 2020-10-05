@@ -18,9 +18,7 @@
  * Date File Created: 9/20/2020 at 9:14 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_BINDABLE_H
-#define MAGE3DX_BINDABLE_H
+#pragma once
 
 #include "Graphics.h"
 
@@ -40,6 +38,3 @@ namespace mage
     };
 
 }// namespace mage
-
-
-#endif//MAGE3DX_BINDABLE_H

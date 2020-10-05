@@ -18,12 +18,8 @@
  * Date File Created: 9/16/2020 at 10:15 PM
  * Author: Matt
  */
+#pragma once
 
-#ifndef MAGE3DX_GRAPHICS_EXCEPTION_H
-#define MAGE3DX_GRAPHICS_EXCEPTION_H
-
-
-//#include "pch.h"
 #include "DebugInfo.h"
 #include "MageException.h"
 
@@ -86,5 +82,3 @@ namespace mage
 
 }// namespace mage
 
-
-#endif//MAGE3DX_GRAPHICS_EXCEPTION_H

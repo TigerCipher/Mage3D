@@ -19,11 +19,9 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_VERTEX_BUFFER_H
-#define MAGE3DX_VERTEX_BUFFER_H
+#pragma once
 
 
-//#include "pch.h"
 #include "GraphicsException.h"
 #include "Bindable.h"
 #include "Vertex.h"
@@ -77,6 +75,3 @@ namespace mage
 
 
 }// namespace mage
-
-
-#endif//MAGE3DX_VERTEX_BUFFER_H

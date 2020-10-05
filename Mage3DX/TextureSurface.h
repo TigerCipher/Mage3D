@@ -19,8 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_TEXTURE_SURFACE_H
-#define MAGE3DX_TEXTURE_SURFACE_H
+#pragma once
 
 #include "Color.h"
 
@@ -81,4 +80,3 @@ namespace mage
 
 }// namespace mage
 
-#endif// MAGE3DX_TEXTURE_SURFACE_H

@@ -18,9 +18,7 @@
  * Date File Created: 9/21/2020 at 10:02 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_RENDERABLE_H
-#define MAGE3DX_RENDERABLE_H
+#pragma once
 
 
 #include "IRenderable.h"
@@ -72,5 +70,3 @@ namespace mage
 
 template<class T>
 list<UniquePtr<mage::Bindable>> mage::Renderable<T>::staticBinds;
-
-#endif//MAGE3DX_RENDERABLE_H

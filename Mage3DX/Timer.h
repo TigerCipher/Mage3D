@@ -18,11 +18,7 @@
  * Date File Created: 9/15/2020 at 3:04 PM
  * Author: Matt
  */
-
-#ifndef MAGE3DX_TIMER_H
-#define MAGE3DX_TIMER_H
-
-
+#pragma once
 
 namespace mage
 {
@@ -41,5 +37,3 @@ namespace mage
 
 }
 
-
-#endif //MAGE3DX_TIMER_H

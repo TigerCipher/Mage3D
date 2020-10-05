@@ -18,8 +18,7 @@
  * Date File Created: 9/27/2020 at 3:31 PM
  * Author: Matt
  */
-#ifndef MAGE3DX_DISPLAY_H
-#define MAGE3DX_DISPLAY_H
+#pragma once
 
 #include "Keyboard.h"
 #include "DisplayException.h"
@@ -84,6 +83,3 @@ namespace mage
 			};
 	};
 }
-
-
-#endif //MAGE3DX_DISPLAY_H

@@ -19,10 +19,7 @@
  * Author: Matt
  */
 
-#ifndef MAGE3DX_DEBUG_MESSAGE_MAP_H
-#define MAGE3DX_DEBUG_MESSAGE_MAP_H
-
-//#include "pch.h"
+#pragma once
 
 namespace mage
 {
@@ -40,6 +37,3 @@ namespace mage
     };
 
 }
-
-
-#endif//MAGE3DX_DEBUG_MESSAGE_MAP_H
