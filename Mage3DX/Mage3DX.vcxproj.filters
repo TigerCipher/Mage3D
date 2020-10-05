@@ -210,6 +210,9 @@
     <ClCompile Include="DummyModel.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
+    <ClCompile Include="DebugTools.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointLight.h">
@@ -388,6 +391,9 @@
     </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="DebugTools.h">
+      <Filter>Header Files\debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

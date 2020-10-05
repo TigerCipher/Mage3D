@@ -15,13 +15,14 @@
  * Contact: team@bluemoondev.org
  * 
  * File Name: winmain.cpp
- * Date File Created: 9/25/2020 at 11:03 PM
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #include "pch.h"
 #include "App.h"
 #include "Display.h"
 #include "MageException.h"
+#include "DebugTools.h"
 
 using namespace mage;
 
@@ -29,9 +30,17 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 {
 	try
 	{
+#if MAGE_DEBUG
+		createNewConsole(1024);
+#endif
 		Log::init();
 		App app(1920, 1080, "Mage3DX Game Engine");
-		return app.run();
+		int ret = app.run();
+
+#if MAGE_DEBUG
+		releaseConsole();
+#endif
+		return ret;
 	} catch (const MageException& e)
 	{
 		DestroyWindow(GetActiveWindow());

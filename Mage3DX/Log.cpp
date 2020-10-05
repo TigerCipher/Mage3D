@@ -14,29 +14,35 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: log.cpp
- * Date File Created: 9/16/2020 at 2:29 PM
+ * File Name: Log.cpp
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #include "pch.h"
 #include "Log.h"
-//#include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
+
+#if MAGE_DEBUG
+	#include <spdlog/sinks/stdout_color_sinks.h>
+#endif
 
 
 SharedPtr<spdlog::logger> mage::Log::s_logger;
 
 void mage::Log::init()
 {
-    list<spdlog::sink_ptr> logSinks;
-    //logSinks.emplace_back(createRef<spdlog::sinks::stdout_color_sink_mt>());
-    logSinks.emplace_back(createRef<spdlog::sinks::basic_file_sink_mt>("mage3dx.log", true));
+	list<spdlog::sink_ptr> logSinks;
+	logSinks.emplace_back(createRef<spdlog::sinks::basic_file_sink_mt>("mage3dx.log", true));
 
-    //logSinks[0]->set_pattern("%^[%T] [%l] %n: %v%$");
-    logSinks[0]->set_pattern("[%m-%d-%Y %H:%M:%S] [%l] [%g:%#] [%!] %n: %v");
+#if MAGE_DEBUG
+	logSinks.emplace_back(createRef<spdlog::sinks::stdout_color_sink_mt>());
+	logSinks[1]->set_pattern("%^[%T] [%l] %n: %v%$");
+#endif
 
-    s_logger = createRef<spdlog::logger>("Mage3D", begin(logSinks), end(logSinks));
-    spdlog::register_logger(s_logger);
-    s_logger->set_level(spdlog::level::trace);
-    s_logger->flush_on(spdlog::level::trace);
+	logSinks[0]->set_pattern("[%m-%d-%Y %H:%M:%S] [%l] [%g:%#] [%!] %n: %v");
+
+	s_logger = createRef<spdlog::logger>("Mage3D", begin(logSinks), end(logSinks));
+	spdlog::register_logger(s_logger);
+	s_logger->set_level(spdlog::level::trace);
+	s_logger->flush_on(spdlog::level::trace);
 }
