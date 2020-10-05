@@ -23,14 +23,14 @@
 
 
 UniquePtr<mage::VertexConstantBuffer<mage::TransformConstantBuffer::Transforms> >
-mage::TransformConstantBuffer::m_vertexBuffer;
+mage::TransformConstantBuffer::sVertexBuffer;
 
 mage::TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot /*= 0*/) :
 	m_parent(parent)
 {
-	if(!m_vertexBuffer)
+	if(!sVertexBuffer)
 	{
-		m_vertexBuffer = createScope<VertexConstantBuffer<Transforms> >(gfx, slot);
+		sVertexBuffer = createScope<VertexConstantBuffer<Transforms> >(gfx, slot);
 	}
 }
 
@@ -42,7 +42,7 @@ void mage::TransformConstantBuffer::bind(mage::Graphics& gfx) noexcept
 		dx::XMMatrixTranspose(modelView),
 		dx::XMMatrixTranspose(modelView * gfx.getProjection())
 	};
-	m_vertexBuffer->update(gfx, t);
-	m_vertexBuffer->bind(gfx);
+	sVertexBuffer->update(gfx, t);
+	sVertexBuffer->bind(gfx);
 }
 

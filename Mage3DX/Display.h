@@ -47,8 +47,8 @@ namespace mage
 
 			[[nodiscard]] inline float getAspectRatio() const noexcept { return m_aspectRatio; }
 
-			Keyboard m_keyboard;
-			Mouse m_mouse;
+			Keyboard keyboard;
+			Mouse mouse;
 		protected:
 		private:
 
@@ -78,8 +78,8 @@ namespace mage
 					virtual ~Window();
 
 
-					static constexpr const char* winClassName = "Mage3DXWin";
-					static Window s_winClass;
+					static constexpr const char* sWinClassName = "Mage3DXWin";
+					static Window sWinClass;
 					HINSTANCE m_hInst;
 			};
 	};

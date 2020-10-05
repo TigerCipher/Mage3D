@@ -43,7 +43,7 @@ namespace mage
             bd.Usage = D3D11_USAGE_DEFAULT;
             bd.CPUAccessFlags = 0u;
             bd.MiscFlags = 0u;
-            bd.ByteWidth = UINT(sizeof(V) * vertices.size());
+            bd.ByteWidth = static_cast<UINT>(sizeof(V) * vertices.size());
             bd.StructureByteStride = m_stride;
             D3D11_SUBRESOURCE_DATA sd = {};
             sd.pSysMem = vertices.data();
@@ -51,7 +51,7 @@ namespace mage
             GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &m_buffer));
         }
 
-        VertexBuffer(Graphics& gfx, const VertexData& vData) : m_stride((UINT)vData.getLayout().size())
+        VertexBuffer(Graphics& gfx, const VertexData& vData) : m_stride(static_cast<UINT>(vData.getLayout().size()))
         {
 			DEBUG_INFO(gfx);
 
@@ -60,7 +60,7 @@ namespace mage
 			bd.Usage = D3D11_USAGE_DEFAULT;
 			bd.CPUAccessFlags = 0u;
 			bd.MiscFlags = 0u;
-			bd.ByteWidth = UINT(vData.sizeInBytes());
+			bd.ByteWidth = static_cast<UINT>(vData.sizeInBytes());
             bd.StructureByteStride = m_stride;
 			D3D11_SUBRESOURCE_DATA sd = {};
             sd.pSysMem = vData.getData();
@@ -72,7 +72,7 @@ namespace mage
 
     protected:
         UINT m_stride;
-        COMptr<ID3D11Buffer> m_buffer;
+        COMptr<ID3D11Buffer> m_buffer{};
     };
 
 

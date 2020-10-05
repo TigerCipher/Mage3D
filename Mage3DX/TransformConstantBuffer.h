@@ -42,7 +42,7 @@ namespace mage
             mat4f model;
             mat4f mvp;
         };
-        static UniquePtr<VertexConstantBuffer<Transforms>> m_vertexBuffer;
+        static UniquePtr<VertexConstantBuffer<Transforms>> sVertexBuffer;
         const IRenderable& m_parent;
     };
 

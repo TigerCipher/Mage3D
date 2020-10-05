@@ -27,7 +27,7 @@ mage::InputLayout::InputLayout(mage::Graphics& gfx, const list<D3D11_INPUT_ELEME
 {
     DEBUG_INFO(gfx);
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateInputLayout(layout.data(), (UINT) layout.size(),
+    GFX_THROW_INFO(getDevice(gfx)->CreateInputLayout(layout.data(), static_cast<UINT>(layout.size()),
                                                      vertexBytecode->GetBufferPointer(),
                                                      vertexBytecode->GetBufferSize(), &m_layout));
 }

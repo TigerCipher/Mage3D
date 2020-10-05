@@ -154,9 +154,9 @@ void calculateFrameStatistics(mage::Timer& timer)
 
 void mage::App::runFrame()
 {
-	float delta = m_timer.markPoint() * globalSpeed;
+	const auto delta = m_timer.markPoint() * globalSpeed;
 
-	if (m_display.m_keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
+	if (m_display.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
 
 	m_display.getGraphics().clear(0.07f, 0, 0.12f);
 	m_display.getGraphics().setCamera(m_camera.getViewMatrix());
@@ -164,7 +164,7 @@ void mage::App::runFrame()
 
 	for (auto& b : m_renderables)
 	{
-		b->update(m_display.m_keyboard.isPressed(VK_SPACE) ? 0.0f : delta);
+		b->update(m_display.keyboard.isPressed(VK_SPACE) ? 0.0f : delta);
 		b->render(m_display.getGraphics());
 	}
 

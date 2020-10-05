@@ -15,7 +15,7 @@
  * Contact: team@bluemoondev.org
  * 
  * File Name: Shader.cpp
- * Date File Created: 9/28/2020 at 12:21 PM
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #include "pch.h"
@@ -49,7 +49,8 @@ mage::PixelShader::PixelShader(mage::Graphics& gfx, const std::wstring& path)
 
 	COMptr<ID3DBlob> blob;
 	GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &blob));
-	GFX_THROW_INFO(getDevice(gfx)->CreatePixelShader(blob->GetBufferPointer(), blob->GetBufferSize(), nullptr, &m_shader));
+	GFX_THROW_INFO(getDevice(gfx)->CreatePixelShader(blob->GetBufferPointer(),
+		blob->GetBufferSize(), nullptr, &m_shader));
 }
 
 

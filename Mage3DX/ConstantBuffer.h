@@ -83,14 +83,16 @@ namespace mage
     {
         using ConstantBuffer<C>::m_buffer;
         using ConstantBuffer<C>::m_slot;
-        using Bindable::getContext;
+        //using Bindable::getContext;
 
     public:
         using ConstantBuffer<C>::ConstantBuffer;
 
         void bind(Graphics& gfx) noexcept override
         {
-            getContext(gfx)->VSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
+        	// For some reason ReSharper (but not Visual C++) was thinking getContext was private and not protected
+        	// but super:: works so whatever
+            __super::getContext(gfx)->VSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
         }
     };
 
@@ -99,14 +101,14 @@ namespace mage
     {
         using ConstantBuffer<C>::m_buffer;
         using ConstantBuffer<C>::m_slot;
-        using Bindable::getContext;
+        //using Bindable::getContext;
 
     public:
         using ConstantBuffer<C>::ConstantBuffer;
 
         void bind(Graphics& gfx) noexcept override
         {
-            getContext(gfx)->PSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
+            __super::getContext(gfx)->PSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
         }
     };
 
