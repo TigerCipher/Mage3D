@@ -178,8 +178,10 @@ void mage::App::runFrame()
 	m_camera.spawnControlWindow();
 	m_light.spawnControlWindow();
 
+#if MAGE_IMGUI
 	spawnWindows();
-
+#endif
+	
 	m_display.getGraphics().swap();
 }
 
@@ -223,6 +225,6 @@ void mage::App::spawnWindows()
 		{
 			it = m_boxIds.erase(it);
 		}
-		else it++;
+		else ++it;
 	}
 }
