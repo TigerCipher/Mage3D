@@ -36,7 +36,7 @@ namespace mage
         App(int width, int height, const char* title);
         virtual ~App();
         int run();
-        void stop() { m_running = false; }
+        void stop();
     private:
         void runFrame();
 

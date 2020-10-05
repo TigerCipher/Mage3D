@@ -109,7 +109,8 @@ mage::App::App(int width, int height, const char* title) :
 
 mage::App::~App()
 {
-	GDIPlusManager::stop();
+	if (m_running)
+		stop();
 }
 
 int mage::App::run()
@@ -123,6 +124,12 @@ int mage::App::run()
 	}
 	ImguiManager::stop();
 	return 0;
+}
+
+void mage::App::stop()
+{
+	m_running = false;
+	GDIPlusManager::stop();
 }
 
 void calculateFrameStatistics(mage::Timer& timer)

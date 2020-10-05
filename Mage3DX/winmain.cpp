@@ -33,11 +33,20 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 #if MAGE_DEBUG
 		createNewConsole(1024);
 #endif
+		
 		Log::init();
-		App app(1920, 1080, "Mage3DX Game Engine");
-		int ret = app.run();
+		
+		auto ret = 0;
+		
+		{
+			// Inner scope so when in Debug mode the display closes and the console remains open
+			// This way system("pause") can be used properly
+			App app(1920, 1080, "Mage3DX Game Engine");
+			ret = app.run();
+		}
 
 #if MAGE_DEBUG
+		system("pause");
 		releaseConsole();
 #endif
 		return ret;

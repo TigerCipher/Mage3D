@@ -20,9 +20,12 @@
  */
 #pragma once
 
-// target Windows 7 or later
-#define _WIN32_WINNT 0x0601
-#define STRICT
+
+// Target Windows 7 and later - for now at least
+//#define _WIN32_WINNT 0x0601
+//#include <sdkddkver.h>
+//#define STRICT
+// ^ making these defined on the command line. Being too weird about redefinitions for some reason
 
 #include <bmd/common.h>
 #include <bmd/types.h>
