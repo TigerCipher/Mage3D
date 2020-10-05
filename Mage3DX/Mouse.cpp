@@ -23,7 +23,7 @@
 
 
 
-mage::Mouse::Event mage::Mouse::read() noexcept
+Mouse::Event Mouse::read() noexcept
 {
     if(!m_buffer.empty())
     {
@@ -31,15 +31,15 @@ mage::Mouse::Event mage::Mouse::read() noexcept
         m_buffer.pop();
         return e;
     }
-    return mage::Mouse::Event();
+    return Mouse::Event();
 }
 
-void mage::Mouse::clear() noexcept
+void Mouse::clear() noexcept
 {
     m_buffer = std::queue<Event>();
 }
 
-void mage::Mouse::onMouseMove(int x, int y) noexcept
+void Mouse::onMouseMove(int x, int y) noexcept
 {
     m_xPos = x;
     m_yPos = y;
@@ -47,61 +47,61 @@ void mage::Mouse::onMouseMove(int x, int y) noexcept
     trim();
 }
 
-void mage::Mouse::onLeftPressed(int x, int y) noexcept
+void Mouse::onLeftPressed(int x, int y) noexcept
 {
     m_left = true;
     m_buffer.push(Event(Event::Type::LEFT_PRESS, *this));
     trim();
 }
 
-void mage::Mouse::onLeftReleased(int x, int y) noexcept
+void Mouse::onLeftReleased(int x, int y) noexcept
 {
     m_left = false;
     m_buffer.push(Event(Event::Type::LEFT_RELEASE, *this));
     trim();
 }
 
-void mage::Mouse::onRightPressed(int x, int y) noexcept
+void Mouse::onRightPressed(int x, int y) noexcept
 {
     m_right = true;
     m_buffer.push(Event(Event::Type::RIGHT_PRESS, *this));
     trim();
 }
 
-void mage::Mouse::onRightReleased(int x, int y) noexcept
+void Mouse::onRightReleased(int x, int y) noexcept
 {
     m_right = false;
     m_buffer.push(Event(Event::Type::RIGHT_RELEASE, *this));
     trim();
 }
 
-void mage::Mouse::onWheelUp(int x, int y) noexcept
+void Mouse::onWheelUp(int x, int y) noexcept
 {
     m_buffer.push(Event(Event::Type::WHEEL_UP, *this));
     trim();
 }
 
-void mage::Mouse::onWheelDown(int x, int y) noexcept
+void Mouse::onWheelDown(int x, int y) noexcept
 {
     m_buffer.push(Event(Event::Type::WHEEL_DOWN, *this));
     trim();
 }
 
-void mage::Mouse::onMouseEnter() noexcept
+void Mouse::onMouseEnter() noexcept
 {
     m_inWindow = true;
     m_buffer.push(Event(Event::Type::ENTER, *this));
     trim();
 }
 
-void mage::Mouse::onMouseLeave() noexcept
+void Mouse::onMouseLeave() noexcept
 {
     m_inWindow = false;
     m_buffer.push(Event(Event::Type::LEAVE, *this));
     trim();
 }
 
-void mage::Mouse::onWheelDelta(int x, int y, int delta) noexcept
+void Mouse::onWheelDelta(int x, int y, int delta) noexcept
 {
     m_wheelDelta += delta;
     while(m_wheelDelta >= WHEEL_DELTA)
@@ -116,7 +116,7 @@ void mage::Mouse::onWheelDelta(int x, int y, int delta) noexcept
     }
 }
 
-void mage::Mouse::trim() noexcept
+void Mouse::trim() noexcept
 {
     while(m_buffer.size() > BUFFER_SIZE)
     {

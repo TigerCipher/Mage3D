@@ -23,8 +23,6 @@
 
 #include "StacktraceException.h"
 
-namespace mage
-{
     class MageException : public std::exception, public StacktraceExceptionBase
     {
     public:
@@ -41,5 +39,4 @@ namespace mage
         std::string m_file;
     };
 
-}
 

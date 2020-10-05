@@ -14,11 +14,10 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: vertexbuffer.h
- * Date File Created: 9/20/2020 at 10:41 PM
+ * File Name: VertexBuffer.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 
@@ -26,52 +25,49 @@
 #include "Bindable.h"
 #include "Vertex.h"
 
-namespace mage
+class VertexBuffer : public Bindable
 {
-    class VertexBuffer : public Bindable
-    {
-    public:
-        template<typename V>
-        VertexBuffer(Graphics& gfx, const list<V>& vertices) : m_stride(sizeof(V))
-        {
-            DEBUG_INFO(gfx);
+public:
+	template<typename V>
+	VertexBuffer(Graphics& gfx, const list<V>& vertices) : m_stride(sizeof(V))
+	{
+		DEBUG_INFO(gfx);
 
-            D3D11_BUFFER_DESC bd = {};
-            bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-            bd.Usage = D3D11_USAGE_DEFAULT;
-            bd.CPUAccessFlags = 0u;
-            bd.MiscFlags = 0u;
-            bd.ByteWidth = static_cast<UINT>(sizeof(V) * vertices.size());
-            bd.StructureByteStride = m_stride;
-            D3D11_SUBRESOURCE_DATA sd = {};
-            sd.pSysMem = vertices.data();
+		D3D11_BUFFER_DESC bd = { };
+		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.CPUAccessFlags = 0u;
+		bd.MiscFlags = 0u;
+		bd.ByteWidth = static_cast<UINT>(sizeof(V) * vertices.size());
+		bd.StructureByteStride = m_stride;
+		D3D11_SUBRESOURCE_DATA sd = { };
+		sd.pSysMem = vertices.data();
 
-            GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &m_buffer));
-        }
+		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &m_buffer));
+	}
 
-        VertexBuffer(Graphics& gfx, const VertexData& vData) : m_stride(static_cast<UINT>(vData.getLayout().size()))
-        {
-			DEBUG_INFO(gfx);
+	VertexBuffer(Graphics& gfx, const VertexData& vData) : m_stride(static_cast<UINT>(vData.getLayout().size()))
+	{
+		DEBUG_INFO(gfx);
 
-			D3D11_BUFFER_DESC bd = {};
-			bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-			bd.Usage = D3D11_USAGE_DEFAULT;
-			bd.CPUAccessFlags = 0u;
-			bd.MiscFlags = 0u;
-			bd.ByteWidth = static_cast<UINT>(vData.sizeInBytes());
-            bd.StructureByteStride = m_stride;
-			D3D11_SUBRESOURCE_DATA sd = {};
-            sd.pSysMem = vData.getData();
+		D3D11_BUFFER_DESC bd = { };
+		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		bd.Usage = D3D11_USAGE_DEFAULT;
+		bd.CPUAccessFlags = 0u;
+		bd.MiscFlags = 0u;
+		bd.ByteWidth = static_cast<UINT>(vData.sizeInBytes());
+		bd.StructureByteStride = m_stride;
+		D3D11_SUBRESOURCE_DATA sd = { };
+		sd.pSysMem = vData.getData();
 
-			GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &m_buffer));
-        }
+		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &m_buffer));
+	}
 
-        void bind(Graphics& gfx) noexcept override;
+	void bind(Graphics& gfx) noexcept override;
 
-    protected:
-        UINT m_stride;
-        COMptr<ID3D11Buffer> m_buffer{};
-    };
+protected:
+	UINT m_stride;
+	COMptr<ID3D11Buffer> m_buffer{ };
+};
 
 
-}// namespace mage

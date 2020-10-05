@@ -23,33 +23,33 @@
 #include "3rdParty/imgui/imgui_impl_dx11.h"
 #include "3rdParty/imgui/imgui_impl_win32.h"
 
-bool mage::ImguiManager::s_enabled = true;
+bool ImguiManager::s_enabled = true;
 
-void mage::ImguiManager::initDx11(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+void ImguiManager::initDx11(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	ImGui_ImplDX11_Init(pDevice, pContext);
 }
 
-void mage::ImguiManager::initWin32(HWND hwnd)
+void ImguiManager::initWin32(HWND hwnd)
 {
 	ImGui_ImplWin32_Init(hwnd);
 }
-void mage::ImguiManager::destroyWin32()
+void ImguiManager::destroyWin32()
 {
 	ImGui_ImplWin32_Shutdown();
 }
-void mage::ImguiManager::destroyDx11()
+void ImguiManager::destroyDx11()
 {
 	ImGui_ImplDX11_Shutdown();
 }
 
 // Wrapper for ImGui_ImplWin32_WndProcHandler
-LRESULT mage::ImguiManager::wndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+LRESULT ImguiManager::wndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	return ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam);
 }
 
-void mage::ImguiManager::renderDx11()
+void ImguiManager::renderDx11()
 {
 	if (s_enabled)
 	{
@@ -58,7 +58,7 @@ void mage::ImguiManager::renderDx11()
 	}
 }
 
-void mage::ImguiManager::newFrame()
+void ImguiManager::newFrame()
 {
 	if (s_enabled)
 	{

@@ -23,7 +23,7 @@
 #include "GraphicsException.h"
 
 
-mage::Sampler::Sampler(mage::Graphics& gfx)
+Sampler::Sampler(Graphics& gfx)
 {
     DEBUG_INFO(gfx);
     D3D11_SAMPLER_DESC sd = {};
@@ -36,7 +36,7 @@ mage::Sampler::Sampler(mage::Graphics& gfx)
 }
 
 
-void mage::Sampler::bind(mage::Graphics& gfx) noexcept
+void Sampler::bind(Graphics& gfx) noexcept
 {
     getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
 }

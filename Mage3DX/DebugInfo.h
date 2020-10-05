@@ -14,32 +14,28 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: debuginfo.h
- * Date File Created: 9/16/2020 at 11:05 PM
+ * File Name: DebugInfo.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "winwrapper.h"
 
 #include <dxgidebug.h>
 
-namespace mage
+class DebugInfo
 {
-    class DebugInfo
-    {
-    public:
-        DebugInfo();
-        virtual ~DebugInfo() = default;
-        DebugInfo(const DebugInfo& rhs) = delete;
-        DebugInfo& operator=(const DebugInfo& rhs) = delete;
+public:
+	DebugInfo();
+	virtual ~DebugInfo() = default;
+	DebugInfo(const DebugInfo& rhs) = delete;
+	DebugInfo& operator=(const DebugInfo& rhs) = delete;
 
-        void set() noexcept;
-        [[nodiscard]] list<std::string> getMessages() const;
-    private:
-        ulonglong m_next = 0;
-        COMptr<IDXGIInfoQueue> m_infoQueue{};
-    };
+	void set() noexcept;
+	[[nodiscard]] list<std::string> getMessages() const;
+private:
+	ulonglong m_next = 0;
+	COMptr<IDXGIInfoQueue> m_infoQueue{ };
+};
 
-}

@@ -11,27 +11,24 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * Contact: team@bluemoondev.org
- *
+ * 
  * File Name: SolidSphere.h
- * Date File Created: 9/26/2020 at 4:14 PM
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 #include "Renderable.h"
 
-namespace mage
+class SolidSphere : public Renderable<SolidSphere>
 {
-	class SolidSphere : public Renderable<SolidSphere>
-	{
-	public:
-		SolidSphere(Graphics& gfx, float radius);
-		void update(float delta) noexcept override { }
-		mat4f getTransformMatrix() const noexcept override;
-		void setPosition(vec3f pos) noexcept { m_position = pos; }
-	private:
-		vec3f m_position = { 1.0f, 1.0f, 1.0f };
-	};
-}
+public:
+	SolidSphere(Graphics& gfx, float radius);
+	void update(float delta) noexcept override { }
+	mat4f getTransformMatrix() const noexcept override;
+	void setPosition(vec3f pos) noexcept { m_position = pos; }
+private:
+	vec3f m_position = { 1.0f, 1.0f, 1.0f };
+};
 

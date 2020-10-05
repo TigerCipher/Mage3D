@@ -36,7 +36,7 @@
 
 constexpr int vsync_flag = 0;
 
-mage::Graphics::Graphics(HWND hwnd)
+Graphics::Graphics(HWND hwnd)
 {
 	RECT r;
 	GetClientRect(hwnd, &r);
@@ -126,7 +126,7 @@ mage::Graphics::Graphics(HWND hwnd)
 	ImGui::GetStyle().ScaleAllSizes(uiScale);
 }
 
-void mage::Graphics::swap()
+void Graphics::swap()
 {
 	ImguiManager::renderDx11();
 
@@ -145,7 +145,7 @@ void mage::Graphics::swap()
 	}
 }
 
-void mage::Graphics::clear(float r, float g, float b) noexcept
+void Graphics::clear(float r, float g, float b) noexcept
 {
 	ImguiManager::newFrame();
 	const float color[] = { r, g, b, 1.0f };
@@ -153,7 +153,7 @@ void mage::Graphics::clear(float r, float g, float b) noexcept
 	m_context->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void mage::Graphics::drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG)
+void Graphics::drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG)
 {
 	GFX_THROW_INFO_ONLY(m_context->DrawIndexed(numIndices, 0, 0));
 }

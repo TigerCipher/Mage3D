@@ -21,7 +21,7 @@
 #include "pch.h"
 #include "VertexBuffer.h"
 
-void mage::VertexBuffer::bind(mage::Graphics& gfx) noexcept
+void VertexBuffer::bind(Graphics& gfx) noexcept
 {
 	static const UINT offset = 0;
 	getContext(gfx)->IASetVertexBuffers(0, 1, m_buffer.GetAddressOf(), &m_stride, &offset);

@@ -14,11 +14,10 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: app.h
- * Date File Created: 9/15/2020 at 2:56 PM
+ * File Name: App.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "Display.h"
@@ -28,34 +27,31 @@
 #include "Camera.h"
 #include "PointLight.h"
 
-namespace mage
+class App
 {
-    class App
-    {
-    public:
-        App(int width, int height, const char* title);
-        virtual ~App();
-        int run();
-        void stop();
-    private:
-        void runFrame();
+public:
+	App(int width, int height, const char* title);
+	virtual ~App();
+	int run();
+	void stop();
+private:
+	void runFrame();
 
-        void spawnWindows();
+	void spawnWindows();
 
-        Display m_display;
-        Camera m_camera;
-        PointLight m_light;
+	Display m_display;
+	Camera m_camera;
+	PointLight m_light;
 
-        Timer m_timer;
-        Timer m_performanceTimer;
-        bool m_running;
-        float m_globalSpeed = 1.0f;
-        list<UniquePtr<IRenderable>> m_renderables{};
-        static constexpr size_t NUM_RENDERS = 180;
+	Timer m_timer;
+	Timer m_performanceTimer;
+	bool m_running;
+	float m_globalSpeed = 1.0f;
+	list<UniquePtr<IRenderable> > m_renderables{ };
+	static constexpr size_t NUM_RENDERS = 180;
 
-        list<class Box*> m_boxes{};
-        std::optional<int> m_comboBoxIndex;
-        std::set<int> m_boxIds{};
-    };
+	list<class Box*> m_boxes{ };
+	std::optional<int> m_comboBoxIndex;
+	std::set<int> m_boxIds{ };
+};
 
-}

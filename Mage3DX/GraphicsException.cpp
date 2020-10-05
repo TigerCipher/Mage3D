@@ -22,7 +22,7 @@
 #include "GraphicsException.h"
 #include "3rdParty/dxerr.h"
 
-mage::GraphicsException::GraphicsException(int line, const char* file, HRESULT hr,
+GraphicsException::GraphicsException(int line, const char* file, HRESULT hr,
                                            const list<std::string>& msgs) noexcept:
         MageException(line, file),
         m_result(hr)
@@ -37,7 +37,7 @@ mage::GraphicsException::GraphicsException(int line, const char* file, HRESULT h
         m_info.pop_back();
 }
 
-const char* mage::GraphicsException::what() const noexcept
+const char* GraphicsException::what() const noexcept
 {
     std::ostringstream oss;
     oss << getType()
@@ -52,35 +52,35 @@ const char* mage::GraphicsException::what() const noexcept
     return m_what.c_str();
 }
 
-const char* mage::GraphicsException::getType() const noexcept
+const char* GraphicsException::getType() const noexcept
 {
     return "Mage Graphics Exception";
 }
 
-HRESULT mage::GraphicsException::getErrorCode() const noexcept
+HRESULT GraphicsException::getErrorCode() const noexcept
 {
     return m_result;
 }
 
-std::string mage::GraphicsException::getErrorString() const noexcept
+std::string GraphicsException::getErrorString() const noexcept
 {
     return std::string((char*)DXGetErrorString(m_result));
 }
 
-std::string mage::GraphicsException::getErrorDescription() const noexcept
+std::string GraphicsException::getErrorDescription() const noexcept
 {
     char buf[512];
     DXGetErrorDescription(m_result, buf, sizeof(buf));
     return buf;
 }
 
-std::string mage::GraphicsException::getErrorInfo() const noexcept
+std::string GraphicsException::getErrorInfo() const noexcept
 {
     return m_info;
 }
 
 
-const char* mage::GraphicsDeviceRemovedException::getType() const noexcept
+const char* GraphicsDeviceRemovedException::getType() const noexcept
 {
     return "Mage Graphics Device Removed Exception - DXGI_ERROR_DEVICE_REMOVED";
 }

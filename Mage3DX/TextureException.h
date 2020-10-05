@@ -14,31 +14,28 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: textureexception.h
- * Date File Created: 9/23/2020 at 9:33 PM
+ * File Name: TextureException.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "MageException.h"
 
-namespace mage
+class TextureException : public MageException
 {
-    class TextureException : public MageException
-    {
-    public:
-        TextureException(int line, const char* file, std::string info) noexcept :
-            MageException(line, file), m_info(std::move(info))
-        { }
-        const char* what() const noexcept override;
-        const char* getType() const noexcept override;
-        const std::string& getInfo() const noexcept { return m_info; }
+public:
+	TextureException(int line, const char* file, std::string info) noexcept :
+		MageException(line, file),
+		m_info(std::move(info))
+	{ }
+	const char* what() const noexcept override;
+	const char* getType() const noexcept override;
+	const std::string& getInfo() const noexcept { return m_info; }
 
-    private:
-        std::string m_info;
-    };
+private:
+	std::string m_info;
+};
 
-}// namespace mage
 
 

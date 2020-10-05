@@ -31,7 +31,7 @@ public:
     { }
     ~StackWalkerImpl() override = default;
 
-    list<mage::Entry> getStack() { return m_stack; }
+    list<Entry> getStack() { return m_stack; }
 
 protected:
     void OnCallstackEntry(CallstackEntryType eType, CallstackEntry& entry) override
@@ -40,7 +40,7 @@ protected:
         if (m_discardEntries > 0) m_discardEntries--;
         else if (m_discardEntries == 0)
         {
-            mage::Entry e;
+            Entry e;
             e.file = entry.lineFileName;
             e.line = entry.lineNumber;
             e.function = entry.name;
@@ -56,11 +56,11 @@ protected:
     void OnDbgHelpErr(LPCSTR szFuncName, DWORD gle, DWORD64 addr) override { }
 
 private:
-    list<mage::Entry> m_stack;
+    list<Entry> m_stack;
     int m_discardEntries;
 };
 
-mage::Callstack::Callstack(int numDiscard)
+Callstack::Callstack(int numDiscard)
 {
     StackWalkerImpl sw(numDiscard);
     sw.ShowCallstack();

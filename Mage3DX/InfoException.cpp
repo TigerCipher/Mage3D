@@ -14,34 +14,34 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: infoexception.cpp
- * Date File Created: 9/18/2020 at 2:55 PM
+ * File Name: InfoException.cpp
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #include "pch.h"
 #include "InfoException.h"
 #include "Util.h"
 
-mage::InfoException::InfoException(int line, const char* file, const list<std::string>& msgs) noexcept:
-MageException(line, file)
+InfoException::InfoException(int line, const char* file, const list<std::string>& msgs) noexcept:
+	MageException(line, file)
 {
-    fromList(m_info, msgs);
+	fromList(m_info, msgs);
 }
 
-const char* mage::InfoException::what() const noexcept
+const char* InfoException::what() const noexcept
 {
-    std::ostringstream oss;
-    oss << getType() << "\n[Error Info]\n" << getErrorInfo() << "\n\n" << getOrigin();
-    m_what = oss.str();
-    return m_what.c_str();
+	std::ostringstream oss;
+	oss << getType() << "\n[Error Info]\n" << getErrorInfo() << "\n\n" << getOrigin();
+	m_what = oss.str();
+	return m_what.c_str();
 }
 
-const char* mage::InfoException::getType() const noexcept
+const char* InfoException::getType() const noexcept
 {
-    return "Mage Info Exception";
+	return "Mage Info Exception";
 }
 
-std::string mage::InfoException::getErrorInfo() const noexcept
+std::string InfoException::getErrorInfo() const noexcept
 {
-    return m_info;
+	return m_info;
 }

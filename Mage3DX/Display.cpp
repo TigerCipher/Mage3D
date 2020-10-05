@@ -29,9 +29,9 @@
 #endif
 
 
-mage::Display::Window mage::Display::Window::sWinClass;
+Display::Window Display::Window::sWinClass;
 
-mage::Display::Window::Window() noexcept:
+Display::Window::Window() noexcept:
 	m_hInst(GetModuleHandle(nullptr))
 {
 	WNDCLASSEX wc = { 0 };
@@ -52,22 +52,22 @@ mage::Display::Window::Window() noexcept:
 	RegisterClassEx(&wc);
 }
 
-mage::Display::Window::~Window()
+Display::Window::~Window()
 {
 	UnregisterClass(sWinClassName, getInstance());
 }
 
-const char* mage::Display::Window::getName() noexcept
+const char* Display::Window::getName() noexcept
 {
 	return sWinClassName;
 }
 
-HINSTANCE mage::Display::Window::getInstance() noexcept
+HINSTANCE Display::Window::getInstance() noexcept
 {
 	return sWinClass.m_hInst;
 }
 
-mage::Display::Display(int width, int height, const char* title)
+Display::Display(int width, int height, const char* title)
 {
 	ImguiManager::start();
 	LOG_INFO("Creating display of size: ({}, {})", width, height);
@@ -108,12 +108,12 @@ mage::Display::Display(int width, int height, const char* title)
 	m_gfx = createScope<Graphics>(m_hwnd);
 }
 
-mage::Display::~Display()
+Display::~Display()
 {
 	DestroyWindow(m_hwnd);
 }
 
-LRESULT CALLBACK mage::Display::handleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT CALLBACK Display::handleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	if (msg == WM_NCCREATE)
 	{
@@ -127,16 +127,16 @@ LRESULT CALLBACK mage::Display::handleMessageSetup(HWND hWnd, UINT msg, WPARAM w
 }
 
 LRESULT
-CALLBACK mage::Display::handleMessageIntermediate(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+CALLBACK Display::handleMessageIntermediate(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 	auto* const pDisplay = reinterpret_cast<Display*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
 	return pDisplay->handleMessage(hWnd, msg, wParam, lParam);
 }
 
-LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
 {
 #if MAGE_VERBOSE
-	static mage::DebugMessageMap dmm;
+	static DebugMessageMap dmm;
 	OutputDebugString(dmm(msg, lParam, wParam).c_str());
 #endif
 
@@ -250,7 +250,7 @@ LRESULT mage::Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-void mage::Display::setTitle(const std::string& title)
+void Display::setTitle(const std::string& title)
 {
 	if (!SetWindowText(m_hwnd, title.c_str()))
 	{
@@ -258,7 +258,7 @@ void mage::Display::setTitle(const std::string& title)
 	}
 }
 
-std::optional<int> mage::Display::processMessages() noexcept
+std::optional<int> Display::processMessages() noexcept
 {
 	MSG msg;
 	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
@@ -271,7 +271,7 @@ std::optional<int> mage::Display::processMessages() noexcept
 	return { };
 }
 
-mage::Graphics& mage::Display::getGraphics()
+Graphics& Display::getGraphics()
 {
 	if (!m_gfx) throw DISPLAY_NO_GFX_EXCEPTION();
 	return *m_gfx;

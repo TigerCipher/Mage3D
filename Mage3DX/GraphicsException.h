@@ -14,8 +14,8 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: hresultexception.h
- * Date File Created: 9/16/2020 at 10:15 PM
+ * File Name: GraphicsException.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
@@ -24,61 +24,58 @@
 #include "MageException.h"
 
 #define GFX_THROW_NOINFO(hrcall)                                                    \
-    {                                                                               \
-        HRESULT hr;                                                                 \
-        if (FAILED(hr = (hrcall))) throw GraphicsException(__LINE__, __FILE__, hr); \
-    }
-#define GFX_EXCEPT_NOINFO(hr) GraphicsException(__LINE__, __FILE__, hr)
+	{                                                                               \
+		HRESULT hr;                                                                 \
+		if (FAILED(hr = (hrcall))) throw GraphicsException(__LINE__, __FILE__, hr); \
+	}
+#define GFX_EXCEPT_NOINFO(hr)                GraphicsException(__LINE__, __FILE__, hr)
 
 #if MAGE_DEBUG
-    #define GFX_EXCEPT(hr) GraphicsException(__LINE__, __FILE__, (hr), m_debugInfo.getMessages())
-    #define GFX_THROW_INFO(hrcall)                           \
-        {                                                    \
-            HRESULT hr;                                      \
-            m_debugInfo.set();                               \
-            if (FAILED(hr = (hrcall))) throw GFX_EXCEPT(hr); \
-        }
-    #define GFX_DEVICE_REMOVED_EXCEPT(hr) \
-        GraphicsDeviceRemovedException(__LINE__, __FILE__, (hr), m_debugInfo.getMessages())
+	#define GFX_EXCEPT(hr)                   GraphicsException(__LINE__, __FILE__, (hr), m_debugInfo.getMessages())
+	#define GFX_THROW_INFO(hrcall)                       \
+	{                                                    \
+		HRESULT hr;                                      \
+		m_debugInfo.set();                               \
+		if (FAILED(hr = (hrcall))) throw GFX_EXCEPT(hr); \
+	}
+	#define GFX_DEVICE_REMOVED_EXCEPT(hr) \
+	GraphicsDeviceRemovedException(__LINE__, __FILE__, (hr), m_debugInfo.getMessages())
 #else
-    #define GFX_EXCEPT(hr)                GraphicsException(__LINE__, __FILE__, (hr))
-    #define GFX_THROW_INFO(hrcall)        GFX_THROW_NOINFO(hrcall)
-    #define GFX_DEVICE_REMOVED_EXCEPT(hr) GraphicsDeviceRemovedException(__LINE__, __FILE__, (hr))
+	#define GFX_EXCEPT(hr)                   GraphicsException(__LINE__, __FILE__, (hr))
+	#define GFX_THROW_INFO(hrcall)           GFX_THROW_NOINFO(hrcall)
+	#define GFX_DEVICE_REMOVED_EXCEPT(hr)    GraphicsDeviceRemovedException(__LINE__, __FILE__, (hr))
 #endif
 
 #if MAGE_DEBUG
-    #define DEBUG_INFO(gfx) DebugInfo& m_debugInfo = getDebugInfo((gfx))
+	#define DEBUG_INFO(gfx)                  DebugInfo & m_debugInfo = getDebugInfo((gfx))
 #else
-    #define DEBUG_INFO(gfx)
+	#define DEBUG_INFO(gfx)
 #endif
 
-namespace mage
+class GraphicsException : public MageException
 {
-    class GraphicsException : public MageException
-    {
-    public:
-        GraphicsException(int line, const char* file, HRESULT hr, const list<std::string>& msgs = { }) noexcept;
+public:
+	GraphicsException(int line, const char* file, HRESULT hr, const list<std::string>& msgs = { }) noexcept;
 
-        const char* what() const noexcept override;
-        const char* getType() const noexcept override;
-        HRESULT getErrorCode() const noexcept;
-        std::string getErrorString() const noexcept;
-        std::string getErrorDescription() const noexcept;
-        std::string getErrorInfo() const noexcept;
+	const char* what() const noexcept override;
+	const char* getType() const noexcept override;
+	HRESULT getErrorCode() const noexcept;
+	std::string getErrorString() const noexcept;
+	std::string getErrorDescription() const noexcept;
+	std::string getErrorInfo() const noexcept;
 
-    private:
-        HRESULT m_result;
-        std::string m_info;
-    };
+private:
+	HRESULT m_result;
+	std::string m_info;
+};
 
-    class GraphicsDeviceRemovedException : public GraphicsException
-    {
-    public:
-        GraphicsDeviceRemovedException(int line, const char* file, HRESULT hr, const list<std::string>& msgs) noexcept:
-                GraphicsException(line, file, hr, msgs) { }
+class GraphicsDeviceRemovedException : public GraphicsException
+{
+public:
+	GraphicsDeviceRemovedException(int line, const char* file, HRESULT hr, const list<std::string>& msgs) noexcept:
+		GraphicsException(line, file, hr, msgs) { }
 
-        const char* getType() const noexcept override;
-    };
+	const char* getType() const noexcept override;
+};
 
-}// namespace mage
 

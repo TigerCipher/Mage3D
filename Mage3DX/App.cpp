@@ -29,7 +29,7 @@
 #include "ImguiManager.h"
 
 
-mage::App::App(int width, int height, const char* title) :
+App::App(int width, int height, const char* title) :
 	m_display(width, height, title),
 	m_light(m_display.getGraphics()),
 	m_running(true)
@@ -107,13 +107,13 @@ mage::App::App(int width, int height, const char* title) :
 		0.5f, 40.0f));
 }
 
-mage::App::~App()
+App::~App()
 {
 	if (m_running)
 		stop();
 }
 
-int mage::App::run()
+int App::run()
 {
 	LOG_INFO("Main loop beginning");
 	while (m_running)
@@ -126,13 +126,13 @@ int mage::App::run()
 	return 0;
 }
 
-void mage::App::stop()
+void App::stop()
 {
 	m_running = false;
 	GDIPlusManager::stop();
 }
 
-void calculateFrameStatistics(mage::Timer& timer)
+void calculateFrameStatistics(Timer& timer)
 {
 	static float fps = 0;
 	static float avgFps = 0;
@@ -140,7 +140,7 @@ void calculateFrameStatistics(mage::Timer& timer)
 	static float prntAvgFps = 0;
 	static int prntFrameCount = 0;
 
-	if (mage::ImguiManager::isEnabled())
+	if (ImguiManager::isEnabled())
 	{
 		static bool metrics = true;
 		ImGui::ShowMetricsWindow(&metrics);
@@ -165,7 +165,7 @@ void calculateFrameStatistics(mage::Timer& timer)
 }
 
 
-void mage::App::runFrame()
+void App::runFrame()
 {
 	const auto delta = m_timer.markPoint() * m_globalSpeed;
 
@@ -198,7 +198,7 @@ void mage::App::runFrame()
 	m_display.getGraphics().swap();
 }
 
-void mage::App::spawnWindows()
+void App::spawnWindows()
 {
 	if (ImguiManager::isEnabled())
 	{

@@ -14,43 +14,40 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: displayexception.h
- * Date File Created: 9/12/2020 at 3:12 PM
+ * File Name: DisplayException.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "MageException.h"
 
-#define DISPLAY_EXCEPTION(hr) DisplayException(__LINE__, __FILE__, hr)
-#define DISPLAY_LAST_EXCEPTION() DisplayException(__LINE__, __FILE__, GetLastError())
-#define DISPLAY_NO_GFX_EXCEPTION() NoGraphicsException(__LINE__, __FILE__)
+#define DISPLAY_EXCEPTION(hr)         DisplayException(__LINE__, __FILE__, hr)
+#define DISPLAY_LAST_EXCEPTION()      DisplayException(__LINE__, __FILE__, GetLastError())
+#define DISPLAY_NO_GFX_EXCEPTION()    NoGraphicsException(__LINE__, __FILE__)
 
-namespace mage
+class ExceptionHelper
 {
-    class ExceptionHelper
-    {
-    public:
-        static std::string translateError(HRESULT hr) noexcept;
-    };
-    class DisplayException : public MageException
-    {
-    public:
-        DisplayException(int line, const char* file, HRESULT hr) : MageException(line, file), m_result(hr) {}
-        const char* what() const noexcept override;
-        const char* getType() const noexcept override;
-        inline HRESULT getError() const noexcept { return m_result; }
-        std::string getErrorString() const noexcept;
-    private:
-        HRESULT m_result;
-    };
+public:
+	static std::string translateError(HRESULT hr) noexcept;
+};
+class DisplayException : public MageException
+{
+public:
+	DisplayException(int line, const char* file, HRESULT hr) : MageException(line, file),
+		m_result(hr) { }
+	const char* what() const noexcept override;
+	const char* getType() const noexcept override;
+	inline HRESULT getError() const noexcept { return m_result; }
+	std::string getErrorString() const noexcept;
+private:
+	HRESULT m_result;
+};
 
-    class NoGraphicsException : public MageException
-    {
-    public:
-        NoGraphicsException(int line, const char* file) : MageException(line, file) {}
-        const char * getType() const noexcept override;
-    };
+class NoGraphicsException : public MageException
+{
+public:
+	NoGraphicsException(int line, const char* file) : MageException(line, file) { }
+	const char* getType() const noexcept override;
+};
 
-}

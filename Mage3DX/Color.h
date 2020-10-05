@@ -14,50 +14,46 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: color.h
- * Date File Created: 9/23/2020 at 5:01 PM
+ * File Name: Color.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 
 
-namespace mage
+class Color
 {
-    class Color
-    {
-    public:
-        constexpr Color() noexcept : dword() { }
-        constexpr explicit Color(uint dword_) noexcept : dword(dword_) { }
-        constexpr Color(ubyte a, ubyte r, ubyte g, ubyte b) noexcept : dword((a << 24) | (r << 16) | (g << 8) | b) { }
-        constexpr Color(ubyte r, ubyte g, ubyte b) noexcept : dword((r << 16) | (g << 8) | b) { }
-        constexpr Color(Color col, ubyte a) noexcept : Color((a << 24) | col.dword) { }
-        constexpr Color(const Color& col) noexcept = default;
+public:
+	constexpr Color() noexcept : dword() { }
+	constexpr explicit Color(uint dword_) noexcept : dword(dword_) { }
+	constexpr Color(ubyte a, ubyte r, ubyte g, ubyte b) noexcept : dword((a << 24) | (r << 16) | (g << 8) | b) { }
+	constexpr Color(ubyte r, ubyte g, ubyte b) noexcept : dword((r << 16) | (g << 8) | b) { }
+	constexpr Color(Color col, ubyte a) noexcept : Color((a << 24) | col.dword) { }
+	constexpr Color(const Color& col) noexcept = default;
 
-        Color& operator=(Color col) noexcept
-        {
-            dword = col.dword;
-            return *this;
-        }
+	Color& operator=(Color col) noexcept
+	{
+		dword = col.dword;
+		return *this;
+	}
 
-        Color& operator=(ulong col) noexcept
-        {
-            dword = col;
-            return *this;
-        }
+	Color& operator=(ulong col) noexcept
+	{
+		dword = col;
+		return *this;
+	}
 
-        void setAlpha(ubyte a) noexcept { dword = (dword & 0xffffff) | (a << 24); }
-        void setRed(ubyte r) noexcept { dword = (dword & 0xff00ffff) | (r << 16); }
-        void setGreen(ubyte g) noexcept { dword = (dword & 0xffff00ff) | (g << 8); }
-        void setBlue(ubyte b) noexcept { dword = (dword & 0xffffff00) | b; }
+	void setAlpha(ubyte a) noexcept { dword = (dword & 0xffffff) | (a << 24); }
+	void setRed(ubyte r) noexcept { dword = (dword & 0xff00ffff) | (r << 16); }
+	void setGreen(ubyte g) noexcept { dword = (dword & 0xffff00ff) | (g << 8); }
+	void setBlue(ubyte b) noexcept { dword = (dword & 0xffffff00) | b; }
 
-        [[nodiscard]] constexpr ubyte getAlpha() const noexcept { return dword >> 24; }
-        [[nodiscard]] constexpr ubyte getRed() const noexcept { return (dword >> 16) & 0xff; }
-        [[nodiscard]] constexpr ubyte getGreen() const noexcept { return (dword >> 8) & 0xff; }
-        [[nodiscard]] constexpr ubyte getBlue() const noexcept { return dword & 0xff; }
+	[[nodiscard]] constexpr ubyte getAlpha() const noexcept { return dword >> 24; }
+	[[nodiscard]] constexpr ubyte getRed() const noexcept { return (dword >> 16) & 0xff; }
+	[[nodiscard]] constexpr ubyte getGreen() const noexcept { return (dword >> 8) & 0xff; }
+	[[nodiscard]] constexpr ubyte getBlue() const noexcept { return dword & 0xff; }
 
-        uint dword;
-    };
-}// namespace mage
+	uint dword;
+};
 

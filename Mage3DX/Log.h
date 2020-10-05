@@ -14,38 +14,34 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: log.h
- * Date File Created: 9/16/2020 at 2:29 PM
+ * File Name: Log.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
-#define SPDLOG_ACTIVE_LEVEL SPDLOG_LEVEL_TRACE
+#define SPDLOG_ACTIVE_LEVEL    SPDLOG_LEVEL_TRACE
 #define SPDLOG_DEBUG_ON
 #define SPDLOG_TRACE_ON
 
 #include <spdlog/spdlog.h>
 
 
-namespace mage
+class Log
 {
-    class Log
-    {
-    public:
-        static void init();
-        static SharedPtr<spdlog::logger>& getLogger() { return s_logger; }
+public:
+	static void init();
+	static SharedPtr<spdlog::logger>& getLogger() { return s_logger; }
 
-    private:
-        static SharedPtr<spdlog::logger> s_logger;
-    };
-
-}// namespace mage
+private:
+	static SharedPtr<spdlog::logger> s_logger;
+};
 
 
-#define LOG_TRACE(...)    SPDLOG_LOGGER_TRACE(mage::Log::getLogger(), __VA_ARGS__)
-#define LOG_DEBUG(...)    SPDLOG_LOGGER_DEBUG(mage::Log::getLogger(), __VA_ARGS__)
-#define LOG_INFO(...)     SPDLOG_LOGGER_INFO(mage::Log::getLogger(), __VA_ARGS__)
-#define LOG_WARN(...)     SPDLOG_LOGGER_WARN(mage::Log::getLogger(), __VA_ARGS__)
-#define LOG_ERROR(...)    SPDLOG_LOGGER_ERROR(mage::Log::getLogger(), __VA_ARGS__)
-#define LOG_CRITICAL(...) SPDLOG_LOGGER_CRITICAL(mage::Log::getLogger(), __VA_ARGS__)
+
+#define LOG_TRACE(...)       SPDLOG_LOGGER_TRACE(Log::getLogger(), __VA_ARGS__)
+#define LOG_DEBUG(...)       SPDLOG_LOGGER_DEBUG(Log::getLogger(), __VA_ARGS__)
+#define LOG_INFO(...)        SPDLOG_LOGGER_INFO(Log::getLogger(), __VA_ARGS__)
+#define LOG_WARN(...)        SPDLOG_LOGGER_WARN(Log::getLogger(), __VA_ARGS__)
+#define LOG_ERROR(...)       SPDLOG_LOGGER_ERROR(Log::getLogger(), __VA_ARGS__)
+#define LOG_CRITICAL(...)    SPDLOG_LOGGER_CRITICAL(Log::getLogger(), __VA_ARGS__)

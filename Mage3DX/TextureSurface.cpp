@@ -33,7 +33,7 @@ namespace Gdiplus
 }// namespace Gdiplus
 #include <gdiplus.h>
 
-mage::TextureSurface& mage::TextureSurface::operator=(mage::TextureSurface&& src) noexcept
+TextureSurface& TextureSurface::operator=(TextureSurface&& src) noexcept
 {
 	m_width = src.m_width;
 	m_height = src.m_height;
@@ -42,24 +42,24 @@ mage::TextureSurface& mage::TextureSurface::operator=(mage::TextureSurface&& src
 	return *this;
 }
 
-void mage::TextureSurface::clear(mage::Color fill) noexcept
+void TextureSurface::clear(Color fill) noexcept
 {
 	memset(m_buffer.get(), fill.dword, m_width * m_height * sizeof(Color));
 }
 
-void mage::TextureSurface::setPixel(uint x, uint y, mage::Color col) noexcept(!MAGE_DEBUG)
+void TextureSurface::setPixel(uint x, uint y, Color col) noexcept(!MAGE_DEBUG)
 {
 	assert(x >= 0 && y >= 0 && x < m_width && y < m_height);
 	m_buffer[ y * m_width + x ] = col;
 }
 
-mage::Color mage::TextureSurface::getPixel(uint x, uint y) const noexcept(!MAGE_DEBUG)
+Color TextureSurface::getPixel(uint x, uint y) const noexcept(!MAGE_DEBUG)
 {
 	assert(x >= 0 && y >= 0 && x < m_width && y < m_height);
 	return m_buffer[ y * m_width + x ];
 }
 
-void mage::TextureSurface::save(const std::string& fileName) const
+void TextureSurface::save(const std::string& fileName) const
 {
 	auto getEncoder = [ &fileName ] (const WCHAR* format, CLSID* clsid) -> void
 		{
@@ -115,14 +115,14 @@ void mage::TextureSurface::save(const std::string& fileName) const
 	}
 }
 
-void mage::TextureSurface::copy(const mage::TextureSurface& src) noexcept(!MAGE_DEBUG)
+void TextureSurface::copy(const TextureSurface& src) noexcept(!MAGE_DEBUG)
 {
 	assert(m_width == src.m_width);
 	assert(m_height == src.m_height);
 	memcpy(m_buffer.get(), src.m_buffer.get(), m_width * m_height * sizeof(Color));
 }
 
-mage::TextureSurface mage::TextureSurface::loadFromFile(const std::string& fileName)
+TextureSurface TextureSurface::loadFromFile(const std::string& fileName)
 {
 	uint width = 0;
 	uint height = 0;
@@ -153,9 +153,9 @@ mage::TextureSurface mage::TextureSurface::loadFromFile(const std::string& fileN
 	return TextureSurface(width, height, std::move(buf));
 }
 
-ULONG_PTR mage::GDIPlusManager::s_token = 0;
+ULONG_PTR GDIPlusManager::s_token = 0;
 
-void mage::GDIPlusManager::start() noexcept
+void GDIPlusManager::start() noexcept
 {
 	Gdiplus::GdiplusStartupInput input;
 	input.GdiplusVersion = 1;
@@ -163,7 +163,7 @@ void mage::GDIPlusManager::start() noexcept
 	input.SuppressBackgroundThread = false;
 	Gdiplus::GdiplusStartup(&s_token, &input, nullptr);
 }
-void mage::GDIPlusManager::stop() noexcept
+void GDIPlusManager::stop() noexcept
 {
 	Gdiplus::GdiplusShutdown(s_token);
 }

@@ -22,7 +22,7 @@
 #include "IndexBuffer.h"
 #include "GraphicsException.h"
 
-mage::IndexBuffer::IndexBuffer(mage::Graphics& gfx, const list<ushort>& indices) :
+IndexBuffer::IndexBuffer(Graphics& gfx, const list<ushort>& indices) :
         m_count(static_cast<UINT>(indices.size()))
 {
     DEBUG_INFO(gfx);
@@ -39,7 +39,7 @@ mage::IndexBuffer::IndexBuffer(mage::Graphics& gfx, const list<ushort>& indices)
     GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&ibd, &isd, &m_buffer));
 }
 
-void mage::IndexBuffer::bind(mage::Graphics& gfx) noexcept
+void IndexBuffer::bind(Graphics& gfx) noexcept
 {
     getContext(gfx)->IASetIndexBuffer(m_buffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 }

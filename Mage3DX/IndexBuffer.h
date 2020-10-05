@@ -14,26 +14,22 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: indexbuffer.h
- * Date File Created: 9/20/2020 at 9:45 PM
+ * File Name: IndexBuffer.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 
 #include "Bindable.h"
 
-namespace mage
+class IndexBuffer : public Bindable
 {
-    class IndexBuffer : public Bindable
-    {
-    public:
-        IndexBuffer(Graphics& gfx, const list<ushort>& indices);
-        void bind(Graphics& gfx) noexcept override;
-        [[nodiscard]] inline UINT getCount() const noexcept { return m_count; }
+public:
+	IndexBuffer(Graphics& gfx, const list<ushort>& indices);
+	void bind(Graphics& gfx) noexcept override;
+	[[nodiscard]] inline UINT getCount() const noexcept { return m_count; }
 
-    protected:
-        UINT m_count;
-        COMptr<ID3D11Buffer> m_buffer;
-    };
-
-}// namespace mage
+protected:
+	UINT m_count;
+	COMptr<ID3D11Buffer> m_buffer;
+};

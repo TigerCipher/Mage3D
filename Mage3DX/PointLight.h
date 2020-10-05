@@ -11,11 +11,11 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * Contact: team@bluemoondev.org
- *
+ * 
  * File Name: PointLight.h
- * Date File Created: 9/26/2020 at 4:43 PM
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
@@ -24,36 +24,33 @@
 #include "SolidSphere.h"
 #include "ConstantBuffer.h"
 
-namespace mage
+class PointLight
 {
-	class PointLight
+public:
+	explicit PointLight(Graphics& gfx, float radius = 0.5f);
+
+	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
+	void bind(Graphics& gfx, mat4f view) const noexcept;
+
+	void spawnControlWindow() noexcept;
+	void reset() noexcept;
+
+private:
+	struct PointLightCBuf
 	{
-	public:
-		explicit PointLight(Graphics& gfx, float radius = 0.5f);
+		alignas(16) vec3f pos;
+		alignas(16) vec3f diffuseColor;
+		alignas(16) vec3f ambient;
 
-		void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
-		void bind(Graphics& gfx, mat4f view) const noexcept;
-		
-		void spawnControlWindow() noexcept;
-		void reset() noexcept;
+		float diffuseIntensity;
 
-	private:
-		struct PointLightCBuf
-		{
-			alignas(16) vec3f pos;
-			alignas(16) vec3f diffuseColor;
-			alignas(16) vec3f ambient;
-
-			float diffuseIntensity;
-			
-			float attConst;
-			float attLin;
-			float attQuad;
-		};
-
-		PointLightCBuf m_cbuf;
-		mutable SolidSphere m_mesh;
-		mutable PixelConstantBuffer<PointLightCBuf> m_buffer;
+		float attConst;
+		float attLin;
+		float attQuad;
 	};
-}
+
+	PointLightCBuf m_cbuf;
+	mutable SolidSphere m_mesh;
+	mutable PixelConstantBuffer<PointLightCBuf> m_buffer;
+};
 

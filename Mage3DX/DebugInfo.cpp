@@ -28,7 +28,7 @@
 	if( FAILED( hr = (hrcall) ) ) \
 	throw GraphicsException( __LINE__,__FILE__,hr )
 
-mage::DebugInfo::DebugInfo()
+DebugInfo::DebugInfo()
 {
 	typedef HRESULT(WINAPI* DXGIGetDebugInterface)(REFIID, void**);
 	const auto dxgidll = LoadLibraryEx("dxgidebug.dll", nullptr, LOAD_LIBRARY_SEARCH_SYSTEM32);
@@ -50,12 +50,12 @@ mage::DebugInfo::DebugInfo()
 }
 
 
-void mage::DebugInfo::set() noexcept
+void DebugInfo::set() noexcept
 {
 	m_next = m_infoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);
 }
 
-list<std::string> mage::DebugInfo::getMessages() const
+list<std::string> DebugInfo::getMessages() const
 {
 	list<std::string> messages;
 	const auto end = m_infoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);

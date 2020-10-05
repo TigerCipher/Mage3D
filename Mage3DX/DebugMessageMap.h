@@ -14,26 +14,22 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: debugmessagemap.h
- * Date File Created: 9/10/2020 at 11:50 PM
+ * File Name: DebugMessageMap.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
-namespace mage
+class DebugMessageMap
 {
-    class DebugMessageMap
-    {
-    public:
-        DebugMessageMap() noexcept;
-        virtual ~DebugMessageMap() = default;
+public:
+	DebugMessageMap() noexcept;
+	virtual ~DebugMessageMap() = default;
 
-        std::string operator() (DWORD msg, LPARAM lParam, WPARAM wParam) const noexcept;
+	std::string operator() (DWORD msg, LPARAM lParam, WPARAM wParam) const noexcept;
 
-    protected:
-    private:
-        std::unordered_map<DWORD, std::string> m_map;
-    };
+protected:
+private:
+	std::unordered_map<DWORD, std::string> m_map;
+};
 
-}

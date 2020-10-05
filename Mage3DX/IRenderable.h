@@ -14,60 +14,56 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: renderable.h
- * Date File Created: 9/20/2020 at 10:28 PM
+ * File Name: IRenderable.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "Graphics.h"
 #include "MathHelper.h"
 
 
-namespace mage
+class Bindable;
+
+class IRenderable
 {
-    class Bindable;
+template<class T>
+friend class Renderable;
 
-    class IRenderable
-    {
-        template<class T>
-        friend class Renderable;
+public:
+	IRenderable() = default;
+	virtual ~IRenderable() = default;
+	IRenderable(const IRenderable& rhs) = delete;
+	IRenderable& operator=(const IRenderable& rhs) = delete;
 
-    public:
-        IRenderable() = default;
-        virtual ~IRenderable() = default;
-        IRenderable(const IRenderable& rhs) = delete;
-        IRenderable& operator=(const IRenderable& rhs) = delete;
+	[[nodiscard]] virtual mat4f getTransformMatrix() const noexcept = 0;
 
-        [[nodiscard]] virtual mat4f getTransformMatrix() const noexcept = 0;
+	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
+	virtual void update(float delta) noexcept { }
 
-        void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
-        virtual void update(float delta) noexcept = 0;
+protected:
+	void addBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG);
+	void addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept;
 
-    protected:
-        void addBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG);
-        void addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept;
+	template<class T>
+	T* queryBindable() noexcept
+	{
+		for (auto& pixelBuffer : m_bindables)
+		{
+			if(auto pb = dynamic_cast<T*>(pixelBuffer.get()))
+				return pb;
+		}
 
-        template<class T>
-        T* queryBindable() noexcept
-        {
-            for (auto& pixelBuffer : m_bindables)
-            {
-                if(auto pb = dynamic_cast<T*>(pixelBuffer.get()))
-                    return pb;
-            }
+		return nullptr;
+	}
 
-            return nullptr;
-        }
+private:
+	[[nodiscard]] virtual const list<UniquePtr<Bindable> >& getStaticBinds() const noexcept = 0;
 
-    private:
-        [[nodiscard]] virtual const list<UniquePtr<Bindable>>& getStaticBinds() const noexcept = 0;
-
-        const class IndexBuffer* m_indexBuffer = nullptr;
-        list<UniquePtr<Bindable>> m_bindables;
-    };
+	const class IndexBuffer* m_indexBuffer = nullptr;
+	list<UniquePtr<Bindable> > m_bindables{ };
+};
 
 
-}// namespace mage
 

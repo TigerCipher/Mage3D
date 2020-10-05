@@ -24,7 +24,7 @@
 #include <d3dcompiler.h>
 
 
-mage::VertexShader::VertexShader(mage::Graphics& gfx, const std::wstring& path)
+VertexShader::VertexShader(Graphics& gfx, const std::wstring& path)
 {
 	DEBUG_INFO(gfx);
 
@@ -37,13 +37,13 @@ mage::VertexShader::VertexShader(mage::Graphics& gfx, const std::wstring& path)
 		));
 }
 
-void mage::VertexShader::bind(mage::Graphics& gfx) noexcept
+void VertexShader::bind(Graphics& gfx) noexcept
 {
 	getContext(gfx)->VSSetShader(m_shader.Get(), nullptr, 0);
 }
 
 
-mage::PixelShader::PixelShader(mage::Graphics& gfx, const std::wstring& path)
+PixelShader::PixelShader(Graphics& gfx, const std::wstring& path)
 {
 	DEBUG_INFO(gfx);
 
@@ -54,7 +54,7 @@ mage::PixelShader::PixelShader(mage::Graphics& gfx, const std::wstring& path)
 }
 
 
-void mage::PixelShader::bind(mage::Graphics& gfx) noexcept
+void PixelShader::bind(Graphics& gfx) noexcept
 {
 	getContext(gfx)->PSSetShader(m_shader.Get(), nullptr, 0);
 }

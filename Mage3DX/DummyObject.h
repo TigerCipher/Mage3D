@@ -15,72 +15,68 @@
  * Contact: team@bluemoondev.org
  * 
  * File Name: DummyObject.h
- * Date File Created: 9/28/2020 at 2:37 AM
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 #include "Renderable.h"
 
-
-namespace mage
+template<class T>
+class DummyObject : public Renderable<T>
 {
-	template<class T>
-	class DummyObject : public Renderable<T>
+public:
+
+	DummyObject(Graphics& gfx, std::mt19937& rng,
+	            std::uniform_real_distribution<float>& adist,
+	            std::uniform_real_distribution<float>& ddist,
+	            std::uniform_real_distribution<float>& odist,
+	            std::uniform_real_distribution<float>& rdist) :
+		r(rdist(rng)),
+		droll(ddist(rng)),
+		dpitch(ddist(rng)),
+		dyaw(ddist(rng)),
+		dphi(odist(rng)),
+		dtheta(odist(rng)),
+		dchi(odist(rng)),
+		chi(adist(rng)),
+		theta(adist(rng)),
+		phi(adist(rng)) { }
+
+
+
+
+	mat4f getTransformMatrix() const noexcept override
 	{
-	public:
-
-		DummyObject(Graphics& gfx, std::mt19937& rng,
-		            std::uniform_real_distribution<float>& adist,
-		            std::uniform_real_distribution<float>& ddist,
-		            std::uniform_real_distribution<float>& odist,
-		            std::uniform_real_distribution<float>& rdist) :
-			r(rdist(rng)),
-			droll(ddist(rng)),
-			dpitch(ddist(rng)),
-			dyaw(ddist(rng)),
-			dphi(odist(rng)),
-			dtheta(odist(rng)),
-			dchi(odist(rng)),
-			chi(adist(rng)),
-			theta(adist(rng)),
-			phi(adist(rng)) { }
+		return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
+		       dx::XMMatrixTranslation(r, 0.0f, 0.0f) * dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
+	}
 
 
+	void update(float delta) noexcept override
+	{
+		roll += wrapAngle(droll * delta);
+		pitch += wrapAngle(dpitch * delta);
+		yaw += wrapAngle(dyaw * delta);
+		theta += wrapAngle(dtheta * delta);
+		phi += wrapAngle(dphi * delta);
+		chi += wrapAngle(dchi * delta);
+	}
 
-
-		mat4f getTransformMatrix() const noexcept override
-		{
-			return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
-			       dx::XMMatrixTranslation(r, 0.0f, 0.0f) * dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
-		}
-
-
-		void update(float delta) noexcept override
-		{
-			roll += wrapAngle(droll * delta);
-			pitch += wrapAngle(dpitch * delta);
-			yaw += wrapAngle(dyaw * delta);
-			theta += wrapAngle(dtheta * delta);
-			phi += wrapAngle(dphi * delta);
-			chi += wrapAngle(dchi * delta);
-		}
-
-	protected:
-		// positional
-		float r;
-		float roll = 0.0f;
-		float pitch = 0.0f;
-		float yaw = 0.0f;
-		float theta;
-		float phi;
-		float chi;
-		// speed (delta/s)
-		float droll;
-		float dpitch;
-		float dyaw;
-		float dtheta;
-		float dphi;
-		float dchi;
-	};
-}
+protected:
+	// positional
+	float r;
+	float roll = 0.0f;
+	float pitch = 0.0f;
+	float yaw = 0.0f;
+	float theta;
+	float phi;
+	float chi;
+	// speed (delta/s)
+	float droll;
+	float dpitch;
+	float dyaw;
+	float dtheta;
+	float dphi;
+	float dchi;
+};
 

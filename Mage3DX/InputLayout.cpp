@@ -22,7 +22,7 @@
 #include "InputLayout.h"
 #include "GraphicsException.h"
 
-mage::InputLayout::InputLayout(mage::Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout,
+InputLayout::InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout,
                                ID3DBlob* vertexBytecode)
 {
     DEBUG_INFO(gfx);
@@ -33,7 +33,7 @@ mage::InputLayout::InputLayout(mage::Graphics& gfx, const list<D3D11_INPUT_ELEME
 }
 
 
-void mage::InputLayout::bind(mage::Graphics& gfx) noexcept
+void InputLayout::bind(Graphics& gfx) noexcept
 {
     getContext(gfx)->IASetInputLayout(m_layout.Get());
 }

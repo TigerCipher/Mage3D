@@ -24,7 +24,7 @@
 #include "Primitives.h"
 
 
-mage::Melon::Melon(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+Melon::Melon(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
                    std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
                    std::uniform_real_distribution<float>& rdist, std::uniform_int_distribution<int>& longdist,
                    std::uniform_int_distribution<int>& latdist) :
@@ -97,14 +97,14 @@ mage::Melon::Melon(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_dis
 
 }
 
-mat4f mage::Melon::getTransformMatrix() const noexcept
+mat4f Melon::getTransformMatrix() const noexcept
 {
     return dx::XMMatrixRotationRollPitchYaw(pitch, yaw, roll) *
            dx::XMMatrixTranslation(r, 0.0f, 0.0f) *
            dx::XMMatrixRotationRollPitchYaw(theta, phi, chi);
 }
 
-void mage::Melon::update(float delta) noexcept
+void Melon::update(float delta) noexcept
 {
     roll += droll * delta;
     pitch += dpitch * delta;

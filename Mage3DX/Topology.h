@@ -14,24 +14,22 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: topology.h
- * Date File Created: 9/20/2020 at 10:09 PM
+ * File Name: Topology.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 
 #include "Bindable.h"
 
-namespace mage
+
+class Topology : public Bindable
 {
-    class Topology : public Bindable
-    {
-    public:
-        Topology(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type) : m_type(type) { }
-        void bind(Graphics& gfx) noexcept override;
+public:
+	Topology(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type) : m_type(type) { }
+	void bind(Graphics& gfx) noexcept override;
 
-    protected:
-        D3D11_PRIMITIVE_TOPOLOGY m_type;
-    };
+protected:
+	D3D11_PRIMITIVE_TOPOLOGY m_type;
+};
 
-}// namespace mage

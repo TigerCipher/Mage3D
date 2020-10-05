@@ -14,26 +14,22 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: inputlayout.h
- * Date File Created: 9/20/2020 at 9:50 PM
+ * File Name: InputLayout.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 
 #include "Bindable.h"
 
-namespace mage
+class InputLayout : public Bindable
 {
-    class InputLayout : public Bindable
-    {
-    public:
-        InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout, ID3DBlob* vertexBytecode);
-        void bind(Graphics& gfx) noexcept override;
+public:
+	InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout, ID3DBlob* vertexBytecode);
+	void bind(Graphics& gfx) noexcept override;
 
-    protected:
-        COMptr<ID3D11InputLayout> m_layout;
-    };
+protected:
+	COMptr<ID3D11InputLayout> m_layout;
+};
 
-}// namespace mage

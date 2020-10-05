@@ -23,7 +23,7 @@
 
 
 
-float mage::Timer::markPoint() noexcept
+float Timer::markPoint() noexcept
 {
     const auto prev = m_last;
     m_last = std::chrono::steady_clock::now();
@@ -31,7 +31,7 @@ float mage::Timer::markPoint() noexcept
     return time.count();
 }
 
-float mage::Timer::peek() const noexcept
+float Timer::peek() const noexcept
 {
     return std::chrono::duration<float>(std::chrono::steady_clock::now() - m_last).count();
 }

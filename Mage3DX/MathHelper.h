@@ -14,11 +14,10 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: mathhelper.h
- * Date File Created: 9/20/2020 at 2:47 PM
+ * File Name: MathHelper.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 
@@ -39,32 +38,28 @@ constexpr double PI_D = 3.1415926535897932;
 template<typename T>
 constexpr auto pow2(const T& x)
 {
-    return x * x;
+	return x * x;
 }
 
 template<typename T>
 constexpr T interpolate(const T& src, const T& dest, float alpha)
 {
-    return src + (dest - src) * alpha;
+	return src + (dest - src) * alpha;
 }
 
 template<typename T>
 constexpr T toRadians(T degrees)
 {
-    return degrees * PI / (T) 180.0;
+	return degrees * PI / (T) 180.0;
 }
 
 template<typename T>
 T wrapAngle(T theta)
 {
-    const T modded = fmod(theta, (T) 2.0 * (T) PI_D);
-    return (modded > (T) PI_D) ? (modded - (T) 2.0 * (T)PI_D) : modded;
+	const T modded = fmod(theta, (T) 2.0 * (T) PI_D);
+	return (modded > (T) PI_D) ? (modded - (T) 2.0 * (T) PI_D) : modded;
 }
 
 
-
-namespace mage
-{
-    float dot(vec4f v1, vec4f v2);
-}
+extern float dot(vec4f v1, vec4f v2);
 

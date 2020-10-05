@@ -14,26 +14,23 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: timer.h
- * Date File Created: 9/15/2020 at 3:04 PM
+ * File Name: Timer.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 
-namespace mage
+class Timer
 {
-    class Timer
-    {
-    public:
-        Timer() noexcept : m_last(std::chrono::steady_clock::now()) {}
-        virtual ~Timer() = default;
+public:
+	Timer() noexcept : m_last(std::chrono::steady_clock::now()) { }
+	virtual ~Timer() = default;
 
-        float markPoint() noexcept;
-        [[nodiscard]] float peek() const noexcept;
+	float markPoint() noexcept;
+	[[nodiscard]] float peek() const noexcept;
 
-    private:
-        std::chrono::steady_clock::time_point m_last;
-    };
+private:
+	std::chrono::steady_clock::time_point m_last;
+};
 
-}
 

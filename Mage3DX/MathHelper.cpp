@@ -21,7 +21,7 @@
 #include "pch.h"
 #include "MathHelper.h"
 
-float mage::dot(vec4f v1, vec4f v2)
+float dot(vec4f v1, vec4f v2)
 {
     auto result = dx::XMVector4Dot(v1, v2);
     auto d = dx::XMVectorGetX(result);

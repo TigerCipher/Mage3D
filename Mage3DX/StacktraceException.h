@@ -14,67 +14,65 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: stacktraceexception.h
- * Date File Created: 9/24/2020 at 10:23 AM
+ * File Name: StacktraceException.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "Callstack.h"
 #include <stdexcept>
 
-namespace mage
+class StacktraceExceptionBase : public Callstack
 {
-    class StacktraceExceptionBase : public Callstack
-    {
-    public:
-        explicit StacktraceExceptionBase(bool showStack) : Callstack(2), m_showStack(showStack) { }
+public:
+	explicit StacktraceExceptionBase(bool showStack) : Callstack(2),
+		m_showStack(showStack) { }
 
-        [[nodiscard]] virtual const char* what() const noexcept = 0;
+	[[nodiscard]] virtual const char* what() const noexcept = 0;
 
-        [[nodiscard]] bool shouldShowStack() const { return m_showStack; }
+	[[nodiscard]] bool shouldShowStack() const { return m_showStack; }
 
-    protected:
-        bool m_showStack;
-    };
+protected:
+	bool m_showStack;
+};
 
-    template<class T>
-    class StacktraceException : public T, public StacktraceExceptionBase
-    {
-    public:
-        explicit StacktraceException(const std::string& msg) : T(msg), StacktraceExceptionBase(true) { }
-        const char* what() const noexcept override
-        {
-            if (m_showStack)
-            {
-                m_buffer = fmt::format("[{}]\n{}", std::string(T::what()), asString());
-                return m_buffer.c_str();
-            }
-            return T::what();
-        }
+template<class T>
+class StacktraceException : public T, public StacktraceExceptionBase
+{
+public:
+	explicit StacktraceException(const std::string& msg) : T(msg),
+		StacktraceExceptionBase(true) { }
+	const char* what() const noexcept override
+	{
+		if (m_showStack)
+		{
+			m_buffer = fmt::format("[{}]\n{}", std::string(T::what()), asString());
+			return m_buffer.c_str();
+		}
+		return T::what();
+	}
 
-    protected:
-        mutable std::string m_buffer;
-    };
+protected:
+	mutable std::string m_buffer;
+};
 
-    typedef StacktraceException<std::runtime_error> stacktraceRuntimeError;
-    typedef StacktraceException<std::range_error> stacktraceRangeError;
-    typedef StacktraceException<std::overflow_error> stacktraceOverflowError;
-    typedef StacktraceException<std::underflow_error> stacktraceUnderflowError;
-    typedef StacktraceException<std::logic_error> stacktraceLogicError;
-    typedef StacktraceException<std::domain_error> stacktraceDomainError;
-    typedef StacktraceException<std::invalid_argument> stacktraceInvalidArgument;
-    typedef StacktraceException<std::length_error> stacktraceLengthError;
-    typedef StacktraceException<std::out_of_range> stacktraceOutOfRange;
+typedef StacktraceException<std::runtime_error> stacktraceRuntimeError;
+typedef StacktraceException<std::range_error> stacktraceRangeError;
+typedef StacktraceException<std::overflow_error> stacktraceOverflowError;
+typedef StacktraceException<std::underflow_error> stacktraceUnderflowError;
+typedef StacktraceException<std::logic_error> stacktraceLogicError;
+typedef StacktraceException<std::domain_error> stacktraceDomainError;
+typedef StacktraceException<std::invalid_argument> stacktraceInvalidArgument;
+typedef StacktraceException<std::length_error> stacktraceLengthError;
+typedef StacktraceException<std::out_of_range> stacktraceOutOfRange;
 
-    //typedef StacktraceException<GraphicsException> stacktraceGfx;
-    //typedef StacktraceException<GraphicsDeviceRemovedException> stacktraceGfxDeviceRemoved;
-    //typedef StacktraceException<TextureException> stacktraceTexture;
-    //typedef StacktraceException<DisplayException> stacktraceDisplay;
-    //typedef StacktraceException<NoGraphicsException> stacktraceNoGfx;
-    //typedef StacktraceException<InfoException> stacktraceInfo;
+//typedef StacktraceException<GraphicsException> stacktraceGfx;
+//typedef StacktraceException<GraphicsDeviceRemovedException> stacktraceGfxDeviceRemoved;
+//typedef StacktraceException<TextureException> stacktraceTexture;
+//typedef StacktraceException<DisplayException> stacktraceDisplay;
+//typedef StacktraceException<NoGraphicsException> stacktraceNoGfx;
+//typedef StacktraceException<InfoException> stacktraceInfo;
 
 
-}// namespace mage
 

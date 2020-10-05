@@ -14,11 +14,10 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: renderengine.h
- * Date File Created: 9/16/2020 at 5:17 PM
+ * File Name: Graphics.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "MathHelper.h"
@@ -27,54 +26,51 @@
 #include <d3d11.h>
 
 
-namespace mage
+class Graphics
 {
-    class Graphics
-    {
-        friend class Bindable;
+friend class Bindable;
 
-    public:
-        explicit Graphics(HWND hwnd);
-        virtual ~Graphics() = default;
+public:
+	explicit Graphics(HWND hwnd);
+	virtual ~Graphics() = default;
 
-        Graphics(const Graphics& rhs) = delete;
-        Graphics& operator=(const Graphics& rhs) = delete;
+	Graphics(const Graphics& rhs) = delete;
+	Graphics& operator=(const Graphics& rhs) = delete;
 
-        void swap();
-        void clear(float r, float g, float b) noexcept;
+	void swap();
+	void clear(float r, float g, float b) noexcept;
 
-        void drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG);
+	void drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG);
 
-        void setProjection(mat4f proj) noexcept { m_projection = proj; }
-        [[nodiscard]] mat4f getProjection() const noexcept { return m_projection; }
+	void setProjection(mat4f proj) noexcept { m_projection = proj; }
+	[[nodiscard]] mat4f getProjection() const noexcept { return m_projection; }
 
-        void setCamera(mat4f cam) noexcept { m_camera = cam; }
-        [[nodiscard]] mat4f getCamera() const noexcept { return m_camera; }
+	void setCamera(mat4f cam) noexcept { m_camera = cam; }
+	[[nodiscard]] mat4f getCamera() const noexcept { return m_camera; }
 
-        void toggleImgui() noexcept { m_imguiEnabled = !m_imguiEnabled; }
-        void enableImgui() noexcept { m_imguiEnabled = true; }
-        void disableImgui() noexcept { m_imguiEnabled = false; }
+	void toggleImgui() noexcept { m_imguiEnabled = !m_imguiEnabled; }
+	void enableImgui() noexcept { m_imguiEnabled = true; }
+	void disableImgui() noexcept { m_imguiEnabled = false; }
 
-        [[nodiscard]] bool isImguiEnabled() const noexcept { return m_imguiEnabled; }
+	[[nodiscard]] bool isImguiEnabled() const noexcept { return m_imguiEnabled; }
 
 
-    protected:
-    private:
-        COMptr<ID3D11Device> m_device {};
-        COMptr<IDXGISwapChain> m_swap {};
-        COMptr<ID3D11DeviceContext> m_context {};
-        COMptr<ID3D11RenderTargetView> m_target {};
-        COMptr<ID3D11DepthStencilView> m_depthStencilView {};
+protected:
+private:
+	COMptr<ID3D11Device> m_device { };
+	COMptr<IDXGISwapChain> m_swap { };
+	COMptr<ID3D11DeviceContext> m_context { };
+	COMptr<ID3D11RenderTargetView> m_target { };
+	COMptr<ID3D11DepthStencilView> m_depthStencilView { };
 
-        mat4f m_projection{};
-        mat4f m_camera{};
-        bool m_imguiEnabled = true;
+	mat4f m_projection{ };
+	mat4f m_camera{ };
+	bool m_imguiEnabled = true;
 
 #if MAGE_DEBUG
-        DebugInfo m_debugInfo;
+	DebugInfo m_debugInfo;
 #endif
-    };
+};
 
-}// namespace mage
 
 

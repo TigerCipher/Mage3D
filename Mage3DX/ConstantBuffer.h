@@ -14,8 +14,8 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: constantbuffer.h
- * Date File Created: 9/20/2020 at 9:24 PM
+ * File Name: ConstantBuffer.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
@@ -23,90 +23,87 @@
 #include "GraphicsException.h"
 #include "Bindable.h"
 
-namespace mage
+template<typename C>
+class ConstantBuffer : public Bindable
 {
-    template<typename C>
-    class ConstantBuffer : public Bindable
-    {
-    public:
-        explicit ConstantBuffer(Graphics& gfx, UINT slot = 0) : m_slot(slot)
-        {
-            DEBUG_INFO(gfx);
-            D3D11_BUFFER_DESC desc;
-            desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            desc.Usage = D3D11_USAGE_DYNAMIC;
-            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-            desc.MiscFlags = 0;
-            desc.ByteWidth = sizeof(C);
-            desc.StructureByteStride = 0;
-            GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, nullptr, &m_buffer));
-        }
+public:
+	explicit ConstantBuffer(Graphics& gfx, UINT slot = 0) : m_slot(slot)
+	{
+		DEBUG_INFO(gfx);
+		D3D11_BUFFER_DESC desc;
+		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		desc.Usage = D3D11_USAGE_DYNAMIC;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		desc.MiscFlags = 0;
+		desc.ByteWidth = sizeof(C);
+		desc.StructureByteStride = 0;
+		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, nullptr, &m_buffer));
+	}
 
-        ConstantBuffer(Graphics& gfx, const C& consts, UINT slot = 0) : m_slot(slot)
-        {
-            DEBUG_INFO(gfx);
-            D3D11_BUFFER_DESC desc;
-            desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            desc.Usage = D3D11_USAGE_DYNAMIC;
-            desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-            desc.MiscFlags = 0;
-            desc.ByteWidth = sizeof(consts);
-            desc.StructureByteStride = 0;
+	ConstantBuffer(Graphics& gfx, const C& consts, UINT slot = 0) : m_slot(slot)
+	{
+		DEBUG_INFO(gfx);
+		D3D11_BUFFER_DESC desc;
+		desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+		desc.Usage = D3D11_USAGE_DYNAMIC;
+		desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+		desc.MiscFlags = 0;
+		desc.ByteWidth = sizeof(consts);
+		desc.StructureByteStride = 0;
 
-            D3D11_SUBRESOURCE_DATA subData = {};
-            subData.pSysMem = &consts;
+		D3D11_SUBRESOURCE_DATA subData = { };
+		subData.pSysMem = &consts;
 
-            GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, &subData, &m_buffer));
-        }
+		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, &subData, &m_buffer));
+	}
 
-        void update(Graphics& gfx, const C& consts)
-        {
-            DEBUG_INFO(gfx);
+	void update(Graphics& gfx, const C& consts)
+	{
+		DEBUG_INFO(gfx);
 
-            D3D11_MAPPED_SUBRESOURCE msr;
-            GFX_THROW_INFO(getContext(gfx)->Map(m_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr));
-            memcpy(msr.pData, &consts, sizeof(consts));
-            getContext(gfx)->Unmap(m_buffer.Get(), 0);
-        }
+		D3D11_MAPPED_SUBRESOURCE msr;
+		GFX_THROW_INFO(getContext(gfx)->Map(m_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr));
+		memcpy(msr.pData, &consts, sizeof(consts));
+		getContext(gfx)->Unmap(m_buffer.Get(), 0);
+	}
 
-    protected:
-        COMptr<ID3D11Buffer> m_buffer;
-        UINT m_slot;
-    };
+protected:
+	COMptr<ID3D11Buffer> m_buffer;
+	UINT m_slot;
+};
 
-    template<typename C>
-    class VertexConstantBuffer : public ConstantBuffer<C>
-    {
-        using ConstantBuffer<C>::m_buffer;
-        using ConstantBuffer<C>::m_slot;
-        //using Bindable::getContext;
+template<typename C>
+class VertexConstantBuffer : public ConstantBuffer<C>
+{
+using ConstantBuffer<C>::m_buffer;
+using ConstantBuffer<C>::m_slot;
+//using Bindable::getContext;
 
-    public:
-        using ConstantBuffer<C>::ConstantBuffer;
+public:
+	using ConstantBuffer<C>::ConstantBuffer;
 
-        void bind(Graphics& gfx) noexcept override
-        {
-        	// For some reason ReSharper (but not Visual C++) was thinking getContext was private and not protected
-        	// but super:: works so whatever
-            __super::getContext(gfx)->VSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
-        }
-    };
+	void bind(Graphics& gfx) noexcept override
+	{
+		// For some reason ReSharper (but not Visual C++) was thinking getContext was private and not protected
+		// but super:: works so whatever
+		__super::getContext(gfx)->VSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
+	}
+};
 
-    template<typename C>
-    class PixelConstantBuffer : public ConstantBuffer<C>
-    {
-        using ConstantBuffer<C>::m_buffer;
-        using ConstantBuffer<C>::m_slot;
-        //using Bindable::getContext;
+template<typename C>
+class PixelConstantBuffer : public ConstantBuffer<C>
+{
+using ConstantBuffer<C>::m_buffer;
+using ConstantBuffer<C>::m_slot;
+//using Bindable::getContext;
 
-    public:
-        using ConstantBuffer<C>::ConstantBuffer;
+public:
+	using ConstantBuffer<C>::ConstantBuffer;
 
-        void bind(Graphics& gfx) noexcept override
-        {
-            __super::getContext(gfx)->PSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
-        }
-    };
+	void bind(Graphics& gfx) noexcept override
+	{
+		__super::getContext(gfx)->PSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
+	}
+};
 
 
-}// namespace mage

@@ -14,34 +14,31 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: transformconstantbuffer.h
- * Date File Created: 9/20/2020 at 10:37 PM
+ * File Name: TransformConstantBuffer.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 
 
-//#include "pch.h"
 #include "ConstantBuffer.h"
 #include "IRenderable.h"
 #include "MathHelper.h"
 
-namespace mage
+
+class TransformConstantBuffer : public Bindable
 {
-    class TransformConstantBuffer : public Bindable
-    {
-    public:
-        TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot = 0);
-        void bind(Graphics& gfx) noexcept override;
+public:
+	TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot = 0);
+	void bind(Graphics& gfx) noexcept override;
 
-    private:
-        struct Transforms
-        {
-            mat4f model;
-            mat4f mvp;
-        };
-        static UniquePtr<VertexConstantBuffer<Transforms>> sVertexBuffer;
-        const IRenderable& m_parent;
-    };
+private:
+	struct Transforms
+	{
+		mat4f model;
+		mat4f mvp;
+	};
+	static UniquePtr<VertexConstantBuffer<Transforms> > sVertexBuffer;
+	const IRenderable& m_parent;
+};
 
-}// namespace mage

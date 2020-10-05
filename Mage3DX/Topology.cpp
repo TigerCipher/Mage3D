@@ -22,7 +22,7 @@
 #include "Topology.h"
 
 
-void mage::Topology::bind(mage::Graphics& gfx) noexcept
+void Topology::bind(Graphics& gfx) noexcept
 {
     getContext(gfx)->IASetPrimitiveTopology(m_type);
 }

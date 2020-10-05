@@ -21,18 +21,18 @@
 #include "pch.h"
 #include "MageException.h"
 
-const char* mage::MageException::what() const noexcept
+const char* MageException::what() const noexcept
 {
     m_what = fmt::format("{}\n{}", getType(), getOrigin());
     return m_what.c_str();
 }
 
-const char* mage::MageException::getType() const noexcept
+const char* MageException::getType() const noexcept
 {
     return "Mage Exception";
 }
 
-std::string mage::MageException::getOrigin() const noexcept
+std::string MageException::getOrigin() const noexcept
 {
     if(m_showStack)
     {

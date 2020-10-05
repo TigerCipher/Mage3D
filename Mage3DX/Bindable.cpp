@@ -22,17 +22,17 @@
 #include "Bindable.h"
 
 
-ID3D11DeviceContext* mage::Bindable::getContext(mage::Graphics& gfx) noexcept
+ID3D11DeviceContext* Bindable::getContext(Graphics& gfx) noexcept
 {
     return gfx.m_context.Get();
 }
 
-ID3D11Device* mage::Bindable::getDevice(mage::Graphics& gfx) noexcept
+ID3D11Device* Bindable::getDevice(Graphics& gfx) noexcept
 {
     return gfx.m_device.Get();
 }
 
-mage::DebugInfo& mage::Bindable::getDebugInfo(mage::Graphics& gfx) noexcept(MAGE_DEBUG)
+DebugInfo& Bindable::getDebugInfo(Graphics& gfx) noexcept(MAGE_DEBUG)
 {
     #if MAGE_DEBUG
     return gfx.m_debugInfo;

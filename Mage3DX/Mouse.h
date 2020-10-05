@@ -14,107 +14,103 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: mouse.h
- * Date File Created: 9/13/2020 at 2:39 PM
+ * File Name: Mouse.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 
-namespace mage
+class Mouse
 {
-    class Mouse
-    {
-        friend class Display;
-    public:
-        class Event
-        {
-        public:
-            enum class Type
-            {
-                LEFT_PRESS, LEFT_RELEASE, RIGHT_PRESS, RIGHT_RELEASE, WHEEL_UP, WHEEL_DOWN, MOVE, ENTER, LEAVE, INVALID
-            };
+friend class Display;
+public:
+	class Event
+	{
+	public:
+		enum class Type
+		{
+			LEFT_PRESS, LEFT_RELEASE, RIGHT_PRESS, RIGHT_RELEASE, WHEEL_UP, WHEEL_DOWN, MOVE, ENTER, LEAVE, INVALID
+		};
 
-            Event() noexcept:
-                    m_type(Type::INVALID),
-                    m_left(false),
-                    m_right(false),
-                    m_xPos(0),
-                    m_yPos(0) { }
+		Event() noexcept:
+			m_type(Type::INVALID),
+			m_left(false),
+			m_right(false),
+			m_xPos(0),
+			m_yPos(0) { }
 
-            Event(Type type, const Mouse& parent) noexcept:
-                    m_type(type),
-                    m_left(parent.m_left),
-                    m_right(parent.m_right),
-                    m_xPos(parent.m_xPos),
-                    m_yPos(parent.m_yPos) { }
+		Event(Type type, const Mouse& parent) noexcept:
+			m_type(type),
+			m_left(parent.m_left),
+			m_right(parent.m_right),
+			m_xPos(parent.m_xPos),
+			m_yPos(parent.m_yPos) { }
 
-            [[nodiscard]] bool isValid() const noexcept { return m_type != Type::INVALID; }
+		[[nodiscard]] bool isValid() const noexcept { return m_type != Type::INVALID; }
 
-            [[nodiscard]] Type getType() const noexcept { return m_type; }
+		[[nodiscard]] Type getType() const noexcept { return m_type; }
 
-            [[nodiscard]] std::pair<int, int> getPos() const noexcept { return { m_xPos, m_yPos }; }
+		[[nodiscard]] std::pair<int, int> getPos() const noexcept { return { m_xPos, m_yPos }; }
 
-            [[nodiscard]] int getX() const noexcept { return m_xPos; }
+		[[nodiscard]] int getX() const noexcept { return m_xPos; }
 
-            [[nodiscard]] int getY() const noexcept { return m_yPos; }
+		[[nodiscard]] int getY() const noexcept { return m_yPos; }
 
-            [[nodiscard]] bool isLeftPressed() const noexcept { return m_left; }
+		[[nodiscard]] bool isLeftPressed() const noexcept { return m_left; }
 
-            [[nodiscard]] bool isRightPressed() const noexcept { return m_right; }
+		[[nodiscard]] bool isRightPressed() const noexcept { return m_right; }
 
-        private:
-            Type m_type;
-            bool m_left;
-            bool m_right;
-            int m_xPos;
-            int m_yPos;
-        };
-    public:
-        Mouse() = default;
-        virtual ~Mouse() = default;
-        Mouse(const Mouse& rhs) = delete;
-        Mouse& operator=(const Mouse& rhs) = delete;
+	private:
+		Type m_type;
+		bool m_left;
+		bool m_right;
+		int m_xPos;
+		int m_yPos;
+	};
+public:
+	Mouse() = default;
+	virtual ~Mouse() = default;
+	Mouse(const Mouse& rhs) = delete;
+	Mouse& operator=(const Mouse& rhs) = delete;
 
-        [[nodiscard]] std::pair<int, int> getPos() const noexcept { return { m_xPos, m_yPos }; }
+	[[nodiscard]] std::pair<int, int> getPos() const noexcept { return { m_xPos, m_yPos }; }
 
-        [[nodiscard]] int getX() const noexcept { return m_xPos; }
+	[[nodiscard]] int getX() const noexcept { return m_xPos; }
 
-        [[nodiscard]] int getY() const noexcept { return m_yPos; }
+	[[nodiscard]] int getY() const noexcept { return m_yPos; }
 
-        [[nodiscard]] bool isLeftPressed() const noexcept { return m_left; }
+	[[nodiscard]] bool isLeftPressed() const noexcept { return m_left; }
 
-        [[nodiscard]] bool isRightPressed() const noexcept { return m_right; }
-        [[nodiscard]] bool isInWindow() const noexcept { return m_inWindow; }
+	[[nodiscard]] bool isRightPressed() const noexcept { return m_right; }
+	[[nodiscard]] bool isInWindow() const noexcept { return m_inWindow; }
 
-        Event read() noexcept;
-        [[nodiscard]] bool isEmpty() const noexcept { return m_buffer.empty(); }
+	Event read() noexcept;
+	[[nodiscard]] bool isEmpty() const noexcept { return m_buffer.empty(); }
 
-        void clear() noexcept;
+	void clear() noexcept;
 
 
-    private:
+private:
 
-        void onMouseMove(int x, int y) noexcept;
-        void onLeftPressed(int x, int y) noexcept;
-        void onLeftReleased(int x, int y) noexcept;
-        void onRightPressed(int x, int y) noexcept;
-        void onRightReleased(int x, int y) noexcept;
-        void onWheelUp(int x, int y) noexcept;
-        void onWheelDown(int x, int y) noexcept;
-        void onMouseEnter() noexcept;
-        void onMouseLeave() noexcept;
-        void onWheelDelta(int x, int y, int delta) noexcept;
-        void trim() noexcept;
+	void onMouseMove(int x, int y) noexcept;
+	void onLeftPressed(int x, int y) noexcept;
+	void onLeftReleased(int x, int y) noexcept;
+	void onRightPressed(int x, int y) noexcept;
+	void onRightReleased(int x, int y) noexcept;
+	void onWheelUp(int x, int y) noexcept;
+	void onWheelDown(int x, int y) noexcept;
+	void onMouseEnter() noexcept;
+	void onMouseLeave() noexcept;
+	void onWheelDelta(int x, int y, int delta) noexcept;
+	void trim() noexcept;
 
-        static constexpr uint BUFFER_SIZE = 16;
+	static constexpr uint BUFFER_SIZE = 16;
 
-        int m_xPos;
-        int m_yPos;
-        bool m_left = false;
-        bool m_right = false;
-        bool m_inWindow = false;
-        int m_wheelDelta = 0;
-        std::queue<Event> m_buffer;
-    };
-
-}
+	int m_xPos;
+	int m_yPos;
+	bool m_left = false;
+	bool m_right = false;
+	bool m_inWindow = false;
+	int m_wheelDelta = 0;
+	std::queue<Event> m_buffer;
+};

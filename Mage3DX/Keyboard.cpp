@@ -22,12 +22,12 @@
 #include "Keyboard.h"
 
 
-bool mage::Keyboard::isPressed(uchar keycode) const noexcept
+bool Keyboard::isPressed(uchar keycode) const noexcept
 {
     return m_keyStates[ keycode ];
 }
 
-bool mage::Keyboard::isPressedOnce(uchar keycode) const noexcept
+bool Keyboard::isPressedOnce(uchar keycode) const noexcept
 {
     bool down = m_keyStates[keycode];
     if(down && m_pressCount++ == 0) return down;
@@ -36,7 +36,7 @@ bool mage::Keyboard::isPressedOnce(uchar keycode) const noexcept
 }
 
 
-mage::Keyboard::Event mage::Keyboard::readKey() noexcept
+Keyboard::Event Keyboard::readKey() noexcept
 {
     if (!m_keyBuffer.empty())
     {
@@ -44,20 +44,20 @@ mage::Keyboard::Event mage::Keyboard::readKey() noexcept
         m_keyBuffer.pop();
         return e;
     }
-    return mage::Keyboard::Event();
+    return Keyboard::Event();
 }
 
-bool mage::Keyboard::isKeyBufferEmpty() const noexcept
+bool Keyboard::isKeyBufferEmpty() const noexcept
 {
     return m_keyBuffer.empty();
 }
 
-void mage::Keyboard::clearKeyBuffer() noexcept
+void Keyboard::clearKeyBuffer() noexcept
 {
     m_keyBuffer = std::queue<Event>();
 }
 
-char mage::Keyboard::readChar() noexcept
+char Keyboard::readChar() noexcept
 {
     if (!m_charBuffer.empty())
     {
@@ -68,64 +68,64 @@ char mage::Keyboard::readChar() noexcept
     return 0;
 }
 
-bool mage::Keyboard::isCharBufferEmpty() const noexcept
+bool Keyboard::isCharBufferEmpty() const noexcept
 {
     return m_charBuffer.empty();
 }
 
-void mage::Keyboard::clearCharBuffer() noexcept
+void Keyboard::clearCharBuffer() noexcept
 {
     m_charBuffer = std::queue<char>();
 }
 
-void mage::Keyboard::clearBuffers() noexcept
+void Keyboard::clearBuffers() noexcept
 {
     clearKeyBuffer();
     clearCharBuffer();
 }
 
-void mage::Keyboard::enableAutoRepeat() noexcept
+void Keyboard::enableAutoRepeat() noexcept
 {
     m_autoRepeat = true;
 }
 
-void mage::Keyboard::disableAutoRepeat() noexcept
+void Keyboard::disableAutoRepeat() noexcept
 {
     m_autoRepeat = false;
 }
 
-bool mage::Keyboard::isAutoRepeat() const noexcept
+bool Keyboard::isAutoRepeat() const noexcept
 {
     return m_autoRepeat;
 }
 
-void mage::Keyboard::onKeyPressed(uchar keycode) noexcept
+void Keyboard::onKeyPressed(uchar keycode) noexcept
 {
     m_keyStates[ keycode ] = true;
     m_keyBuffer.push(Event(Event::Type::PRESS, keycode));
     trimBuffer(m_keyBuffer);
 }
 
-void mage::Keyboard::onKeyReleased(uchar keycode) noexcept
+void Keyboard::onKeyReleased(uchar keycode) noexcept
 {
     m_keyStates[ keycode ] = false;
     m_keyBuffer.push(Event(Event::Type::RELEASE, keycode));
     trimBuffer(m_keyBuffer);
 }
 
-void mage::Keyboard::onChar(char c) noexcept
+void Keyboard::onChar(char c) noexcept
 {
     m_charBuffer.push(c);
     trimBuffer(m_charBuffer);
 }
 
-void mage::Keyboard::clearState() noexcept
+void Keyboard::clearState() noexcept
 {
     m_keyStates.reset();
 }
 
 template<typename T>
-void mage::Keyboard::trimBuffer(std::queue<T>& buffer) noexcept
+void Keyboard::trimBuffer(std::queue<T>& buffer) noexcept
 {
     while(buffer.size() > BUFFER_SIZE)
     {

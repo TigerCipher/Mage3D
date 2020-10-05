@@ -14,24 +14,22 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: util.cpp
- * Date File Created: 9/18/2020 at 3:00 PM
+ * File Name: Util.cpp
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #include "pch.h"
 #include "Util.h"
 
-namespace mage
-{
-    void fromList(std::string& str, const list<std::string>& strList)
-    {
-        for(const auto& s : strList)
-        {
-            str += s;
-            str.push_back('\n');
-        }
 
-        if(!str.empty())
-            str.pop_back();
-    }
+void fromList(std::string& str, const list<std::string>& strList)
+{
+	for(const auto& s : strList)
+	{
+		str += s;
+		str.push_back('\n');
+	}
+
+	if(!str.empty())
+		str.pop_back();
 }

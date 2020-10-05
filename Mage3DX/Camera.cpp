@@ -24,7 +24,7 @@
 #include "ImguiManager.h"
 
 
-void mage::Camera::spawnControlWindow() noexcept
+void Camera::spawnControlWindow() noexcept
 {
     IMGUI_WRAP("Camera",
                ImGui::Text("Position"),
@@ -41,7 +41,7 @@ void mage::Camera::spawnControlWindow() noexcept
 
 }
 
-void mage::Camera::reset() noexcept
+void Camera::reset() noexcept
 {
     if(ImGui::Button("Reset"))
     {
@@ -54,7 +54,7 @@ void mage::Camera::reset() noexcept
     }
 }
 
-mat4f mage::Camera::getViewMatrix() const noexcept
+mat4f Camera::getViewMatrix() const noexcept
 {
     const auto pos = dx::XMVector3Transform(dx::XMVectorSet(0, 0, -m_r, 0),
                                             dx::XMMatrixRotationRollPitchYaw(m_phi, -m_theta, 0));

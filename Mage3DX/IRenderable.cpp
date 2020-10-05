@@ -26,7 +26,7 @@
 #include <typeinfo>
 
 
-void mage::IRenderable::render(mage::Graphics& gfx) const noexcept(!MAGE_DEBUG)
+void IRenderable::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
 {
     for(auto& b : m_bindables)
     {
@@ -40,13 +40,13 @@ void mage::IRenderable::render(mage::Graphics& gfx) const noexcept(!MAGE_DEBUG)
 }
 
 
-void mage::IRenderable::addBind(UniquePtr<mage::Bindable> bindable) noexcept(!MAGE_DEBUG)
+void IRenderable::addBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG)
 {
     assert("MUST use addIndexBuffer when binding an IndexBuffer" && typeid(*bindable) != typeid(IndexBuffer));
     m_bindables.push_back(std::move(bindable));
 }
 
-void mage::IRenderable::addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept
+void IRenderable::addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept
 {
     assert("Do not add a second IndexBuffer" && !m_indexBuffer);
     m_indexBuffer = ibuf.get();

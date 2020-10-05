@@ -14,27 +14,23 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: sampler.h
- * Date File Created: 9/23/2020 at 10:37 PM
+ * File Name: Sampler.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 
 #include "Bindable.h"
 
-namespace mage
+class Sampler : public Bindable
 {
-    class Sampler : public Bindable
-    {
-    public:
-        explicit Sampler(Graphics& gfx);
-        void bind(Graphics &gfx) noexcept override;
-    protected:
-        COMptr<ID3D11SamplerState> m_sampler;
-    };
+public:
+	explicit Sampler(Graphics& gfx);
+	void bind(Graphics &gfx) noexcept override;
+protected:
+	COMptr<ID3D11SamplerState> m_sampler;
+};
 
-}// namespace mage
 
 

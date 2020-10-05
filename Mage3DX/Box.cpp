@@ -27,7 +27,7 @@
 #include "ImguiManager.h"
 
 
-mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+Box::Box(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
                std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
                std::uniform_real_distribution<float>& rdist, std::uniform_real_distribution<float>& bdist,
                vec3f material) :
@@ -75,12 +75,12 @@ mage::Box::Box(mage::Graphics& gfx, std::mt19937& rng, std::uniform_real_distrib
 }
 
 
-mat4f mage::Box::getTransformMatrix() const noexcept
+mat4f Box::getTransformMatrix() const noexcept
 {
 	return dx::XMLoadFloat3x3(&m_modelTransformation) * DummyObject::getTransformMatrix();
 }
 
-bool mage::Box::spawnControlWindow(int id, Graphics& gfx) noexcept
+bool Box::spawnControlWindow(int id, Graphics& gfx) noexcept
 {
 	bool dirty = false;
 	bool open = true;
@@ -103,7 +103,7 @@ bool mage::Box::spawnControlWindow(int id, Graphics& gfx) noexcept
 	return open;
 }
 
-void mage::Box::syncMaterial(Graphics& gfx) noexcept(!MAGE_DEBUG)
+void Box::syncMaterial(Graphics& gfx) noexcept(!MAGE_DEBUG)
 {
 	auto cBuf = queryBindable<MaterialConstBuffer>();
 	assert(cBuf != nullptr);
@@ -111,7 +111,7 @@ void mage::Box::syncMaterial(Graphics& gfx) noexcept(!MAGE_DEBUG)
 }
 
 
-mage::SkinnedBox::SkinnedBox(mage::Graphics& gfx, std::mt19937& rng,
+SkinnedBox::SkinnedBox(Graphics& gfx, std::mt19937& rng,
                              std::uniform_real_distribution<float>& adist,
                              std::uniform_real_distribution<float>& ddist,
                              std::uniform_real_distribution<float>& odist,

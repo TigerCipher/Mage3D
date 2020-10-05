@@ -14,8 +14,8 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: bindable.h
- * Date File Created: 9/20/2020 at 9:14 PM
+ * File Name: Bindable.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
@@ -23,18 +23,14 @@
 #include "Graphics.h"
 
 
-namespace mage
+class Bindable
 {
-    class Bindable
-    {
-    public:
-        virtual ~Bindable() = default;
-        virtual void bind(Graphics& gfx) noexcept = 0;
+public:
+	virtual ~Bindable() = default;
+	virtual void bind(Graphics& gfx) noexcept = 0;
 
-    protected:
-        static ID3D11DeviceContext* getContext(Graphics& gfx) noexcept;
-        static ID3D11Device* getDevice(Graphics& gfx) noexcept;
-        static DebugInfo& getDebugInfo(Graphics& gfx) noexcept(MAGE_DEBUG);
-    };
-
-}// namespace mage
+protected:
+	static ID3D11DeviceContext* getContext(Graphics& gfx) noexcept;
+	static ID3D11Device* getDevice(Graphics& gfx) noexcept;
+	static DebugInfo& getDebugInfo(Graphics& gfx) noexcept(MAGE_DEBUG);
+};

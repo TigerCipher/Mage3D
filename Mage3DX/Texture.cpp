@@ -25,7 +25,7 @@
 
 
 
-mage::Texture::Texture(mage::Graphics& gfx, const TextureSurface& surface)
+Texture::Texture(Graphics& gfx, const TextureSurface& surface)
 {
     DEBUG_INFO(gfx);
 
@@ -57,7 +57,7 @@ mage::Texture::Texture(mage::Graphics& gfx, const TextureSurface& surface)
     GFX_THROW_INFO(getDevice(gfx)->CreateShaderResourceView(tex.Get(), &srvDesc, &m_textureView));
 }
 
-void mage::Texture::bind(mage::Graphics& gfx) noexcept
+void Texture::bind(Graphics& gfx) noexcept
 {
     getContext(gfx)->PSSetShaderResources(0, 1, m_textureView.GetAddressOf());
 }

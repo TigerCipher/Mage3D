@@ -15,34 +15,31 @@
  * Contact: team@bluemoondev.org
  * 
  * File Name: Shader.h
- * Date File Created: 9/28/2020 at 12:19 PM
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 
 #include "Bindable.h"
 
-namespace mage
+class VertexShader : public Bindable
 {
-	class VertexShader : public Bindable
-	{
-	public:
-		VertexShader(Graphics& gfx, const std::wstring& path);
-		void bind(Graphics& gfx) noexcept override;
-		[[nodiscard]] ID3DBlob* getBytecode() const noexcept { return m_bytecode.Get(); }
+public:
+	VertexShader(Graphics& gfx, const std::wstring& path);
+	void bind(Graphics& gfx) noexcept override;
+	[[nodiscard]] ID3DBlob* getBytecode() const noexcept { return m_bytecode.Get(); }
 
-	protected:
-		COMptr<ID3DBlob> m_bytecode;
-		COMptr<ID3D11VertexShader> m_shader;
-	};
+protected:
+	COMptr<ID3DBlob> m_bytecode;
+	COMptr<ID3D11VertexShader> m_shader;
+};
 
-	class PixelShader : public Bindable
-	{
-	public:
-		PixelShader(Graphics& gfx, const std::wstring& path);
-		void bind(Graphics& gfx) noexcept override;
+class PixelShader : public Bindable
+{
+public:
+	PixelShader(Graphics& gfx, const std::wstring& path);
+	void bind(Graphics& gfx) noexcept override;
 
-	protected:
-		COMptr<ID3D11PixelShader> m_shader;
-	};
-}// namespace mage
+protected:
+	COMptr<ID3D11PixelShader> m_shader;
+};

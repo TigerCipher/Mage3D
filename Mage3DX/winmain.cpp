@@ -24,7 +24,6 @@
 #include "MageException.h"
 #include "DebugTools.h"
 
-using namespace mage;
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {

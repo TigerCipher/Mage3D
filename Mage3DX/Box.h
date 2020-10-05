@@ -14,8 +14,8 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: box.h
- * Date File Created: 9/25/2020 at 11:43 PM
+ * File Name: Box.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
@@ -23,43 +23,40 @@
 #include "DummyObject.h"
 #include "Bindables.h"
 
-namespace mage
+class Box : public DummyObject<Box>
 {
-	class Box : public DummyObject<Box>
+public:
+	Box(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+	    std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
+	    std::uniform_real_distribution<float>& rdist, std::uniform_real_distribution<float>& bdist,
+	    vec3f material);
+
+	[[nodiscard]] mat4f getTransformMatrix() const noexcept override;
+
+	bool spawnControlWindow(int id, Graphics& gfx) noexcept;
+private:
+	void syncMaterial(Graphics& gfx) noexcept(!MAGE_DEBUG);
+
+	struct MaterialConstant
 	{
-	public:
-		Box(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
-		    std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
-		    std::uniform_real_distribution<float>& rdist, std::uniform_real_distribution<float>& bdist,
-		    vec3f material);
+		vec3f color;
+		// Specular data
+		float intensity = 0.6f;
+		float power = 30.0f;
 
-		[[nodiscard]] mat4f getTransformMatrix() const noexcept override;
+		// Alignment to match what the shader expects
+		float padding[3];
+	} matConstant;
 
-		bool spawnControlWindow(int id, Graphics& gfx) noexcept;
-	private:
-		void syncMaterial(Graphics& gfx) noexcept(!MAGE_DEBUG);
-
-		struct MaterialConstant
-		{
-			vec3f color;
-			// Specular data
-			float intensity = 0.6f;
-			float power = 30.0f;
-
-			// Alignment to match what the shader expects
-			float padding[3];
-		} matConstant;
-
-		using MaterialConstBuffer = PixelConstantBuffer<MaterialConstant>;
-		dx::XMFLOAT3X3 m_modelTransformation;
-	};
+	using MaterialConstBuffer = PixelConstantBuffer<MaterialConstant>;
+	dx::XMFLOAT3X3 m_modelTransformation;
+};
 
 
-	class SkinnedBox : public DummyObject<SkinnedBox>
-	{
-	public:
-		SkinnedBox(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
-		           std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
-		           std::uniform_real_distribution<float>& rdist);
-	};
-}// namespace mage
+class SkinnedBox : public DummyObject<SkinnedBox>
+{
+public:
+	SkinnedBox(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>& adist,
+	           std::uniform_real_distribution<float>& ddist, std::uniform_real_distribution<float>& odist,
+	           std::uniform_real_distribution<float>& rdist);
+};

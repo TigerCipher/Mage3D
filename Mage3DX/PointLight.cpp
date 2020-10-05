@@ -22,7 +22,7 @@
 #include "PointLight.h"
 #include "ImguiManager.h"
 
-mage::PointLight::PointLight(Graphics& gfx, float radius) :
+PointLight::PointLight(Graphics& gfx, float radius) :
 	m_mesh(gfx, radius),
 	m_buffer(gfx)
 {
@@ -37,13 +37,13 @@ mage::PointLight::PointLight(Graphics& gfx, float radius) :
 	};
 }
 
-void mage::PointLight::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
+void PointLight::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
 {
 	m_mesh.setPosition(m_cbuf.pos);
 	m_mesh.render(gfx);
 }
 
-void mage::PointLight::bind(Graphics& gfx, mat4f view) const noexcept
+void PointLight::bind(Graphics& gfx, mat4f view) const noexcept
 {
 	auto cpy = m_cbuf;
 	const auto pos = dx::XMLoadFloat3(&m_cbuf.pos);
@@ -52,7 +52,7 @@ void mage::PointLight::bind(Graphics& gfx, mat4f view) const noexcept
 	m_buffer.bind(gfx);
 }
 
-void mage::PointLight::spawnControlWindow() noexcept
+void PointLight::spawnControlWindow() noexcept
 {
 	IMGUI_WRAP("Point Light",
 		ImGui::Text("Position"),
@@ -74,7 +74,7 @@ void mage::PointLight::spawnControlWindow() noexcept
 		);
 }
 
-void mage::PointLight::reset() noexcept
+void PointLight::reset() noexcept
 {
 	if (ImGui::Button("Reset"))
 	{

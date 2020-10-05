@@ -14,8 +14,8 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: renderable.h
- * Date File Created: 9/21/2020 at 10:02 PM
+ * File Name: Renderable.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
@@ -25,48 +25,45 @@
 #include "IndexBuffer.h"
 
 
-namespace mage
+template<class T>
+class Renderable : public IRenderable
 {
-    template<class T>
-    class Renderable : public IRenderable
-    {
-    protected:
-        static bool isInitialized() noexcept { return !staticBinds.empty(); }
+protected:
+	static bool isInitialized() noexcept { return !staticBinds.empty(); }
 
-        static void addStaticBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG)
-        {
-            assert("MUST use addStaticIndexBuffer for IndexBuffer types" && typeid(*bindable) != typeid(IndexBuffer));
-            staticBinds.push_back(std::move(bindable));
-        }
+	static void addStaticBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG)
+	{
+		assert("MUST use addStaticIndexBuffer for IndexBuffer types" && typeid(*bindable) != typeid(IndexBuffer));
+		staticBinds.push_back(std::move(bindable));
+	}
 
-        void addStaticIndexBuffer(UniquePtr<IndexBuffer> ibuf) noexcept(!MAGE_DEBUG)
-        {
-            assert("Do not add a second IndexBuffer" && !m_indexBuffer);
-            m_indexBuffer = ibuf.get();
-            staticBinds.push_back(std::move(ibuf));
-        }
+	void addStaticIndexBuffer(UniquePtr<IndexBuffer> ibuf) noexcept(!MAGE_DEBUG)
+	{
+		assert("Do not add a second IndexBuffer" && !m_indexBuffer);
+		m_indexBuffer = ibuf.get();
+		staticBinds.push_back(std::move(ibuf));
+	}
 
-        void setIndexStatic() noexcept(!MAGE_DEBUG)
-        {
-            assert("Do not add a second IndexBuffer" && !m_indexBuffer);
-            for (const auto& b : staticBinds)
-            {
-                if (const auto p = dynamic_cast<IndexBuffer*>(b.get()))
-                {
-                    m_indexBuffer = p;
-                    return;
-                }
-            }
-            assert("Failed to find index buffer from static bindables" && m_indexBuffer);
-        }
+	void setIndexStatic() noexcept(!MAGE_DEBUG)
+	{
+		assert("Do not add a second IndexBuffer" && !m_indexBuffer);
+		for (const auto& b : staticBinds)
+		{
+			if (const auto p = dynamic_cast<IndexBuffer*>(b.get()))
+			{
+				m_indexBuffer = p;
+				return;
+			}
+		}
+		assert("Failed to find index buffer from static bindables" && m_indexBuffer);
+	}
 
-    private:
-        [[nodiscard]] const list<UniquePtr<Bindable>>& getStaticBinds() const noexcept override { return staticBinds; }
+private:
+	[[nodiscard]] const list<UniquePtr<Bindable> >& getStaticBinds() const noexcept override { return staticBinds; }
 
-        static list<UniquePtr<Bindable>> staticBinds;
-    };
+	static list<UniquePtr<Bindable> > staticBinds;
+};
 
-}// namespace mage
 
 template<class T>
-list<UniquePtr<mage::Bindable>> mage::Renderable<T>::staticBinds;
+list<UniquePtr<Bindable> > Renderable<T>::staticBinds;

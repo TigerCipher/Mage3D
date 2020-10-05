@@ -14,37 +14,33 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: camera.h
- * Date File Created: 9/25/2020 at 8:10 PM
+ * File Name: Camera.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "MathHelper.h"
 
 
-namespace mage
+class Camera
 {
-    class Camera
-    {
-    public:
-        Camera() = default;
-        virtual ~Camera() = default;
+public:
+	Camera() = default;
+	virtual ~Camera() = default;
 
-        void spawnControlWindow() noexcept;
-        void reset() noexcept;
+	void spawnControlWindow() noexcept;
+	void reset() noexcept;
 
-        [[nodiscard]] mat4f getViewMatrix() const noexcept;
+	[[nodiscard]] mat4f getViewMatrix() const noexcept;
 
 
-    private:
-        float m_r = 20.0f;
-        float m_theta = 0.0f;
-        float m_phi = 0.0f;
-        float m_pitch = 0.0f;
-        float m_yaw = 0.0f;
-        float m_roll = 0.0f;
-    };
+private:
+	float m_r = 20.0f;
+	float m_theta = 0.0f;
+	float m_phi = 0.0f;
+	float m_pitch = 0.0f;
+	float m_yaw = 0.0f;
+	float m_roll = 0.0f;
+};
 
-}

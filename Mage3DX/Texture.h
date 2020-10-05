@@ -14,28 +14,24 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: texture.h
- * Date File Created: 9/23/2020 at 10:48 PM
+ * File Name: Texture.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "Bindable.h"
 
 
-namespace mage
+class Texture : public Bindable
 {
-    class Texture : public Bindable
-    {
-    public:
-        Texture(Graphics& gfx, const class TextureSurface& surface);
-        void bind(Graphics &gfx) noexcept override;
+public:
+	Texture(Graphics& gfx, const class TextureSurface& surface);
+	void bind(Graphics &gfx) noexcept override;
 
-    protected:
-        COMptr<ID3D11ShaderResourceView> m_textureView;
-    };
+protected:
+	COMptr<ID3D11ShaderResourceView> m_textureView;
+};
 
-}// namespace mage
 
 

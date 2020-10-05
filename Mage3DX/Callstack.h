@@ -14,46 +14,43 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: callstack.h
- * Date File Created: 9/24/2020 at 10:04 AM
+ * File Name: Callstack.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 
-namespace mage
+struct Entry
 {
-    struct Entry
-    {
-        std::string file;
-        uint line;
-        std::string function;
+	std::string file;
+	uint line;
+	std::string function;
 
-        Entry() : line(0) {}
+	Entry() : line(0) { }
 
-        [[nodiscard]] std::string asString() const
-        {
-            return fmt::format("{} ({}): {}", file, line, function);
-        }
-    };
+	[[nodiscard]] std::string asString() const
+	{
+		return fmt::format("{} ({}): {}", file, line, function);
+	}
+};
 
-    class Callstack
-    {
-    public:
-        explicit Callstack(int numDiscard = 0);
-        virtual ~Callstack() noexcept = default;
+class Callstack
+{
+public:
+	explicit Callstack(int numDiscard = 0);
+	virtual ~Callstack() noexcept = default;
 
-        [[nodiscard]] std::string asString() const
-        {
-            std::ostringstream oss;
-            for(const auto & i : m_stack)
-            {
-                oss << i.asString() << "\n";
-            }
+	[[nodiscard]] std::string asString() const
+	{
+		std::ostringstream oss;
+		for(const auto & i : m_stack)
+		{
+			oss << i.asString() << "\n";
+		}
 
-            return oss.str();
-        }
+		return oss.str();
+	}
 
-    private:
-        list<Entry> m_stack;
-    };
-}
+private:
+	list<Entry> m_stack;
+};

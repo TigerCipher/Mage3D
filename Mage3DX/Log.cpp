@@ -27,9 +27,9 @@
 #endif
 
 
-SharedPtr<spdlog::logger> mage::Log::s_logger;
+SharedPtr<spdlog::logger> Log::s_logger;
 
-void mage::Log::init()
+void Log::init()
 {
 	list<spdlog::sink_ptr> logSinks;
 	logSinks.emplace_back(createRef<spdlog::sinks::basic_file_sink_mt>("mage3dx.log", true));

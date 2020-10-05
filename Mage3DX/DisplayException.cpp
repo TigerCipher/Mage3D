@@ -21,7 +21,7 @@
 #include "pch.h"
 #include "DisplayException.h"
 
-const char* mage::DisplayException::what() const noexcept
+const char* DisplayException::what() const noexcept
 {
     std::ostringstream oss;
     oss << getType() << "\n[Error Code] " << getError() << "\n[Description] " << getErrorString() << "\n"
@@ -30,7 +30,7 @@ const char* mage::DisplayException::what() const noexcept
     return m_what.c_str();
 }
 
-const char* mage::DisplayException::getType() const noexcept
+const char* DisplayException::getType() const noexcept
 {
     return "Mage Display Exception";
 }
@@ -38,13 +38,13 @@ const char* mage::DisplayException::getType() const noexcept
 
 
 
-std::string mage::DisplayException::getErrorString() const noexcept
+std::string DisplayException::getErrorString() const noexcept
 {
     return ExceptionHelper::translateError(m_result);
 }
 
 
-std::string mage::ExceptionHelper::translateError(HRESULT hr) noexcept
+std::string ExceptionHelper::translateError(HRESULT hr) noexcept
 {
     char* msgBuffer = nullptr;
     const DWORD len = FormatMessage(
@@ -57,7 +57,7 @@ std::string mage::ExceptionHelper::translateError(HRESULT hr) noexcept
     return errStr;
 }
 
-const char* mage::NoGraphicsException::getType() const noexcept
+const char* NoGraphicsException::getType() const noexcept
 {
     return "Mage Display Exception - No graphics";
 }

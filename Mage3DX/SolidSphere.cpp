@@ -25,7 +25,7 @@
 #include "Bindables.h"
 #include "GraphicsException.h"
 
-mage::SolidSphere::SolidSphere(Graphics& gfx, float radius)
+SolidSphere::SolidSphere(Graphics& gfx, float radius)
 {
 	if (!isInitialized())
 	{
@@ -69,7 +69,7 @@ mage::SolidSphere::SolidSphere(Graphics& gfx, float radius)
 }
 
 
-mat4f mage::SolidSphere::getTransformMatrix() const noexcept
+mat4f SolidSphere::getTransformMatrix() const noexcept
 {
 	return dx::XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
 }

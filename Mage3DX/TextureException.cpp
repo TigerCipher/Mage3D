@@ -21,13 +21,13 @@
 #include "pch.h"
 #include "TextureException.h"
 
-const char* mage::TextureException::what() const noexcept
+const char* TextureException::what() const noexcept
 {
     m_what = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
     return m_what.c_str();
 }
 
-const char* mage::TextureException::getType() const noexcept
+const char* TextureException::getType() const noexcept
 {
     return "Mage Texture Exception";
 }

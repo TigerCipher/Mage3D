@@ -22,18 +22,15 @@
 #include "DummyObject.h"
 
 
-namespace mage
+class DummyModel : public DummyObject<DummyModel>
 {
-	class DummyModel : public DummyObject<DummyModel>
-	{
-	public:
-		DummyModel(Graphics& gfx, std::mt19937& rng,
-		           std::uniform_real_distribution<float>& adist,
-		           std::uniform_real_distribution<float>& ddist,
-		           std::uniform_real_distribution<float>& odist,
-		           std::uniform_real_distribution<float>& rdist,
-		           vec3f material,
-		           float scale);
-	};
-}
+public:
+	DummyModel(Graphics& gfx, std::mt19937& rng,
+	           std::uniform_real_distribution<float>& adist,
+	           std::uniform_real_distribution<float>& ddist,
+	           std::uniform_real_distribution<float>& odist,
+	           std::uniform_real_distribution<float>& rdist,
+	           vec3f material,
+	           float scale);
+};
 

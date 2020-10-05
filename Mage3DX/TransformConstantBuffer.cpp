@@ -22,10 +22,10 @@
 #include "TransformConstantBuffer.h"
 
 
-UniquePtr<mage::VertexConstantBuffer<mage::TransformConstantBuffer::Transforms> >
-mage::TransformConstantBuffer::sVertexBuffer;
+UniquePtr<VertexConstantBuffer<TransformConstantBuffer::Transforms> >
+TransformConstantBuffer::sVertexBuffer;
 
-mage::TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot /*= 0*/) :
+TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot /*= 0*/) :
 	m_parent(parent)
 {
 	if(!sVertexBuffer)
@@ -35,7 +35,7 @@ mage::TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const IRen
 }
 
 
-void mage::TransformConstantBuffer::bind(mage::Graphics& gfx) noexcept
+void TransformConstantBuffer::bind(Graphics& gfx) noexcept
 {
 	const auto modelView = m_parent.getTransformMatrix() * gfx.getCamera();
 	const Transforms t = {
