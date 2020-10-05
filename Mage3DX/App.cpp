@@ -15,7 +15,7 @@
  * Contact: team@bluemoondev.org
  * 
  * File Name: App.cpp
- * Date File Created: 9/28/2020 at 1:11 PM
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #include "pch.h"
@@ -29,11 +29,9 @@
 
 mage::App::App(int width, int height, const char* title) :
 	m_display(width, height, title),
-	m_running(true),
-	m_light(m_display.getGraphics())
+	m_light(m_display.getGraphics()),
+	m_running(true)
 {
-
-
 	GDIPlusManager::start();
 
 	class Factory

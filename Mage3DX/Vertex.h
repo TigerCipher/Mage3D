@@ -18,7 +18,6 @@
  * Date File Created: 10/2/2020 at 8:28 PM
  * Author: Matt
  */
-
 #pragma once
 
 #include "MathHelper.h"
@@ -111,17 +110,14 @@ namespace mage
 			m_offset(offset) { }
 
 
-
-		//************************************
-		// Method:    sizeOf
-		// FullName:  mage::Attribute::sizeOf
-		// Access:    public static
-		// Returns:   constexpr size_t
-		// Qualifier: noexcept(!MAGE_DEBUG)
-		// Parameter: AttributeType type
-		// Size in bytes of the attribute type
-		//************************************
-		static constexpr size_t sizeOf(AttributeType type) noexcept(!MAGE_DEBUG)
+		/***********************************************************************************
+		 *
+		 * \brief Retrieves the size, in bytes, of the given attribute type
+		 * \param AttributeType type The attribute type to get the size of
+		 * \return size_t The size in bytes
+		 *
+		 ************************************************************************************/
+		static constexpr size_t sizeOf(const AttributeType type) noexcept(!MAGE_DEBUG)
 		{
 			switch (type)
 			{
@@ -139,7 +135,7 @@ namespace mage
 			}
 		}
 
-		D3D11_INPUT_ELEMENT_DESC getDesc() const noexcept(!MAGE_DEBUG)
+		[[nodiscard]] D3D11_INPUT_ELEMENT_DESC getDesc() const noexcept(!MAGE_DEBUG)
 		{
 			switch (m_type)
 			{
@@ -153,58 +149,57 @@ namespace mage
 			default:
 				LOG_ERROR("Invalid attribute type");
 				assert("Invalid attribute type" && false);
-				return { "INVALID", 0, DXGI_FORMAT_UNKNOWN, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+				return { "INVALID", 0, DXGI_FORMAT_UNKNOWN,
+				         0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 			}
 		}
 
 
-		//************************************
-		// Method:    size
-		// FullName:  mage::Attribute::size
-		// Access:    public
-		// Returns:   size_t
-		// Qualifier: const noexcept(!MAGE_DEBUG)
-		// Size in bytes of the AttributeType this Attribute represents
-		//************************************
-		size_t size() const noexcept(!MAGE_DEBUG)
+
+		/***********************************************************************************
+		 *
+		 * \brief The size, in bytes, of this attribute
+		 * \return size_t The size in bytes
+		 *
+		 ************************************************************************************/
+		[[nodiscard]] size_t size() const noexcept(!MAGE_DEBUG)
 		{
 			return sizeOf(getType());
 		}
 
 
-		//************************************
-		// Method:    getOffset
-		// FullName:  mage::Attribute::getOffset
-		// Access:    public
-		// Returns:   size_t
-		// Qualifier: const
-		// The offset where this attribute begins in the buffer
-		//************************************
+
+
+		/***********************************************************************************
+		 *
+		 * \brief Returns the offset where this attribute begins in the buffer
+		 * \return size_t The offset
+		 *
+		 ************************************************************************************/
 		size_t getOffset() const { return m_offset; }
 
 
-		//************************************
-		// Method:    getOffsetAfter
-		// FullName:  mage::Attribute::getOffsetAfter
-		// Access:    public
-		// Returns:   size_t
-		// Qualifier: const noexcept(!MAGE_DEBUG)
-		// The offset to insert the next attribute at, also used to retrieve size of buffer
-		//************************************
-		size_t getOffsetAfter() const noexcept(!MAGE_DEBUG)
+		/***********************************************************************************
+		 *
+		 * \brief Returns the offset to insert the next attribute at, also used to retrieve size of buffer
+		 * \return size_t The offset
+		 *
+		 ************************************************************************************/
+		[[nodiscard]] size_t getOffsetAfter() const noexcept(!MAGE_DEBUG)
 		{
 			return m_offset + size();
 		}
 
 
-		AttributeType getType() const noexcept { return m_type; }
+		[[nodiscard]] AttributeType getType() const noexcept { return m_type; }
 
 	private:
 
-		template<AttributeType type>
-		static constexpr D3D11_INPUT_ELEMENT_DESC getDesc(size_t offset) noexcept(!MAGE_DEBUG)
+		template<AttributeType Type>
+		static constexpr D3D11_INPUT_ELEMENT_DESC getDesc(const size_t offset) noexcept(!MAGE_DEBUG)
 		{
-			return { Map<type>::semantic, 0, Map<type>::format, 0, (UINT) offset, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+			return { Map<Type>::semantic, 0, Map<Type>::format, 0, (UINT) offset,
+			         D3D11_INPUT_PER_VERTEX_DATA, 0 };
 		}
 
 		AttributeType m_type;
@@ -216,22 +211,21 @@ namespace mage
 	{
 	public:
 
-		//************************************
-		// Method:    resolve
-		// FullName:  mage::VertexLayout::resolve
-		// Access:    public
-		// Returns:   const mage::Attribute&
-		// Qualifier: const noexcept(!MAGE_DEBUG)
-		// If the supplied type exists in the layout, return it, otherwise
-		// if possible return the attribute at the front of the layout
-		//************************************
-		template<AttributeType type>
+		/***********************************************************************************
+		 *
+		 * \brief If the supplied type exists in the layout, return it, otherwise
+		 * if possible, return the attribute at the front of the layout
+		 * \tparam Type The AttributeType
+		 * \return const mage::Attribute& The attribute corresponding to the given type
+		 *
+		 ************************************************************************************/
+		template<AttributeType Type>
 		const Attribute& resolve() const noexcept(!MAGE_DEBUG)
 		{
 			// If the supplied type exists in the list, return it
 			for (auto& e : m_attribs)
 			{
-				if (e.getType() == type)
+				if (e.getType() == Type)
 					return e;
 			}
 			LOG_ERROR("Failed to resolve attribute type");
@@ -239,71 +233,50 @@ namespace mage
 			return m_attribs.front();
 		}
 
-
-		//************************************
-		// Method:    resolve
-		// FullName:  mage::VertexLayout::resolve
-		// Access:    public
-		// Returns:   const mage::Attribute&
-		// Qualifier: const noexcept(!MAGE_DEBUG)
-		// Parameter: size_t index
-		// Retrieve the attribute at a specific index
-		//************************************
+		/***********************************************************************************
+		 *
+		 * \brief Returns the attribute at a specific index
+		 * \param size_t index The index to retrieve the attribute from
+		 * \return const mage::Attribute& The attribute at the specified index
+		 *
+		 ************************************************************************************/
 		const Attribute& resolve(size_t index) const noexcept(!MAGE_DEBUG) { return m_attribs[index]; }
 
 
-		//************************************
-		//! \fn append
-		//! \brief FullName:  mage::VertexLayout::append
-		//! \brief Access:    public
-		//!	\brief Qualifier: noexcept(!MAGE_DEBUG)
-		//! \return mage::VertexLayout&
-		//! \param AttributeType type The attribute type being added to the layout
-		//! \brief Add an attribute to the layout
-		//************************************
+		/***********************************************************************************
+		 *
+		 * \brief Adds an attribute to the layout
+		 * \param mage::AttributeType type The attribute type being added to the layout
+		 * \return mage::VertexLayout& A reference to the layout the attribute was added to
+		 *
+		 ************************************************************************************/
 		VertexLayout& append(AttributeType type) noexcept(!MAGE_DEBUG)
 		{
 			m_attribs.emplace_back(type, size());
 			return *this;
 		}
 
-		//************************************
-		// Method:    size
-		// FullName:  mage::VertexLayout::size
-		// Access:    public
-		// Returns:   size_t
-		// Qualifier: const noexcept(!MAGE_DEBUG)
-		// Returns the number of vertices in the layout
-		//************************************
-		size_t size() const noexcept(!MAGE_DEBUG)
+		/***********************************************************************************
+		 *
+		 * \brief Returns the number of vertices in the layout
+		 * \return size_t The number of vertices
+		 *
+		 ************************************************************************************/
+		[[nodiscard]] size_t size() const noexcept(!MAGE_DEBUG)
 		{
 			return m_attribs.empty() ? 0 : m_attribs.back().getOffsetAfter();
 		}
 
-
-		//************************************
-		// Method:    getNumAttributes
-		// FullName:  mage::VertexLayout::getNumAttributes
-		// Access:    public
-		// Returns:   size_t
-		// Qualifier: const noexcept
-		// Returns the number of attributes in this layout
-		//************************************
+		/***********************************************************************************
+		 *
+		 * \brief Retrieves the number of attributes in this layout
+		 * \return size_t The number of attributes in the layout
+		 *
+		 ************************************************************************************/
+		[[nodiscard]] size_t getNumAttributes() const noexcept { return m_attribs.size(); }
 
 
-
-		//************************************
-		//! \fn getNumAttributes
-		//! \brief FullName:  mage::VertexLayout::getNumAttributes
-		//! \brief Access:    public
-		//!	\brief Qualifier: const noexcept
-		//! \return size_t
-		//! \brief Returns the number of attributes in this layout
-		//************************************
-		size_t getNumAttributes() const noexcept { return m_attribs.size(); }
-
-
-		list<D3D11_INPUT_ELEMENT_DESC> getD3dLayout() const noexcept(!MAGE_DEBUG)
+		[[nodiscard]] list<D3D11_INPUT_ELEMENT_DESC> getD3dLayout() const noexcept(!MAGE_DEBUG)
 		{
 			list< D3D11_INPUT_ELEMENT_DESC> desc;
 			for (const auto& a : m_attribs)
@@ -316,7 +289,7 @@ namespace mage
 
 
 	private:
-		list<Attribute> m_attribs;
+		list<Attribute> m_attribs{ };
 	};
 
 
@@ -326,34 +299,31 @@ namespace mage
 
 	public:
 
-		//************************************
-		// Method:    attribute
-		// FullName:  mage::Vertex::attribute
-		// Access:    public
-		// Returns:   auto&
-		// Qualifier: noexcept(!MAGE_DEBUG)
-		// Looks for the attribute so it can be modified
-		//************************************
-		template<AttributeType type>
-		auto& attribute() noexcept(!MAGE_DEBUG)
+		/***********************************************************************************
+		 *
+		 * \brief Looks for the attribute so it can be modified
+		 * \tparam Type The AttributeType
+		 * \return auto& A reference to an attribute so it can be modified
+		 *
+		 ************************************************************************************/
+		template<AttributeType Type>
+		auto& attribute() const noexcept(!MAGE_DEBUG)
 		{
-			const auto& elem = m_layout.resolve<type>();
+			const auto& elem = m_layout.resolve<Type>();
 			auto attrib = m_data + elem.getOffset();
-			return *reinterpret_cast<typename Map<type>::sysType*>(attrib);
+			return *reinterpret_cast<typename Map<Type>::sysType*>(attrib);
 		}
 
-		//************************************
-		// Method:    setAttribute
-		// FullName:  mage::Vertex::setAttribute
-		// Access:    private
-		// Returns:   void
-		// Qualifier: noexcept(!MAGE_DEBUG)
-		// Parameter: size_t index
-		// Parameter: T & & value
-		// Sets the attribute at a specific index
-		//************************************
+		/***********************************************************************************
+		 *
+		 * \brief Sets the attribute at a specific index
+		 * \tparam T The value type to set the attribute
+		 * \param const size_t index The index of the attribute
+		 * \param T&& val The value to set the attribute to
+		 *
+		 ************************************************************************************/
 		template<typename T>
-		void setAttributeByIndex(size_t index, T&& val) noexcept(!MAGE_DEBUG)
+		void setAttributeByIndex(const size_t index, T&& val) noexcept(!MAGE_DEBUG)
 		{
 			const auto& elem = m_layout.resolve(index);
 			auto attrib = m_data + elem.getOffset();
@@ -437,33 +407,30 @@ namespace mage
 		Vertex m_vertex;
 	};
 
-	// TODO #POTENTIAL-BUG: Conflicts with VertexBuffer.h
 	class VertexData
 	{
 	public:
 		VertexData(VertexLayout layout) noexcept(!MAGE_DEBUG) : m_layout(std::move(layout)) { }
 
-		const VertexLayout& getLayout() const noexcept { return m_layout; }
+		[[nodiscard]] const VertexLayout& getLayout() const noexcept { return m_layout; }
 
-		//************************************
-		//! \fn size
-		//! \brief FullName:  mage::VertexData::size
-		//! \brief Access:    public
-		//!	\brief Qualifier: const noexcept(!MAGE_DEBUG)
-		//! \return size_t
-		//! \brief Returns the number of vertices in the buffer
-		//************************************
-		size_t size() const noexcept(!MAGE_DEBUG) { return m_buffer.size() / m_layout.size(); }
+		
+		/***********************************************************************************
+		 * 
+		 * \brief Returns the number of vertices in the buffer
+		 * \return size_t The number of vertices
+		 *
+		 ************************************************************************************/
+		[[nodiscard]] size_t size() const noexcept(!MAGE_DEBUG) { return m_buffer.size() / m_layout.size(); }
 
-		//************************************
-		//! \fn sizeInBytes
-		//! \brief FullName:  mage::VertexData::sizeInBytes
-		//! \brief Access:    public
-		//!	\brief Qualifier: const noexcept(!MAGE_DEBUG)
-		//! \return size_t
-		//! \brief Returns the size of the buffer in bytes
-		//************************************
-		size_t sizeInBytes() const noexcept(!MAGE_DEBUG) { return m_buffer.size(); }
+
+		/***********************************************************************************
+		 * 
+		 * \brief Returns the size of this buffer in bytes
+		 * \return size_t The size in bytes
+		 *
+		 ************************************************************************************/
+		[[nodiscard]] size_t sizeInBytes() const noexcept(!MAGE_DEBUG) { return m_buffer.size(); }
 
 		Vertex back() noexcept(!MAGE_DEBUG)
 		{
@@ -477,7 +444,7 @@ namespace mage
 			return Vertex{ m_buffer.data(), m_layout };
 		}
 
-		Vertex operator[](size_t i) noexcept(!MAGE_DEBUG)
+		Vertex operator[](const size_t i) noexcept(!MAGE_DEBUG)
 		{
 			assert(i < size());
 			return Vertex{ m_buffer.data() + m_layout.size() * i, m_layout };
@@ -493,7 +460,7 @@ namespace mage
 			return const_cast<VertexData*>(this)->front();
 		}
 
-		ConstantVertex operator[](size_t i) const noexcept(!MAGE_DEBUG)
+		ConstantVertex operator[](const size_t i) const noexcept(!MAGE_DEBUG)
 		{
 			return const_cast<VertexData&>(*this)[i];
 		}

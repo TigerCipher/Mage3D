@@ -32,7 +32,7 @@ namespace mage
 		           std::uniform_real_distribution<float>& ddist,
 		           std::uniform_real_distribution<float>& odist,
 		           std::uniform_real_distribution<float>& rdist,
-		           DirectX::XMFLOAT3 material,
+		           vec3f material,
 		           float scale);
 	};
 }

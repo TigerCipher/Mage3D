@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * Contact: team@bluemoondev.org
- *
+ * 
  * File Name: DummyModel.cpp
  * Date File Created: 10/2/2020 at 4:06 PM
  * Author: Matt
@@ -32,7 +32,7 @@ mage::DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
                              std::uniform_real_distribution<float>& ddist,
                              std::uniform_real_distribution<float>& odist,
                              std::uniform_real_distribution<float>& rdist,
-                             DirectX::XMFLOAT3 material, float scale) :
+                             vec3f material, float scale) :
 	DummyObject(gfx, rng, adist, ddist, odist, rdist)
 {
 	if (!isInitialized())
@@ -41,15 +41,17 @@ mage::DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 
 
 		Assimp::Importer imp;
-		const auto model = imp.ReadFile("assets\\models\\suzanne.obj", aiProcess_Triangulate |
-			aiProcess_JoinIdenticalVertices);
-		const auto mesh = model->mMeshes[0];
+		const auto* const model = imp.ReadFile("assets\\models\\suzanne.obj",
+			aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+		const aiMesh* mesh = model->mMeshes[0];
 
 
 		for (uint i = 0; i < mesh->mNumVertices; i++)
 		{
-			vData.emplaceBack(vec3f{ mesh->mVertices[i].x * scale, mesh->mVertices[i].y * scale,
-					mesh->mVertices[i].z * scale }, *reinterpret_cast<vec3f*>(&mesh->mNormals[i]));
+			vData.emplaceBack(vec3f{ mesh->mVertices[i].x * scale,
+				                     mesh->mVertices[i].y * scale,
+				                     mesh->mVertices[i].z * scale },
+				*reinterpret_cast<vec3f*>(&mesh->mNormals[i]));
 		}
 
 		list<ushort> indices;
@@ -85,8 +87,7 @@ mage::DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 		} matConst;
 
 		matConst.color = material;
-		addStaticBind(createScope<PixelConstantBuffer<MaterialConst>>(gfx, matConst, 1));
-
+		addStaticBind(createScope<PixelConstantBuffer<MaterialConst> >(gfx, matConst, 1));
 	}
 	else
 	{

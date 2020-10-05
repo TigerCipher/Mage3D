@@ -14,8 +14,8 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: vertexbuffer.cpp
- * Date File Created: 9/20/2020 at 10:41 PM
+ * File Name: VertexBuffer.cpp
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #include "pch.h"
@@ -23,6 +23,7 @@
 
 void mage::VertexBuffer::bind(mage::Graphics& gfx) noexcept
 {
-    static const UINT offset = 0;
-    getContext(gfx)->IASetVertexBuffers(0, 1, m_buffer.GetAddressOf(), &m_stride, &offset);
+	static const UINT offset = 0;
+	getContext(gfx)->IASetVertexBuffers(0, 1, m_buffer.GetAddressOf(), &m_stride, &offset);
+	
 }
