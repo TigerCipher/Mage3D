@@ -280,7 +280,7 @@
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformConstantBuffer.cpp" />
     <ClCompile Include="Util.cpp" />
-    <ClCompile Include="VertexBuffer.cpp" />
+    <ClCompile Include="VertexBufferBindable.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -343,7 +343,7 @@
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformConstantBuffer.h" />
     <ClInclude Include="Util.h" />
-    <ClInclude Include="VertexBuffer.h" />
+    <ClInclude Include="VertexBufferBindable.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="winwrapper.h" />
   </ItemGroup>

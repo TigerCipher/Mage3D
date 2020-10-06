@@ -90,9 +90,6 @@
     <ClCompile Include="Topology.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
-    <ClCompile Include="VertexBuffer.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\core</Filter>
     </ClCompile>
@@ -219,6 +216,9 @@
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VertexBufferBindable.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointLight.h">
@@ -249,9 +249,6 @@
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
     <ClInclude Include="Topology.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="VertexBuffer.h">
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
@@ -406,6 +403,9 @@
     </ClInclude>
     <ClInclude Include="Model.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="VertexBufferBindable.h">
+      <Filter>Header Files\bindables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

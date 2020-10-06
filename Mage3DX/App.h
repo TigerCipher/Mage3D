@@ -38,6 +38,8 @@ public:
 private:
 	void runFrame();
 
+	void showNanoControl();
+
 	Display m_display;
 	Camera m_camera;
 	PointLight m_light;
@@ -47,5 +49,15 @@ private:
 	bool m_running;
 	float m_globalSpeed = 1.0f;
 	Model m_nano;
+
+	struct NanoPos
+	{
+		float roll = 0.0f;
+		float pitch = 0.0f;
+		float yaw = 0.0f;
+		float x = 0;
+		float y = 0;
+		float z = 0;
+	} m_nanoPos;
 };
 

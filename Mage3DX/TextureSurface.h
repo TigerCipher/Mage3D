@@ -78,7 +78,7 @@ public:
 	static void stop() noexcept;
 
 private:
-	static ULONG_PTR s_token;
+	static ULONG_PTR sToken;
 };
 
 

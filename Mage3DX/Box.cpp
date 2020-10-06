@@ -43,7 +43,7 @@ Box::Box(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>
 		model.setNormalsFlat();
 		//model.transform( dx::XMMatrixScaling( 1.0f,1.0f,1.2f ) );
 
-		addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
+		addStaticBind(createScope<VertexBufferBindable>(gfx, model.vertices));
 
 		auto pvs = createScope<VertexShader>(gfx, L"shaders\\phongVS.cso");
 		auto pvsbc = pvs->getBytecode();
@@ -131,7 +131,7 @@ SkinnedBox::SkinnedBox(Graphics& gfx, std::mt19937& rng,
 
 		addStaticBind(createScope<Texture>(gfx, TextureSurface::loadFromFile("assets\\textures\\metal_box.png")));
 
-		addStaticBind(createScope<VertexBuffer>(gfx, model.vertices));
+		addStaticBind(createScope<VertexBufferBindable>(gfx, model.vertices));
 
 		addStaticBind(createScope<Sampler>(gfx));
 

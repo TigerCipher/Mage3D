@@ -85,13 +85,13 @@ public:
 	static void renderDx11();
 	static void newFrame();
 
-	static bool isEnabled() noexcept { return s_enabled; }
+	static bool isEnabled() noexcept { return sEnabled; }
 
-	static void enable() noexcept { s_enabled = true; }
-	static void disable() noexcept { s_enabled = false; }
-	static void toggle() noexcept { s_enabled = !s_enabled; }
+	static void enable() noexcept { sEnabled = true; }
+	static void disable() noexcept { sEnabled = false; }
+	static void toggle() noexcept { sEnabled = !sEnabled; }
 
 private:
-	static bool s_enabled;
+	static bool sEnabled;
 };
 

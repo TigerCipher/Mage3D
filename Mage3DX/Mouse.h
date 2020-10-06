@@ -29,7 +29,15 @@ public:
 	public:
 		enum class Type
 		{
-			LEFT_PRESS, LEFT_RELEASE, RIGHT_PRESS, RIGHT_RELEASE, WHEEL_UP, WHEEL_DOWN, MOVE, ENTER, LEAVE, INVALID
+			LEFT_PRESS,
+			LEFT_RELEASE,
+			RIGHT_PRESS,
+			RIGHT_RELEASE,
+			WHEEL_UP,
+			WHEEL_DOWN,
+			MOVE, ENTER,
+			LEAVE,
+			INVALID
 		};
 
 		Event() noexcept:
@@ -39,7 +47,7 @@ public:
 			m_xPos(0),
 			m_yPos(0) { }
 
-		Event(Type type, const Mouse& parent) noexcept:
+		Event(const Type type, const Mouse& parent) noexcept:
 			m_type(type),
 			m_left(parent.m_left),
 			m_right(parent.m_right),

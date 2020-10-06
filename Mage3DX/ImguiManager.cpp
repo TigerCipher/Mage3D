@@ -23,7 +23,7 @@
 #include "3rdParty/imgui/imgui_impl_dx11.h"
 #include "3rdParty/imgui/imgui_impl_win32.h"
 
-bool ImguiManager::s_enabled = true;
+bool ImguiManager::sEnabled = true;
 
 void ImguiManager::initDx11(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -51,7 +51,7 @@ LRESULT ImguiManager::wndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM 
 
 void ImguiManager::renderDx11()
 {
-	if (s_enabled)
+	if (sEnabled)
 	{
 		ImGui::Render();
 		ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
@@ -60,7 +60,7 @@ void ImguiManager::renderDx11()
 
 void ImguiManager::newFrame()
 {
-	if (s_enabled)
+	if (sEnabled)
 	{
 		ImGui_ImplDX11_NewFrame();
 		ImGui_ImplWin32_NewFrame();

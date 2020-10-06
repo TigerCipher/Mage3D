@@ -14,7 +14,7 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: VertexBuffer.h
+ * File Name: VertexBufferBindable.h
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
@@ -25,11 +25,11 @@
 #include "Bindable.h"
 #include "Vertex.h"
 
-class VertexBuffer : public Bindable
+class VertexBufferBindable : public Bindable
 {
 public:
 	template<typename V>
-	VertexBuffer(Graphics& gfx, const list<V>& vertices) : m_stride(sizeof(V))
+	VertexBufferBindable(Graphics& gfx, const list<V>& vertices) : m_stride(sizeof(V))
 	{
 		DEBUG_INFO(gfx);
 
@@ -46,7 +46,7 @@ public:
 		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &m_buffer));
 	}
 
-	VertexBuffer(Graphics& gfx, const VertexData& vData) : m_stride(static_cast<UINT>(vData.getLayout().size()))
+	VertexBufferBindable(Graphics& gfx, const VertexBuffer& vData) : m_stride(static_cast<UINT>(vData.getLayout().size()))
 	{
 		DEBUG_INFO(gfx);
 

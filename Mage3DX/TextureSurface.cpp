@@ -153,7 +153,7 @@ TextureSurface TextureSurface::loadFromFile(const std::string& fileName)
 	return TextureSurface(width, height, std::move(buf));
 }
 
-ULONG_PTR GDIPlusManager::s_token = 0;
+ULONG_PTR GDIPlusManager::sToken = 0;
 
 void GDIPlusManager::start() noexcept
 {
@@ -161,9 +161,9 @@ void GDIPlusManager::start() noexcept
 	input.GdiplusVersion = 1;
 	input.DebugEventCallback = nullptr;
 	input.SuppressBackgroundThread = false;
-	Gdiplus::GdiplusStartup(&s_token, &input, nullptr);
+	Gdiplus::GdiplusStartup(&sToken, &input, nullptr);
 }
 void GDIPlusManager::stop() noexcept
 {
-	Gdiplus::GdiplusShutdown(s_token);
+	Gdiplus::GdiplusShutdown(sToken);
 }

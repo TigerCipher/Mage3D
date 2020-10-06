@@ -14,14 +14,14 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: VertexBuffer.cpp
+ * File Name: VertexBufferBindable.cpp
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 //#include "pch.h" -intellisense works better with force include being used
-#include "VertexBuffer.h"
+#include "VertexBufferBindable.h"
 
-void VertexBuffer::bind(Graphics& gfx) noexcept
+void VertexBufferBindable::bind(Graphics& gfx) noexcept
 {
 	static const UINT offset = 0;
 	getContext(gfx)->IASetVertexBuffers(0, 1, m_buffer.GetAddressOf(), &m_stride, &offset);

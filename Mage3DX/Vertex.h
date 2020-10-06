@@ -25,6 +25,8 @@
 #include "Graphics.h"
 
 
+//TODO: Not everything is template-ized like I originally planned on, can probably move a fair bit to a source file
+
 
 struct ColorARGB
 {
@@ -104,14 +106,15 @@ template<> struct Map<COLORARGB>
 class Attribute
 {
 public:
-	Attribute(AttributeType type, size_t offset) : m_type(type),
+	Attribute(const AttributeType type, const size_t offset) :
+		m_type(type),
 		m_offset(offset) { }
 
 
 	/***********************************************************************************
 		 *
 		 * \brief Retrieves the size, in bytes, of the given attribute type
-		 * \param AttributeType type The attribute type to get the size of
+		 * \param type AttributeType - The attribute type to get the size of
 		 * \return size_t The size in bytes
 		 *
 		 ************************************************************************************/
@@ -174,7 +177,7 @@ public:
 		 * \return size_t The offset
 		 *
 		 ************************************************************************************/
-	size_t getOffset() const { return m_offset; }
+	[[nodiscard]] size_t getOffset() const { return m_offset; }
 
 
 	/***********************************************************************************
@@ -293,7 +296,7 @@ private:
 
 class Vertex
 {
-friend class VertexData;
+friend class VertexBuffer;
 
 public:
 
@@ -405,10 +408,10 @@ private:
 	Vertex m_vertex;
 };
 
-class VertexData
+class VertexBuffer
 {
 public:
-	VertexData(VertexLayout layout) noexcept(!MAGE_DEBUG) : m_layout(std::move(layout)) { }
+	VertexBuffer(VertexLayout layout) noexcept(!MAGE_DEBUG) : m_layout(std::move(layout)) { }
 
 	[[nodiscard]] const VertexLayout& getLayout() const noexcept { return m_layout; }
 
@@ -448,19 +451,19 @@ public:
 		return Vertex{ m_buffer.data() + m_layout.size() * i, m_layout };
 	}
 
-	ConstantVertex back() const noexcept(!MAGE_DEBUG)
+	[[nodiscard]] ConstantVertex back() const noexcept(!MAGE_DEBUG)
 	{
-		return const_cast<VertexData*>(this)->back();
+		return const_cast<VertexBuffer*>(this)->back();
 	}
 
-	ConstantVertex front() const noexcept(!MAGE_DEBUG)
+	[[nodiscard]] ConstantVertex front() const noexcept(!MAGE_DEBUG)
 	{
-		return const_cast<VertexData*>(this)->front();
+		return const_cast<VertexBuffer*>(this)->front();
 	}
 
 	ConstantVertex operator[](const size_t i) const noexcept(!MAGE_DEBUG)
 	{
-		return const_cast<VertexData&>(*this)[i];
+		return const_cast<VertexBuffer&>(*this)[i];
 	}
 
 	template<typename ... Args>
@@ -472,7 +475,7 @@ public:
 		back().setAttributeByIndex(0, std::forward<Args>(args)...);
 	}
 
-	const char* getData() const noexcept(!MAGE_DEBUG) { return m_buffer.data(); }
+	[[nodiscard]] const char* getData() const noexcept(!MAGE_DEBUG) { return m_buffer.data(); }
 
 private:
 	VertexLayout m_layout;

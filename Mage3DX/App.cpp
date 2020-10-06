@@ -106,13 +106,32 @@ void App::runFrame()
 	m_light.bind(m_display.getGraphics(), m_camera.getViewMatrix());
 
 
-	m_nano.render(m_display.getGraphics());
+	const auto transform = dx::XMMatrixRotationRollPitchYaw(m_nanoPos.roll, m_nanoPos.pitch, m_nanoPos.yaw)
+	    * dx::XMMatrixTranslation(m_nanoPos.x, m_nanoPos.y, m_nanoPos.z);
+	m_nano.render(m_display.getGraphics(), transform);
 	m_light.render(m_display.getGraphics());
 
 	calculateFrameStatistics(m_performanceTimer);
 
 	m_camera.spawnControlWindow();
 	m_light.spawnControlWindow();
+	showNanoControl();
 
 	m_display.getGraphics().swap();
+}
+
+void App::showNanoControl()
+{
+	IMGUI_WRAP("Nanosuit Model",
+		ImGui::Text("Orientation"),
+		ImGui::SliderAngle("Roll", &m_nanoPos.roll, -180.0f, 180.0f),
+		ImGui::SliderAngle("Pitch", &m_nanoPos.pitch, -180.0f, 180.0f),
+		ImGui::SliderAngle("Yaw", &m_nanoPos.yaw, -180.0f, 180.0f),
+
+		ImGui::Text("Position"),
+		ImGui::SliderFloat("X", &m_nanoPos.x, -20.0f, 20.0f),
+		ImGui::SliderFloat("Y", &m_nanoPos.y, -20.0f, 20.0f),
+		ImGui::SliderFloat("Z", &m_nanoPos.z, -20.0f, 20.0f)
+
+		);
 }

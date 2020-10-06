@@ -53,7 +53,7 @@ public:
 
 	static UniquePtr<Mesh> parseMesh(Graphics& gfx, const struct aiMesh& mesh);
 
-	void render(Graphics& gfx) const;
+	void render(Graphics& gfx, mat4f transform) const;
 	
 private:
 	UniquePtr<Node> m_root;

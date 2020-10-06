@@ -37,7 +37,7 @@ DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 {
 	if (!isInitialized())
 	{
-		VertexData vData(std::move(VertexLayout().append(POSITION3D).append(NORMAL) ));
+		VertexBuffer vData(std::move(VertexLayout().append(POSITION3D).append(NORMAL) ));
 
 
 		Assimp::Importer imp;
@@ -65,7 +65,7 @@ DummyModel::DummyModel(Graphics& gfx, std::mt19937& rng,
 			indices.push_back(face.mIndices[2]);
 		}
 
-		addStaticBind(createScope<VertexBuffer>(gfx, vData));
+		addStaticBind(createScope<VertexBufferBindable>(gfx, vData));
 		addStaticIndexBuffer(createScope<IndexBuffer>(gfx, indices));
 
 		auto pvs = createScope<VertexShader>(gfx, L"shaders\\phongVS.cso");

@@ -87,7 +87,7 @@ UniquePtr<Node> Model::parseNode(const aiNode& node)
 
 UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh)
 {
-	VertexData vData(std::move(VertexLayout().append(POSITION3D).append(NORMAL)));
+	VertexBuffer vData(std::move(VertexLayout().append(POSITION3D).append(NORMAL)));
 	for (uint i = 0; i < mesh.mNumVertices; i++)
 	{
 		vData.emplaceBack(*reinterpret_cast<vec3f*>(&mesh.mVertices[i]),
@@ -107,7 +107,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh)
 	}
 
 	list<UniquePtr<Bindable> > binds;
-	binds.push_back(createScope<VertexBuffer>(gfx, vData));
+	binds.push_back(createScope<VertexBufferBindable>(gfx, vData));
 	binds.push_back(createScope<IndexBuffer>(gfx, indices));
 
 	auto pvs = createScope<VertexShader>(gfx, L"shaders\\phongVS.cso");
@@ -131,7 +131,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh)
 	return createScope<Mesh>(gfx, std::move(binds));
 }
 
-void Model::render(Graphics& gfx) const
+void Model::render(Graphics& gfx, mat4f transform) const
 {
-	m_root->render(gfx, dx::XMMatrixIdentity());
+	m_root->render(gfx, transform);
 }

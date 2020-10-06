@@ -36,7 +36,7 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 
 		auto model = Sphere::make<Vertex>();
 		model.transform(dx::XMMatrixScaling(radius, radius, radius));
-		addBind(createScope<VertexBuffer>(gfx, model.vertices));
+		addBind(createScope<VertexBufferBindable>(gfx, model.vertices));
 		addIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
 
 		auto pvs = createScope<VertexShader>(gfx, L"shaders\\solidVS.cso");

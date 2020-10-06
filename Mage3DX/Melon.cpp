@@ -91,7 +91,7 @@ Melon::Melon(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<fl
     auto model = Sphere::makeTesselated<Vertex>(latdist(rng), longdist(rng));
     model.transform(dx::XMMatrixScaling(1.0f, 1.0f, 1.2f));
 
-    addBind(createScope<VertexBuffer>(gfx, model.vertices));
+    addBind(createScope<VertexBufferBindable>(gfx, model.vertices));
     addIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
     addBind(createScope<TransformConstantBuffer>(gfx, *this));
 
