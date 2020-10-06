@@ -18,7 +18,7 @@
  * Date File Created: 9/20/2020 at 9:50 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "InputLayout.h"
 #include "GraphicsException.h"
 

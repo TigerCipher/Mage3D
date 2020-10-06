@@ -18,7 +18,7 @@
  * Date File Created: 9/26/2020 at 4:14 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "SolidSphere.h"
 
 #include "Primitives.h"

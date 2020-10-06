@@ -14,16 +14,38 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: math_helper.cpp
- * Date File Created: 9/25/2020 at 5:55 PM
+ * File Name: Mesh.cpp
+ * Date File Created: 10/5/2020 at 4:42 PM
  * Author: Matt
  */
 //#include "pch.h" -intellisense works better with force include being used
-#include "MathHelper.h"
+#include "Mesh.h"
+#include "Bindables.h"
 
-float dot(vec4f v1, vec4f v2)
+Mesh::Mesh(Graphics& gfx, list<UniquePtr<Bindable> > binds)
 {
-    auto result = dx::XMVector4Dot(v1, v2);
-    auto d = dx::XMVectorGetX(result);
-    return d;
+	if(!isInitialized())
+	{
+		addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	}
+
+	for (auto & b : binds)
+	{
+		if(auto p = dynamic_cast<IndexBuffer*>(b.get()))
+		{
+			addIndexBuffer(UniquePtr<IndexBuffer>(p));
+			b.release();
+		}else
+		{
+			addBind(std::move(b));
+		}
+	}
+
+	addBind(createScope<TransformConstantBuffer>(gfx, *this));
+}
+
+void Mesh::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG)
+{
+	dx::XMStoreFloat4x4(&m_transform, accumulatedTransform);
+	__super::render(gfx);
 }

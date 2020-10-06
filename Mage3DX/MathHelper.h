@@ -27,6 +27,12 @@
 namespace dx = DirectX;
 
 typedef dx::XMMATRIX mat4f;
+typedef dx::XMFLOAT4X4 mat4x4;
+typedef dx::XMFLOAT3X3 mat3x3;
+typedef dx::XMFLOAT4X3 mat4x3;
+typedef dx::XMFLOAT3X4 mat3x4;
+
+
 typedef dx::XMVECTOR vec4f;
 typedef dx::XMFLOAT3 vec3f;
 typedef dx::XMFLOAT2 vec2f;

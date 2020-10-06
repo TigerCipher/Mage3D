@@ -18,7 +18,7 @@
  * Date File Created: 9/12/2020 at 3:12 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "DisplayException.h"
 
 const char* DisplayException::what() const noexcept

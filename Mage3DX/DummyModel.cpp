@@ -18,7 +18,7 @@
  * Date File Created: 10/2/2020 at 4:06 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "DummyModel.h"
 #include "Bindables.h"
 #include "Vertex.h"

@@ -18,7 +18,7 @@
  * Date File Created: 9/25/2020 at 8:10 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "Camera.h"
 
 #include "ImguiManager.h"

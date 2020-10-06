@@ -14,16 +14,28 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: math_helper.cpp
- * Date File Created: 9/25/2020 at 5:55 PM
+ * File Name: Mesh.h
+ * Date File Created: 10/5/2020 at 4:42 PM
  * Author: Matt
  */
-//#include "pch.h" -intellisense works better with force include being used
-#include "MathHelper.h"
+#pragma once
 
-float dot(vec4f v1, vec4f v2)
+#include "Renderable.h"
+
+class Mesh : public Renderable<Mesh>
 {
-    auto result = dx::XMVector4Dot(v1, v2);
-    auto d = dx::XMVectorGetX(result);
-    return d;
-}
+public:
+	Mesh(Graphics& gfx, list<UniquePtr<Bindable> > binds);
+
+
+	void render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG);
+
+	[[nodiscard]] mat4f getTransformMatrix() const noexcept override
+	{
+		return dx::XMLoadFloat4x4(&m_transform);
+	}
+
+private:
+	mutable mat4x4 m_transform{ };
+};
+

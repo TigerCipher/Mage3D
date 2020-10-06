@@ -18,7 +18,7 @@
  * Date File Created: 9/12/2020 at 3:01 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "MageException.h"
 
 const char* MageException::what() const noexcept

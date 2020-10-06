@@ -18,7 +18,7 @@
  * Date File Created: 9/28/2020 at 1:11 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "Box.h"
 #include "Primitives.h"
 #include "Sampler.h"

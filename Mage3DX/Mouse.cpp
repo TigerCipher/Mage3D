@@ -18,7 +18,7 @@
  * Date File Created: 9/13/2020 at 2:39 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "Mouse.h"
 
 

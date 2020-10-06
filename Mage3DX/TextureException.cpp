@@ -18,7 +18,7 @@
  * Date File Created: 9/23/2020 at 9:33 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "TextureException.h"
 
 const char* TextureException::what() const noexcept

@@ -18,7 +18,7 @@
  * Date File Created: 9/16/2020 at 10:15 PM
  * Author: Matt
  */
-#include "pch.h"
+//#include "pch.h" -intellisense works better with force include being used
 #include "GraphicsException.h"
 #include "3rdParty/dxerr.h"
 
