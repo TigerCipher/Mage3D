@@ -27,14 +27,14 @@ class StacktraceExceptionBase : public Callstack
 {
 public:
 	explicit StacktraceExceptionBase(bool showStack) : Callstack(2),
-		m_showStack(showStack) { }
+		mShowStack(showStack) { }
 
 	[[nodiscard]] virtual const char* what() const noexcept = 0;
 
-	[[nodiscard]] bool shouldShowStack() const { return m_showStack; }
+	[[nodiscard]] bool shouldShowStack() const { return mShowStack; }
 
 protected:
-	bool m_showStack;
+	bool mShowStack;
 };
 
 template<class T>
@@ -45,16 +45,16 @@ public:
 		StacktraceExceptionBase(true) { }
 	const char* what() const noexcept override
 	{
-		if (m_showStack)
+		if (mShowStack)
 		{
-			m_buffer = fmt::format("[{}]\n{}", std::string(T::what()), asString());
-			return m_buffer.c_str();
+			mBuffer = fmt::format("[{}]\n{}", std::string(T::what()), asString());
+			return mBuffer.c_str();
 		}
 		return T::what();
 	}
 
 protected:
-	mutable std::string m_buffer;
+	mutable std::string mBuffer;
 };
 
 typedef StacktraceException<std::runtime_error> stacktraceRuntimeError;

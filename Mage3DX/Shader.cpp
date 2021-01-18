@@ -28,18 +28,18 @@ VertexShader::VertexShader(Graphics& gfx, const std::wstring& path)
 {
 	DEBUG_INFO(gfx);
 
-	GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &m_bytecode));
+	GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &mBytecode));
 	GFX_THROW_INFO(getDevice(gfx)->CreateVertexShader(
-		m_bytecode->GetBufferPointer(),
-		m_bytecode->GetBufferSize(),
+		mBytecode->GetBufferPointer(),
+		mBytecode->GetBufferSize(),
 		nullptr,
-		&m_shader
-		));
+		&mShader
+	));
 }
 
 void VertexShader::bind(Graphics& gfx) noexcept
 {
-	getContext(gfx)->VSSetShader(m_shader.Get(), nullptr, 0);
+	getContext(gfx)->VSSetShader(mShader.Get(), nullptr, 0);
 }
 
 
@@ -50,11 +50,11 @@ PixelShader::PixelShader(Graphics& gfx, const std::wstring& path)
 	COMptr<ID3DBlob> blob;
 	GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &blob));
 	GFX_THROW_INFO(getDevice(gfx)->CreatePixelShader(blob->GetBufferPointer(),
-		blob->GetBufferSize(), nullptr, &m_shader));
+		blob->GetBufferSize(), nullptr, &mShader));
 }
 
 
 void PixelShader::bind(Graphics& gfx) noexcept
 {
-	getContext(gfx)->PSSetShader(m_shader.Get(), nullptr, 0);
+	getContext(gfx)->PSSetShader(mShader.Get(), nullptr, 0);
 }

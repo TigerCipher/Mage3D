@@ -49,8 +49,8 @@ private:
 		float attQuad;
 	};
 
-	PointLightCBuf m_cbuf;
-	mutable SolidSphere m_mesh;
-	mutable PixelConstantBuffer<PointLightCBuf> m_buffer;
+	PointLightCBuf mCbuf;
+	mutable SolidSphere mMesh;
+	mutable PixelConstantBuffer<PointLightCBuf> mBuffer;
 };
 

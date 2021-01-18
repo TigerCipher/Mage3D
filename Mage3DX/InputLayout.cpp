@@ -29,11 +29,11 @@ InputLayout::InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> lay
 
     GFX_THROW_INFO(getDevice(gfx)->CreateInputLayout(layout.data(), static_cast<UINT>(layout.size()),
                                                      vertexBytecode->GetBufferPointer(),
-                                                     vertexBytecode->GetBufferSize(), &m_layout));
+                                                     vertexBytecode->GetBufferSize(), &mLayout));
 }
 
 
 void InputLayout::bind(Graphics& gfx) noexcept
 {
-    getContext(gfx)->IASetInputLayout(m_layout.Get());
+    getContext(gfx)->IASetInputLayout(mLayout.Get());
 }

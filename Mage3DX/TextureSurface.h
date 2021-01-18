@@ -26,9 +26,9 @@ class TextureSurface
 {
 public:
 	TextureSurface(uint width, uint height, uint pitch) noexcept :
-		m_width(width),
-		m_height(height),
-		m_buffer(createScope<Color[]>(pitch * height))
+		mWidth(width),
+		mHeight(height),
+		mBuffer(createScope<Color[]>(pitch * height))
 	{ }
 	TextureSurface(uint width, uint height) noexcept : TextureSurface(width, height, width) { }
 
@@ -36,9 +36,9 @@ public:
 	TextureSurface(const TextureSurface& rhs) = delete;
 	TextureSurface& operator=(const TextureSurface& rhs) = delete;
 	TextureSurface(TextureSurface&& src) noexcept :
-		m_width(src.m_width),
-		m_height(src.m_height),
-		m_buffer(std::move(src.m_buffer))
+		mWidth(src.mWidth),
+		mHeight(src.mHeight),
+		mBuffer(std::move(src.mBuffer))
 	{ }
 	TextureSurface& operator=(TextureSurface&& src) noexcept;
 
@@ -46,11 +46,11 @@ public:
 	void setPixel(uint x, uint y, Color col) noexcept(!MAGE_DEBUG);
 	[[nodiscard]] Color getPixel(uint x, uint y) const noexcept(!MAGE_DEBUG);
 
-	Color* getBuffer() noexcept { return m_buffer.get(); }
-	[[nodiscard]] const Color* getBuffer() const noexcept { return m_buffer.get(); }
+	Color* getBuffer() noexcept { return mBuffer.get(); }
+	[[nodiscard]] const Color* getBuffer() const noexcept { return mBuffer.get(); }
 
-	[[nodiscard]] uint getWidth() const noexcept { return m_width; }
-	[[nodiscard]] uint getHeight() const noexcept { return m_height; }
+	[[nodiscard]] uint getWidth() const noexcept { return mWidth; }
+	[[nodiscard]] uint getHeight() const noexcept { return mHeight; }
 
 	void save(const std::string& fileName) const;
 	void copy(const TextureSurface& src) noexcept(!MAGE_DEBUG);
@@ -60,14 +60,14 @@ public:
 protected:
 private:
 	TextureSurface(uint width, uint height, UniquePtr<Color[]> buffer) noexcept :
-		m_width(width),
-		m_height(height),
-		m_buffer(std::move(buffer))
+		mWidth(width),
+		mHeight(height),
+		mBuffer(std::move(buffer))
 	{ }
 
-	UniquePtr<Color[]> m_buffer;
-	uint m_width;
-	uint m_height;
+	UniquePtr<Color[]> mBuffer;
+	uint mWidth;
+	uint mHeight;
 };
 
 // TODO: Move to own file

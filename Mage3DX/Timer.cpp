@@ -25,13 +25,13 @@
 
 float Timer::markPoint() noexcept
 {
-    const auto prev = m_last;
-    m_last = std::chrono::steady_clock::now();
-    const std::chrono::duration<float> time = m_last - prev;
+    const auto prev = mLast;
+    mLast = std::chrono::steady_clock::now();
+    const std::chrono::duration<float> time = mLast - prev;
     return time.count();
 }
 
 float Timer::peek() const noexcept
 {
-    return std::chrono::duration<float>(std::chrono::steady_clock::now() - m_last).count();
+    return std::chrono::duration<float>(std::chrono::steady_clock::now() - mLast).count();
 }

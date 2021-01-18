@@ -71,13 +71,13 @@ Box::Box(Graphics& gfx, std::mt19937& rng, std::uniform_real_distribution<float>
 	matConstant.color = material;
 	addBind(createScope<MaterialConstBuffer>(gfx, matConstant, 1));
 
-	dx::XMStoreFloat3x3(&m_modelTransformation, dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng)));
+	dx::XMStoreFloat3x3(&mModelTransformation, dx::XMMatrixScaling(1.0f, 1.0f, bdist(rng)));
 }
 
 
 mat4f Box::getTransformMatrix() const noexcept
 {
-	return dx::XMLoadFloat3x3(&m_modelTransformation) * DummyObject::getTransformMatrix();
+	return dx::XMLoadFloat3x3(&mModelTransformation) * DummyObject::getTransformMatrix();
 }
 
 bool Box::spawnControlWindow(int id, Graphics& gfx) noexcept

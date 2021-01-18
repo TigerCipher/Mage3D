@@ -27,8 +27,8 @@ public:
 	SolidSphere(Graphics& gfx, float radius);
 	void update(float delta) noexcept override { }
 	mat4f getTransformMatrix() const noexcept override;
-	void setPosition(vec3f pos) noexcept { m_position = pos; }
+	void setPosition(vec3f pos) noexcept { mPosition = pos; }
 private:
-	vec3f m_position = { 1.0f, 1.0f, 1.0f };
+	vec3f mPosition = { 1.0f, 1.0f, 1.0f };
 };
 

@@ -29,41 +29,41 @@ template<class T>
 class Renderable : public IRenderable
 {
 protected:
-	static bool isInitialized() noexcept { return !staticBinds.empty(); }
+	static bool isInitialized() noexcept { return !sStaticBinds.empty(); }
 
 	static void addStaticBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG)
 	{
 		assert("MUST use addStaticIndexBuffer for IndexBuffer types" && typeid(*bindable) != typeid(IndexBuffer));
-		staticBinds.push_back(std::move(bindable));
+		sStaticBinds.push_back(std::move(bindable));
 	}
 
 	void addStaticIndexBuffer(UniquePtr<IndexBuffer> ibuf) noexcept(!MAGE_DEBUG)
 	{
-		assert("Do not add a second IndexBuffer" && !m_indexBuffer);
-		m_indexBuffer = ibuf.get();
-		staticBinds.push_back(std::move(ibuf));
+		assert("Do not add a second IndexBuffer" && !mIndexBuffer);
+		mIndexBuffer = ibuf.get();
+		sStaticBinds.push_back(std::move(ibuf));
 	}
 
 	void setIndexStatic() noexcept(!MAGE_DEBUG)
 	{
-		assert("Do not add a second IndexBuffer" && !m_indexBuffer);
-		for (const auto& b : staticBinds)
+		assert("Do not add a second IndexBuffer" && !mIndexBuffer);
+		for (const auto& b : sStaticBinds)
 		{
 			if (const auto p = dynamic_cast<IndexBuffer*>(b.get()))
 			{
-				m_indexBuffer = p;
+				mIndexBuffer = p;
 				return;
 			}
 		}
-		assert("Failed to find index buffer from static bindables" && m_indexBuffer);
+		assert("Failed to find index buffer from static bindables" && mIndexBuffer);
 	}
 
 private:
-	[[nodiscard]] const list<UniquePtr<Bindable> >& getStaticBinds() const noexcept override { return staticBinds; }
+	[[nodiscard]] const list<UniquePtr<Bindable> >& getStaticBinds() const noexcept override { return sStaticBinds; }
 
-	static list<UniquePtr<Bindable> > staticBinds;
+	static list<UniquePtr<Bindable> > sStaticBinds;
 };
 
 
 template<class T>
-list<UniquePtr<Bindable> > Renderable<T>::staticBinds;
+list<UniquePtr<Bindable> > Renderable<T>::sStaticBinds;

@@ -23,14 +23,14 @@
 class Timer
 {
 public:
-	Timer() noexcept : m_last(std::chrono::steady_clock::now()) { }
+	Timer() noexcept : mLast(std::chrono::steady_clock::now()) { }
 	virtual ~Timer() = default;
 
 	float markPoint() noexcept;
 	[[nodiscard]] float peek() const noexcept;
 
 private:
-	std::chrono::steady_clock::time_point m_last;
+	std::chrono::steady_clock::time_point mLast;
 };
 
 

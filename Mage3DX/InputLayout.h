@@ -30,6 +30,6 @@ public:
 	void bind(Graphics& gfx) noexcept override;
 
 protected:
-	COMptr<ID3D11InputLayout> m_layout;
+	COMptr<ID3D11InputLayout> mLayout;
 };
 

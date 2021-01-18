@@ -25,16 +25,16 @@
 GraphicsException::GraphicsException(int line, const char* file, HRESULT hr,
                                            const list<std::string>& msgs) noexcept:
         MageException(line, file),
-        m_result(hr)
+        mResult(hr)
 {
     for (const auto& m : msgs)
     {
-        m_info += m;
-        m_info.push_back('\n');
+        mInfo += m;
+        mInfo.push_back('\n');
     }
 
-    if (!m_info.empty())
-        m_info.pop_back();
+    if (!mInfo.empty())
+        mInfo.pop_back();
 }
 
 const char* GraphicsException::what() const noexcept
@@ -45,11 +45,11 @@ const char* GraphicsException::what() const noexcept
         << std::dec << " (" << (unsigned long) getErrorCode() << ")\n"
         << "[Error String] " << getErrorString()
         << "\n[Description] " << getErrorDescription() << "\n";
-    if (!m_info.empty())
+    if (!mInfo.empty())
         oss << "\n[Error Info]\n" << getErrorInfo() << "\n\n";
     oss << getOrigin();
-    m_what = oss.str();
-    return m_what.c_str();
+    mWhat = oss.str();
+    return mWhat.c_str();
 }
 
 const char* GraphicsException::getType() const noexcept
@@ -59,24 +59,24 @@ const char* GraphicsException::getType() const noexcept
 
 HRESULT GraphicsException::getErrorCode() const noexcept
 {
-    return m_result;
+    return mResult;
 }
 
 std::string GraphicsException::getErrorString() const noexcept
 {
-    return std::string((char*)DXGetErrorString(m_result));
+    return std::string((char*)DXGetErrorString(mResult));
 }
 
 std::string GraphicsException::getErrorDescription() const noexcept
 {
     char buf[512];
-    DXGetErrorDescription(m_result, buf, sizeof(buf));
+    DXGetErrorDescription(mResult, buf, sizeof(buf));
     return buf;
 }
 
 std::string GraphicsException::getErrorInfo() const noexcept
 {
-    return m_info;
+    return mInfo;
 }
 
 

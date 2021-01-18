@@ -53,50 +53,50 @@ template<AttributeType> struct Map;
 
 template<> struct Map<POSITION2D>
 {
-	static constexpr const char* semantic = "Position";
-	static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32_FLOAT;
+	static constexpr const char* SEMANTIC = "Position";
+	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32_FLOAT;
 	using sysType = vec2f;
 };
 
 template<> struct Map<POSITION3D>
 {
-	static constexpr const char* semantic = "Position";
-	static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32B32_FLOAT;
+	static constexpr const char* SEMANTIC = "Position";
+	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32_FLOAT;
 	using sysType = vec3f;
 };
 
 template<> struct Map<TEXTURE2D>
 {
-	static constexpr const char* semantic = "TexCoords";
-	static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32_FLOAT;
+	static constexpr const char* SEMANTIC = "TexCoords";
+	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32_FLOAT;
 	using sysType = vec2f;
 };
 
 template<> struct Map<NORMAL>
 {
-	static constexpr const char* semantic = "Normal";
-	static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32B32_FLOAT;
+	static constexpr const char* SEMANTIC = "Normal";
+	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32_FLOAT;
 	using sysType = vec3f;
 };
 
 template<> struct Map<COLOR3F>
 {
-	static constexpr const char* semantic = "Color";
-	static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32B32_FLOAT;
+	static constexpr const char* SEMANTIC = "Color";
+	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32_FLOAT;
 	using sysType = vec3f;
 };
 
 template<> struct Map<COLOR4F>
 {
-	static constexpr const char* semantic = "Color";
-	static constexpr DXGI_FORMAT format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	static constexpr const char* SEMANTIC = "Color";
+	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	using sysType = vec4f;
 };
 
 template<> struct Map<COLORARGB>
 {
-	static constexpr const char* semantic = "Color";
-	static constexpr DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	static constexpr const char* SEMANTIC = "Color";
+	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R8G8B8A8_UNORM;
 	using sysType = ColorARGB;
 };
 
@@ -199,7 +199,7 @@ private:
 	template<AttributeType Type>
 	static constexpr D3D11_INPUT_ELEMENT_DESC getDesc(const size_t offset) noexcept(!MAGE_DEBUG)
 	{
-		return { Map<Type>::semantic, 0, Map<Type>::format, 0, (UINT) offset,
+		return { Map<Type>::SEMANTIC, 0, Map<Type>::FORMAT, 0, (UINT) offset,
 		         D3D11_INPUT_PER_VERTEX_DATA, 0 };
 	}
 
@@ -224,14 +224,14 @@ public:
 	const Attribute& resolve() const noexcept(!MAGE_DEBUG)
 	{
 		// If the supplied type exists in the list, return it
-		for (auto& e : m_attribs)
+		for (auto& e : mAttribs)
 		{
 			if (e.getType() == Type)
 				return e;
 		}
 		LOG_ERROR("Failed to resolve attribute type");
 		assert("Could not resolve attribute type" && false);
-		return m_attribs.front();
+		return mAttribs.front();
 	}
 
 	/***********************************************************************************
@@ -241,7 +241,7 @@ public:
 		 * \return const Attribute& The attribute at the specified index
 		 *
 		 ************************************************************************************/
-	const Attribute& resolve(size_t index) const noexcept(!MAGE_DEBUG) { return m_attribs[index]; }
+	const Attribute& resolve(size_t index) const noexcept(!MAGE_DEBUG) { return mAttribs[index]; }
 
 
 	/***********************************************************************************
@@ -253,7 +253,7 @@ public:
 		 ************************************************************************************/
 	VertexLayout& append(AttributeType type) noexcept(!MAGE_DEBUG)
 	{
-		m_attribs.emplace_back(type, size());
+		mAttribs.emplace_back(type, size());
 		return *this;
 	}
 
@@ -265,7 +265,7 @@ public:
 		 ************************************************************************************/
 	[[nodiscard]] size_t size() const noexcept(!MAGE_DEBUG)
 	{
-		return m_attribs.empty() ? 0 : m_attribs.back().getOffsetAfter();
+		return mAttribs.empty() ? 0 : mAttribs.back().getOffsetAfter();
 	}
 
 	/***********************************************************************************
@@ -274,13 +274,13 @@ public:
 		 * \return size_t The number of attributes in the layout
 		 *
 		 ************************************************************************************/
-	[[nodiscard]] size_t getNumAttributes() const noexcept { return m_attribs.size(); }
+	[[nodiscard]] size_t getNumAttributes() const noexcept { return mAttribs.size(); }
 
 
 	[[nodiscard]] list<D3D11_INPUT_ELEMENT_DESC> getD3dLayout() const noexcept(!MAGE_DEBUG)
 	{
 		list< D3D11_INPUT_ELEMENT_DESC> desc;
-		for (const auto& a : m_attribs)
+		for (const auto& a : mAttribs)
 		{
 			desc.push_back(a.getDesc());
 		}
@@ -290,7 +290,7 @@ public:
 
 
 private:
-	list<Attribute> m_attribs{ };
+	list<Attribute> mAttribs{ };
 };
 
 
@@ -310,8 +310,8 @@ public:
 	template<AttributeType Type>
 	auto& attribute() const noexcept(!MAGE_DEBUG)
 	{
-		const auto& elem = m_layout.resolve<Type>();
-		auto attrib = m_data + elem.getOffset();
+		const auto& elem = mLayout.resolve<Type>();
+		auto attrib = mData + elem.getOffset();
 		return *reinterpret_cast<typename Map<Type>::sysType*>(attrib);
 	}
 
@@ -326,8 +326,8 @@ public:
 	template<typename T>
 	void setAttributeByIndex(const size_t index, T&& val) noexcept(!MAGE_DEBUG)
 	{
-		const auto& elem = m_layout.resolve(index);
-		auto attrib = m_data + elem.getOffset();
+		const auto& elem = mLayout.resolve(index);
+		auto attrib = mData + elem.getOffset();
 
 		switch (elem.getType())
 		{
@@ -362,8 +362,8 @@ protected:
 
 
 	Vertex(char* data, const VertexLayout& layout) noexcept(!MAGE_DEBUG) :
-		m_data(data),
-		m_layout(layout)
+		mData(data),
+		mLayout(layout)
 	{
 		assert(data);
 	}
@@ -389,8 +389,8 @@ private:
 		}
 	}
 
-	const VertexLayout& m_layout;
-	char* m_data = nullptr;
+	const VertexLayout& mLayout;
+	char* mData = nullptr;
 };
 
 

@@ -24,6 +24,6 @@
 void VertexBufferBindable::bind(Graphics& gfx) noexcept
 {
 	static const UINT offset = 0;
-	getContext(gfx)->IASetVertexBuffers(0, 1, m_buffer.GetAddressOf(), &m_stride, &offset);
+	getContext(gfx)->IASetVertexBuffers(0, 1, mBuffer.GetAddressOf(), &mStride, &offset);
 	
 }

@@ -18,7 +18,7 @@
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-//#include "pch.h" -intellisense works better with force include being used
+
 #include "App.h"
 #include "Display.h"
 #include "MageException.h"
@@ -30,7 +30,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	try
 	{
 #if MAGE_DEBUG
-		createNewConsole(1024);
+		create_new_console(1024);
 #endif
 		
 		Log::init();
@@ -46,7 +46,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 
 #if MAGE_DEBUG
 		system("pause");
-		releaseConsole();
+		release_console();
 #endif
 		return ret;
 	} catch (const MageException& e)

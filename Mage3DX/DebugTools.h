@@ -22,13 +22,13 @@
 
 #include <bmd/types.h>
 
-extern bool redirectConsole();
+extern bool redirect_console();
 
-extern bool releaseConsole();
+extern bool release_console();
 
-extern bool createNewConsole(int16_f minLength);
+extern bool create_new_console(int16_f minLength);
 
-extern void adjustConsoleBuffer(int16_f minLength);
+extern void adjust_console_buffer(int16_f minLength);
 
-extern bool attachParentConsole(int16_f minLength);
+extern bool attach_parent_console(int16_f minLength);
 

@@ -26,10 +26,10 @@
 class Topology : public Bindable
 {
 public:
-	Topology(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type) : m_type(type) { }
+	Topology(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type) : mType(type) { }
 	void bind(Graphics& gfx) noexcept override;
 
 protected:
-	D3D11_PRIMITIVE_TOPOLOGY m_type;
+	D3D11_PRIMITIVE_TOPOLOGY mType;
 };
 

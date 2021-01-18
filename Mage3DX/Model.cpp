@@ -27,16 +27,17 @@
 #include <assimp/postprocess.h>
 
 
+
 void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG)
 {
-	const auto transform = dx::XMLoadFloat4x4(&m_transform) * accumulatedTransform;
+	const auto transform = dx::XMLoadFloat4x4(&mTransform) * accumulatedTransform;
 
-	for (const auto m : m_meshes)
+	for (const auto m : mMeshes)
 	{
 		m->render(gfx, transform);
 	}
 
-	for(const auto& c : m_children)
+	for(const auto& c : mChildren)
 	{
 		c->render(gfx, transform);
 	}
@@ -45,21 +46,22 @@ void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAG
 void Node::addChild(UniquePtr<Node> child) noexcept(!MAGE_DEBUG)
 {
 	assert(child && "Child must not be null");
-	m_children.push_back(std::move(child));
+	mChildren.push_back(std::move(child));
 }
 
 
 Model::Model(Graphics& gfx, const std::string& fileName)
 {
 	Assimp::Importer imp;
+	
 	const auto scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
 	for(size_t i = 0; i < scene->mNumMeshes; i++)
 	{
-		m_meshes.push_back(parseMesh(gfx, *scene->mMeshes[i]));
+		mMeshes.push_back(parseMesh(gfx, *scene->mMeshes[i]));
 	}
 
-	m_root = parseNode(*scene->mRootNode);
+	mRoot = parseNode(*scene->mRootNode);
 }
 
 UniquePtr<Node> Model::parseNode(const aiNode& node)
@@ -73,7 +75,7 @@ UniquePtr<Node> Model::parseNode(const aiNode& node)
 	for(size_t i = 0; i < node.mNumMeshes; i++)
 	{
 		const auto meshId = node.mMeshes[i];
-		currentMeshes.push_back(m_meshes.at(meshId).get());
+		currentMeshes.push_back(mMeshes.at(meshId).get());
 	}
 
 	auto currentNode = createScope<Node>(std::move(currentMeshes), transform);
@@ -133,5 +135,5 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh)
 
 void Model::render(Graphics& gfx, mat4f transform) const
 {
-	m_root->render(gfx, transform);
+	mRoot->render(gfx, transform);
 }

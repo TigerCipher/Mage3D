@@ -27,11 +27,11 @@ class VertexShader : public Bindable
 public:
 	VertexShader(Graphics& gfx, const std::wstring& path);
 	void bind(Graphics& gfx) noexcept override;
-	[[nodiscard]] ID3DBlob* getBytecode() const noexcept { return m_bytecode.Get(); }
+	[[nodiscard]] ID3DBlob* getBytecode() const noexcept { return mBytecode.Get(); }
 
 protected:
-	COMptr<ID3DBlob> m_bytecode;
-	COMptr<ID3D11VertexShader> m_shader;
+	COMptr<ID3DBlob> mBytecode;
+	COMptr<ID3D11VertexShader> mShader;
 };
 
 class PixelShader : public Bindable
@@ -41,5 +41,5 @@ public:
 	void bind(Graphics& gfx) noexcept override;
 
 protected:
-	COMptr<ID3D11PixelShader> m_shader;
+	COMptr<ID3D11PixelShader> mShader;
 };

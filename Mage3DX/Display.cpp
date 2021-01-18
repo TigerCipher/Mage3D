@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: Display.cpp
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
@@ -32,7 +32,7 @@
 Display::Window Display::Window::sWinClass;
 
 Display::Window::Window() noexcept:
-	m_hInst(GetModuleHandle(nullptr))
+	mHInst(GetModuleHandle(nullptr))
 {
 	WNDCLASSEX wc = { 0 };
 	wc.cbSize = sizeof(wc);
@@ -41,13 +41,13 @@ Display::Window::Window() noexcept:
 	wc.cbClsExtra = 0;
 	wc.cbWndExtra = 0;
 	wc.hInstance = getInstance();
-	wc.hIcon = static_cast<HICON>(LoadImage(m_hInst, MAKEINTRESOURCE(IDI_ICON1),
+	wc.hIcon = static_cast<HICON>(LoadImage(mHInst, MAKEINTRESOURCE(IDI_ICON1),
 		IMAGE_ICON, 32, 32, 0));
 	wc.hCursor = nullptr;
 	wc.hbrBackground = nullptr;
 	wc.lpszMenuName = nullptr;
 	wc.lpszClassName = getName();
-	wc.hIconSm = static_cast<HICON>(LoadImage(m_hInst, MAKEINTRESOURCE(IDI_ICON1),
+	wc.hIconSm = static_cast<HICON>(LoadImage(mHInst, MAKEINTRESOURCE(IDI_ICON1),
 		IMAGE_ICON, 16, 16, 0));
 	RegisterClassEx(&wc);
 }
@@ -64,7 +64,7 @@ const char* Display::Window::getName() noexcept
 
 HINSTANCE Display::Window::getInstance() noexcept
 {
-	return sWinClass.m_hInst;
+	return sWinClass.mHInst;
 }
 
 Display::Display(int width, int height, const char* title)
@@ -79,9 +79,9 @@ Display::Display(int width, int height, const char* title)
 	region.right = width + region.left;
 	region.bottom = height + region.top;
 	LOG_INFO("Centered window to position ({}, {})", region.left, region.top);
-	m_width = width;
-	m_height = height;
-	m_aspectRatio = (float) m_height / (float) m_width;
+	mWidth = width;
+	mHeight = height;
+	mAspectRatio = (float) mHeight / (float) mWidth;
 	if (!AdjustWindowRect(&region, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU, false))
 	{
 		throw DISPLAY_LAST_EXCEPTION();
@@ -92,25 +92,25 @@ Display::Display(int width, int height, const char* title)
 		width, height);
 	//RECT screenRegion;
 	//GetClientRect(GetDesktopWindow(), &screenRegion);
-	m_hwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU,
+	mHwnd = CreateWindow(Window::getName(), title, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU,
 		region.left,
 		region.top, region.right - region.left, region.bottom - region.top, nullptr,
 		nullptr, Window::getInstance(), this);
 
-	if (!m_hwnd)
+	if (!mHwnd)
 	{
 		throw DISPLAY_LAST_EXCEPTION();
 	}
-	ShowWindow(m_hwnd, SW_SHOWDEFAULT);
+	ShowWindow(mHwnd, SW_SHOWDEFAULT);
 
-	ImguiManager::initWin32(m_hwnd);
+	ImguiManager::initWin32(mHwnd);
 
-	m_gfx = createScope<Graphics>(m_hwnd);
+	mGfx = createScope<Graphics>(mHwnd);
 }
 
 Display::~Display()
 {
-	DestroyWindow(m_hwnd);
+	DestroyWindow(mHwnd);
 }
 
 LRESULT CALLBACK Display::handleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -174,12 +174,12 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	{
 		if (imio.WantCaptureMouse) break;
 		const POINTS pt = MAKEPOINTS(lParam);
-		if (pt.x >= 0 && pt.x < m_width && pt.y >= 0 && pt.y < m_height)
+		if (pt.x >= 0 && pt.x < mWidth && pt.y >= 0 && pt.y < mHeight)
 		{
 			mouse.onMouseMove(pt.x, pt.y);
 			if (!mouse.isInWindow())
 			{
-				SetCapture(m_hwnd);
+				SetCapture(mHwnd);
 				mouse.onMouseEnter();
 			}
 		} else
@@ -207,7 +207,7 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		if (imio.WantCaptureMouse) break;
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.onLeftReleased(pt.x, pt.y);
-		if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height)
+		if (pt.x < 0 || pt.x >= mWidth || pt.y < 0 || pt.y >= mHeight)
 		{
 			ReleaseCapture();
 			mouse.onMouseLeave();
@@ -226,7 +226,7 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		if (imio.WantCaptureMouse) break;
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.onRightReleased(pt.x, pt.y);
-		if (pt.x < 0 || pt.x >= m_width || pt.y < 0 || pt.y >= m_height)
+		if (pt.x < 0 || pt.x >= mWidth || pt.y < 0 || pt.y >= mHeight)
 		{
 			ReleaseCapture();
 			mouse.onMouseLeave();
@@ -252,7 +252,7 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 
 void Display::setTitle(const std::string& title)
 {
-	if (!SetWindowText(m_hwnd, title.c_str()))
+	if (!SetWindowText(mHwnd, title.c_str()))
 	{
 		throw DISPLAY_LAST_EXCEPTION();
 	}
@@ -273,6 +273,6 @@ std::optional<int> Display::processMessages() noexcept
 
 Graphics& Display::getGraphics()
 {
-	if (!m_gfx) throw DISPLAY_NO_GFX_EXCEPTION();
-	return *m_gfx;
+	if (!mGfx) throw DISPLAY_NO_GFX_EXCEPTION();
+	return *mGfx;
 }

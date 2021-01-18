@@ -23,7 +23,7 @@
 #include "GraphicsException.h"
 
 IndexBuffer::IndexBuffer(Graphics& gfx, const list<ushort>& indices) :
-        m_count(static_cast<UINT>(indices.size()))
+        mCount(static_cast<UINT>(indices.size()))
 {
     DEBUG_INFO(gfx);
 
@@ -32,14 +32,14 @@ IndexBuffer::IndexBuffer(Graphics& gfx, const list<ushort>& indices) :
     ibd.Usage = D3D11_USAGE_DEFAULT;
     ibd.CPUAccessFlags = 0u;
     ibd.MiscFlags = 0u;
-    ibd.ByteWidth = static_cast<UINT>(m_count * sizeof(ushort));
+    ibd.ByteWidth = static_cast<UINT>(mCount * sizeof(ushort));
     ibd.StructureByteStride = sizeof(ushort);
     D3D11_SUBRESOURCE_DATA isd = { };
     isd.pSysMem = indices.data();
-    GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&ibd, &isd, &m_buffer));
+    GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&ibd, &isd, &mBuffer));
 }
 
 void IndexBuffer::bind(Graphics& gfx) noexcept
 {
-    getContext(gfx)->IASetIndexBuffer(m_buffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+    getContext(gfx)->IASetIndexBuffer(mBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 }

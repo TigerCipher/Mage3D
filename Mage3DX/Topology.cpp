@@ -24,5 +24,5 @@
 
 void Topology::bind(Graphics& gfx) noexcept
 {
-    getContext(gfx)->IASetPrimitiveTopology(m_type);
+    getContext(gfx)->IASetPrimitiveTopology(mType);
 }

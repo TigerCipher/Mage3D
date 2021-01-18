@@ -29,7 +29,7 @@ public:
 	explicit Sampler(Graphics& gfx);
 	void bind(Graphics &gfx) noexcept override;
 protected:
-	COMptr<ID3D11SamplerState> m_sampler;
+	COMptr<ID3D11SamplerState> mSampler;
 };
 
 

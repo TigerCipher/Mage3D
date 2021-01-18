@@ -22,7 +22,7 @@
 #include "Util.h"
 
 
-void fromList(std::string& str, const list<std::string>& strList)
+void from_list(std::string& str, const list<std::string>& strList)
 {
 	for(const auto& s : strList)
 	{

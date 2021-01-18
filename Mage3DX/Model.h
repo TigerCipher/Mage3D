@@ -28,9 +28,9 @@ friend class Model;
 public:
 
 	Node(list<Mesh*> meshes, const mat4f& transform) noexcept(!MAGE_DEBUG) :
-		m_meshes(std::move(meshes))
+		mMeshes(std::move(meshes))
 	{
-		dx::XMStoreFloat4x4(&this->m_transform, transform);
+		dx::XMStoreFloat4x4(&this->mTransform, transform);
 	}
 
 	void render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG);
@@ -39,9 +39,9 @@ private:
 
 	void addChild(UniquePtr<Node> child) noexcept(!MAGE_DEBUG);
 	
-	list<UniquePtr<Node> > m_children;
-	list<Mesh*> m_meshes;
-	mat4x4 m_transform;
+	list<UniquePtr<Node> > mChildren;
+	list<Mesh*> mMeshes;
+	mat4x4 mTransform;
 };
 
 class Model
@@ -56,7 +56,7 @@ public:
 	void render(Graphics& gfx, mat4f transform) const;
 	
 private:
-	UniquePtr<Node> m_root;
-	list<UniquePtr<Mesh>> m_meshes;
+	UniquePtr<Node> mRoot;
+	list<UniquePtr<Mesh>> mMeshes;
 };
 

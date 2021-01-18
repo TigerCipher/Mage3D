@@ -27,7 +27,7 @@
 
 #include "winwrapper.h"
 
-bool redirectConsole()
+bool redirect_console()
 {
 	auto result = true;
 	FILE* fp;
@@ -68,7 +68,7 @@ bool redirectConsole()
 	return result;
 }
 
-bool releaseConsole()
+bool release_console()
 {
 	auto result = true;
 	FILE* fp;
@@ -92,22 +92,22 @@ bool releaseConsole()
 	return result;
 }
 
-bool createNewConsole(int16_f minLength)
+bool create_new_console(int16_f minLength)
 {
 	auto result = false;
 
-	releaseConsole();
+	release_console();
 
 	if(AllocConsole())
 	{
-		adjustConsoleBuffer(minLength);
-		result = redirectConsole();
+		adjust_console_buffer(minLength);
+		result = redirect_console();
 	}
 
 	return result;
 }
 
-void adjustConsoleBuffer(int16_f minLength)
+void adjust_console_buffer(int16_f minLength)
 {
 	CONSOLE_SCREEN_BUFFER_INFO csbi;
 	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
@@ -116,16 +116,16 @@ void adjustConsoleBuffer(int16_f minLength)
 	SetConsoleScreenBufferSize(GetStdHandle(STD_OUTPUT_HANDLE), csbi.dwSize);
 }
 
-bool attachParentConsole(int16_f minLength)
+bool attach_parent_console(int16_f minLength)
 {
 	auto result = false;
 
-	releaseConsole();
+	release_console();
 
 	if(AttachConsole(ATTACH_PARENT_PROCESS))
 	{
-		adjustConsoleBuffer(minLength);
-		result = redirectConsole();
+		adjust_console_buffer(minLength);
+		result = redirect_console();
 	}
 
 	return result;

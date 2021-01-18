@@ -27,7 +27,7 @@
 #endif
 
 
-SharedPtr<spdlog::logger> Log::s_logger;
+SharedPtr<spdlog::logger> Log::sLogger;
 
 void Log::init()
 {
@@ -41,8 +41,8 @@ void Log::init()
 
 	logSinks[0]->set_pattern("[%m-%d-%Y %H:%M:%S] [%l] [%g:%#] [%!] %n: %v");
 
-	s_logger = createRef<spdlog::logger>("Mage3D", begin(logSinks), end(logSinks));
-	spdlog::register_logger(s_logger);
-	s_logger->set_level(spdlog::level::trace);
-	s_logger->flush_on(spdlog::level::trace);
+	sLogger = createRef<spdlog::logger>("Mage3D", begin(logSinks), end(logSinks));
+	spdlog::register_logger(sLogger);
+	sLogger->set_level(spdlog::level::trace);
+	sLogger->flush_on(spdlog::level::trace);
 }

@@ -31,10 +31,10 @@ class Log
 {
 public:
 	static void init();
-	static SharedPtr<spdlog::logger>& getLogger() { return s_logger; }
+	static SharedPtr<spdlog::logger>& getLogger() { return sLogger; }
 
 private:
-	static SharedPtr<spdlog::logger> s_logger;
+	static SharedPtr<spdlog::logger> sLogger;
 };
 
 

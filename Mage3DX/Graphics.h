@@ -42,33 +42,33 @@ public:
 
 	void drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG);
 
-	void setProjection(mat4f proj) noexcept { m_projection = proj; }
-	[[nodiscard]] mat4f getProjection() const noexcept { return m_projection; }
+	void setProjection(mat4f proj) noexcept { mProjection = proj; }
+	[[nodiscard]] mat4f getProjection() const noexcept { return mProjection; }
 
-	void setCamera(mat4f cam) noexcept { m_camera = cam; }
-	[[nodiscard]] mat4f getCamera() const noexcept { return m_camera; }
+	void setCamera(mat4f cam) noexcept { mCamera = cam; }
+	[[nodiscard]] mat4f getCamera() const noexcept { return mCamera; }
 
-	void toggleImgui() noexcept { m_imguiEnabled = !m_imguiEnabled; }
-	void enableImgui() noexcept { m_imguiEnabled = true; }
-	void disableImgui() noexcept { m_imguiEnabled = false; }
+	void toggleImgui() noexcept { mImguiEnabled = !mImguiEnabled; }
+	void enableImgui() noexcept { mImguiEnabled = true; }
+	void disableImgui() noexcept { mImguiEnabled = false; }
 
-	[[nodiscard]] bool isImguiEnabled() const noexcept { return m_imguiEnabled; }
+	[[nodiscard]] bool isImguiEnabled() const noexcept { return mImguiEnabled; }
 
 
 protected:
 private:
-	COMptr<ID3D11Device> m_device { };
-	COMptr<IDXGISwapChain> m_swap { };
-	COMptr<ID3D11DeviceContext> m_context { };
-	COMptr<ID3D11RenderTargetView> m_target { };
-	COMptr<ID3D11DepthStencilView> m_depthStencilView { };
+	COMptr<ID3D11Device> mDevice { };
+	COMptr<IDXGISwapChain> mSwap { };
+	COMptr<ID3D11DeviceContext> mContext { };
+	COMptr<ID3D11RenderTargetView> mTarget { };
+	COMptr<ID3D11DepthStencilView> mDepthStencilView { };
 
-	mat4f m_projection{ };
-	mat4f m_camera{ };
-	bool m_imguiEnabled = true;
+	mat4f mProjection{ };
+	mat4f mCamera{ };
+	bool mImguiEnabled = true;
 
 #if MAGE_DEBUG
-	DebugInfo m_debugInfo;
+	DebugInfo mDebugInfo;
 #endif
 };
 

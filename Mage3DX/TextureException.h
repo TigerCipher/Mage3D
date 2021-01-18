@@ -27,14 +27,14 @@ class TextureException : public MageException
 public:
 	TextureException(int line, const char* file, std::string info) noexcept :
 		MageException(line, file),
-		m_info(std::move(info))
+		mInfo(std::move(info))
 	{ }
 	const char* what() const noexcept override;
 	const char* getType() const noexcept override;
-	const std::string& getInfo() const noexcept { return m_info; }
+	const std::string& getInfo() const noexcept { return mInfo; }
 
 private:
-	std::string m_info;
+	std::string mInfo;
 };
 
 

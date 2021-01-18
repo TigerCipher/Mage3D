@@ -23,8 +23,8 @@
 
 const char* TextureException::what() const noexcept
 {
-    m_what = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
-    return m_what.c_str();
+    mWhat = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
+    return mWhat.c_str();
 }
 
 const char* TextureException::getType() const noexcept

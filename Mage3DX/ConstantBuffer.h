@@ -27,7 +27,7 @@ template<typename C>
 class ConstantBuffer : public Bindable
 {
 public:
-	explicit ConstantBuffer(Graphics& gfx, UINT slot = 0) : m_slot(slot)
+	explicit ConstantBuffer(Graphics& gfx, UINT slot = 0) : mSlot(slot)
 	{
 		DEBUG_INFO(gfx);
 		D3D11_BUFFER_DESC desc;
@@ -37,10 +37,10 @@ public:
 		desc.MiscFlags = 0;
 		desc.ByteWidth = sizeof(C);
 		desc.StructureByteStride = 0;
-		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, nullptr, &m_buffer));
+		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, nullptr, &mBuffer));
 	}
 
-	ConstantBuffer(Graphics& gfx, const C& consts, UINT slot = 0) : m_slot(slot)
+	ConstantBuffer(Graphics& gfx, const C& consts, UINT slot = 0) : mSlot(slot)
 	{
 		DEBUG_INFO(gfx);
 		D3D11_BUFFER_DESC desc;
@@ -54,7 +54,7 @@ public:
 		D3D11_SUBRESOURCE_DATA subData = { };
 		subData.pSysMem = &consts;
 
-		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, &subData, &m_buffer));
+		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&desc, &subData, &mBuffer));
 	}
 
 	void update(Graphics& gfx, const C& consts)
@@ -62,21 +62,21 @@ public:
 		DEBUG_INFO(gfx);
 
 		D3D11_MAPPED_SUBRESOURCE msr;
-		GFX_THROW_INFO(getContext(gfx)->Map(m_buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr));
+		GFX_THROW_INFO(getContext(gfx)->Map(mBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &msr));
 		memcpy(msr.pData, &consts, sizeof(consts));
-		getContext(gfx)->Unmap(m_buffer.Get(), 0);
+		getContext(gfx)->Unmap(mBuffer.Get(), 0);
 	}
 
 protected:
-	COMptr<ID3D11Buffer> m_buffer;
-	UINT m_slot;
+	COMptr<ID3D11Buffer> mBuffer;
+	UINT mSlot;
 };
 
 template<typename C>
 class VertexConstantBuffer : public ConstantBuffer<C>
 {
-using ConstantBuffer<C>::m_buffer;
-using ConstantBuffer<C>::m_slot;
+using ConstantBuffer<C>::mBuffer;
+using ConstantBuffer<C>::mSlot;
 //using Bindable::getContext;
 
 public:
@@ -86,15 +86,15 @@ public:
 	{
 		// For some reason ReSharper (but not Visual C++) was thinking getContext was private and not protected
 		// but super:: works so whatever
-		__super::getContext(gfx)->VSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
+		__super::getContext(gfx)->VSSetConstantBuffers(mSlot, 1, mBuffer.GetAddressOf());
 	}
 };
 
 template<typename C>
 class PixelConstantBuffer : public ConstantBuffer<C>
 {
-using ConstantBuffer<C>::m_buffer;
-using ConstantBuffer<C>::m_slot;
+using ConstantBuffer<C>::mBuffer;
+using ConstantBuffer<C>::mSlot;
 //using Bindable::getContext;
 
 public:
@@ -102,7 +102,7 @@ public:
 
 	void bind(Graphics& gfx) noexcept override
 	{
-		__super::getContext(gfx)->PSSetConstantBuffers(m_slot, 1, m_buffer.GetAddressOf());
+		__super::getContext(gfx)->PSSetConstantBuffers(mSlot, 1, mBuffer.GetAddressOf());
 	}
 };
 

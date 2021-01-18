@@ -26,8 +26,8 @@ const char* DisplayException::what() const noexcept
     std::ostringstream oss;
     oss << getType() << "\n[Error Code] " << getError() << "\n[Description] " << getErrorString() << "\n"
         << getOrigin();
-    m_what = oss.str();
-    return m_what.c_str();
+    mWhat = oss.str();
+    return mWhat.c_str();
 }
 
 const char* DisplayException::getType() const noexcept
@@ -40,7 +40,7 @@ const char* DisplayException::getType() const noexcept
 
 std::string DisplayException::getErrorString() const noexcept
 {
-    return ExceptionHelper::translateError(m_result);
+    return ExceptionHelper::translateError(mResult);
 }
 
 

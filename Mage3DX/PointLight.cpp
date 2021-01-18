@@ -23,10 +23,10 @@
 #include "ImguiManager.h"
 
 PointLight::PointLight(Graphics& gfx, float radius) :
-	m_mesh(gfx, radius),
-	m_buffer(gfx)
+	mMesh(gfx, radius),
+	mBuffer(gfx)
 {
-	m_cbuf = {
+	mCbuf = {
 		{ 0, 0, 0 },
 		{ 0.05f, 0.05f, 0.05f },
 		{ 1.0f, 1.0f, 1.0f },
@@ -39,36 +39,36 @@ PointLight::PointLight(Graphics& gfx, float radius) :
 
 void PointLight::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
 {
-	m_mesh.setPosition(m_cbuf.pos);
-	m_mesh.render(gfx);
+	mMesh.setPosition(mCbuf.pos);
+	mMesh.render(gfx);
 }
 
 void PointLight::bind(Graphics& gfx, mat4f view) const noexcept
 {
-	auto cpy = m_cbuf;
-	const auto pos = dx::XMLoadFloat3(&m_cbuf.pos);
+	auto cpy = mCbuf;
+	const auto pos = dx::XMLoadFloat3(&mCbuf.pos);
 	dx::XMStoreFloat3(&cpy.pos, dx::XMVector3Transform(pos, view));
-	m_buffer.update(gfx, cpy);
-	m_buffer.bind(gfx);
+	mBuffer.update(gfx, cpy);
+	mBuffer.bind(gfx);
 }
 
 void PointLight::spawnControlWindow() noexcept
 {
 	IMGUI_WRAP("Point Light",
 		ImGui::Text("Position"),
-		ImGui::SliderFloat("X", &m_cbuf.pos.x, -60.0f, 60.0f, "%.1f"),
-		ImGui::SliderFloat("Y", &m_cbuf.pos.y, -60.0f, 60.0f, "%.1f"),
-		ImGui::SliderFloat("Z", &m_cbuf.pos.z, -60.0f, 60.0f, "%.1f"),
+		ImGui::SliderFloat("X", &mCbuf.pos.x, -60.0f, 60.0f, "%.1f"),
+		ImGui::SliderFloat("Y", &mCbuf.pos.y, -60.0f, 60.0f, "%.1f"),
+		ImGui::SliderFloat("Z", &mCbuf.pos.z, -60.0f, 60.0f, "%.1f"),
 		
 		ImGui::Text("Intensity / Color"),
-		ImGui::SliderFloat("Intensity", &m_cbuf.diffuseIntensity, 0.01f, 2.0f, "%.2f", 2),
-		ImGui::ColorEdit3("Diffuse Color", &m_cbuf.diffuseColor.x),
-		ImGui::ColorEdit3("Ambient", &m_cbuf.ambient.x),
+		ImGui::SliderFloat("Intensity", &mCbuf.diffuseIntensity, 0.01f, 2.0f, "%.2f", 2),
+		ImGui::ColorEdit3("Diffuse Color", &mCbuf.diffuseColor.x),
+		ImGui::ColorEdit3("Ambient", &mCbuf.ambient.x),
 
 		ImGui::Text("Attenuation"),
-		ImGui::SliderFloat("Constant", &m_cbuf.attConst, 0.05f, 10.0f, "%.2f", 4),
-		ImGui::SliderFloat("Linear", &m_cbuf.attLin, 0.0001f, 4.0f, "%.4f", 8),
-		ImGui::SliderFloat("Quadradic", &m_cbuf.attQuad, 0.0000001f, 10.0f, "%.7f", 10),
+		ImGui::SliderFloat("Constant", &mCbuf.attConst, 0.05f, 10.0f, "%.2f", 4),
+		ImGui::SliderFloat("Linear", &mCbuf.attLin, 0.0001f, 4.0f, "%.4f", 8),
+		ImGui::SliderFloat("Quadradic", &mCbuf.attQuad, 0.0000001f, 10.0f, "%.7f", 10),
 
 		reset()
 		);
@@ -78,7 +78,7 @@ void PointLight::reset() noexcept
 {
 	if (ImGui::Button("Reset"))
 	{
-		m_cbuf = {
+		mCbuf = {
 			{ 0, 0, 0 },
 			{ 0.05f, 0.05f, 0.05f },
 			{ 1.0f, 1.0f, 1.0f },

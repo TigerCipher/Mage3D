@@ -46,27 +46,27 @@ DebugInfo::DebugInfo()
 	}
 
 	HRESULT hr;
-	GFX_THROW_FAILED(debugInterface(__uuidof(IDXGIInfoQueue), &m_infoQueue));
+	GFX_THROW_FAILED(debugInterface(__uuidof(IDXGIInfoQueue), &mInfoQueue));
 }
 
 
 void DebugInfo::set() noexcept
 {
-	m_next = m_infoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);
+	mNext = mInfoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);
 }
 
 list<std::string> DebugInfo::getMessages() const
 {
 	list<std::string> messages;
-	const auto end = m_infoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);
-	for (auto i = m_next; i < end; i++)
+	const auto end = mInfoQueue->GetNumStoredMessages(DXGI_DEBUG_ALL);
+	for (auto i = mNext; i < end; i++)
 	{
 		HRESULT hr;
 		SIZE_T msgLen;
-		GFX_THROW_FAILED(m_infoQueue->GetMessage(DXGI_DEBUG_ALL, i, nullptr, &msgLen));
+		GFX_THROW_FAILED(mInfoQueue->GetMessage(DXGI_DEBUG_ALL, i, nullptr, &msgLen));
 		auto bytes = createScope<byte[ ]>(msgLen);
 		auto msg = reinterpret_cast<DXGI_INFO_QUEUE_MESSAGE*>(bytes.get());
-		GFX_THROW_FAILED(m_infoQueue->GetMessage(DXGI_DEBUG_ALL, i, msg, &msgLen));
+		GFX_THROW_FAILED(mInfoQueue->GetMessage(DXGI_DEBUG_ALL, i, msg, &msgLen));
 		messages.emplace_back(msg->pDescription);
 	}
 	return messages;

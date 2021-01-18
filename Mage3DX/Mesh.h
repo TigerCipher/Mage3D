@@ -32,10 +32,10 @@ public:
 
 	[[nodiscard]] mat4f getTransformMatrix() const noexcept override
 	{
-		return dx::XMLoadFloat4x4(&m_transform);
+		return dx::XMLoadFloat4x4(&mTransform);
 	}
 
 private:
-	mutable mat4x4 m_transform{ };
+	mutable mat4x4 mTransform{ };
 };
 

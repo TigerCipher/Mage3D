@@ -27,6 +27,7 @@
 #include "MathHelper.h"
 
 #include "ImguiManager.h"
+#include "Util.h"
 
 // might do this since for release id be using visual studio to build, likely with different
 //compiler flags than set up in cmake currently
@@ -70,12 +71,12 @@ Graphics::Graphics(HWND hwnd)
 	GFX_THROW_INFO(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
 	                                             flg,
 	                                             nullptr, 0,
-	                                             D3D11_SDK_VERSION, &swapDesc, &m_swap, &m_device, nullptr,
-	                                             &m_context));
+	                                             D3D11_SDK_VERSION, &swapDesc, &mSwap, &mDevice, nullptr,
+	                                             &mContext));
 
 	COMptr<ID3D11Resource> backBuffer;
-	GFX_THROW_INFO(m_swap->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
-	GFX_THROW_INFO(m_device->CreateRenderTargetView(backBuffer.Get(), nullptr, &m_target));
+	GFX_THROW_INFO(mSwap->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
+	GFX_THROW_INFO(mDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, &mTarget));
 
 	D3D11_DEPTH_STENCIL_DESC depth = { };
 	depth.DepthEnable = TRUE;
@@ -83,9 +84,9 @@ Graphics::Graphics(HWND hwnd)
 	depth.DepthFunc = D3D11_COMPARISON_LESS;
 
 	COMptr<ID3D11DepthStencilState> depthState;
-	GFX_THROW_INFO(m_device->CreateDepthStencilState(&depth, &depthState));
+	GFX_THROW_INFO(mDevice->CreateDepthStencilState(&depth, &depthState));
 
-	m_context->OMSetDepthStencilState(depthState.Get(), 1);
+	mContext->OMSetDepthStencilState(depthState.Get(), 1);
 
 	LOG_INFO("Setting depth stencil dimensions ({}, {})", w, h);
 	COMptr<ID3D11Texture2D> depthStencil;
@@ -99,15 +100,15 @@ Graphics::Graphics(HWND hwnd)
 	texDesc.SampleDesc.Quality = 0;
 	texDesc.Usage = D3D11_USAGE_DEFAULT;
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	GFX_THROW_INFO(m_device->CreateTexture2D(&texDesc, nullptr, &depthStencil));
+	GFX_THROW_INFO(mDevice->CreateTexture2D(&texDesc, nullptr, &depthStencil));
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = { };
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Texture2D.MipSlice = 0;
-	GFX_THROW_INFO(m_device->CreateDepthStencilView(depthStencil.Get(), &dsvDesc, &m_depthStencilView));
+	GFX_THROW_INFO(mDevice->CreateDepthStencilView(depthStencil.Get(), &dsvDesc, &mDepthStencilView));
 
-	m_context->OMSetRenderTargets(1, m_target.GetAddressOf(), m_depthStencilView.Get());
+	mContext->OMSetRenderTargets(1, mTarget.GetAddressOf(), mDepthStencilView.Get());
 
 	LOG_INFO("Setting viewport dimensions ({}, {})", w, h);
 	D3D11_VIEWPORT vp;
@@ -117,9 +118,9 @@ Graphics::Graphics(HWND hwnd)
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0.0f;
 	vp.TopLeftY = 0.0f;
-	m_context->RSSetViewports(1, &vp);
+	mContext->RSSetViewports(1, &vp);
 
-	ImguiManager::initDx11(m_device.Get(), m_context.Get());
+	ImguiManager::initDx11(mDevice.Get(), mContext.Get());
 	constexpr float uiScale = 1.5f;
 	ImGui::GetIO().FontGlobalScale = uiScale;
 	ImGui::GetIO().FontAllowUserScaling = true;
@@ -132,14 +133,18 @@ void Graphics::swap()
 
 	HRESULT hr;
 #if MAGE_DEBUG
-	m_debugInfo.set();
+	mDebugInfo.set();
 #endif
-	if (FAILED(hr = m_swap->Present(vsync_flag, 0)))
+	if (FAILED(hr = mSwap->Present(vsync_flag, 0)))
 	{
 #if MAGE_DEBUG
-		LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(m_debugInfo.getMessages(), "\n"));
+		std::string debugMsgs;
+		from_list(debugMsgs, mDebugInfo.getMessages());
+		//TODO This errors on the new PC for some reason
+		//LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(m_debugInfo.getMessages(), "\n"));
+		LOG_ERROR("Swap chain failed. Reasoning: \n{}", debugMsgs);
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)
-			throw GFX_DEVICE_REMOVED_EXCEPT(m_device->GetDeviceRemovedReason());
+			throw GFX_DEVICE_REMOVED_EXCEPT(mDevice->GetDeviceRemovedReason());
 		else throw GFX_EXCEPT(hr);
 #endif
 	}
@@ -149,11 +154,11 @@ void Graphics::clear(float r, float g, float b) noexcept
 {
 	ImguiManager::newFrame();
 	const float color[] = { r, g, b, 1.0f };
-	m_context->ClearRenderTargetView(m_target.Get(), color);
-	m_context->ClearDepthStencilView(m_depthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	mContext->ClearRenderTargetView(mTarget.Get(), color);
+	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 void Graphics::drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG)
 {
-	GFX_THROW_INFO_ONLY(m_context->DrawIndexed(numIndices, 0, 0));
+	GFX_THROW_INFO_ONLY(mContext->DrawIndexed(numIndices, 0, 0));
 }

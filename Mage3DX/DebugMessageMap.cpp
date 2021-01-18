@@ -32,7 +32,7 @@
 #define REGISTER_MESSAGE(msg){msg,#msg}
 
 DebugMessageMap::DebugMessageMap() noexcept :
-        m_map({
+        mMap({
                       REGISTER_MESSAGE(WM_CREATE),
                       REGISTER_MESSAGE(WM_DESTROY),
                       REGISTER_MESSAGE(WM_MOVE),
@@ -212,9 +212,9 @@ DebugMessageMap::DebugMessageMap() noexcept :
 std::string DebugMessageMap::operator()(DWORD msg, LPARAM lParam, WPARAM wParam) const noexcept
 {
     constexpr int firstColWidth = 25;
-    const auto it = m_map.find(msg);
+    const auto it = mMap.find(msg);
     std::ostringstream oss;
-    if(it != m_map.end())
+    if(it != mMap.end())
     {
         oss << std::left << std::setw(firstColWidth) << it->second << std::right;
     }else

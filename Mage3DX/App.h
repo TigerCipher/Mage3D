@@ -40,15 +40,15 @@ private:
 
 	void showNanoControl();
 
-	Display m_display;
-	Camera m_camera;
-	PointLight m_light;
+	Display mDisplay;
+	Camera mCamera;
+	PointLight mLight;
 
-	Timer m_timer;
-	Timer m_performanceTimer;
-	bool m_running;
-	float m_globalSpeed = 1.0f;
-	Model m_nano;
+	Timer mTimer;
+	Timer mPerformanceTimer;
+	bool mRunning;
+	float mGlobalSpeed = 1.0f;
+	Model mNano;
 
 	struct NanoPos
 	{
@@ -58,6 +58,6 @@ private:
 		float x = 0;
 		float y = 0;
 		float z = 0;
-	} m_nanoPos;
+	} mNanoPos;
 };
 

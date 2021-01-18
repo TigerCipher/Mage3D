@@ -28,14 +28,14 @@ void Camera::spawnControlWindow() noexcept
 {
     IMGUI_WRAP("Camera",
                ImGui::Text("Position"),
-               ImGui::SliderFloat("R", &m_r, 0.1f, 80.0f, "%.1f"),
-               ImGui::SliderAngle("Theta", &m_theta, -180.0f, 180.0f),
-               ImGui::SliderAngle("Phi", &m_phi, -89.0f, 89.0f),
+               ImGui::SliderFloat("R", &mR, 0.1f, 80.0f, "%.1f"),
+               ImGui::SliderAngle("Theta", &mTheta, -180.0f, 180.0f),
+               ImGui::SliderAngle("Phi", &mPhi, -89.0f, 89.0f),
 
                ImGui::Text("Orientation"),
-               ImGui::SliderAngle("Roll", &m_roll, -180.0f, 180.0f),
-               ImGui::SliderAngle("Pitch", &m_pitch, -180.0f, 180.0f),
-               ImGui::SliderAngle("Yaw", &m_yaw, -180.0f, 180.0f),
+               ImGui::SliderAngle("Roll", &mRoll, -180.0f, 180.0f),
+               ImGui::SliderAngle("Pitch", &mPitch, -180.0f, 180.0f),
+               ImGui::SliderAngle("Yaw", &mYaw, -180.0f, 180.0f),
                reset()
               );
 
@@ -45,19 +45,19 @@ void Camera::reset() noexcept
 {
     if(ImGui::Button("Reset"))
     {
-        m_r = 20.0f;
-        m_theta = 0.0f;
-        m_phi = 0.0f;
-        m_pitch = 0.0f;
-        m_yaw = 0.0f;
-        m_roll = 0.0f;
+        mR = 20.0f;
+        mTheta = 0.0f;
+        mPhi = 0.0f;
+        mPitch = 0.0f;
+        mYaw = 0.0f;
+        mRoll = 0.0f;
     }
 }
 
 mat4f Camera::getViewMatrix() const noexcept
 {
-    const auto pos = dx::XMVector3Transform(dx::XMVectorSet(0, 0, -m_r, 0),
-                                            dx::XMMatrixRotationRollPitchYaw(m_phi, -m_theta, 0));
+    const auto pos = dx::XMVector3Transform(dx::XMVectorSet(0, 0, -mR, 0),
+                                            dx::XMMatrixRotationRollPitchYaw(mPhi, -mTheta, 0));
     return dx::XMMatrixLookAtLH(pos, dx::XMVectorZero(), dx::XMVectorSet(0, 1, 0, 0)) *
-           dx::XMMatrixRotationRollPitchYaw(m_pitch, -m_yaw, m_roll);
+           dx::XMMatrixRotationRollPitchYaw(mPitch, -mYaw, mRoll);
 }

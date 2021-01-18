@@ -49,7 +49,7 @@ protected:
 	template<class T>
 	T* queryBindable() noexcept
 	{
-		for (auto& pixelBuffer : m_bindables)
+		for (auto& pixelBuffer : mBindables)
 		{
 			if(auto pb = dynamic_cast<T*>(pixelBuffer.get()))
 				return pb;
@@ -61,8 +61,8 @@ protected:
 private:
 	[[nodiscard]] virtual const list<UniquePtr<Bindable> >& getStaticBinds() const noexcept = 0;
 
-	const class IndexBuffer* m_indexBuffer = nullptr;
-	list<UniquePtr<Bindable> > m_bindables{ };
+	const class IndexBuffer* mIndexBuffer = nullptr;
+	list<UniquePtr<Bindable> > mBindables{ };
 };
 
 

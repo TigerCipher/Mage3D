@@ -35,28 +35,28 @@ namespace Gdiplus
 
 TextureSurface& TextureSurface::operator=(TextureSurface&& src) noexcept
 {
-	m_width = src.m_width;
-	m_height = src.m_height;
-	m_buffer = std::move(src.m_buffer);
-	src.m_buffer = nullptr;
+	mWidth = src.mWidth;
+	mHeight = src.mHeight;
+	mBuffer = std::move(src.mBuffer);
+	src.mBuffer = nullptr;
 	return *this;
 }
 
 void TextureSurface::clear(Color fill) noexcept
 {
-	memset(m_buffer.get(), fill.dword, m_width * m_height * sizeof(Color));
+	memset(mBuffer.get(), fill.dword, mWidth * mHeight * sizeof(Color));
 }
 
 void TextureSurface::setPixel(uint x, uint y, Color col) noexcept(!MAGE_DEBUG)
 {
-	assert(x >= 0 && y >= 0 && x < m_width && y < m_height);
-	m_buffer[ y * m_width + x ] = col;
+	assert(x >= 0 && y >= 0 && x < mWidth && y < mHeight);
+	mBuffer[ y * mWidth + x ] = col;
 }
 
 Color TextureSurface::getPixel(uint x, uint y) const noexcept(!MAGE_DEBUG)
 {
-	assert(x >= 0 && y >= 0 && x < m_width && y < m_height);
-	return m_buffer[ y * m_width + x ];
+	assert(x >= 0 && y >= 0 && x < mWidth && y < mHeight);
+	return mBuffer[ y * mWidth + x ];
 }
 
 void TextureSurface::save(const std::string& fileName) const
@@ -108,7 +108,7 @@ void TextureSurface::save(const std::string& fileName) const
 	wchar_t wideName[512];
 	mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
 
-	Gdiplus::Bitmap bitmap(m_width, m_height, m_width * sizeof(Color), PixelFormat32bppARGB, (BYTE*) m_buffer.get());
+	Gdiplus::Bitmap bitmap(mWidth, mHeight, mWidth * sizeof(Color), PixelFormat32bppARGB, (BYTE*) mBuffer.get());
 	if (bitmap.Save(wideName, &bmp, nullptr) != Gdiplus::Status::Ok)
 	{
 		throw TextureException(__LINE__, __FILE__, fmt::format("Could not save texture surface to [{}]", fileName));
@@ -117,9 +117,9 @@ void TextureSurface::save(const std::string& fileName) const
 
 void TextureSurface::copy(const TextureSurface& src) noexcept(!MAGE_DEBUG)
 {
-	assert(m_width == src.m_width);
-	assert(m_height == src.m_height);
-	memcpy(m_buffer.get(), src.m_buffer.get(), m_width * m_height * sizeof(Color));
+	assert(mWidth == src.mWidth);
+	assert(mHeight == src.mHeight);
+	memcpy(mBuffer.get(), src.mBuffer.get(), mWidth * mHeight * sizeof(Color));
 }
 
 TextureSurface TextureSurface::loadFromFile(const std::string& fileName)

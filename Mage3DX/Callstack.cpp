@@ -64,5 +64,5 @@ Callstack::Callstack(int numDiscard)
 {
     StackWalkerImpl sw(numDiscard);
     sw.ShowCallstack();
-    m_stack = sw.getStack();
+    mStack = sw.getStack();
 }

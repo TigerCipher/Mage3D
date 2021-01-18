@@ -39,6 +39,6 @@ private:
 		mat4f mvp;
 	};
 	static UniquePtr<VertexConstantBuffer<Transforms> > sVertexBuffer;
-	const IRenderable& m_parent;
+	const IRenderable& mParent;
 };
 

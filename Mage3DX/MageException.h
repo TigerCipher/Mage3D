@@ -26,17 +26,17 @@
     class MageException : public std::exception, public StacktraceExceptionBase
     {
     public:
-        MageException(int line, const char* file) noexcept : StacktraceExceptionBase(true), m_line(line), m_file(file) {}
+        MageException(int line, const char* file) noexcept : StacktraceExceptionBase(true), mLine(line), mFile(file) {}
         [[nodiscard]] const char* what() const noexcept override;
         virtual const char* getType() const noexcept;
-        inline int getLine() const noexcept { return m_line; }
-        inline const std::string& getFile() const noexcept { return m_file; }
+        inline int getLine() const noexcept { return mLine; }
+        inline const std::string& getFile() const noexcept { return mFile; }
         std::string getOrigin() const noexcept;
     protected:
-        mutable std::string m_what;
+        mutable std::string mWhat;
     private:
-        int m_line;
-        std::string m_file;
+        int mLine;
+        std::string mFile;
     };
 
 

@@ -24,29 +24,29 @@
 #include "ImguiManager.h"
 
 
-App::App(int width, int height, const char* title) :
-	m_display(width, height, title),
-	m_light(m_display.getGraphics()),
-	m_running(true),
-	m_nano(m_display.getGraphics(), "assets\\models\\nanosuit.obj")
+App::App(const int width, const int height, const char* title) :
+	mDisplay(width, height, title),
+	mLight(mDisplay.getGraphics()),
+	mRunning(true),
+	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj")
 {
 	GDIPlusManager::start();
 
-	m_display.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
-		m_display.getAspectRatio(),
+	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
+		mDisplay.getAspectRatio(),
 		0.5f, 40.0f));
 }
 
 App::~App()
 {
-	if (m_running)
+	if (mRunning)
 		stop();
 }
 
 int App::run()
 {
 	LOG_INFO("Main loop beginning");
-	while (m_running)
+	while (mRunning)
 	{
 		if (const auto exitCode = Display::processMessages())
 			return *exitCode;
@@ -58,7 +58,7 @@ int App::run()
 
 void App::stop()
 {
-	m_running = false;
+	mRunning = false;
 	GDIPlusManager::stop();
 }
 
@@ -97,41 +97,41 @@ void calculateFrameStatistics(Timer& timer)
 
 void App::runFrame()
 {
-	const auto delta = m_timer.markPoint() * m_globalSpeed;
+	const auto delta = mTimer.markPoint() * mGlobalSpeed;
 
-	if (m_display.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
+	if (mDisplay.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
 
-	m_display.getGraphics().clear(0.07f, 0, 0.12f);
-	m_display.getGraphics().setCamera(m_camera.getViewMatrix());
-	m_light.bind(m_display.getGraphics(), m_camera.getViewMatrix());
+	mDisplay.getGraphics().clear(0.07f, 0, 0.12f);
+	mDisplay.getGraphics().setCamera(mCamera.getViewMatrix());
+	mLight.bind(mDisplay.getGraphics(), mCamera.getViewMatrix());
 
 
-	const auto transform = dx::XMMatrixRotationRollPitchYaw(m_nanoPos.roll, m_nanoPos.pitch, m_nanoPos.yaw)
-	    * dx::XMMatrixTranslation(m_nanoPos.x, m_nanoPos.y, m_nanoPos.z);
-	m_nano.render(m_display.getGraphics(), transform);
-	m_light.render(m_display.getGraphics());
+	const auto transform = dx::XMMatrixRotationRollPitchYaw(mNanoPos.roll, mNanoPos.pitch, mNanoPos.yaw)
+	    * dx::XMMatrixTranslation(mNanoPos.x, mNanoPos.y, mNanoPos.z);
+	mNano.render(mDisplay.getGraphics(), transform);
+	mLight.render(mDisplay.getGraphics());
 
-	calculateFrameStatistics(m_performanceTimer);
+	calculateFrameStatistics(mPerformanceTimer);
 
-	m_camera.spawnControlWindow();
-	m_light.spawnControlWindow();
+	mCamera.spawnControlWindow();
+	mLight.spawnControlWindow();
 	showNanoControl();
 
-	m_display.getGraphics().swap();
+	mDisplay.getGraphics().swap();
 }
 
 void App::showNanoControl()
 {
 	IMGUI_WRAP("Nanosuit Model",
 		ImGui::Text("Orientation"),
-		ImGui::SliderAngle("Roll", &m_nanoPos.roll, -180.0f, 180.0f),
-		ImGui::SliderAngle("Pitch", &m_nanoPos.pitch, -180.0f, 180.0f),
-		ImGui::SliderAngle("Yaw", &m_nanoPos.yaw, -180.0f, 180.0f),
+		ImGui::SliderAngle("Roll", &mNanoPos.roll, -180.0f, 180.0f),
+		ImGui::SliderAngle("Pitch", &mNanoPos.pitch, -180.0f, 180.0f),
+		ImGui::SliderAngle("Yaw", &mNanoPos.yaw, -180.0f, 180.0f),
 
 		ImGui::Text("Position"),
-		ImGui::SliderFloat("X", &m_nanoPos.x, -20.0f, 20.0f),
-		ImGui::SliderFloat("Y", &m_nanoPos.y, -20.0f, 20.0f),
-		ImGui::SliderFloat("Z", &m_nanoPos.z, -20.0f, 20.0f)
+		ImGui::SliderFloat("X", &mNanoPos.x, -20.0f, 20.0f),
+		ImGui::SliderFloat("Y", &mNanoPos.y, -20.0f, 20.0f),
+		ImGui::SliderFloat("Z", &mNanoPos.z, -20.0f, 20.0f)
 
 		);
 }

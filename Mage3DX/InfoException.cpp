@@ -25,15 +25,15 @@
 InfoException::InfoException(int line, const char* file, const list<std::string>& msgs) noexcept:
 	MageException(line, file)
 {
-	fromList(m_info, msgs);
+	from_list(mInfo, msgs);
 }
 
 const char* InfoException::what() const noexcept
 {
 	std::ostringstream oss;
 	oss << getType() << "\n[Error Info]\n" << getErrorInfo() << "\n\n" << getOrigin();
-	m_what = oss.str();
-	return m_what.c_str();
+	mWhat = oss.str();
+	return mWhat.c_str();
 }
 
 const char* InfoException::getType() const noexcept
@@ -43,5 +43,5 @@ const char* InfoException::getType() const noexcept
 
 std::string InfoException::getErrorInfo() const noexcept
 {
-	return m_info;
+	return mInfo;
 }

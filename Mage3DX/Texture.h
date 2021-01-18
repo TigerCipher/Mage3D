@@ -30,7 +30,7 @@ public:
 	void bind(Graphics &gfx) noexcept override;
 
 protected:
-	COMptr<ID3D11ShaderResourceView> m_textureView;
+	COMptr<ID3D11ShaderResourceView> mTextureView;
 };
 
 

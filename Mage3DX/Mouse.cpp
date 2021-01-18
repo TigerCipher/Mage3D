@@ -25,10 +25,10 @@
 
 Mouse::Event Mouse::read() noexcept
 {
-    if(!m_buffer.empty())
+    if(!mBuffer.empty())
     {
-        Event e = m_buffer.front();
-        m_buffer.pop();
+        Event e = mBuffer.front();
+        mBuffer.pop();
         return e;
     }
     return Mouse::Event();
@@ -36,90 +36,90 @@ Mouse::Event Mouse::read() noexcept
 
 void Mouse::clear() noexcept
 {
-    m_buffer = std::queue<Event>();
+    mBuffer = std::queue<Event>();
 }
 
 void Mouse::onMouseMove(int x, int y) noexcept
 {
-    m_xPos = x;
-    m_yPos = y;
-    m_buffer.push(Event(Event::Type::MOVE, *this));
+    mXPos = x;
+    mYPos = y;
+    mBuffer.push(Event(Event::Type::MOVE, *this));
     trim();
 }
 
 void Mouse::onLeftPressed(int x, int y) noexcept
 {
-    m_left = true;
-    m_buffer.push(Event(Event::Type::LEFT_PRESS, *this));
+    mLeft = true;
+    mBuffer.push(Event(Event::Type::LEFT_PRESS, *this));
     trim();
 }
 
 void Mouse::onLeftReleased(int x, int y) noexcept
 {
-    m_left = false;
-    m_buffer.push(Event(Event::Type::LEFT_RELEASE, *this));
+    mLeft = false;
+    mBuffer.push(Event(Event::Type::LEFT_RELEASE, *this));
     trim();
 }
 
 void Mouse::onRightPressed(int x, int y) noexcept
 {
-    m_right = true;
-    m_buffer.push(Event(Event::Type::RIGHT_PRESS, *this));
+    mRight = true;
+    mBuffer.push(Event(Event::Type::RIGHT_PRESS, *this));
     trim();
 }
 
 void Mouse::onRightReleased(int x, int y) noexcept
 {
-    m_right = false;
-    m_buffer.push(Event(Event::Type::RIGHT_RELEASE, *this));
+    mRight = false;
+    mBuffer.push(Event(Event::Type::RIGHT_RELEASE, *this));
     trim();
 }
 
 void Mouse::onWheelUp(int x, int y) noexcept
 {
-    m_buffer.push(Event(Event::Type::WHEEL_UP, *this));
+    mBuffer.push(Event(Event::Type::WHEEL_UP, *this));
     trim();
 }
 
 void Mouse::onWheelDown(int x, int y) noexcept
 {
-    m_buffer.push(Event(Event::Type::WHEEL_DOWN, *this));
+    mBuffer.push(Event(Event::Type::WHEEL_DOWN, *this));
     trim();
 }
 
 void Mouse::onMouseEnter() noexcept
 {
-    m_inWindow = true;
-    m_buffer.push(Event(Event::Type::ENTER, *this));
+    mInWindow = true;
+    mBuffer.push(Event(Event::Type::ENTER, *this));
     trim();
 }
 
 void Mouse::onMouseLeave() noexcept
 {
-    m_inWindow = false;
-    m_buffer.push(Event(Event::Type::LEAVE, *this));
+    mInWindow = false;
+    mBuffer.push(Event(Event::Type::LEAVE, *this));
     trim();
 }
 
 void Mouse::onWheelDelta(int x, int y, int delta) noexcept
 {
-    m_wheelDelta += delta;
-    while(m_wheelDelta >= WHEEL_DELTA)
+    mWheelDelta += delta;
+    while(mWheelDelta >= WHEEL_DELTA)
     {
-        m_wheelDelta -= WHEEL_DELTA;
+        mWheelDelta -= WHEEL_DELTA;
         onWheelUp(x, y);
     }
-    while(m_wheelDelta <= -WHEEL_DELTA)
+    while(mWheelDelta <= -WHEEL_DELTA)
     {
-        m_wheelDelta += WHEEL_DELTA;
+        mWheelDelta += WHEEL_DELTA;
         onWheelDown(x, y);
     }
 }
 
 void Mouse::trim() noexcept
 {
-    while(m_buffer.size() > BUFFER_SIZE)
+    while(mBuffer.size() > BUFFER_SIZE)
     {
-        m_buffer.pop();
+        mBuffer.pop();
     }
 }

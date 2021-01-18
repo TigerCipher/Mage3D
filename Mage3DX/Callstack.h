@@ -43,7 +43,7 @@ public:
 	[[nodiscard]] std::string asString() const
 	{
 		std::ostringstream oss;
-		for(const auto & i : m_stack)
+		for(const auto & i : mStack)
 		{
 			oss << i.asString() << "\n";
 		}
@@ -52,5 +52,5 @@ public:
 	}
 
 private:
-	list<Entry> m_stack;
+	list<Entry> mStack;
 };

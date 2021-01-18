@@ -30,6 +30,6 @@ public:
 
 protected:
 private:
-	std::unordered_map<DWORD, std::string> m_map;
+	std::unordered_map<DWORD, std::string> mMap;
 };
 

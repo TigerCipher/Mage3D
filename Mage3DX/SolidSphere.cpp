@@ -71,5 +71,5 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 
 mat4f SolidSphere::getTransformMatrix() const noexcept
 {
-	return dx::XMMatrixTranslation(m_position.x, m_position.y, m_position.z);
+	return dx::XMMatrixTranslation(mPosition.x, mPosition.y, mPosition.z);
 }

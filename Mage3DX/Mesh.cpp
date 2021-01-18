@@ -46,6 +46,6 @@ Mesh::Mesh(Graphics& gfx, list<UniquePtr<Bindable> > binds)
 
 void Mesh::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG)
 {
-	dx::XMStoreFloat4x4(&m_transform, accumulatedTransform);
+	dx::XMStoreFloat4x4(&mTransform, accumulatedTransform);
 	__super::render(gfx);
 }

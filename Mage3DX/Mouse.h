@@ -41,39 +41,39 @@ public:
 		};
 
 		Event() noexcept:
-			m_type(Type::INVALID),
-			m_left(false),
-			m_right(false),
-			m_xPos(0),
-			m_yPos(0) { }
+			mType(Type::INVALID),
+			mLeft(false),
+			mRight(false),
+			mXPos(0),
+			mYPos(0) { }
 
 		Event(const Type type, const Mouse& parent) noexcept:
-			m_type(type),
-			m_left(parent.m_left),
-			m_right(parent.m_right),
-			m_xPos(parent.m_xPos),
-			m_yPos(parent.m_yPos) { }
+			mType(type),
+			mLeft(parent.mLeft),
+			mRight(parent.mRight),
+			mXPos(parent.mXPos),
+			mYPos(parent.mYPos) { }
 
-		[[nodiscard]] bool isValid() const noexcept { return m_type != Type::INVALID; }
+		[[nodiscard]] bool isValid() const noexcept { return mType != Type::INVALID; }
 
-		[[nodiscard]] Type getType() const noexcept { return m_type; }
+		[[nodiscard]] Type getType() const noexcept { return mType; }
 
-		[[nodiscard]] std::pair<int, int> getPos() const noexcept { return { m_xPos, m_yPos }; }
+		[[nodiscard]] std::pair<int, int> getPos() const noexcept { return { mXPos, mYPos }; }
 
-		[[nodiscard]] int getX() const noexcept { return m_xPos; }
+		[[nodiscard]] int getX() const noexcept { return mXPos; }
 
-		[[nodiscard]] int getY() const noexcept { return m_yPos; }
+		[[nodiscard]] int getY() const noexcept { return mYPos; }
 
-		[[nodiscard]] bool isLeftPressed() const noexcept { return m_left; }
+		[[nodiscard]] bool isLeftPressed() const noexcept { return mLeft; }
 
-		[[nodiscard]] bool isRightPressed() const noexcept { return m_right; }
+		[[nodiscard]] bool isRightPressed() const noexcept { return mRight; }
 
 	private:
-		Type m_type;
-		bool m_left;
-		bool m_right;
-		int m_xPos;
-		int m_yPos;
+		Type mType;
+		bool mLeft;
+		bool mRight;
+		int mXPos;
+		int mYPos;
 	};
 public:
 	Mouse() = default;
@@ -81,19 +81,19 @@ public:
 	Mouse(const Mouse& rhs) = delete;
 	Mouse& operator=(const Mouse& rhs) = delete;
 
-	[[nodiscard]] std::pair<int, int> getPos() const noexcept { return { m_xPos, m_yPos }; }
+	[[nodiscard]] std::pair<int, int> getPos() const noexcept { return { mXPos, mYPos }; }
 
-	[[nodiscard]] int getX() const noexcept { return m_xPos; }
+	[[nodiscard]] int getX() const noexcept { return mXPos; }
 
-	[[nodiscard]] int getY() const noexcept { return m_yPos; }
+	[[nodiscard]] int getY() const noexcept { return mYPos; }
 
-	[[nodiscard]] bool isLeftPressed() const noexcept { return m_left; }
+	[[nodiscard]] bool isLeftPressed() const noexcept { return mLeft; }
 
-	[[nodiscard]] bool isRightPressed() const noexcept { return m_right; }
-	[[nodiscard]] bool isInWindow() const noexcept { return m_inWindow; }
+	[[nodiscard]] bool isRightPressed() const noexcept { return mRight; }
+	[[nodiscard]] bool isInWindow() const noexcept { return mInWindow; }
 
 	Event read() noexcept;
-	[[nodiscard]] bool isEmpty() const noexcept { return m_buffer.empty(); }
+	[[nodiscard]] bool isEmpty() const noexcept { return mBuffer.empty(); }
 
 	void clear() noexcept;
 
@@ -114,11 +114,11 @@ private:
 
 	static constexpr uint BUFFER_SIZE = 16;
 
-	int m_xPos;
-	int m_yPos;
-	bool m_left = false;
-	bool m_right = false;
-	bool m_inWindow = false;
-	int m_wheelDelta = 0;
-	std::queue<Event> m_buffer;
+	int mXPos;
+	int mYPos;
+	bool mLeft = false;
+	bool mRight = false;
+	bool mInWindow = false;
+	int mWheelDelta = 0;
+	std::queue<Event> mBuffer;
 };

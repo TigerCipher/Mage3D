@@ -27,9 +27,9 @@ class IndexBuffer : public Bindable
 public:
 	IndexBuffer(Graphics& gfx, const list<ushort>& indices);
 	void bind(Graphics& gfx) noexcept override;
-	[[nodiscard]] inline UINT getCount() const noexcept { return m_count; }
+	[[nodiscard]] inline UINT getCount() const noexcept { return mCount; }
 
 protected:
-	UINT m_count;
-	COMptr<ID3D11Buffer> m_buffer;
+	UINT mCount;
+	COMptr<ID3D11Buffer> mBuffer;
 };

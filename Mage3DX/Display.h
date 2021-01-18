@@ -39,10 +39,10 @@ public:
 
 	Graphics& getGraphics();
 
-	[[nodiscard]] inline int getWidth() const noexcept { return m_width; }
-	[[nodiscard]] inline int getHeight() const noexcept { return m_height; }
+	[[nodiscard]] inline int getWidth() const noexcept { return mWidth; }
+	[[nodiscard]] inline int getHeight() const noexcept { return mHeight; }
 
-	[[nodiscard]] inline float getAspectRatio() const noexcept { return m_aspectRatio; }
+	[[nodiscard]] inline float getAspectRatio() const noexcept { return mAspectRatio; }
 
 	Keyboard keyboard;
 	Mouse mouse;
@@ -57,11 +57,11 @@ private:
 
 	LRESULT handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept;
 
-	int m_width;
-	int m_height;
-	float m_aspectRatio;
-	HWND m_hwnd;
-	UniquePtr<Graphics> m_gfx;
+	int mWidth;
+	int mHeight;
+	float mAspectRatio;
+	HWND mHwnd;
+	UniquePtr<Graphics> mGfx;
 
 	class Window
 	{
@@ -74,9 +74,8 @@ private:
 		Window() noexcept;
 		virtual ~Window();
 
-
 		static constexpr const char* sWinClassName = "Mage3DXWin";
 		static Window sWinClass;
-		HINSTANCE m_hInst;
+		HINSTANCE mHInst;
 	};
 };

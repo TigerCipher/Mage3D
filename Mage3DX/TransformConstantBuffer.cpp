@@ -26,7 +26,7 @@ UniquePtr<VertexConstantBuffer<TransformConstantBuffer::Transforms> >
 TransformConstantBuffer::sVertexBuffer;
 
 TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot /*= 0*/) :
-	m_parent(parent)
+	mParent(parent)
 {
 	if(!sVertexBuffer)
 	{
@@ -37,7 +37,7 @@ TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const IRenderabl
 
 void TransformConstantBuffer::bind(Graphics& gfx) noexcept
 {
-	const auto modelView = m_parent.getTransformMatrix() * gfx.getCamera();
+	const auto modelView = mParent.getTransformMatrix() * gfx.getCamera();
 	const Transforms t = {
 		dx::XMMatrixTranspose(modelView),
 		dx::XMMatrixTranspose(modelView * gfx.getProjection())

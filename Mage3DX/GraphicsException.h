@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: GraphicsException.h
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
@@ -31,15 +31,15 @@
 #define GFX_EXCEPT_NOINFO(hr)                GraphicsException(__LINE__, __FILE__, hr)
 
 #if MAGE_DEBUG
-	#define GFX_EXCEPT(hr)                   GraphicsException(__LINE__, __FILE__, (hr), m_debugInfo.getMessages())
+	#define GFX_EXCEPT(hr)                   GraphicsException(__LINE__, __FILE__, (hr), mDebugInfo.getMessages())
 	#define GFX_THROW_INFO(hrcall)                       \
 	{                                                    \
 		HRESULT hr;                                      \
-		m_debugInfo.set();                               \
+		mDebugInfo.set();                               \
 		if (FAILED(hr = (hrcall))) throw GFX_EXCEPT(hr); \
 	}
 	#define GFX_DEVICE_REMOVED_EXCEPT(hr) \
-	GraphicsDeviceRemovedException(__LINE__, __FILE__, (hr), m_debugInfo.getMessages())
+	GraphicsDeviceRemovedException(__LINE__, __FILE__, (hr), mDebugInfo.getMessages())
 #else
 	#define GFX_EXCEPT(hr)                   GraphicsException(__LINE__, __FILE__, (hr))
 	#define GFX_THROW_INFO(hrcall)           GFX_THROW_NOINFO(hrcall)
@@ -47,7 +47,7 @@
 #endif
 
 #if MAGE_DEBUG
-	#define DEBUG_INFO(gfx)                  DebugInfo & m_debugInfo = getDebugInfo((gfx))
+	#define DEBUG_INFO(gfx)                  DebugInfo & mDebugInfo = getDebugInfo((gfx))
 #else
 	#define DEBUG_INFO(gfx)
 #endif
@@ -65,8 +65,8 @@ public:
 	std::string getErrorInfo() const noexcept;
 
 private:
-	HRESULT m_result;
-	std::string m_info;
+	HRESULT mResult;
+	std::string mInfo;
 };
 
 class GraphicsDeviceRemovedException : public GraphicsException

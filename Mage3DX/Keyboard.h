@@ -35,21 +35,21 @@ public:
 			PRESS, RELEASE, INVALID
 		};
 
-		Event() noexcept : m_type(Type::INVALID),
-			m_code(0) { }
-		Event(Type type, uchar code) noexcept : m_type(type),
-			m_code(code) { }
+		Event() noexcept : mType(Type::INVALID),
+			mCode(0) { }
+		Event(Type type, uchar code) noexcept : mType(type),
+			mCode(code) { }
 
 
-		[[nodiscard]] bool isPress() const noexcept { return m_type == Type::PRESS; }
-		[[nodiscard]] bool isRelease() const noexcept { return m_type == Type::RELEASE; }
-		[[nodiscard]] bool isValid() const noexcept { return m_type != Type::INVALID; }
+		[[nodiscard]] bool isPress() const noexcept { return mType == Type::PRESS; }
+		[[nodiscard]] bool isRelease() const noexcept { return mType == Type::RELEASE; }
+		[[nodiscard]] bool isValid() const noexcept { return mType != Type::INVALID; }
 
-		[[nodiscard]] uchar getCode() const noexcept { return m_code; }
+		[[nodiscard]] uchar getCode() const noexcept { return mCode; }
 
 	private:
-		Type m_type;
-		uchar m_code;
+		Type mType;
+		uchar mCode;
 	};
 public:
 	Keyboard() = default;
@@ -88,10 +88,10 @@ private:
 	static constexpr uint NUM_KEYS = 256;
 	static constexpr uint BUFFER_SIZE = 16;
 
-	bool m_autoRepeat = false;
-	mutable ushort m_pressCount = 0;
-	std::bitset<NUM_KEYS> m_keyStates;
-	std::queue<Event> m_keyBuffer;
-	std::queue<char> m_charBuffer;
+	bool mAutoRepeat = false;
+	mutable ushort mPressCount = 0;
+	std::bitset<NUM_KEYS> mKeyStates;
+	std::queue<Event> mKeyBuffer;
+	std::queue<char> mCharBuffer;
 };
 

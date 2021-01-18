@@ -32,11 +32,11 @@ Sampler::Sampler(Graphics& gfx)
     sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
     sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &m_sampler));
+    GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &mSampler));
 }
 
 
 void Sampler::bind(Graphics& gfx) noexcept
 {
-    getContext(gfx)->PSSetSamplers(0, 1, m_sampler.GetAddressOf());
+    getContext(gfx)->PSSetSamplers(0, 1, mSampler.GetAddressOf());
 }

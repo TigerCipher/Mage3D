@@ -24,10 +24,10 @@
 
 #if MAGE_DEBUG
 	#define GFX_THROW_INFO_ONLY(func)                                   \
-	m_debugInfo.set();                                                  \
+	mDebugInfo.set();                                                  \
 	(func);                                                             \
 	{                                                                   \
-		auto l = m_debugInfo.getMessages();                             \
+		auto l = mDebugInfo.getMessages();                             \
 		if (!l.empty()) { throw InfoException(__LINE__, __FILE__, l); } \
 	}
 #else
@@ -43,6 +43,6 @@ public:
 	std::string getErrorInfo() const noexcept;
 
 private:
-	std::string m_info;
+	std::string mInfo;
 };
 

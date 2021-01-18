@@ -28,7 +28,7 @@
 
 void IRenderable::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
 {
-    for(auto& b : m_bindables)
+    for(auto& b : mBindables)
     {
         b->bind(gfx);
     }
@@ -36,19 +36,19 @@ void IRenderable::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
     {
         b->bind(gfx);
     }
-    gfx.drawIndexed(m_indexBuffer->getCount());
+    gfx.drawIndexed(mIndexBuffer->getCount());
 }
 
 
 void IRenderable::addBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG)
 {
     assert("MUST use addIndexBuffer when binding an IndexBuffer" && typeid(*bindable) != typeid(IndexBuffer));
-    m_bindables.push_back(std::move(bindable));
+    mBindables.push_back(std::move(bindable));
 }
 
 void IRenderable::addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept
 {
-    assert("Do not add a second IndexBuffer" && !m_indexBuffer);
-    m_indexBuffer = ibuf.get();
-    m_bindables.push_back(std::move(ibuf));
+    assert("Do not add a second IndexBuffer" && !mIndexBuffer);
+    mIndexBuffer = ibuf.get();
+    mBindables.push_back(std::move(ibuf));
 }

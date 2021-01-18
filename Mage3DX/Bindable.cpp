@@ -24,18 +24,18 @@
 
 ID3D11DeviceContext* Bindable::getContext(Graphics& gfx) noexcept
 {
-    return gfx.m_context.Get();
+    return gfx.mContext.Get();
 }
 
 ID3D11Device* Bindable::getDevice(Graphics& gfx) noexcept
 {
-    return gfx.m_device.Get();
+    return gfx.mDevice.Get();
 }
 
 DebugInfo& Bindable::getDebugInfo(Graphics& gfx) noexcept(MAGE_DEBUG)
 {
     #if MAGE_DEBUG
-    return gfx.m_debugInfo;
+    return gfx.mDebugInfo;
     #else
     throw std::logic_error("The Debug Info system is only available in debug builds. You are using a release build");
     #endif

@@ -36,11 +36,11 @@ public:
 
 
 private:
-	float m_r = 20.0f;
-	float m_theta = 0.0f;
-	float m_phi = 0.0f;
-	float m_pitch = 0.0f;
-	float m_yaw = 0.0f;
-	float m_roll = 0.0f;
+	float mR = 20.0f;
+	float mTheta = 0.0f;
+	float mPhi = 0.0f;
+	float mPitch = 0.0f;
+	float mYaw = 0.0f;
+	float mRoll = 0.0f;
 };
 

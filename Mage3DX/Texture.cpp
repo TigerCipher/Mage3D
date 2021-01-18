@@ -54,10 +54,10 @@ Texture::Texture(Graphics& gfx, const TextureSurface& surface)
     srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
     srvDesc.Texture2D.MostDetailedMip = 0;
     srvDesc.Texture2D.MipLevels = 1;
-    GFX_THROW_INFO(getDevice(gfx)->CreateShaderResourceView(tex.Get(), &srvDesc, &m_textureView));
+    GFX_THROW_INFO(getDevice(gfx)->CreateShaderResourceView(tex.Get(), &srvDesc, &mTextureView));
 }
 
 void Texture::bind(Graphics& gfx) noexcept
 {
-    getContext(gfx)->PSSetShaderResources(0, 1, m_textureView.GetAddressOf());
+    getContext(gfx)->PSSetShaderResources(0, 1, mTextureView.GetAddressOf());
 }

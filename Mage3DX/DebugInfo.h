@@ -35,7 +35,7 @@ public:
 	void set() noexcept;
 	[[nodiscard]] list<std::string> getMessages() const;
 private:
-	ulonglong m_next = 0;
-	COMptr<IDXGIInfoQueue> m_infoQueue{ };
+	ulonglong mNext = 0;
+	COMptr<IDXGIInfoQueue> mInfoQueue{ };
 };
 

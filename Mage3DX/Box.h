@@ -49,7 +49,7 @@ private:
 	} matConstant;
 
 	using MaterialConstBuffer = PixelConstantBuffer<MaterialConstant>;
-	dx::XMFLOAT3X3 m_modelTransformation;
+	dx::XMFLOAT3X3 mModelTransformation;
 };
 
 

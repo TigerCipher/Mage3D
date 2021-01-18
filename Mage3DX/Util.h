@@ -20,4 +20,4 @@
  */
 #pragma once
 
-extern void fromList(std::string& str, const list<std::string>& strList);
+extern void from_list(std::string& str, const list<std::string>& strList);

@@ -23,8 +23,8 @@
 
 const char* MageException::what() const noexcept
 {
-    m_what = fmt::format("{}\n{}", getType(), getOrigin());
-    return m_what.c_str();
+    mWhat = fmt::format("{}\n{}", getType(), getOrigin());
+    return mWhat.c_str();
 }
 
 const char* MageException::getType() const noexcept
@@ -34,10 +34,10 @@ const char* MageException::getType() const noexcept
 
 std::string MageException::getOrigin() const noexcept
 {
-    if(m_showStack)
+    if(mShowStack)
     {
         LOG_ERROR("An exception [{}] was caught. Stack trace:\n{}", getType(), asString());
-        return fmt::format("[File] {}\n[Line] {}\n[Stack Trace]\n{}", m_file, m_line, asString());
+        return fmt::format("[File] {}\n[Line] {}\n[Stack Trace]\n{}", mFile, mLine, asString());
     }
-    return fmt::format("[File] {}\n[Line] {}", m_file, m_line);
+    return fmt::format("[File] {}\n[Line] {}", mFile, mLine);
 }
