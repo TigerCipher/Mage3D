@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: Model.cpp
  * Date File Created: 10/5/2020 at 6:17 PM
  * Author: Matt
@@ -21,6 +21,7 @@
 #include "Model.h"
 #include "Vertex.h"
 #include "Bindables.h"
+#include "ImguiManager.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -30,9 +31,11 @@
 
 void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG)
 {
-	const auto transform = dx::XMLoadFloat4x4(&mTransform) * accumulatedTransform;
+	const auto transform = dx::XMLoadFloat4x4(&mBaseTransform)
+	    * dx::XMLoadFloat4x4(&mAppliedTransform)
+	    * accumulatedTransform;
 
-	for (const auto m : mMeshes)
+	for (const auto* m : mMeshes)
 	{
 		m->render(gfx, transform);
 	}
@@ -43,6 +46,33 @@ void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAG
 	}
 }
 
+void Node::showTree(int& index, std::optional<int>& selectedIndex, Node*& selectedNode) const noexcept
+{
+	const int currentIndex = index;
+	index++;
+	const auto nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow
+	    | ((currentIndex == selectedIndex.value_or(-1)) ? ImGuiTreeNodeFlags_Selected : 0)
+	    | ((mChildren.empty()) ? ImGuiTreeNodeFlags_Leaf : 0);
+	if(ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(currentIndex)), nodeFlags, mName.c_str()))
+	{
+		if(ImGui::IsItemClicked())
+		{
+			selectedIndex = currentIndex;
+			selectedNode = const_cast<Node*>(this);
+		}
+		for(const auto& child : mChildren)
+		{
+			child->showTree(index, selectedIndex, selectedNode);
+		}
+		ImGui::TreePop();
+	}
+}
+
+void Node::setAppliedTransform(mat4f transform) noexcept
+{
+	dx::XMStoreFloat4x4(&mAppliedTransform, transform);
+}
+
 void Node::addChild(UniquePtr<Node> child) noexcept(!MAGE_DEBUG)
 {
 	assert(child && "Child must not be null");
@@ -50,11 +80,76 @@ void Node::addChild(UniquePtr<Node> child) noexcept(!MAGE_DEBUG)
 }
 
 
-Model::Model(Graphics& gfx, const std::string& fileName)
+
+//////////// Internal imgui window class //////////////////////
+class ModelWindow
+{
+public:
+	void show(const char* windowName, const Node & root) noexcept
+	{
+		if (!windowName) windowName = "Model";
+
+		int nodeIndex = 0;
+
+		if (ImGui::Begin(windowName)) {
+			ImGui::Columns(2, nullptr, true);
+			root.showTree(nodeIndex, mSelectedIndex, mSelectedNode);
+
+			ImGui::NextColumn();
+
+			if(mSelectedNode)
+			{
+				auto& transform = mTransforms[*mSelectedIndex];
+				ImGui::Text("Orientation");
+				ImGui::SliderAngle("Roll", &transform.roll, -180, 180);
+				ImGui::SliderAngle("Pitch", &transform.pitch, -180, 180);
+				ImGui::SliderAngle("Yaw", &transform.yaw, -180, 180);
+				ImGui::Text("Position");
+				ImGui::SliderFloat("X", &transform.x, -20, 20);
+				ImGui::SliderFloat("Y", &transform.y, -20, 20);
+				ImGui::SliderFloat("Z", &transform.z, -20, 20);
+			}
+		}
+		ImGui::End();
+	}
+
+	mat4f getTransform() const noexcept
+	{
+		const auto& transform = mTransforms.at(*mSelectedIndex);
+		return dx::XMMatrixRotationRollPitchYaw(transform.roll, transform.pitch, transform.yaw)
+		       * dx::XMMatrixTranslation(transform.x, transform.y, transform.z);
+	}
+
+	Node* getSelectedNode() const noexcept
+	{
+		return mSelectedNode;
+	}
+private:
+	struct TransformParameters
+	{
+		float roll = 0.0f;
+		float pitch = 0.0f;
+		float yaw = 0.0f;
+		float x = 0.0f;
+		float y = 0.0f;
+		float z = 0.0f;
+	};
+
+
+	std::optional<int> mSelectedIndex;
+	Node* mSelectedNode;
+	std::unordered_map<int, TransformParameters> mTransforms;
+};
+
+
+//////////////////////////////////////////////////////////////
+
+Model::Model(Graphics& gfx, const std::string& fileName) :
+	mWindow(createScope<ModelWindow>())
 {
 	Assimp::Importer imp;
-	
-	const auto scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+
+	const aiScene* scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
 	for(size_t i = 0; i < scene->mNumMeshes; i++)
 	{
@@ -64,7 +159,9 @@ Model::Model(Graphics& gfx, const std::string& fileName)
 	mRoot = parseNode(*scene->mRootNode);
 }
 
-UniquePtr<Node> Model::parseNode(const aiNode& node)
+Model::~Model() noexcept = default;
+
+UniquePtr<Node> Model::parseNode(const aiNode& node) noexcept
 {
 	const auto transform = dx::XMMatrixTranspose(
 		dx::XMLoadFloat4x4(reinterpret_cast<const mat4x4*>(&node.mTransformation)));
@@ -78,7 +175,7 @@ UniquePtr<Node> Model::parseNode(const aiNode& node)
 		currentMeshes.push_back(mMeshes.at(meshId).get());
 	}
 
-	auto currentNode = createScope<Node>(std::move(currentMeshes), transform);
+	auto currentNode = createScope<Node>(node.mName.C_Str(), std::move(currentMeshes), transform);
 	for(size_t i = 0; i < node.mNumChildren; i++)
 	{
 		currentNode->addChild(parseNode(*node.mChildren[i]));
@@ -133,7 +230,19 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh)
 	return createScope<Mesh>(gfx, std::move(binds));
 }
 
-void Model::render(Graphics& gfx, mat4f transform) const
+void Model::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
 {
-	mRoot->render(gfx, transform);
+	if(auto node = mWindow->getSelectedNode())
+	{
+		node->setAppliedTransform(mWindow->getTransform());
+	}
+	mRoot->render(gfx, dx::XMMatrixIdentity());
 }
+
+void Model::showImguiWindow(const char* windowName) noexcept
+{
+	mWindow->show(windowName, *mRoot);
+}
+
+
+

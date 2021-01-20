@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: Model.h
  * Date File Created: 10/5/2020 at 6:17 PM
  * Author: Matt
@@ -25,38 +25,55 @@
 class Node
 {
 friend class Model;
+friend class ModelWindow;
 public:
 
-	Node(list<Mesh*> meshes, const mat4f& transform) noexcept(!MAGE_DEBUG) :
-		mMeshes(std::move(meshes))
+	Node(std::string name, list<Mesh*> meshes, const mat4f& transform) noexcept(!MAGE_DEBUG) :
+		mMeshes(std::move(meshes)),
+		mName(std::move(name))
 	{
-		dx::XMStoreFloat4x4(&this->mTransform, transform);
+		dx::XMStoreFloat4x4(&mBaseTransform, transform);
+		dx::XMStoreFloat4x4(&mAppliedTransform, dx::XMMatrixIdentity());
 	}
 
 	void render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG);
 
+	void showTree(int& index, std::optional<int>& selectedIndex, Node*& selectedNode) const noexcept;
+
+	void setAppliedTransform(mat4f transform) noexcept;
+
 private:
 
 	void addChild(UniquePtr<Node> child) noexcept(!MAGE_DEBUG);
-	
+
 	list<UniquePtr<Node> > mChildren;
 	list<Mesh*> mMeshes;
-	mat4x4 mTransform;
+	
+	mat4x4 mBaseTransform;
+	mat4x4 mAppliedTransform;
+
+	std::string mName;
 };
 
 class Model
 {
 public:
 	Model(Graphics& gfx, const std::string& fileName);
+	virtual ~Model() noexcept;
 
-	UniquePtr<Node> parseNode(const struct aiNode& node);
+	UniquePtr<Node> parseNode(const struct aiNode& node) noexcept;
 
 	static UniquePtr<Mesh> parseMesh(Graphics& gfx, const struct aiMesh& mesh);
 
-	void render(Graphics& gfx, mat4f transform) const;
-	
+	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
+
+	void showImguiWindow(const char* windowName) noexcept;
+
+
 private:
 	UniquePtr<Node> mRoot;
-	list<UniquePtr<Mesh>> mMeshes;
+	list<UniquePtr<Mesh> > mMeshes;
+
+	UniquePtr<class ModelWindow> mWindow;
 };
 

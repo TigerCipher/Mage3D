@@ -31,7 +31,7 @@ Mesh::Mesh(Graphics& gfx, list<UniquePtr<Bindable> > binds)
 
 	for (auto & b : binds)
 	{
-		if(auto p = dynamic_cast<IndexBuffer*>(b.get()))
+		if(auto* p = dynamic_cast<IndexBuffer*>(b.get()))
 		{
 			addIndexBuffer(UniquePtr<IndexBuffer>(p));
 			b.release();
