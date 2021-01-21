@@ -35,18 +35,18 @@
 //#pragma comment(lib, "D3DCompiler.lib")
 
 
-constexpr int vsync_flag = 0;
+constexpr int VSYNC_FLAG = 0;
 
-Graphics::Graphics(HWND hwnd)
+Graphics::Graphics(HWND hwnd, int width, int height)
 {
-	RECT r;
-	GetClientRect(hwnd, &r);
-	UINT w = r.right - r.left;
-	UINT h = r.bottom - r.top;
-	LOG_INFO("Setting swap chain buffer dimensions ({}, {})", w, h);
+	//RECT r;
+	//GetClientRect(hwnd, &r);
+	//UINT w = r.right - r.left;
+	//UINT h = r.bottom - r.top;
+	LOG_INFO("Setting swap chain buffer dimensions ({}, {})", width, height);
 	DXGI_SWAP_CHAIN_DESC swapDesc = { };
-	swapDesc.BufferDesc.Width = 0;
-	swapDesc.BufferDesc.Height = 0;
+	swapDesc.BufferDesc.Width = width;
+	swapDesc.BufferDesc.Height = height;
 	swapDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	swapDesc.BufferDesc.RefreshRate.Numerator = 0;
 	swapDesc.BufferDesc.RefreshRate.Denominator = 0;
@@ -88,11 +88,11 @@ Graphics::Graphics(HWND hwnd)
 
 	mContext->OMSetDepthStencilState(depthState.Get(), 1);
 
-	LOG_INFO("Setting depth stencil dimensions ({}, {})", w, h);
+	LOG_INFO("Setting depth stencil dimensions ({}, {})", width, height);
 	COMptr<ID3D11Texture2D> depthStencil;
 	D3D11_TEXTURE2D_DESC texDesc = { };
-	texDesc.Width = w;
-	texDesc.Height = h;
+	texDesc.Width = width;
+	texDesc.Height = height;
 	texDesc.MipLevels = 1;
 	texDesc.ArraySize = 1;
 	texDesc.Format = DXGI_FORMAT_D32_FLOAT;
@@ -110,10 +110,10 @@ Graphics::Graphics(HWND hwnd)
 
 	mContext->OMSetRenderTargets(1, mTarget.GetAddressOf(), mDepthStencilView.Get());
 
-	LOG_INFO("Setting viewport dimensions ({}, {})", w, h);
+	LOG_INFO("Setting viewport dimensions ({}, {})", width, height);
 	D3D11_VIEWPORT vp;
-	vp.Width = (float)w;
-	vp.Height = (float)h;
+	vp.Width = (float)width;
+	vp.Height = (float)height;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0.0f;
@@ -135,7 +135,7 @@ void Graphics::swap()
 #if MAGE_DEBUG
 	mDebugInfo.set();
 #endif
-	if (FAILED(hr = mSwap->Present(vsync_flag, 0)))
+	if (FAILED(hr = mSwap->Present(VSYNC_FLAG, 0)))
 	{
 #if MAGE_DEBUG
 		std::string debugMsgs;

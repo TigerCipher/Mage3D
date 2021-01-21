@@ -31,7 +31,7 @@ class Graphics
 friend class Bindable;
 
 public:
-	explicit Graphics(HWND hwnd);
+	explicit Graphics(HWND hwnd, int width, int height);
 	virtual ~Graphics() = default;
 
 	Graphics(const Graphics& rhs) = delete;

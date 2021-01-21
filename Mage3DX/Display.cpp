@@ -105,7 +105,7 @@ Display::Display(int width, int height, const char* title)
 
 	ImguiManager::initWin32(mHwnd);
 
-	mGfx = createScope<Graphics>(mHwnd);
+	mGfx = createScope<Graphics>(mHwnd, width, height);
 }
 
 Display::~Display()
