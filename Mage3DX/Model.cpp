@@ -22,6 +22,7 @@
 #include "Vertex.h"
 #include "Bindables.h"
 #include "ImguiManager.h"
+#include "ModelException.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -51,15 +52,23 @@ void Node::showTree(int& index, std::optional<int>& selectedIndex, Node*& select
 	const int currentIndex = index;
 	index++;
 	const auto nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow
+	    | ImGuiTreeNodeFlags_OpenOnDoubleClick
 	    | ((currentIndex == selectedIndex.value_or(-1)) ? ImGuiTreeNodeFlags_Selected : 0)
 	    | ((mChildren.empty()) ? ImGuiTreeNodeFlags_Leaf : 0);
-	if(ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(currentIndex)), nodeFlags, mName.c_str()))
+
+
+	const auto expanded = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(currentIndex)),
+		nodeFlags, mName.c_str());
+
+	if (ImGui::IsItemClicked())
 	{
-		if(ImGui::IsItemClicked())
-		{
-			selectedIndex = currentIndex;
-			selectedNode = const_cast<Node*>(this);
-		}
+		selectedIndex = currentIndex;
+		selectedNode = const_cast<Node*>(this);
+	}
+
+
+	if(expanded)
+	{
 		for(const auto& child : mChildren)
 		{
 			child->showTree(index, selectedIndex, selectedNode);
@@ -149,7 +158,15 @@ Model::Model(Graphics& gfx, const std::string& fileName) :
 {
 	Assimp::Importer imp;
 
-	const aiScene* scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+	const aiScene* scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices
+		| aiProcess_ConvertToLeftHanded | aiProcess_GenNormals);
+
+	if(!scene)
+	{
+		std::string errStr = imp.GetErrorString();
+		LOG_ERROR("Failed to load model {} with error reported by Assimp: {}", fileName, errStr);
+		MODEL_THROW_EXCEPTION(errStr);
+	}
 
 	for(size_t i = 0; i < scene->mNumMeshes; i++)
 	{

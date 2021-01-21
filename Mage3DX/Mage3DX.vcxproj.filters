@@ -219,6 +219,9 @@
     <ClCompile Include="VertexBufferBindable.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
+    <ClCompile Include="ModelException.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointLight.h">
@@ -406,6 +409,9 @@
     </ClInclude>
     <ClInclude Include="VertexBufferBindable.h">
       <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelException.h">
+      <Filter>Header Files\debug</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
