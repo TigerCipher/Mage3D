@@ -47,22 +47,20 @@ void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAG
 	}
 }
 
-void Node::showTree(int& index, std::optional<int>& selectedIndex, Node*& selectedNode) const noexcept
+void Node::showTree(Node*& selectedNode) const noexcept
 {
-	const int currentIndex = index;
-	index++;
+	const int selectedId = !selectedNode ? -1 : selectedNode->getId();
 	const auto nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow
 	    | ImGuiTreeNodeFlags_OpenOnDoubleClick
-	    | ((currentIndex == selectedIndex.value_or(-1)) ? ImGuiTreeNodeFlags_Selected : 0)
+	    | ((mId == selectedId) ? ImGuiTreeNodeFlags_Selected : 0)
 	    | ((mChildren.empty()) ? ImGuiTreeNodeFlags_Leaf : 0);
 
 
-	const auto expanded = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(currentIndex)),
+	const auto expanded = ImGui::TreeNodeEx(reinterpret_cast<void*>(static_cast<intptr_t>(mId)),
 		nodeFlags, mName.c_str());
 
 	if (ImGui::IsItemClicked())
 	{
-		selectedIndex = currentIndex;
 		selectedNode = const_cast<Node*>(this);
 	}
 
@@ -71,7 +69,7 @@ void Node::showTree(int& index, std::optional<int>& selectedIndex, Node*& select
 	{
 		for(const auto& child : mChildren)
 		{
-			child->showTree(index, selectedIndex, selectedNode);
+			child->showTree(selectedNode);
 		}
 		ImGui::TreePop();
 	}
@@ -100,36 +98,36 @@ public:
 
 		int nodeIndex = 0;
 
-		if (ImGui::Begin(windowName)) {
-			ImGui::Columns(2, nullptr, true);
-			root.showTree(nodeIndex, mSelectedIndex, mSelectedNode);
+		IMGUI_BEGIN(windowName)
+		ImGui::Columns(2, nullptr, true);
+		root.showTree(mSelectedNode);
 
-			ImGui::NextColumn();
+		ImGui::NextColumn();
 
-			if(mSelectedNode)
-			{
-				auto& transform = mTransforms[*mSelectedIndex];
-				ImGui::Text("Orientation");
-				ImGui::SliderAngle("Roll", &transform.roll, -180, 180);
-				ImGui::SliderAngle("Pitch", &transform.pitch, -180, 180);
-				ImGui::SliderAngle("Yaw", &transform.yaw, -180, 180);
-				ImGui::Text("Position");
-				ImGui::SliderFloat("X", &transform.x, -20, 20);
-				ImGui::SliderFloat("Y", &transform.y, -20, 20);
-				ImGui::SliderFloat("Z", &transform.z, -20, 20);
-			}
+		if(mSelectedNode)
+		{
+			auto& transform = mTransforms[mSelectedNode->getId()];
+			ImGui::Text("Node ID: %i", mSelectedNode->getId());
+			ImGui::Text("Orientation");
+			ImGui::SliderAngle("Roll", &transform.roll, -180, 180);
+			ImGui::SliderAngle("Pitch", &transform.pitch, -180, 180);
+			ImGui::SliderAngle("Yaw", &transform.yaw, -180, 180);
+			ImGui::Text("Position");
+			ImGui::SliderFloat("X", &transform.x, -20, 20);
+			ImGui::SliderFloat("Y", &transform.y, -20, 20);
+			ImGui::SliderFloat("Z", &transform.z, -20, 20);
 		}
-		ImGui::End();
+		IMGUI_END()
 	}
 
-	mat4f getTransform() const noexcept
+	[[nodiscard]] mat4f getTransform() const noexcept
 	{
-		const auto& transform = mTransforms.at(*mSelectedIndex);
+		const auto& transform = mTransforms.at(mSelectedNode->getId());
 		return dx::XMMatrixRotationRollPitchYaw(transform.roll, transform.pitch, transform.yaw)
 		       * dx::XMMatrixTranslation(transform.x, transform.y, transform.z);
 	}
 
-	Node* getSelectedNode() const noexcept
+	[[nodiscard]] Node* getSelectedNode() const noexcept
 	{
 		return mSelectedNode;
 	}
@@ -145,7 +143,6 @@ private:
 	};
 
 
-	std::optional<int> mSelectedIndex;
 	Node* mSelectedNode;
 	std::unordered_map<int, TransformParameters> mTransforms;
 };
@@ -173,12 +170,13 @@ Model::Model(Graphics& gfx, const std::string& fileName) :
 		mMeshes.push_back(parseMesh(gfx, *scene->mMeshes[i]));
 	}
 
-	mRoot = parseNode(*scene->mRootNode);
+	int nextId = 0;
+	mRoot = parseNode(nextId, *scene->mRootNode);
 }
 
 Model::~Model() noexcept = default;
 
-UniquePtr<Node> Model::parseNode(const aiNode& node) noexcept
+UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 {
 	const auto transform = dx::XMMatrixTranspose(
 		dx::XMLoadFloat4x4(reinterpret_cast<const mat4x4*>(&node.mTransformation)));
@@ -192,10 +190,10 @@ UniquePtr<Node> Model::parseNode(const aiNode& node) noexcept
 		currentMeshes.push_back(mMeshes.at(meshId).get());
 	}
 
-	auto currentNode = createScope<Node>(node.mName.C_Str(), std::move(currentMeshes), transform);
+	auto currentNode = createScope<Node>(nextId++, node.mName.C_Str(), std::move(currentMeshes), transform);
 	for(size_t i = 0; i < node.mNumChildren; i++)
 	{
-		currentNode->addChild(parseNode(*node.mChildren[i]));
+		currentNode->addChild(parseNode(nextId, *node.mChildren[i]));
 	}
 
 	return currentNode;

@@ -28,9 +28,10 @@ friend class Model;
 friend class ModelWindow;
 public:
 
-	Node(std::string name, list<Mesh*> meshes, const mat4f& transform) noexcept(!MAGE_DEBUG) :
+	Node(int id, std::string name, list<Mesh*> meshes, const mat4f& transform) noexcept(!MAGE_DEBUG) :
 		mMeshes(std::move(meshes)),
-		mName(std::move(name))
+		mName(std::move(name)),
+		mId(id)
 	{
 		dx::XMStoreFloat4x4(&mBaseTransform, transform);
 		dx::XMStoreFloat4x4(&mAppliedTransform, dx::XMMatrixIdentity());
@@ -38,9 +39,11 @@ public:
 
 	void render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG);
 
-	void showTree(int& index, std::optional<int>& selectedIndex, Node*& selectedNode) const noexcept;
+	void showTree(Node*& selectedNode) const noexcept;
 
 	void setAppliedTransform(mat4f transform) noexcept;
+
+	int getId() const noexcept { return mId; }
 
 private:
 
@@ -48,11 +51,12 @@ private:
 
 	list<UniquePtr<Node> > mChildren;
 	list<Mesh*> mMeshes;
-	
+
 	mat4x4 mBaseTransform;
 	mat4x4 mAppliedTransform;
 
 	std::string mName;
+	int mId;
 };
 
 class Model
@@ -61,7 +65,7 @@ public:
 	Model(Graphics& gfx, const std::string& fileName);
 	virtual ~Model() noexcept;
 
-	UniquePtr<Node> parseNode(const struct aiNode& node) noexcept;
+	UniquePtr<Node> parseNode(int& nextId, const struct aiNode& node) noexcept;
 
 	static UniquePtr<Mesh> parseMesh(Graphics& gfx, const struct aiMesh& mesh);
 

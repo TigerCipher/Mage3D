@@ -65,10 +65,10 @@
 #define IMGUI_BEGIN(name)							\
 	if(ImguiManager::isEnabled())					\
 	{												\
-		ImGui::Begin(name);
+		if(ImGui::Begin(name)) {
 
 #define IMGUI_END(name)								\
-		ImGui::End();								\
+		}ImGui::End();								\
 	}
 
 class ImguiManager

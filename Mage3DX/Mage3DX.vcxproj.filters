@@ -404,14 +404,14 @@
     <ClInclude Include="Mesh.h">
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
-    <ClInclude Include="Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="VertexBufferBindable.h">
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
     <ClInclude Include="ModelException.h">
       <Filter>Header Files\debug</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

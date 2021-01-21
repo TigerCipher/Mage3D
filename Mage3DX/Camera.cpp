@@ -38,7 +38,7 @@ void Camera::spawnControlWindow() noexcept
 	ImGui::SliderAngle("Z", &mPosition.z, -89.0f, 89.0f, "%.1f");
 
 	ImGui::Text("Orientation");
-	ImGui::SliderAngle("Pitch", &mPitch, -180.0f, 180.0f);
+	ImGui::SliderAngle("Pitch", &mPitch, 0.995f * -90.0f, 0.995f * 90.0f);
 	ImGui::SliderAngle("Yaw", &mYaw, -180.0f, 180.0f);
 	if (ImGui::Button("Reset")) reset();
 	IMGUI_END()
@@ -54,7 +54,7 @@ void Camera::reset() noexcept
 void Camera::rotate(float dx, float dy) noexcept
 {
 	mYaw = wrapAngle(mYaw + dx * mSensitivity);
-	mPitch = std::clamp(mPitch + dy * mSensitivity, -PI / 2.0f, PI / 2.0f);
+	mPitch = std::clamp(mPitch + dy * mSensitivity, 0.995f * -PI / 2.0f, 0.995f * PI / 2.0f);
 }
 
 void Camera::translate(vec3f translation) noexcept
@@ -72,6 +72,10 @@ void Camera::translate(vec3f translation) noexcept
 
 mat4f Camera::getViewMatrix() const noexcept
 {
-	return dx::XMMatrixTranslation(-mPosition.x, -mPosition.y, -mPosition.z)
-	       * dx::XMMatrixRotationRollPitchYaw(-mPitch, -mYaw, 0.0f);
+	using namespace dx; // required in scope for operator overloads
+	const vec4f forward = XMVectorSet(0, 0, 1.0f, 0);
+	const auto look = XMVector3Transform(forward, XMMatrixRotationRollPitchYaw(mPitch, mYaw, 0.0f));
+	const auto camPos = XMLoadFloat3(&mPosition);
+	const auto camTarget = camPos + look;
+	return XMMatrixLookAtLH(camPos, camTarget, XMVectorSet(0, 1, 0, 0));
 }

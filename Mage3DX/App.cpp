@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: App.cpp
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
@@ -73,14 +73,12 @@ void calculateFrameStatistics(Timer& timer)
 
 	if (ImguiManager::isEnabled())
 	{
-		static bool metrics = true;
-		ImGui::ShowMetricsWindow(&metrics);
 		frameCount++;
 		fps = ImGui::GetIO().Framerate;
 		avgFps += fps;
 		if (timer.peek() >= 1.0f)
 		{
-			prntAvgFps = avgFps / (float) frameCount;
+			prntAvgFps = avgFps / static_cast<float>(frameCount);
 			avgFps = 0;
 			prntFrameCount = frameCount;
 			frameCount = 0;
@@ -100,7 +98,9 @@ void App::runFrame()
 {
 	const auto delta = mTimer.markPoint() * mGlobalSpeed;
 
-	//if (mDisplay.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
+	// TODO Fix input data capture rate
+	// Sometimes captures input data too fast and one press is seen as multiple
+	if (mDisplay.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
 
 	mDisplay.getGraphics().clear(0.07f, 0, 0.12f);
 	mDisplay.getGraphics().setCamera(mCamera.getViewMatrix());
@@ -110,6 +110,7 @@ void App::runFrame()
 	mNano.render(mDisplay.getGraphics());
 	mLight.render(mDisplay.getGraphics());
 
+	// Sometimes captures input data too fast and one press is seen as multiple
 	if (mDisplay.keyboard.isPressedOnce(VK_INSERT))
 	{
 		mDisplay.toggleCursor();
@@ -125,21 +126,21 @@ void App::runFrame()
 		if (mDisplay.keyboard.isPressed('S'))
 			mCamera.translate({ 0, 0, -delta });
 		if (mDisplay.keyboard.isPressed('D'))
-			mCamera.translate({ delta, 0, 0});
+			mCamera.translate({ delta, 0, 0 });
 		if (mDisplay.keyboard.isPressed(VK_SPACE))
 			mCamera.translate({ 0, delta, 0 });
 		if (mDisplay.keyboard.isPressed('C'))
-			mCamera.translate({ 0, -delta, 0});
+			mCamera.translate({ 0, -delta, 0 });
 	}
-	
-	while (const auto d = mDisplay.mouse.readRawDelta())
+
+	if(!mDisplay.isCursorEnabled())
 	{
-		if(!mDisplay.isCursorEnabled())
+		while (const auto d = mDisplay.mouse.readRawDelta())
 		{
 			mCamera.rotate(d->x, d->y);
 		}
 	}
-	
+
 
 	calculateFrameStatistics(mPerformanceTimer);
 
