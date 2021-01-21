@@ -48,3 +48,5 @@ Mage3DX/x64
 /Mage3DX/Debug
 
 !Mage3DX/assets/models/.*obj
+!Mage3DX/assets/models/.*gltf
+*.gltf

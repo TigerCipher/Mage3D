@@ -28,8 +28,7 @@ App::App(const int width, const int height, const char* title) :
 	mDisplay(width, height, title),
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
-	//mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj")
-	mNano(mDisplay.getGraphics(), "assets\\models\\box.gltf")
+	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.gltf")
 {
 	GDIPlusManager::start();
 
