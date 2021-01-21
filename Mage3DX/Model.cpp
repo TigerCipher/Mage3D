@@ -99,25 +99,25 @@ public:
 		int nodeIndex = 0;
 
 		IMGUI_BEGIN(windowName)
-		ImGui::Columns(2, nullptr, true);
+		IMGUI_FUNC(Columns(2, nullptr, true));
 		root.showTree(mSelectedNode);
 
-		ImGui::NextColumn();
+		IMGUI_FUNC(NextColumn());
 
 		if(mSelectedNode)
 		{
 			auto& transform = mTransforms[mSelectedNode->getId()];
-			ImGui::Text("Node ID: %i", mSelectedNode->getId());
-			ImGui::Text("Orientation");
-			ImGui::SliderAngle("Roll", &transform.roll, -180, 180);
-			ImGui::SliderAngle("Pitch", &transform.pitch, -180, 180);
-			ImGui::SliderAngle("Yaw", &transform.yaw, -180, 180);
-			ImGui::Text("Position");
-			ImGui::SliderFloat("X", &transform.x, -20, 20);
-			ImGui::SliderFloat("Y", &transform.y, -20, 20);
-			ImGui::SliderFloat("Z", &transform.z, -20, 20);
+			IMGUI_FUNC(Text("Node ID: %i", mSelectedNode->getId()));
+			IMGUI_FUNC(Text("Orientation"));
+			IMGUI_FUNC(SliderAngle("Roll", &transform.roll, -180, 180));
+			IMGUI_FUNC(SliderAngle("Pitch", &transform.pitch, -180, 180));
+			IMGUI_FUNC(SliderAngle("Yaw", &transform.yaw, -180, 180));
+			IMGUI_FUNC(Text("Position"));
+			IMGUI_FUNC(SliderFloat("X", &transform.x, -20, 20));
+			IMGUI_FUNC(SliderFloat("Y", &transform.y, -20, 20));
+			IMGUI_FUNC(SliderFloat("Z", &transform.z, -20, 20));
 		}
-		IMGUI_END()
+		IMGUI_END
 	}
 
 	[[nodiscard]] mat4f getTransform() const noexcept
@@ -254,7 +254,7 @@ void Model::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
 	mRoot->render(gfx, dx::XMMatrixIdentity());
 }
 
-void Model::showImguiWindow(const char* windowName) noexcept
+void Model::showImguiWindow(const char* windowName) const noexcept
 {
 	mWindow->show(windowName, *mRoot);
 }

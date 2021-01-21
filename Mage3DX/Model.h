@@ -71,7 +71,7 @@ public:
 
 	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
 
-	void showImguiWindow(const char* windowName) noexcept;
+	void showImguiWindow(const char* windowName) const noexcept;
 
 
 private:

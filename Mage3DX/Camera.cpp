@@ -32,16 +32,16 @@ Camera::Camera() noexcept
 void Camera::spawnControlWindow() noexcept
 {
 	IMGUI_BEGIN("Camera")
-	ImGui::Text("Position");
-	ImGui::SliderFloat("X", &mPosition.x, 0.1f, 80.0f, "%.1f");
-	ImGui::SliderAngle("Y", &mPosition.y, -180.0f, 180.0f, "%.1f");
-	ImGui::SliderAngle("Z", &mPosition.z, -89.0f, 89.0f, "%.1f");
+	IMGUI_FUNC(Text("Position"));
+	IMGUI_FUNC(SliderFloat("X", &mPosition.x, 0.1f, 80.0f, "%.1f"));
+	IMGUI_FUNC(SliderAngle("Y", &mPosition.y, -180.0f, 180.0f, "%.1f"));
+	IMGUI_FUNC(SliderAngle("Z", &mPosition.z, -89.0f, 89.0f, "%.1f"));
 
-	ImGui::Text("Orientation");
-	ImGui::SliderAngle("Pitch", &mPitch, 0.995f * -90.0f, 0.995f * 90.0f);
-	ImGui::SliderAngle("Yaw", &mYaw, -180.0f, 180.0f);
-	if (ImGui::Button("Reset")) reset();
-	IMGUI_END()
+	IMGUI_FUNC(Text("Orientation"));
+	IMGUI_FUNC(SliderAngle("Pitch", &mPitch, 0.995f * -90.0f, 0.995f * 90.0f));
+	IMGUI_FUNC(SliderAngle("Yaw", &mYaw, -180.0f, 180.0f));
+	IMGUI_FUNC_COND(Button("Reset")) reset();
+	IMGUI_END
 }
 
 void Camera::reset() noexcept

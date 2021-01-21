@@ -54,29 +54,29 @@ void PointLight::bind(Graphics& gfx, mat4f view) const noexcept
 
 void PointLight::spawnControlWindow() noexcept
 {
-	IMGUI_WRAP("Point Light",
-		ImGui::Text("Position"),
-		ImGui::SliderFloat("X", &mCbuf.pos.x, -60.0f, 60.0f, "%.1f"),
-		ImGui::SliderFloat("Y", &mCbuf.pos.y, -60.0f, 60.0f, "%.1f"),
-		ImGui::SliderFloat("Z", &mCbuf.pos.z, -60.0f, 60.0f, "%.1f"),
-		
-		ImGui::Text("Intensity / Color"),
-		ImGui::SliderFloat("Intensity", &mCbuf.diffuseIntensity, 0.01f, 2.0f, "%.2f", 2),
-		ImGui::ColorEdit3("Diffuse Color", &mCbuf.diffuseColor.x),
-		ImGui::ColorEdit3("Ambient", &mCbuf.ambient.x),
+	IMGUI_BEGIN("Point Light")
+	IMGUI_FUNC(Text("Position"));
+	IMGUI_FUNC(SliderFloat("X", &mCbuf.pos.x, -60.0f, 60.0f, "%.1f"));
+	IMGUI_FUNC(SliderFloat("Y", &mCbuf.pos.y, -60.0f, 60.0f, "%.1f"));
+	IMGUI_FUNC(SliderFloat("Z", &mCbuf.pos.z, -60.0f, 60.0f, "%.1f"));
 
-		ImGui::Text("Attenuation"),
-		ImGui::SliderFloat("Constant", &mCbuf.attConst, 0.05f, 10.0f, "%.2f", 4),
-		ImGui::SliderFloat("Linear", &mCbuf.attLin, 0.0001f, 4.0f, "%.4f", 8),
-		ImGui::SliderFloat("Quadradic", &mCbuf.attQuad, 0.0000001f, 10.0f, "%.7f", 10),
+	IMGUI_FUNC(Text("Intensity / Color"));
+	IMGUI_FUNC(SliderFloat("Intensity", &mCbuf.diffuseIntensity, 0.01f, 2.0f, "%.2f", 2));
+	IMGUI_FUNC(ColorEdit3("Diffuse Color", &mCbuf.diffuseColor.x));
+	IMGUI_FUNC(ColorEdit3("Ambient", &mCbuf.ambient.x));
 
-		reset()
-		);
+	IMGUI_FUNC(Text("Attenuation"));
+	IMGUI_FUNC(SliderFloat("Constant", &mCbuf.attConst, 0.05f, 10.0f, "%.2f", 4));
+	IMGUI_FUNC(SliderFloat("Linear", &mCbuf.attLin, 0.0001f, 4.0f, "%.4f", 8));
+	IMGUI_FUNC(SliderFloat("Quadradic", &mCbuf.attQuad, 0.0000001f, 10.0f, "%.7f", 10));
+
+	reset();
+	IMGUI_END
 }
 
 void PointLight::reset() noexcept
 {
-	if (ImGui::Button("Reset"))
+	IMGUI_FUNC_COND(Button("Reset"))
 	{
 		mCbuf = {
 			{ 0, 0, 0 },

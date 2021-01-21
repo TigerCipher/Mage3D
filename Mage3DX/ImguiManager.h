@@ -56,20 +56,29 @@
 		ImGui::End();                                             \
 	}
 
-#define IMGUI_FUNC(x, ...)							\
-	if(ImguiManager::isEnabled())					\
-	{												\
-		ImGui::x(__VA_ARGS__);						\
-	}
 
+#ifdef MAGE_IMGUI
+//TODO Probs best to fully replace IMGUI_WRAP with this
 #define IMGUI_BEGIN(name)							\
 	if(ImguiManager::isEnabled())					\
 	{												\
 		if(ImGui::Begin(name)) {
 
-#define IMGUI_END(name)								\
+#define IMGUI_END									\
 		}ImGui::End();								\
 	}
+
+#define IMGUI_FUNC(funcName) ImGui::funcName
+
+#define IMGUI_FUNC_COND(funcName) if(ImGui::funcName)
+
+#else
+#define IMGUI_BEGIN(...) if(false) { if(false) {
+#define IMGUI_END
+#define IMGUI_FUNC(...)
+#define IMGUI_FUNC_COND(...) if(false)
+
+#endif
 
 class ImguiManager
 {
