@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: camera.cpp
  * Date File Created: 9/25/2020 at 8:10 PM
  * Author: Matt
@@ -24,40 +24,54 @@
 #include "ImguiManager.h"
 
 
+Camera::Camera() noexcept
+{
+	reset();
+}
+
 void Camera::spawnControlWindow() noexcept
 {
-    IMGUI_WRAP("Camera",
-               ImGui::Text("Position"),
-               ImGui::SliderFloat("R", &mR, 0.1f, 80.0f, "%.1f"),
-               ImGui::SliderAngle("Theta", &mTheta, -180.0f, 180.0f),
-               ImGui::SliderAngle("Phi", &mPhi, -89.0f, 89.0f),
+	IMGUI_BEGIN("Camera")
+	ImGui::Text("Position");
+	ImGui::SliderFloat("X", &mPosition.x, 0.1f, 80.0f, "%.1f");
+	ImGui::SliderAngle("Y", &mPosition.y, -180.0f, 180.0f, "%.1f");
+	ImGui::SliderAngle("Z", &mPosition.z, -89.0f, 89.0f, "%.1f");
 
-               ImGui::Text("Orientation"),
-               ImGui::SliderAngle("Roll", &mRoll, -180.0f, 180.0f),
-               ImGui::SliderAngle("Pitch", &mPitch, -180.0f, 180.0f),
-               ImGui::SliderAngle("Yaw", &mYaw, -180.0f, 180.0f),
-               reset()
-              );
-
+	ImGui::Text("Orientation");
+	ImGui::SliderAngle("Pitch", &mPitch, -180.0f, 180.0f);
+	ImGui::SliderAngle("Yaw", &mYaw, -180.0f, 180.0f);
+	if (ImGui::Button("Reset")) reset();
+	IMGUI_END()
 }
 
 void Camera::reset() noexcept
 {
-    if(ImGui::Button("Reset"))
-    {
-        mR = 20.0f;
-        mTheta = 0.0f;
-        mPhi = 0.0f;
-        mPitch = 0.0f;
-        mYaw = 0.0f;
-        mRoll = 0.0f;
-    }
+	mPosition = { 0, 7.5f, -18.0f };
+	mPitch = 0.0f;
+	mYaw = 0.0f;
+}
+
+void Camera::rotate(float dx, float dy) noexcept
+{
+	mYaw = wrapAngle(mYaw + dx * mSensitivity);
+	mPitch = std::clamp(mPitch + dy * mSensitivity, -PI / 2.0f, PI / 2.0f);
+}
+
+void Camera::translate(vec3f translation) noexcept
+{
+	dx::XMStoreFloat3(&translation, dx::XMVector3Transform(dx::XMLoadFloat3(&translation),
+		dx::XMMatrixRotationRollPitchYaw(mPitch, mYaw, 0.0f)
+		* dx::XMMatrixScaling(mSpeed, mSpeed, mSpeed)));
+
+	mPosition = {
+		mPosition.x + translation.x,
+		mPosition.y + translation.y,
+		mPosition.z + translation.z
+	};
 }
 
 mat4f Camera::getViewMatrix() const noexcept
 {
-    const auto pos = dx::XMVector3Transform(dx::XMVectorSet(0, 0, -mR, 0),
-                                            dx::XMMatrixRotationRollPitchYaw(mPhi, -mTheta, 0));
-    return dx::XMMatrixLookAtLH(pos, dx::XMVectorZero(), dx::XMVectorSet(0, 1, 0, 0)) *
-           dx::XMMatrixRotationRollPitchYaw(mPitch, -mYaw, mRoll);
+	return dx::XMMatrixTranslation(-mPosition.x, -mPosition.y, -mPosition.z)
+	       * dx::XMMatrixRotationRollPitchYaw(-mPitch, -mYaw, 0.0f);
 }

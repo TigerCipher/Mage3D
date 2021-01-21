@@ -108,8 +108,9 @@ Display::Display(int width, int height, const char* title) : mCursor(true)
 	mGfx = createScope<Graphics>(mHwnd, width, height);
 
 	RAWINPUTDEVICE rid;
+	// Gets mouse input, numbers taken from Example 2 https://docs.microsoft.com/en-us/windows/win32/inputdev/using-raw-input
 	rid.usUsagePage = 0x01;
-	rid.usUsage = 0x02;
+	rid.usUsage = 0x02; // 0x01-0x02 = mouse device
 	rid.dwFlags = 0;
 	rid.hwndTarget = nullptr;
 	if(RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
@@ -300,10 +301,17 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		UINT size;
 		if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT,
 			nullptr, &size, sizeof(RAWINPUTHEADER)) == -1)
+		{
+			LOG_WARN("Raw input failed. Returned -1");
 			break;
+		}
 		mRawBuffer.resize(size);
 		if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT,
-			mRawBuffer.data(), &size, sizeof(RAWINPUTHEADER)) != size) break;
+			mRawBuffer.data(), &size, sizeof(RAWINPUTHEADER)) != size)
+		{
+			LOG_WARN("Raw input failed. Buffer size mismatch");
+			break;
+		}
 
 		auto& ri = reinterpret_cast<RAWINPUT&>(*mRawBuffer.data());
 			if(ri.header.dwType == RIM_TYPEMOUSE && (ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0))

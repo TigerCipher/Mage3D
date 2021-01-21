@@ -56,6 +56,21 @@
 		ImGui::End();                                             \
 	}
 
+#define IMGUI_FUNC(x, ...)							\
+	if(ImguiManager::isEnabled())					\
+	{												\
+		ImGui::x(__VA_ARGS__);						\
+	}
+
+#define IMGUI_BEGIN(name)							\
+	if(ImguiManager::isEnabled())					\
+	{												\
+		ImGui::Begin(name);
+
+#define IMGUI_END(name)								\
+		ImGui::End();								\
+	}
+
 class ImguiManager
 {
 public:

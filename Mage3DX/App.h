@@ -38,8 +38,6 @@ public:
 private:
 	void runFrame();
 
-	void showRawInput();
-
 	Display mDisplay;
 	Camera mCamera;
 	PointLight mLight;

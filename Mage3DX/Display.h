@@ -46,10 +46,12 @@ public:
 
 	Graphics& getGraphics();
 
-	[[nodiscard]] inline int getWidth() const noexcept { return mWidth; }
-	[[nodiscard]] inline int getHeight() const noexcept { return mHeight; }
+	[[nodiscard]] int getWidth() const noexcept { return mWidth; }
+	[[nodiscard]] int getHeight() const noexcept { return mHeight; }
 
-	[[nodiscard]] inline float getAspectRatio() const noexcept { return mAspectRatio; }
+	[[nodiscard]] float getAspectRatio() const noexcept { return mAspectRatio; }
+
+	[[nodiscard]] bool isCursorEnabled() const noexcept { return mCursor; }
 
 	Keyboard keyboard;
 	Mouse mouse;

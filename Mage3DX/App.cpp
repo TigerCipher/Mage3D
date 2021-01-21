@@ -110,31 +110,43 @@ void App::runFrame()
 	mNano.render(mDisplay.getGraphics());
 	mLight.render(mDisplay.getGraphics());
 
-	if(mDisplay.keyboard.isPressedOnce(VK_INSERT))
+	if (mDisplay.keyboard.isPressedOnce(VK_INSERT))
 	{
 		mDisplay.toggleCursor();
 		mDisplay.mouse.toggleRawInput();
 	}
+
+	if(!mDisplay.isCursorEnabled())
+	{
+		if (mDisplay.keyboard.isPressed('W'))
+			mCamera.translate({ 0, 0, delta });
+		if (mDisplay.keyboard.isPressed('A'))
+			mCamera.translate({ -delta, 0, 0 });
+		if (mDisplay.keyboard.isPressed('S'))
+			mCamera.translate({ 0, 0, -delta });
+		if (mDisplay.keyboard.isPressed('D'))
+			mCamera.translate({ delta, 0, 0});
+		if (mDisplay.keyboard.isPressed(VK_SPACE))
+			mCamera.translate({ 0, delta, 0 });
+		if (mDisplay.keyboard.isPressed('C'))
+			mCamera.translate({ 0, -delta, 0});
+	}
+	
+	while (const auto d = mDisplay.mouse.readRawDelta())
+	{
+		if(!mDisplay.isCursorEnabled())
+		{
+			mCamera.rotate(d->x, d->y);
+		}
+	}
+	
 
 	calculateFrameStatistics(mPerformanceTimer);
 
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
 	mNano.showImguiWindow("Nanosuit");
-	showRawInput();
 
 	mDisplay.getGraphics().swap();
-}
-
-void App::showRawInput()
-{
-	while(const auto d = mDisplay.mouse.readRawDelta())
-	{
-		x += d->x;
-		y += d->y;
-	}
-
-	IMGUI_WRAP("Raw Input",
-		ImGui::Text("Data: (%d, %d)", x, y));
 }
 

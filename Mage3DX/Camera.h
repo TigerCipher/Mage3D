@@ -22,25 +22,31 @@
 
 #include "MathHelper.h"
 
+constexpr float DEFAULT_SPEED = 12.0f;
+constexpr float DEFAULT_SENSITIVITY = 0.004f;
 
 class Camera
 {
 public:
-	Camera() = default;
+	Camera() noexcept;
 	virtual ~Camera() = default;
 
 	void spawnControlWindow() noexcept;
 	void reset() noexcept;
 
+	void rotate(float dx, float dy) noexcept;
+	void translate(vec3f translation) noexcept;
+
 	[[nodiscard]] mat4f getViewMatrix() const noexcept;
 
 
 private:
-	float mR = 20.0f;
-	float mTheta = 0.0f;
-	float mPhi = 0.0f;
 	float mPitch = 0.0f;
 	float mYaw = 0.0f;
-	float mRoll = 0.0f;
+
+	vec3f mPosition{};
+
+	float mSpeed = DEFAULT_SPEED;
+	float mSensitivity = DEFAULT_SENSITIVITY;
 };
 
