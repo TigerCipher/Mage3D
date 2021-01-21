@@ -67,7 +67,7 @@ HINSTANCE Display::Window::getInstance() noexcept
 	return sWinClass.mHInst;
 }
 
-Display::Display(int width, int height, const char* title)
+Display::Display(int width, int height, const char* title) : mCursor(true)
 {
 	ImguiManager::start();
 	LOG_INFO("Creating display of size: ({}, {})", width, height);
@@ -106,11 +106,47 @@ Display::Display(int width, int height, const char* title)
 	ImguiManager::initWin32(mHwnd);
 
 	mGfx = createScope<Graphics>(mHwnd, width, height);
+
+	RAWINPUTDEVICE rid;
+	rid.usUsagePage = 0x01;
+	rid.usUsage = 0x02;
+	rid.dwFlags = 0;
+	rid.hwndTarget = nullptr;
+	if(RegisterRawInputDevices(&rid, 1, sizeof(rid)) == FALSE)
+	{
+		DISPLAY_LAST_EXCEPTION();
+	}
 }
 
 Display::~Display()
 {
 	DestroyWindow(mHwnd);
+}
+
+void Display::showCursor() noexcept
+{
+	// winapi ShowCursor
+	while (ShowCursor(TRUE) < 0);
+	ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+}
+
+void Display::hideCursor() noexcept
+{
+	while (ShowCursor(FALSE) >= 0);
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
+}
+
+void Display::trapCursor() const noexcept
+{
+	RECT rect;
+	GetClientRect(mHwnd, &rect);
+	MapWindowPoints(mHwnd, nullptr, reinterpret_cast<POINT*>(&rect), 2);
+	ClipCursor(&rect);
+}
+
+void Display::freeCursor() noexcept
+{
+	ClipCursor(nullptr);
 }
 
 LRESULT CALLBACK Display::handleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
@@ -172,8 +208,18 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		break;
 	case WM_MOUSEMOVE:
 	{
-		if (imio.WantCaptureMouse) break;
 		const POINTS pt = MAKEPOINTS(lParam);
+		//if(!mCursor)
+		//{
+		//	if(!mouse.isInWindow())
+		//	{
+		//		SetCapture(mHwnd);
+		//		mouse.onMouseEnter();
+		//		//hideCursor();
+		//	}
+		//	break;
+		//}
+		if (imio.WantCaptureMouse) break;
 		if (pt.x >= 0 && pt.x < mWidth && pt.y >= 0 && pt.y < mHeight)
 		{
 			mouse.onMouseMove(pt.x, pt.y);
@@ -197,6 +243,12 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	}
 	case WM_LBUTTONDOWN:
 	{
+		SetForegroundWindow(mHwnd);
+		if(!mCursor)
+		{
+			trapCursor();
+			hideCursor();
+		}
 		if (imio.WantCaptureMouse) break;
 		const POINTS pt = MAKEPOINTS(lParam);
 		mouse.onLeftPressed(pt.x, pt.y);
@@ -241,8 +293,49 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		mouse.onWheelDelta(pt.x, pt.y, delta);
 		break;
 	}
+
+	case WM_INPUT:
+		{
+		if (!mouse.isRawInputEnabled()) break;
+		UINT size;
+		if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT,
+			nullptr, &size, sizeof(RAWINPUTHEADER)) == -1)
+			break;
+		mRawBuffer.resize(size);
+		if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT,
+			mRawBuffer.data(), &size, sizeof(RAWINPUTHEADER)) != size) break;
+
+		auto& ri = reinterpret_cast<RAWINPUT&>(*mRawBuffer.data());
+			if(ri.header.dwType == RIM_TYPEMOUSE && (ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0))
+			{
+				mouse.onRawDelta(ri.data.mouse.lLastX, ri.data.mouse.lLastY);
+			}
+		break;
+		}
 	case WM_KILLFOCUS:
 		keyboard.clearState();
+		break;
+	case WM_ACTIVATE:
+		if(!mCursor)
+		{
+			if(wParam & WA_ACTIVE)
+			{
+				LOG_DEBUG("Active");
+				trapCursor();
+				hideCursor();
+			}
+			else if (wParam & WA_CLICKACTIVE)
+			{
+				LOG_DEBUG("Click active");
+				trapCursor();
+				hideCursor();
+			}
+			else
+			{
+				freeCursor();
+				showCursor();
+			}
+		}
 		break;
 	default:     // Just so clang-d stops giving me a warning
 		break;
@@ -255,6 +348,31 @@ void Display::setTitle(const std::string& title)
 	if (!SetWindowText(mHwnd, title.c_str()))
 	{
 		throw DISPLAY_LAST_EXCEPTION();
+	}
+}
+
+void Display::toggleCursor(const int16 mode) noexcept
+{
+	if(mode < 0)
+	{
+		mCursor = !mCursor;
+	}else if(mode == 0)
+	{
+		mCursor = false;
+	}else
+	{
+		mCursor = true;
+	}
+
+	if (mCursor)
+	{
+		showCursor();
+		freeCursor();
+	}
+	else
+	{
+		hideCursor();
+		trapCursor();
 	}
 }
 

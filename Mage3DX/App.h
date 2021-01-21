@@ -38,6 +38,8 @@ public:
 private:
 	void runFrame();
 
+	void showRawInput();
+
 	Display mDisplay;
 	Camera mCamera;
 	PointLight mLight;
@@ -47,5 +49,6 @@ private:
 	bool mRunning;
 	float mGlobalSpeed = 1.0f;
 	Model mNano;
+	int x = 0, y = 0;
 };
 

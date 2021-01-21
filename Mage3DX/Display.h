@@ -35,6 +35,13 @@ public:
 	Display& operator=(const Display& disp) = delete;
 
 	void setTitle(const std::string& title);
+
+	/// <summary>
+	/// Toggles the cursor visibility
+	/// </summary>
+	/// <param name="mode">default -1. Value less than 0 will toggle. 0 will set to hidden. 1 will set to visible</param>
+	void toggleCursor(int16 mode = -1) noexcept;
+	
 	static std::optional<int> processMessages() noexcept;
 
 	Graphics& getGraphics();
@@ -49,6 +56,11 @@ public:
 protected:
 private:
 
+	static void showCursor() noexcept;
+	static void hideCursor() noexcept;
+	void trapCursor() const noexcept;
+	static void freeCursor() noexcept;
+
 	static LRESULT CALLBACK handleMessageSetup(HWND hWnd, UINT msg,
 	                                           WPARAM wParam, LPARAM lParam) noexcept;
 
@@ -60,8 +72,12 @@ private:
 	int mWidth;
 	int mHeight;
 	float mAspectRatio;
+
+	bool mCursor;
+	
 	HWND mHwnd;
 	UniquePtr<Graphics> mGfx;
+	list<BYTE> mRawBuffer;
 
 	class Window
 	{

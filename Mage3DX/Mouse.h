@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: Mouse.h
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
@@ -75,6 +75,13 @@ public:
 		int mXPos;
 		int mYPos;
 	};
+
+
+	struct RawDelta
+	{
+		int x;
+		int y;
+	};
 public:
 	Mouse() = default;
 	virtual ~Mouse() = default;
@@ -82,6 +89,8 @@ public:
 	Mouse& operator=(const Mouse& rhs) = delete;
 
 	[[nodiscard]] std::pair<int, int> getPos() const noexcept { return { mXPos, mYPos }; }
+
+	std::optional<RawDelta> readRawDelta() noexcept;
 
 	[[nodiscard]] int getX() const noexcept { return mXPos; }
 
@@ -92,14 +101,19 @@ public:
 	[[nodiscard]] bool isRightPressed() const noexcept { return mRight; }
 	[[nodiscard]] bool isInWindow() const noexcept { return mInWindow; }
 
+	[[nodiscard]] bool isRawInputEnabled() const noexcept { return mRawInput; }
+
 	Event read() noexcept;
 	[[nodiscard]] bool isEmpty() const noexcept { return mBuffer.empty(); }
 
 	void clear() noexcept;
 
+	void toggleRawInput(const int16 mode = -1);
+
 
 private:
 
+	void onRawDelta(int dx, int dy) noexcept;
 	void onMouseMove(int x, int y) noexcept;
 	void onLeftPressed(int x, int y) noexcept;
 	void onLeftReleased(int x, int y) noexcept;
@@ -111,6 +125,7 @@ private:
 	void onMouseLeave() noexcept;
 	void onWheelDelta(int x, int y, int delta) noexcept;
 	void trim() noexcept;
+	void trimRawInputBuffer() noexcept;
 
 	static constexpr uint BUFFER_SIZE = 16;
 
@@ -120,5 +135,7 @@ private:
 	bool mRight = false;
 	bool mInWindow = false;
 	int mWheelDelta = 0;
+	bool mRawInput = true;
 	std::queue<Event> mBuffer;
+	std::queue<RawDelta> mRawDeltaBuffer;
 };

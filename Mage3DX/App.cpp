@@ -35,6 +35,7 @@ App::App(const int width, const int height, const char* title) :
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),
 		0.5f, 40.0f));
+	mDisplay.toggleCursor(0);
 }
 
 App::~App()
@@ -99,7 +100,7 @@ void App::runFrame()
 {
 	const auto delta = mTimer.markPoint() * mGlobalSpeed;
 
-	if (mDisplay.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
+	//if (mDisplay.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
 
 	mDisplay.getGraphics().clear(0.07f, 0, 0.12f);
 	mDisplay.getGraphics().setCamera(mCamera.getViewMatrix());
@@ -109,12 +110,31 @@ void App::runFrame()
 	mNano.render(mDisplay.getGraphics());
 	mLight.render(mDisplay.getGraphics());
 
+	if(mDisplay.keyboard.isPressedOnce(VK_INSERT))
+	{
+		mDisplay.toggleCursor();
+		mDisplay.mouse.toggleRawInput();
+	}
+
 	calculateFrameStatistics(mPerformanceTimer);
 
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
 	mNano.showImguiWindow("Nanosuit");
+	showRawInput();
 
 	mDisplay.getGraphics().swap();
+}
+
+void App::showRawInput()
+{
+	while(const auto d = mDisplay.mouse.readRawDelta())
+	{
+		x += d->x;
+		y += d->y;
+	}
+
+	IMGUI_WRAP("Raw Input",
+		ImGui::Text("Data: (%d, %d)", x, y));
 }
 

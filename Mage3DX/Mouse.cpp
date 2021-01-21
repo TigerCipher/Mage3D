@@ -22,6 +22,13 @@
 #include "Mouse.h"
 
 
+std::optional<Mouse::RawDelta> Mouse::readRawDelta() noexcept
+{
+    if (mRawDeltaBuffer.empty()) return std::nullopt;
+    const RawDelta rd = mRawDeltaBuffer.front();
+    mRawDeltaBuffer.pop();
+    return rd;
+}
 
 Mouse::Event Mouse::read() noexcept
 {
@@ -37,6 +44,19 @@ Mouse::Event Mouse::read() noexcept
 void Mouse::clear() noexcept
 {
     mBuffer = std::queue<Event>();
+}
+
+void Mouse::toggleRawInput(const int16 mode)
+{
+    if (mode < 0) mRawInput = !mRawInput;
+    else if (mode == 0) mRawInput = false;
+    else mRawInput = true;
+}
+
+void Mouse::onRawDelta(int dx, int dy) noexcept
+{
+    mRawDeltaBuffer.push({ dx, dy });
+    trimRawInputBuffer();
 }
 
 void Mouse::onMouseMove(int x, int y) noexcept
@@ -122,4 +142,12 @@ void Mouse::trim() noexcept
     {
         mBuffer.pop();
     }
+}
+
+void Mouse::trimRawInputBuffer() noexcept
+{
+	while(mRawDeltaBuffer.size() > BUFFER_SIZE)
+	{
+        mRawDeltaBuffer.pop();
+	}
 }
