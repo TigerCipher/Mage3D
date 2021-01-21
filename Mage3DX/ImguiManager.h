@@ -21,52 +21,19 @@
 #pragma once
 
 #include "3rdParty/imgui/imgui.h"
+
+
 #include <d3d11.h>
-
-//#define _GET_NTH_ARG(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19, N, ...) N
-//#define COUNT_VARARGS(...) _GET_NTH_ARG(__VA_ARGS__, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1)
-
-#if MAGE_IMGUI
-	#define IMGUI_WRAP(name, ...)       \
-	if(ImguiManager::isEnabled()) \
-	{                                   \
-		ImGui::Begin(name);             \
-		(__VA_ARGS__);                  \
-		ImGui::End();                   \
-	}
-	#define IMGUI_WRAP_CLOSABLE(name, openFlag, ...) \
-	if(ImguiManager::isEnabled())              \
-	{                                                \
-		ImGui::Begin(name, &openFlag);               \
-		(__VA_ARGS__);                               \
-		ImGui::End();                                \
-	}
-#else
-	#define IMGUI_WRAP(...)
-	#define IMGUI_WRAP_CLOSABLE(...)
-#endif
-
-// Bit messy, but ultimately better than wrapping every single imgui function or doing the if check
-// every time
-#define IMGUI_WRAP_RD(name, ...)                                  \
-	if(ImguiManager::isEnabled())                           \
-	{                                                             \
-		ImGui::Begin(name, 0, ImGuiWindowFlags_AlwaysAutoResize); \
-		(__VA_ARGS__);                                            \
-		ImGui::End();                                             \
-	}
 
 
 #ifdef MAGE_IMGUI
-//TODO Probs best to fully replace IMGUI_WRAP with this
-#define IMGUI_BEGIN(name)							\
+
+#define IMGUI_BEGIN(name, ...)						\
 	if(ImguiManager::isEnabled())					\
 	{												\
-		if(ImGui::Begin(name)) {
+		if(ImGui::Begin(name, __VA_ARGS__)) {
 
-#define IMGUI_END									\
-		}ImGui::End();								\
-	}
+#define IMGUI_END } ImGui::End(); }
 
 #define IMGUI_FUNC(funcName) ImGui::funcName
 
@@ -74,7 +41,7 @@
 
 #else
 #define IMGUI_BEGIN(...) if(false) { if(false) {
-#define IMGUI_END
+#define IMGUI_END } }
 #define IMGUI_FUNC(...)
 #define IMGUI_FUNC_COND(...) if(false)
 

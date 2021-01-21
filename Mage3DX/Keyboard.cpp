@@ -22,16 +22,17 @@
 #include "Keyboard.h"
 
 
-bool Keyboard::isPressed(uchar keycode) const noexcept
+
+bool Keyboard::isPressed(const uchar keycode) const noexcept
 {
     return mKeyStates[ keycode ];
 }
 
-bool Keyboard::isPressedOnce(uchar keycode) const noexcept
+bool Keyboard::isPressedOnce(const uchar keycode) const noexcept
 {
-    bool down = mKeyStates[keycode];
-    if(down && mPressCount++ == 0) return down;
-    else if(!down) mPressCount = 0;
+	const auto down = mKeyStates[keycode];
+    if (down && mPressCounts[keycode]++ == 0) return down;
+    if(!down) mPressCounts[keycode] = 0;
     return false;
 }
 
@@ -99,21 +100,21 @@ bool Keyboard::isAutoRepeat() const noexcept
     return mAutoRepeat;
 }
 
-void Keyboard::onKeyPressed(uchar keycode) noexcept
+void Keyboard::onKeyPressed(const uchar keycode) noexcept
 {
     mKeyStates[ keycode ] = true;
     mKeyBuffer.push(Event(Event::Type::PRESS, keycode));
     trimBuffer(mKeyBuffer);
 }
 
-void Keyboard::onKeyReleased(uchar keycode) noexcept
+void Keyboard::onKeyReleased(const uchar keycode) noexcept
 {
     mKeyStates[ keycode ] = false;
     mKeyBuffer.push(Event(Event::Type::RELEASE, keycode));
     trimBuffer(mKeyBuffer);
 }
 
-void Keyboard::onChar(char c) noexcept
+void Keyboard::onChar(const char c) noexcept
 {
     mCharBuffer.push(c);
     trimBuffer(mCharBuffer);

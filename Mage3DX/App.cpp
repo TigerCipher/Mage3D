@@ -86,11 +86,12 @@ void calculateFrameStatistics(Timer& timer)
 		}
 	}
 
-	IMGUI_WRAP_RD("Performance Statistics",
-		ImGui::Text("Frame Stats: %.3f ms/frame (%.1f FPS)",         1000.0f / fps,        fps),
-		ImGui::Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps),
-		ImGui::TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount)
-		);
+
+	IMGUI_BEGIN("Performance Statistics", nullptr, ImGuiWindowFlags_AlwaysAutoResize)
+	IMGUI_FUNC(Text("Frame Stats: %.3f ms/frame (%.1f FPS)"));
+	IMGUI_FUNC(Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps));
+	IMGUI_FUNC(TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount));
+	IMGUI_END
 }
 
 

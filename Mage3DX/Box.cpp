@@ -84,20 +84,21 @@ bool Box::spawnControlWindow(int id, Graphics& gfx) noexcept
 {
 	bool dirty = false;
 	bool open = true;
-	IMGUI_WRAP_CLOSABLE(("Box " + std::to_string(id)).c_str(), open,
-		ImGui::Text("Material"),
-		(dirty = ImGui::ColorEdit3("Material Color", &matConstant.color.x) || dirty),
-		(dirty = ImGui::SliderFloat("Specular Intensity", &matConstant.intensity, 0.05f, 4.0f, "%.2f", 2) || dirty),
-		(dirty = ImGui::SliderFloat("Specular Power", &matConstant.power, 1.0f, 200.0f, "%.2f", 2) || dirty),
-		ImGui::Text("Position"),
-		ImGui::SliderFloat("R", &r, 0.0f, 80.0f, "%.1f"),
-		ImGui::SliderAngle("Theta", &theta, -180.0f, 180.0f),
-		ImGui::SliderAngle("Phi",   &phi,   -180.0f, 180.0f),
-		ImGui::Text("Orientation"),
-		ImGui::SliderAngle("Roll",  &roll,  -180.0f, 180.0f),
-		ImGui::SliderAngle("Pitch", &pitch, -180.0f, 180.0f),
-		ImGui::SliderAngle("Yaw",   &yaw,   -180.0f, 180.0f)
-		);
+	IMGUI_BEGIN(("Box " + std::to_string(id)).c_str(), &open)
+		IMGUI_FUNC(Text("Material"));
+	//TODO: When MAGE_IMGUI is false this will end up being a syntax/compile error. Might fix, might also just get rid of these basic classes
+		(dirty = IMGUI_FUNC(ColorEdit3("Material Color", &matConstant.color.x)) || dirty);
+		(dirty = IMGUI_FUNC(SliderFloat("Specular Intensity", &matConstant.intensity, 0.05f, 4.0f, "%.2f", 2)) || dirty);
+		(dirty = IMGUI_FUNC(SliderFloat("Specular Power", &matConstant.power, 1.0f, 200.0f, "%.2f", 2)) || dirty);
+		IMGUI_FUNC(Text("Position"));
+		IMGUI_FUNC(SliderFloat("R", &r, 0.0f, 80.0f, "%.1f"));
+		IMGUI_FUNC(SliderAngle("Theta", &theta, -180.0f, 180.0f));
+		IMGUI_FUNC(SliderAngle("Phi",   &phi,   -180.0f, 180.0f));
+		IMGUI_FUNC(Text("Orientation"));
+		IMGUI_FUNC(SliderAngle("Roll",  &roll,  -180.0f, 180.0f));
+		IMGUI_FUNC(SliderAngle("Pitch", &pitch, -180.0f, 180.0f));
+		IMGUI_FUNC(SliderAngle("Yaw",   &yaw,   -180.0f, 180.0f));
+	IMGUI_END
 	if (dirty)
 		syncMaterial(gfx);
 	return open;

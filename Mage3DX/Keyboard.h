@@ -37,8 +37,8 @@ public:
 
 		Event() noexcept : mType(Type::INVALID),
 			mCode(0) { }
-		Event(Type type, uchar code) noexcept : mType(type),
-			mCode(code) { }
+		Event(const Type type, const uchar code) noexcept : mType(type),
+		                                                    mCode(code) { }
 
 
 		[[nodiscard]] bool isPress() const noexcept { return mType == Type::PRESS; }
@@ -51,8 +51,8 @@ public:
 		Type mType;
 		uchar mCode;
 	};
-public:
-	Keyboard() = default;
+
+	Keyboard() : mPressCounts(NUM_KEYS) {}
 	virtual ~Keyboard() = default;
 	Keyboard(const Keyboard& rhs) = delete;
 	Keyboard& operator=(const Keyboard& rhs) = delete;
@@ -89,7 +89,8 @@ private:
 	static constexpr uint BUFFER_SIZE = 16;
 
 	bool mAutoRepeat = false;
-	mutable ushort mPressCount = 0;
+	//mutable ushort mPressCount = 0;
+	mutable list<int> mPressCounts;
 	std::bitset<NUM_KEYS> mKeyStates;
 	std::queue<Event> mKeyBuffer;
 	std::queue<char> mCharBuffer;
