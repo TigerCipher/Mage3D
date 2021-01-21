@@ -32,8 +32,8 @@
 
 void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG)
 {
-	const auto transform = dx::XMLoadFloat4x4(&mBaseTransform)
-	    * dx::XMLoadFloat4x4(&mAppliedTransform)
+	const auto transform = dx::XMLoadFloat4x4(&mAppliedTransform)
+	    * dx::XMLoadFloat4x4(&mBaseTransform)
 	    * accumulatedTransform;
 
 	for (const auto* m : mMeshes)
