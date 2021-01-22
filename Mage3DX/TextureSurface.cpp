@@ -75,7 +75,7 @@ void TextureSurface::save(const std::string& fileName) const
 					fmt::format("Could not save texture surface to [{}]; Failed to get encoder. Size = 0", fileName));
 			}
 
-			codecInfo = (Gdiplus::ImageCodecInfo*) (malloc(size));
+			codecInfo = static_cast<Gdiplus::ImageCodecInfo*>(malloc(size));
 
 			if (!codecInfo)
 			{
@@ -128,42 +128,32 @@ TextureSurface TextureSurface::loadFromFile(const std::string& fileName)
 	uint height = 0;
 	Scope<Color[]> buf;
 
-	wchar_t wideName[512];
-	mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
-	Gdiplus::Bitmap bitmap(wideName);
-	if (bitmap.GetLastStatus() != Gdiplus::Status::Ok)
 	{
-		throw TextureException(__LINE__, __FILE__, fmt::format("Failed to load texture [{}]", fileName));
-	}
-
-	width = bitmap.GetWidth();
-	height = bitmap.GetHeight();
-	buf = createScope<Color[]>(width * height);
-
-	for (uint y = 0; y < height; y++)
-	{
-		for (uint x = 0; x < width; x++)
+		wchar_t wideName[512];
+		mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
+		Gdiplus::Bitmap bitmap(wideName);
+		Gdiplus::Status errStatus = bitmap.GetLastStatus();
+		if (errStatus != Gdiplus::Status::Ok)
 		{
-			Gdiplus::Color c;
-			bitmap.GetPixel(x, y, &c);
-			buf[ y * width + x ] = c.GetValue();
+			LOG_ERROR("Failed to load texture [{}]. Status {}", fileName, errStatus);
+			// TODO Crashes instead of shows message window
+			throw TextureException(__LINE__, __FILE__, fmt::format("Failed to load texture [{}]", fileName));
+		}
+		width = bitmap.GetWidth();
+		height = bitmap.GetHeight();
+		buf = createScope<Color[]>(width * height);
+
+		for (uint y = 0; y < height; y++)
+		{
+			for (uint x = 0; x < width; x++)
+			{
+				Gdiplus::Color c;
+				bitmap.GetPixel(x, y, &c);
+				buf[ y * width + x ] = c.GetValue();
+			}
 		}
 	}
 
 	return TextureSurface(width, height, std::move(buf));
 }
 
-ULONG_PTR GDIPlusManager::sToken = 0;
-
-void GDIPlusManager::start() noexcept
-{
-	Gdiplus::GdiplusStartupInput input;
-	input.GdiplusVersion = 1;
-	input.DebugEventCallback = nullptr;
-	input.SuppressBackgroundThread = false;
-	Gdiplus::GdiplusStartup(&sToken, &input, nullptr);
-}
-void GDIPlusManager::stop() noexcept
-{
-	Gdiplus::GdiplusShutdown(sToken);
-}

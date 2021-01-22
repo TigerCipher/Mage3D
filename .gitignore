@@ -50,3 +50,4 @@ Mage3DX/x64
 !Mage3DX/assets/models/.*obj
 !Mage3DX/assets/models/.*gltf
 *.gltf
+*.mtl

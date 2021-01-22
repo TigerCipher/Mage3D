@@ -70,15 +70,4 @@ private:
 	uint mHeight;
 };
 
-// TODO: Move to own file
-class GDIPlusManager
-{
-public:
-	static void start() noexcept;
-	static void stop() noexcept;
-
-private:
-	static ULONG_PTR sToken;
-};
-
 

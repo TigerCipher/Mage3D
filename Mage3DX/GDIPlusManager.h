@@ -1,8 +1,6 @@
-﻿extensions: designer.cs generated.cs
-extensions: .cpp .h .c .hpp .cc .cxx .inl .hlsl .glsl
-/*
- * %Project%
- * Copyright (C) %CreationYear% Blue Moon Development. All rights reserved.
+﻿/*
+ * Mage3DX
+ * Copyright (C) 2021 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -16,17 +14,22 @@ extensions: .cpp .h .c .hpp .cc .cxx .inl .hlsl .glsl
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: %FileName%
- * Date File Created: %CreationMonth%/%CreationDay%/%CreationYear% at %CreationTime%
+ * File Name: GDIPlusManager.h
+ * Date File Created: 1/21/2021 at 7:05 PM
  * Author: Matt
  */
-extensions: .aspx .ascx
-<%-- 
-Copyright (c) 2011 rubicon IT GmbH
---%>
-extensions: .vb
-'Sample license text.
-extensions:  .xml .config .xsd
-<!--
-Sample license text.
--->
+
+
+#pragma once
+
+class GDIPlusManager
+{
+public:
+	GDIPlusManager();
+	~GDIPlusManager();
+private:
+	static void start() noexcept;
+	static void stop() noexcept;
+	static ULONG_PTR sToken;
+	static int sCount;
+};

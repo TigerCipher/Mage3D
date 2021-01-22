@@ -27,3 +27,5 @@
 #include "TransformConstantBuffer.h"
 #include "VertexBufferBindable.h"
 #include "Shader.h"
+#include "Texture.h"
+#include "Sampler.h"

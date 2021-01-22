@@ -52,14 +52,17 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	} catch (const MageException& e)
 	{
 		DestroyWindow(GetActiveWindow());
+		LOG_CRITICAL("Caught a Mage3D exception of type [{}]. Info: {}", e.getType(), e.what());
 		MessageBox(nullptr, e.what(), e.getType(), MB_OK | MB_ICONEXCLAMATION);
 	} catch (const std::exception& e)
 	{
 		DestroyWindow(GetActiveWindow());
+		LOG_CRITICAL("Caught a std exception Info: {}", e.what());
 		MessageBox(nullptr, e.what(), "STD Exception", MB_OK | MB_ICONEXCLAMATION);
 	} catch (...)
 	{
 		DestroyWindow(GetActiveWindow());
+		LOG_CRITICAL("A critical error has occured but no details were made available");
 		MessageBox(nullptr, "No details available", "Unknown Exception", MB_OK | MB_ICONEXCLAMATION);
 	}
 	return -1;

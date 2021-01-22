@@ -45,3 +45,8 @@ private:
 #define LOG_WARN(...)        SPDLOG_LOGGER_WARN(Log::getLogger(), __VA_ARGS__)
 #define LOG_ERROR(...)       SPDLOG_LOGGER_ERROR(Log::getLogger(), __VA_ARGS__)
 #define LOG_CRITICAL(...)    SPDLOG_LOGGER_CRITICAL(Log::getLogger(), __VA_ARGS__)
+
+
+#define LOG_ASSERT(x, msg)															\
+			if(!(x)) LOG_CRITICAL("Assertion failed. Expression: [{}]. Info: {}", #x, msg);	\
+			assert(x && msg)

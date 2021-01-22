@@ -67,7 +67,7 @@ public:
 
 	UniquePtr<Node> parseNode(int& nextId, const struct aiNode& node) noexcept;
 
-	static UniquePtr<Mesh> parseMesh(Graphics& gfx, const struct aiMesh& mesh);
+	static UniquePtr<Mesh> parseMesh(Graphics& gfx, const struct aiMesh& mesh, const struct aiMaterial* const* materials);
 
 	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
 

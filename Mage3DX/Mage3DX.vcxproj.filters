@@ -213,13 +213,16 @@
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
-    <ClCompile Include="Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VertexBufferBindable.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
     <ClCompile Include="ModelException.cpp">
+      <Filter>Source Files\debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GDIPlusManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -411,6 +414,9 @@
       <Filter>Header Files\debug</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="GDIPlusManager.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>

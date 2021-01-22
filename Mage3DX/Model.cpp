@@ -23,6 +23,7 @@
 #include "Bindables.h"
 #include "ImguiManager.h"
 #include "ModelException.h"
+#include "TextureSurface.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -167,7 +168,7 @@ Model::Model(Graphics& gfx, const std::string& fileName) :
 
 	for(size_t i = 0; i < scene->mNumMeshes; i++)
 	{
-		mMeshes.push_back(parseMesh(gfx, *scene->mMeshes[i]));
+		mMeshes.push_back(parseMesh(gfx, *scene->mMeshes[i], scene->mMaterials));
 	}
 
 	int nextId = 0;
@@ -199,13 +200,17 @@ UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 	return currentNode;
 }
 
-UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh)
+UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* materials)
 {
-	VertexBuffer vData(std::move(VertexLayout().append(POSITION3D).append(NORMAL)));
+	VertexBuffer vData(std::move(VertexLayout{}.append(POSITION3D).append(NORMAL).append(TEXTURE2D)));
+
 	for (uint i = 0; i < mesh.mNumVertices; i++)
 	{
-		vData.emplaceBack(*reinterpret_cast<vec3f*>(&mesh.mVertices[i]),
-			*reinterpret_cast<vec3f*>(&mesh.mNormals[i]));
+		vData.emplaceBack(
+			*reinterpret_cast<vec3f*>(&mesh.mVertices[i]),
+			*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
+			*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
+		);
 	}
 
 	list<ushort> indices;
@@ -221,6 +226,19 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh)
 	}
 
 	list<UniquePtr<Bindable> > binds;
+
+
+	if(mesh.mMaterialIndex >= 0)
+	{
+		using namespace std::string_literals;
+		const auto& material = *materials[mesh.mMaterialIndex];
+		aiString textureFile;
+		material.GetTexture(aiTextureType_DIFFUSE, 0, &textureFile);
+		binds.push_back(createScope<Texture>(gfx, TextureSurface::loadFromFile("assets\\textures\\"s + textureFile.C_Str())));
+		binds.push_back(createScope<Sampler>(gfx));
+	}
+	
+	
 	binds.push_back(createScope<VertexBufferBindable>(gfx, vData));
 	binds.push_back(createScope<IndexBuffer>(gfx, indices));
 

@@ -107,8 +107,8 @@ class Attribute
 {
 public:
 	Attribute(const AttributeType type, const size_t offset) :
-		m_type(type),
-		m_offset(offset) { }
+		mType(type),
+		mOffset(offset) { }
 
 
 	/***********************************************************************************
@@ -130,15 +130,14 @@ public:
 		case COLOR4F: return sizeof(Map<COLOR4F>::sysType);
 		case COLORARGB: return sizeof(Map<COLORARGB>::sysType);
 		default:
-			LOG_ERROR("An invalid attribute type was used");
-			assert("Invalid attribute type" && false);
+			LOG_ASSERT(false, "Invalid attribute type");
 			return 0;
 		}
 	}
 
 	[[nodiscard]] D3D11_INPUT_ELEMENT_DESC getDesc() const noexcept(!MAGE_DEBUG)
 	{
-		switch (m_type)
+		switch (mType)
 		{
 		case POSITION2D: return getDesc<POSITION2D>(getOffset());
 		case POSITION3D: return getDesc<POSITION3D>(getOffset());
@@ -148,8 +147,7 @@ public:
 		case COLOR4F: return getDesc<COLOR4F>(getOffset());
 		case COLORARGB: return getDesc<COLORARGB>(getOffset());
 		default:
-			LOG_ERROR("Invalid attribute type");
-			assert("Invalid attribute type" && false);
+			LOG_ASSERT(false, "Invalid attribute type");
 			return { "INVALID", 0, DXGI_FORMAT_UNKNOWN,
 			         0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 		}
@@ -177,7 +175,7 @@ public:
 		 * \return size_t The offset
 		 *
 		 ************************************************************************************/
-	[[nodiscard]] size_t getOffset() const { return m_offset; }
+	[[nodiscard]] size_t getOffset() const { return mOffset; }
 
 
 	/***********************************************************************************
@@ -188,11 +186,11 @@ public:
 		 ************************************************************************************/
 	[[nodiscard]] size_t getOffsetAfter() const noexcept(!MAGE_DEBUG)
 	{
-		return m_offset + size();
+		return mOffset + size();
 	}
 
 
-	[[nodiscard]] AttributeType getType() const noexcept { return m_type; }
+	[[nodiscard]] AttributeType getType() const noexcept { return mType; }
 
 private:
 
@@ -203,8 +201,8 @@ private:
 		         D3D11_INPUT_PER_VERTEX_DATA, 0 };
 	}
 
-	AttributeType m_type;
-	size_t m_offset;
+	AttributeType mType;
+	size_t mOffset;
 };
 
 
@@ -229,8 +227,7 @@ public:
 			if (e.getType() == Type)
 				return e;
 		}
-		LOG_ERROR("Failed to resolve attribute type");
-		assert("Could not resolve attribute type" && false);
+		LOG_ASSERT(false, "Could not resolve attribute type");
 		return mAttribs.front();
 	}
 
@@ -353,8 +350,7 @@ public:
 			setAttribute<COLORARGB>(attrib, std::forward<T>(val));
 			break;
 		default:
-			LOG_ERROR("Bad attribute type. Could not resolve");
-			assert("Bad attribute type" && false);
+			LOG_ASSERT(false, "Bad attribute type");
 		}
 	}
 
@@ -384,8 +380,7 @@ private:
 			*reinterpret_cast<Dest*>(attrib) = val;
 		else
 		{
-			LOG_ERROR("Supplied attribute argument type mismatch");
-			assert("Argument attribute type mismatch" && false);
+			LOG_ASSERT(false, "Argument type mismatch");
 		}
 	}
 
@@ -397,23 +392,23 @@ private:
 class ConstantVertex
 {
 public:
-	ConstantVertex(const Vertex& v) noexcept(!MAGE_DEBUG) : m_vertex(v) { }
+	ConstantVertex(const Vertex& v) noexcept(!MAGE_DEBUG) : mVertex(v) { }
 
-	template<AttributeType type>
+	template<AttributeType Type>
 	const auto& attribute() const noexcept(!MAGE_DEBUG)
 	{
-		return const_cast<Vertex&>(m_vertex).attribute<type>();
+		return const_cast<Vertex&>(mVertex).attribute<Type>();
 	}
 private:
-	Vertex m_vertex;
+	Vertex mVertex;
 };
 
 class VertexBuffer
 {
 public:
-	VertexBuffer(VertexLayout layout) noexcept(!MAGE_DEBUG) : m_layout(std::move(layout)) { }
+	VertexBuffer(VertexLayout layout) noexcept(!MAGE_DEBUG) : mLayout(std::move(layout)) { }
 
-	[[nodiscard]] const VertexLayout& getLayout() const noexcept { return m_layout; }
+	[[nodiscard]] const VertexLayout& getLayout() const noexcept { return mLayout; }
 
 
 	/***********************************************************************************
@@ -422,7 +417,7 @@ public:
 		 * \return size_t The number of vertices
 		 *
 		 ************************************************************************************/
-	[[nodiscard]] size_t size() const noexcept(!MAGE_DEBUG) { return m_buffer.size() / m_layout.size(); }
+	[[nodiscard]] size_t size() const noexcept(!MAGE_DEBUG) { return mBuffer.size() / mLayout.size(); }
 
 
 	/***********************************************************************************
@@ -431,24 +426,24 @@ public:
 		 * \return size_t The size in bytes
 		 *
 		 ************************************************************************************/
-	[[nodiscard]] size_t sizeInBytes() const noexcept(!MAGE_DEBUG) { return m_buffer.size(); }
+	[[nodiscard]] size_t sizeInBytes() const noexcept(!MAGE_DEBUG) { return mBuffer.size(); }
 
 	Vertex back() noexcept(!MAGE_DEBUG)
 	{
-		assert(m_buffer.size() != 0);
-		return Vertex{ m_buffer.data() + m_buffer.size() - m_layout.size(), m_layout };
+		LOG_ASSERT(mBuffer.size() != 0, "Buffer is empty");
+		return Vertex{ mBuffer.data() + mBuffer.size() - mLayout.size(), mLayout };
 	}
 
 	Vertex front() noexcept(!MAGE_DEBUG)
 	{
-		assert(m_buffer.size() != 0);
-		return Vertex{ m_buffer.data(), m_layout };
+		LOG_ASSERT(mBuffer.size() != 0, "Buffer is empty");
+		return Vertex{ mBuffer.data(), mLayout };
 	}
 
 	Vertex operator[](const size_t i) noexcept(!MAGE_DEBUG)
 	{
-		assert(i < size());
-		return Vertex{ m_buffer.data() + m_layout.size() * i, m_layout };
+		LOG_ASSERT(i < size(), "index out of bounds");
+		return Vertex{ mBuffer.data() + mLayout.size() * i, mLayout };
 	}
 
 	[[nodiscard]] ConstantVertex back() const noexcept(!MAGE_DEBUG)
@@ -469,15 +464,15 @@ public:
 	template<typename ... Args>
 	void emplaceBack(Args&&... args) noexcept(!MAGE_DEBUG)
 	{
-		assert(sizeof...(args) == m_layout.getNumAttributes() &&
+		LOG_ASSERT(sizeof...(args) == mLayout.getNumAttributes(),
 			"Argument count does not match expected number of vertex attributes");
-		m_buffer.resize(m_buffer.size() + m_layout.size());
+		mBuffer.resize(mBuffer.size() + mLayout.size());
 		back().setAttributeByIndex(0, std::forward<Args>(args)...);
 	}
 
-	[[nodiscard]] const char* getData() const noexcept(!MAGE_DEBUG) { return m_buffer.data(); }
+	[[nodiscard]] const char* getData() const noexcept(!MAGE_DEBUG) { return mBuffer.data(); }
 
 private:
-	VertexLayout m_layout;
-	list<char> m_buffer;
+	VertexLayout mLayout;
+	list<char> mBuffer;
 };

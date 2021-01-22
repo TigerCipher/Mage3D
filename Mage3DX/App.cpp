@@ -19,23 +19,26 @@
  * Author: Matt
  */
 #include "App.h"
+#include "GDIPlusManager.h"
 #include "Box.h"
 #include "TextureSurface.h"
 #include "ImguiManager.h"
 
 
+GDIPlusManager gGdip;
+
 App::App(const int width, const int height, const char* title) :
 	mDisplay(width, height, title),
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
-	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.gltf")
+	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj")
 {
-	GDIPlusManager::start();
 
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),
 		0.5f, 40.0f));
 	mDisplay.toggleCursor(0);
+
 }
 
 App::~App()
@@ -60,7 +63,6 @@ int App::run()
 void App::stop()
 {
 	mRunning = false;
-	GDIPlusManager::stop();
 }
 
 void calculateFrameStatistics(Timer& timer)
