@@ -23,7 +23,7 @@
 #include "Bindables.h"
 #include "ImguiManager.h"
 #include "ModelException.h"
-#include "TextureSurface.h"
+#include "Texture.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -239,13 +239,13 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		const auto basePath = "assets\\textures\\"s;
 		
 		material.GetTexture(aiTextureType_DIFFUSE, 0, &textureFile);
-		binds.push_back(createScope<Texture>(gfx, TextureSurface::loadFromFile(basePath + textureFile.C_Str())));
+		binds.push_back(createScope<TextureData>(gfx, Texture::loadFromFile(basePath + textureFile.C_Str())));
 
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &textureFile) == aiReturn_SUCCESS)
 		{
 			hasSpecMap = true;
-			binds.push_back(createScope<Texture>(gfx, TextureSurface::loadFromFile(basePath + textureFile.C_Str()), 1));
+			binds.push_back(createScope<TextureData>(gfx, Texture::loadFromFile(basePath + textureFile.C_Str()), 1));
 		}
 		else
 		{

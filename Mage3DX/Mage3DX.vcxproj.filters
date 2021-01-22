@@ -159,12 +159,6 @@
     <ClCompile Include="Sampler.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
-    <ClCompile Include="Texture.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="TextureSurface.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="SolidSphere.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
@@ -223,6 +217,12 @@
       <Filter>Source Files\debug</Filter>
     </ClCompile>
     <ClCompile Include="GDIPlusManager.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureData.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -338,12 +338,6 @@
     <ClInclude Include="Sampler.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="TextureSurface.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Common.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
@@ -417,6 +411,12 @@
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="GDIPlusManager.h">
+      <Filter>Header Files\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="TextureData.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>

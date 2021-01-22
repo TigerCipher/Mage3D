@@ -277,9 +277,9 @@
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SolidSphere.cpp" />
-    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TextureData.cpp" />
     <ClCompile Include="TextureException.cpp" />
-    <ClCompile Include="TextureSurface.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformConstantBuffer.cpp" />
@@ -342,9 +342,9 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SolidSphere.h" />
     <ClInclude Include="StacktraceException.h" />
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="TextureData.h" />
     <ClInclude Include="TextureException.h" />
-    <ClInclude Include="TextureSurface.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformConstantBuffer.h" />

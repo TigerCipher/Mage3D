@@ -20,20 +20,54 @@
  */
 #pragma once
 
-#include "Bindable.h"
+#include "Color.h"
 
-
-class Texture : public Bindable
+class Texture
 {
 public:
-	Texture(Graphics& gfx, const class TextureSurface& surface, uint slot = 0);
-	void bind(Graphics &gfx) noexcept override;
+	Texture(uint width, uint height, uint pitch) noexcept :
+		mWidth(width),
+		mHeight(height),
+		mBuffer(createScope<Color[]>(pitch * height))
+	{ }
+	Texture(uint width, uint height) noexcept : Texture(width, height, width) { }
+
+	virtual ~Texture() = default;
+	Texture(const Texture& rhs) = delete;
+	Texture& operator=(const Texture& rhs) = delete;
+	Texture(Texture&& src) noexcept :
+		mWidth(src.mWidth),
+		mHeight(src.mHeight),
+		mBuffer(std::move(src.mBuffer))
+	{ }
+	Texture& operator=(Texture&& src) noexcept;
+
+	void clear(Color fill) noexcept;
+	void setPixel(uint x, uint y, Color col) noexcept(!MAGE_DEBUG);
+	[[nodiscard]] Color getPixel(uint x, uint y) const noexcept(!MAGE_DEBUG);
+
+	Color* getBuffer() noexcept { return mBuffer.get(); }
+	[[nodiscard]] const Color* getBuffer() const noexcept { return mBuffer.get(); }
+
+	[[nodiscard]] uint getWidth() const noexcept { return mWidth; }
+	[[nodiscard]] uint getHeight() const noexcept { return mHeight; }
+
+	void save(const std::string& fileName) const;
+	void copy(const Texture& src) noexcept(!MAGE_DEBUG);
+
+	static Texture loadFromFile(const std::string& fileName);
 
 protected:
-	COMptr<ID3D11ShaderResourceView> mTextureView;
 private:
-	uint mSlot;
-};
+	Texture(uint width, uint height, UniquePtr<Color[]> buffer) noexcept :
+		mWidth(width),
+		mHeight(height),
+		mBuffer(std::move(buffer))
+	{ }
 
+	UniquePtr<Color[]> mBuffer;
+	uint mWidth;
+	uint mHeight;
+};
 
 

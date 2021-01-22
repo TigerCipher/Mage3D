@@ -22,8 +22,8 @@
 #include "Box.h"
 #include "Primitives.h"
 #include "Sampler.h"
+#include "TextureData.h"
 #include "Texture.h"
-#include "TextureSurface.h"
 #include "ImguiManager.h"
 
 
@@ -130,7 +130,7 @@ SkinnedBox::SkinnedBox(Graphics& gfx, std::mt19937& rng,
 		auto model = Cube::makeIndependentTextured<Vertex>();
 		model.setNormalsFlat();
 
-		addStaticBind(createScope<Texture>(gfx, TextureSurface::loadFromFile("assets\\textures\\metal_box.png")));
+		addStaticBind(createScope<TextureData>(gfx, Texture::loadFromFile("assets\\textures\\metal_box.png")));
 
 		addStaticBind(createScope<VertexBufferBindable>(gfx, model.vertices));
 

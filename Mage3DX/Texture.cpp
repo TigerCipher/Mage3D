@@ -11,54 +11,150 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * Contact: team@bluemoondev.org
- *
- * File Name: texture.cpp
- * Date File Created: 9/23/2020 at 10:48 PM
+ * 
+ * File Name: Texture.cpp
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 //#include "pch.h" -intellisense works better with force include being used
 #include "Texture.h"
-#include "GraphicsException.h"
-#include "TextureSurface.h"
+#include "TextureException.h"
 
+#define FULL_WINTARD
 
+#include "winwrapper.h"
 
-Texture::Texture(Graphics& gfx, const TextureSurface& surface, uint slot) :
-	mSlot(slot)
+namespace Gdiplus
 {
-	DEBUG_INFO(gfx);
+	using std::max;
+	using std::min;
+}// namespace Gdiplus
+#include <gdiplus.h>
 
-	// create texture resource
-	D3D11_TEXTURE2D_DESC textureDesc = { };
-	textureDesc.Width = surface.getWidth();
-	textureDesc.Height = surface.getHeight();
-	textureDesc.MipLevels = 1;
-	textureDesc.ArraySize = 1;
-	textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	textureDesc.SampleDesc.Count = 1;
-	textureDesc.SampleDesc.Quality = 0;
-	textureDesc.Usage = D3D11_USAGE_DEFAULT;
-	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	textureDesc.CPUAccessFlags = 0;
-	textureDesc.MiscFlags = 0;
-	D3D11_SUBRESOURCE_DATA sd = { };
-	sd.pSysMem = surface.getBuffer();
-	sd.SysMemPitch = surface.getWidth() * sizeof(Color);
-	COMptr<ID3D11Texture2D> tex;
-	GFX_THROW_INFO(getDevice(gfx)->CreateTexture2D(&textureDesc, &sd, &tex));
-
-	// create the resource view on the texture
-	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = { };
-	srvDesc.Format = textureDesc.Format;
-	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = 1;
-	GFX_THROW_INFO(getDevice(gfx)->CreateShaderResourceView(tex.Get(), &srvDesc, &mTextureView));
+Texture& Texture::operator=(Texture&& src) noexcept
+{
+	mWidth = src.mWidth;
+	mHeight = src.mHeight;
+	mBuffer = std::move(src.mBuffer);
+	src.mBuffer = nullptr;
+	return *this;
 }
 
-void Texture::bind(Graphics& gfx) noexcept
+void Texture::clear(Color fill) noexcept
 {
-	getContext(gfx)->PSSetShaderResources(mSlot, 1, mTextureView.GetAddressOf());
+	memset(mBuffer.get(), fill.dword, mWidth * mHeight * sizeof(Color));
 }
+
+void Texture::setPixel(uint x, uint y, Color col) noexcept(!MAGE_DEBUG)
+{
+	assert(x >= 0 && y >= 0 && x < mWidth && y < mHeight);
+	mBuffer[ y * mWidth + x ] = col;
+}
+
+Color Texture::getPixel(uint x, uint y) const noexcept(!MAGE_DEBUG)
+{
+	assert(x >= 0 && y >= 0 && x < mWidth && y < mHeight);
+	return mBuffer[ y * mWidth + x ];
+}
+
+void Texture::save(const std::string& fileName) const
+{
+	auto getEncoder = [ &fileName ] (const WCHAR* format, CLSID* clsid) -> void
+		{
+			UINT num = 0;
+			UINT size = 0;
+
+			Gdiplus::ImageCodecInfo* codecInfo = nullptr;
+			Gdiplus::GetImageEncodersSize(&num, &size);
+			if (size == 0)
+			{
+				throw TextureException(
+					__LINE__, __FILE__,
+					fmt::format("Could not save texture surface to [{}]; Failed to get encoder. Size = 0", fileName));
+			}
+
+			codecInfo = static_cast<Gdiplus::ImageCodecInfo*>(malloc(size));
+
+			if (!codecInfo)
+			{
+				throw TextureException(
+					__LINE__, __FILE__,
+					fmt::format(
+						"Could not save texture surface to [{}]; Failed to get encoder; Could not allocate memory",
+						fileName));
+			}
+
+			Gdiplus::GetImageEncoders(num, size, codecInfo);
+			for (UINT i = 0; i < num; i++)
+			{
+				if (wcscmp(codecInfo[ i ].MimeType, format) == 0)
+				{
+					*clsid = codecInfo[ i ].Clsid;
+					free(codecInfo);
+					return;
+				}
+			}
+
+			free(codecInfo);
+			throw TextureException(__LINE__, __FILE__,
+				fmt::format("Could not save texture surface to [{}]; Failed to get encoder", fileName));
+		};
+
+	CLSID bmp;
+	getEncoder(L"ibmp", &bmp);
+
+	wchar_t wideName[512];
+	mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
+
+	Gdiplus::Bitmap bitmap(mWidth, mHeight, mWidth * sizeof(Color), PixelFormat32bppARGB, (BYTE*) mBuffer.get());
+	if (bitmap.Save(wideName, &bmp, nullptr) != Gdiplus::Status::Ok)
+	{
+		throw TextureException(__LINE__, __FILE__, fmt::format("Could not save texture surface to [{}]", fileName));
+	}
+}
+
+void Texture::copy(const Texture& src) noexcept(!MAGE_DEBUG)
+{
+	assert(mWidth == src.mWidth);
+	assert(mHeight == src.mHeight);
+	memcpy(mBuffer.get(), src.mBuffer.get(), mWidth * mHeight * sizeof(Color));
+}
+
+Texture Texture::loadFromFile(const std::string& fileName)
+{
+	uint width = 0;
+	uint height = 0;
+	Scope<Color[]> buf;
+
+	{
+		wchar_t wideName[512];
+		mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
+		Gdiplus::Bitmap bitmap(wideName);
+		Gdiplus::Status errStatus = bitmap.GetLastStatus();
+		if (errStatus != Gdiplus::Status::Ok)
+		{
+			LOG_ERROR("Failed to load texture [{}]. Status {}", fileName, errStatus);
+			// TODO Crashes instead of shows message window
+			throw TextureException(__LINE__, __FILE__, fmt::format("Failed to load texture [{}]", fileName));
+		}
+		width = bitmap.GetWidth();
+		height = bitmap.GetHeight();
+		buf = createScope<Color[]>(width * height);
+
+		for (uint y = 0; y < height; y++)
+		{
+			for (uint x = 0; x < width; x++)
+			{
+				Gdiplus::Color c;
+				bitmap.GetPixel(x, y, &c);
+				buf[ y * width + x ] = c.GetValue();
+			}
+		}
+	}
+
+	LOG_TRACE("Loaded texture [{}]", fileName);
+	return Texture(width, height, std::move(buf));
+}
+

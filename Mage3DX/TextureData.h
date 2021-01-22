@@ -14,18 +14,26 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: bindables.h
- * Date File Created: 9/20/2020 at 11:04 PM
+ * File Name: TextureData.h
+ * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 
-#include "ConstantBuffer.h"
-#include "IndexBuffer.h"
-#include "InputLayout.h"
-#include "Topology.h"
-#include "TransformConstantBuffer.h"
-#include "VertexBufferBindable.h"
-#include "Shader.h"
-#include "TextureData.h"
-#include "Sampler.h"
+#include "Bindable.h"
+
+
+class TextureData : public Bindable
+{
+public:
+	TextureData(Graphics& gfx, const class Texture& surface, uint slot = 0);
+	void bind(Graphics &gfx) noexcept override;
+
+protected:
+	COMptr<ID3D11ShaderResourceView> mTextureView;
+private:
+	uint mSlot;
+};
+
+
+
