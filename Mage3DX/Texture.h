@@ -26,11 +26,13 @@
 class Texture : public Bindable
 {
 public:
-	Texture(Graphics& gfx, const class TextureSurface& surface);
+	Texture(Graphics& gfx, const class TextureSurface& surface, uint slot = 0);
 	void bind(Graphics &gfx) noexcept override;
 
 protected:
 	COMptr<ID3D11ShaderResourceView> mTextureView;
+private:
+	uint mSlot;
 };
 
 

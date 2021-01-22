@@ -202,6 +202,9 @@ UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 
 UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* materials)
 {
+	bool hasSpecMap = false;
+	float shininess = 35.0f;
+	
 	VertexBuffer vData(std::move(VertexLayout{}.append(POSITION3D).append(NORMAL).append(TEXTURE2D)));
 
 	for (uint i = 0; i < mesh.mNumVertices; i++)
@@ -233,8 +236,22 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		using namespace std::string_literals;
 		const auto& material = *materials[mesh.mMaterialIndex];
 		aiString textureFile;
+		const auto basePath = "assets\\textures\\"s;
+		
 		material.GetTexture(aiTextureType_DIFFUSE, 0, &textureFile);
-		binds.push_back(createScope<Texture>(gfx, TextureSurface::loadFromFile("assets\\textures\\"s + textureFile.C_Str())));
+		binds.push_back(createScope<Texture>(gfx, TextureSurface::loadFromFile(basePath + textureFile.C_Str())));
+
+
+		if (material.GetTexture(aiTextureType_SPECULAR, 0, &textureFile) == aiReturn_SUCCESS)
+		{
+			hasSpecMap = true;
+			binds.push_back(createScope<Texture>(gfx, TextureSurface::loadFromFile(basePath + textureFile.C_Str()), 1));
+		}
+		else
+		{
+			material.Get(AI_MATKEY_SHININESS, shininess);
+		}
+
 		binds.push_back(createScope<Sampler>(gfx));
 	}
 	
@@ -243,22 +260,30 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	binds.push_back(createScope<IndexBuffer>(gfx, indices));
 
 	auto pvs = createScope<VertexShader>(gfx, L"shaders\\phongVS.cso");
-	auto pvsbc = pvs->getBytecode();
+	auto* pvsbc = pvs->getBytecode();
 	binds.push_back(std::move(pvs));
 
-	binds.push_back(createScope<PixelShader>(gfx, L"shaders\\phongPS.cso"));
 	binds.push_back(createScope<InputLayout>(gfx, vData.getLayout().getD3dLayout(), pvsbc));
 
-	struct MaterialConst
+	if(hasSpecMap)
 	{
-		vec3f color = { 0.6f, 0.6f, 0.8f };
-		float specIntensity = 0.6f;
-		float specPower = 30.0f;
+		binds.push_back(createScope<PixelShader>(gfx, L"shaders\\phongSpecPS.cso"));
+	}
+	else
+	{
 
-		float padding[3];
-	} matConst;
+		binds.push_back(createScope<PixelShader>(gfx, L"shaders\\phongPS.cso"));
+		struct MaterialConst
+		{
+			float specIntensity = 1.6f;
+			float specPower;
 
-	binds.push_back(createScope<PixelConstantBuffer<MaterialConst> >(gfx, matConst, 1));
+			float padding[2];
+		} matConst;
+		matConst.specPower = shininess;
+		
+		binds.push_back(createScope<PixelConstantBuffer<MaterialConst> >(gfx, matConst, 1));
+	}
 
 	return createScope<Mesh>(gfx, std::move(binds));
 }

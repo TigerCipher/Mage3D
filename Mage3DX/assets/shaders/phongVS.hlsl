@@ -29,14 +29,16 @@ struct VSOut
 {
 	float3 viewPos : Position;
 	float3 normal : Normal;
+	float2 tc : TexCoords;
 	float4 pos : SV_Position;
 };
 
-VSOut main(float3 pos : Position, float3 norm : Normal)
+VSOut main(float3 pos : Position, float3 norm : Normal, float2 tc : TexCoords)
 {
 	VSOut vso;
     vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
     vso.normal = mul(norm, (float3x3) modelView);
 	vso.pos = mul(float4(pos, 1.0f), mvp);
+	vso.tc = tc;
 	return vso;
 }

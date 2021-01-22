@@ -154,6 +154,7 @@ TextureSurface TextureSurface::loadFromFile(const std::string& fileName)
 		}
 	}
 
+	LOG_TRACE("Loaded texture [{}]", fileName);
 	return TextureSurface(width, height, std::move(buf));
 }
 

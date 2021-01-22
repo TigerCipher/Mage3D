@@ -223,7 +223,7 @@
       <Filter>Source Files\debug</Filter>
     </ClCompile>
     <ClCompile Include="GDIPlusManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -482,6 +482,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="assets\shaders\texturePhongVS.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\phongSpecPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>
