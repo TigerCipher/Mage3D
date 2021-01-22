@@ -28,9 +28,6 @@ class Bindable;
 
 class IRenderable
 {
-template<class T>
-friend class Renderable;
-
 public:
 	IRenderable() = default;
 	virtual ~IRenderable() = default;
@@ -40,11 +37,9 @@ public:
 	[[nodiscard]] virtual mat4f getTransformMatrix() const noexcept = 0;
 
 	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
-	virtual void update(float delta) noexcept { }
+	//virtual void update(float delta) noexcept { }
 
 protected:
-	void addBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG);
-	void addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept;
 
 	template<class T>
 	T* queryBindable() noexcept
@@ -58,11 +53,12 @@ protected:
 		return nullptr;
 	}
 
+	void addBind(SharedPtr<Bindable> bind) noexcept(!MAGE_DEBUG);
 private:
-	[[nodiscard]] virtual const list<UniquePtr<Bindable> >& getStaticBinds() const noexcept = 0;
 
+	
 	const class IndexBuffer* mIndexBuffer = nullptr;
-	list<UniquePtr<Bindable> > mBindables{ };
+	list<SharedPtr<Bindable> > mBindables{ };
 };
 
 

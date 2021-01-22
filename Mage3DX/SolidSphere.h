@@ -19,13 +19,12 @@
  * Author: Matt
  */
 #pragma once
-#include "Renderable.h"
+#include "IRenderable.h"
 
-class SolidSphere : public Renderable<SolidSphere>
+class SolidSphere : public IRenderable
 {
 public:
 	SolidSphere(Graphics& gfx, float radius);
-	void update(float delta) noexcept override { }
 	mat4f getTransformMatrix() const noexcept override;
 	void setPosition(vec3f pos) noexcept { mPosition = pos; }
 private:

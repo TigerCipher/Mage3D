@@ -20,12 +20,12 @@
  */
 #pragma once
 
-#include "Renderable.h"
+#include "IRenderable.h"
 
-class Mesh : public Renderable<Mesh>
+class Mesh : public IRenderable
 {
 public:
-	Mesh(Graphics& gfx, list<UniquePtr<Bindable> > binds);
+	Mesh(Graphics& gfx, list<SharedPtr<Bindable> > binds);
 
 
 	void render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG);

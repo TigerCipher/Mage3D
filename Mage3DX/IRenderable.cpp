@@ -22,33 +22,24 @@
 #include "IRenderable.h"
 #include "GraphicsException.h"
 #include "IndexBuffer.h"
-#include <cassert>
-#include <typeinfo>
 
 
 void IRenderable::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
 {
-    for(auto& b : mBindables)
-    {
-        b->bind(gfx);
-    }
-    for(auto& b : getStaticBinds())
+    for(const auto& b : mBindables)
     {
         b->bind(gfx);
     }
     gfx.drawIndexed(mIndexBuffer->getCount());
 }
 
-
-void IRenderable::addBind(UniquePtr<Bindable> bindable) noexcept(!MAGE_DEBUG)
+void IRenderable::addBind(SharedPtr<Bindable> bind) noexcept(!MAGE_DEBUG)
 {
-    assert("MUST use addIndexBuffer when binding an IndexBuffer" && typeid(*bindable) != typeid(IndexBuffer));
-    mBindables.push_back(std::move(bindable));
-}
+	if(typeid(*bind) == typeid(IndexBuffer))
+	{
+        LOG_ASSERT(!mIndexBuffer, "Binding multiple index buffers is not supported");
+        mIndexBuffer = &dynamic_cast<IndexBuffer&>(*bind);
+	}
 
-void IRenderable::addIndexBuffer(UniquePtr<class IndexBuffer> ibuf) noexcept
-{
-    assert("Do not add a second IndexBuffer" && !mIndexBuffer);
-    mIndexBuffer = ibuf.get();
-    mBindables.push_back(std::move(ibuf));
+    mBindables.push_back(std::move(bind));
 }

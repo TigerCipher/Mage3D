@@ -22,26 +22,16 @@
 #include "Mesh.h"
 #include "Bindables.h"
 
-Mesh::Mesh(Graphics& gfx, list<UniquePtr<Bindable> > binds)
+Mesh::Mesh(Graphics& gfx, list<SharedPtr<Bindable> > binds)
 {
-	if(!isInitialized())
-	{
-		addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	}
+	addBind(createRef<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
 	for (auto & b : binds)
 	{
-		if(auto* p = dynamic_cast<IndexBuffer*>(b.get()))
-		{
-			addIndexBuffer(UniquePtr<IndexBuffer>(p));
-			b.release();
-		}else
-		{
-			addBind(std::move(b));
-		}
+		addBind(std::move(b));
 	}
 
-	addBind(createScope<TransformConstantBuffer>(gfx, *this));
+	addBind(createRef<TransformConstantBuffer>(gfx, *this));
 }
 
 void Mesh::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG)

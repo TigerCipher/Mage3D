@@ -75,9 +75,6 @@
     <ClCompile Include="TransformConstantBuffer.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
-    <ClCompile Include="Box.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
     <ClCompile Include="Bindable.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
@@ -141,12 +138,6 @@
     <ClCompile Include="TextureException.cpp">
       <Filter>Source Files\debug</Filter>
     </ClCompile>
-    <ClCompile Include="Melon.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Pyramid.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -160,9 +151,6 @@
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="SolidSphere.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
-    <ClCompile Include="Cylinder.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
     <ClCompile Include="winmain.cpp">
@@ -198,9 +186,6 @@
     <ClCompile Include="App.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DummyModel.cpp">
-      <Filter>Source Files\entities</Filter>
-    </ClCompile>
     <ClCompile Include="DebugTools.cpp">
       <Filter>Source Files\debug</Filter>
     </ClCompile>
@@ -235,12 +220,6 @@
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>Header Files\bindables</Filter>
-    </ClInclude>
-    <ClInclude Include="DummyObject.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Box.h">
-      <Filter>Header Files\entities</Filter>
     </ClInclude>
     <ClInclude Include="Bindable.h">
       <Filter>Header Files\bindables</Filter>
@@ -311,13 +290,7 @@
     <ClInclude Include="TextureException.h">
       <Filter>Header Files\debug</Filter>
     </ClInclude>
-    <ClInclude Include="Melon.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
     <ClInclude Include="Primitives.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Pyramid.h">
       <Filter>Header Files\entities</Filter>
     </ClInclude>
     <ClInclude Include="Color.h">
@@ -332,9 +305,6 @@
     <ClInclude Include="IRenderable.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="Renderable.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Sampler.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
@@ -342,9 +312,6 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="SolidSphere.h">
-      <Filter>Header Files\entities</Filter>
-    </ClInclude>
-    <ClInclude Include="Cylinder.h">
       <Filter>Header Files\entities</Filter>
     </ClInclude>
     <ClInclude Include="3rdParty\imgui\imconfig.h">
@@ -388,9 +355,6 @@
     </ClInclude>
     <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="DummyModel.h">
-      <Filter>Header Files\entities</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Header Files\graphics</Filter>

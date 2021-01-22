@@ -24,26 +24,20 @@
 #include "Primitives.h"
 #include "Bindables.h"
 #include "GraphicsException.h"
+#include "Vertex.h"
 
 SolidSphere::SolidSphere(Graphics& gfx, float radius)
 {
-	if (!isInitialized())
-	{
-		struct Vertex
-		{
-			vec3f pos;
-		};
-
-		auto model = Sphere::make<Vertex>();
+		auto model = Sphere::make();
 		model.transform(dx::XMMatrixScaling(radius, radius, radius));
-		addBind(createScope<VertexBufferBindable>(gfx, model.vertices));
-		addIndexBuffer(createScope<IndexBuffer>(gfx, model.indices));
+		addBind(createRef<VertexBufferBindable>(gfx, model.vertices));
+		addBind(createRef<IndexBuffer>(gfx, model.indices));
 
 		auto pvs = createScope<VertexShader>(gfx, L"shaders\\solidVS.cso");
 		auto pvsbc = pvs->getBytecode();
-		addStaticBind(std::move(pvs));
+		addBind(std::move(pvs));
 
-		addStaticBind(createScope<PixelShader>(gfx, L"shaders\\solidPS.cso"));
+		addBind(createRef<PixelShader>(gfx, L"shaders\\solidPS.cso"));
 
 		struct ColorConst
 		{
@@ -51,21 +45,12 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 			float padding;
 		} colConst;
 
-		addStaticBind(createScope<PixelConstantBuffer<ColorConst>>(gfx, colConst));
+		addBind(createRef<PixelConstantBuffer<ColorConst>>(gfx, colConst));
 
-		const list<D3D11_INPUT_ELEMENT_DESC> ied =
-		{
-			{"Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
-		};
+		addBind(createRef<InputLayout>(gfx, model.vertices.getLayout().getD3dLayout(), pvsbc));
+		addBind(createRef<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
-		addStaticBind(createScope<InputLayout>(gfx, ied, pvsbc));
-		addStaticBind(createScope<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
-	}else
-	{
-		setIndexStatic();
-	}
-
-	addBind(createScope<TransformConstantBuffer>(gfx, *this));
+	addBind(createRef<TransformConstantBuffer>(gfx, *this));
 }
 
 
