@@ -33,7 +33,7 @@
         inline const std::string& getFile() const noexcept { return mFile; }
         std::string getOrigin() const noexcept;
     protected:
-        mutable std::string mWhat;
+        mutable std::string mWhat = "Test";
     private:
         int mLine;
         std::string mFile;

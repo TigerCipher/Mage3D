@@ -136,8 +136,10 @@ Texture Texture::loadFromFile(const std::string& fileName)
 		if (errStatus != Gdiplus::Status::Ok)
 		{
 			LOG_ERROR("Failed to load texture [{}]. Status {}", fileName, errStatus);
-			// TODO Crashes instead of shows message window
-			throw TextureException(__LINE__, __FILE__, fmt::format("Failed to load texture [{}]", fileName));
+			// TODO: Fmt format is broken - causes read access violations
+			std::ostringstream oss;
+			oss << "Failed to load texture [" << fileName << "]";
+			throw TextureException(__LINE__, __FILE__, oss.str()/*fmt::format("Failed to load texture [{}]", fileName)*/);
 		}
 		width = bitmap.GetWidth();
 		height = bitmap.GetHeight();

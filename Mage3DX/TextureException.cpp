@@ -23,7 +23,10 @@
 
 const char* TextureException::what() const noexcept
 {
-    mWhat = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
+    //mWhat = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
+    std::ostringstream oss;
+    oss << MageException::what() << "\n[Info] " << getInfo();
+    mWhat = oss.str();
     return mWhat.c_str();
 }
 

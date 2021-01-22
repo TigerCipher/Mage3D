@@ -29,6 +29,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "TextureException.h"
 
 
 void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG)
@@ -204,8 +205,8 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 {
 	bool hasSpecMap = false;
 	float shininess = 35.0f;
-	
-	VertexBuffer vData(std::move(VertexLayout{}.append(POSITION3D).append(NORMAL).append(TEXTURE2D)));
+
+	VertexBuffer vData(std::move(VertexLayout{ }.append(POSITION3D).append(NORMAL).append(TEXTURE2D)));
 
 	for (uint i = 0; i < mesh.mNumVertices; i++)
 	{
@@ -213,7 +214,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 			*reinterpret_cast<vec3f*>(&mesh.mVertices[i]),
 			*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
 			*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
-		);
+			);
 	}
 
 	list<ushort> indices;
@@ -237,10 +238,9 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		const auto& material = *materials[mesh.mMaterialIndex];
 		aiString textureFile;
 		const auto basePath = "assets\\textures\\"s;
-		
+
 		material.GetTexture(aiTextureType_DIFFUSE, 0, &textureFile);
 		binds.push_back(createRef<TextureData>(gfx, Texture::loadFromFile(basePath + textureFile.C_Str())));
-
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &textureFile) == aiReturn_SUCCESS)
 		{
@@ -254,8 +254,8 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 		binds.push_back(createRef<Sampler>(gfx));
 	}
-	
-	
+
+
 	binds.push_back(createRef<VertexBufferBindable>(gfx, vData));
 	binds.push_back(createRef<IndexBuffer>(gfx, indices));
 
@@ -271,7 +271,6 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	}
 	else
 	{
-
 		binds.push_back(createRef<PixelShader>(gfx, L"shaders\\phongPS.cso"));
 		struct MaterialConst
 		{
@@ -281,7 +280,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 			float padding[2];
 		} matConst;
 		matConst.specPower = shininess;
-		
+
 		binds.push_back(createRef<PixelConstantBuffer<MaterialConst> >(gfx, matConst, 1));
 	}
 
