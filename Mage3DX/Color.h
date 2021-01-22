@@ -30,13 +30,13 @@ public:
 	constexpr Color(ubyte a, ubyte r, ubyte g, ubyte b) noexcept : dword((a << 24) | (r << 16) | (g << 8) | b) { }
 	constexpr Color(ubyte r, ubyte g, ubyte b) noexcept : dword((r << 16) | (g << 8) | b) { }
 	constexpr Color(Color col, ubyte a) noexcept : Color((a << 24) | col.dword) { }
-	constexpr Color(const Color& col) noexcept = default;
+	//constexpr Color(const Color& col) noexcept = default;
 
-	Color& operator=(Color col) noexcept
-	{
-		dword = col.dword;
-		return *this;
-	}
+	//Color& operator=(Color col) noexcept
+	//{
+	//	dword = col.dword;
+	//	return *this;
+	//}
 
 	Color& operator=(ulong col) noexcept
 	{

@@ -42,8 +42,8 @@ public:
 	{ }
 	Texture& operator=(Texture&& src) noexcept;
 
-	void clear(Color fill) noexcept;
-	void setPixel(uint x, uint y, Color col) noexcept(!MAGE_DEBUG);
+	void clear(Color fill) const noexcept;
+	void setPixel(uint x, uint y, Color col) const noexcept(!MAGE_DEBUG);
 	[[nodiscard]] Color getPixel(uint x, uint y) const noexcept(!MAGE_DEBUG);
 
 	Color* getBuffer() noexcept { return mBuffer.get(); }
@@ -53,7 +53,7 @@ public:
 	[[nodiscard]] uint getHeight() const noexcept { return mHeight; }
 
 	void save(const std::string& fileName) const;
-	void copy(const Texture& src) noexcept(!MAGE_DEBUG);
+	void copy(const Texture& src) const noexcept(!MAGE_DEBUG);
 
 	static Texture loadFromFile(const std::string& fileName);
 

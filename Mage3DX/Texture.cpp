@@ -42,18 +42,18 @@ Texture& Texture::operator=(Texture&& src) noexcept
 	return *this;
 }
 
-void Texture::clear(Color fill) noexcept
+void Texture::clear(const Color fill) const noexcept
 {
 	memset(mBuffer.get(), fill.dword, mWidth * mHeight * sizeof(Color));
 }
 
-void Texture::setPixel(uint x, uint y, Color col) noexcept(!MAGE_DEBUG)
+void Texture::setPixel(const uint x, const uint y, const Color col) const noexcept(!MAGE_DEBUG)
 {
 	assert(x >= 0 && y >= 0 && x < mWidth && y < mHeight);
 	mBuffer[ y * mWidth + x ] = col;
 }
 
-Color Texture::getPixel(uint x, uint y) const noexcept(!MAGE_DEBUG)
+Color Texture::getPixel(const uint x, const uint y) const noexcept(!MAGE_DEBUG)
 {
 	assert(x >= 0 && y >= 0 && x < mWidth && y < mHeight);
 	return mBuffer[ y * mWidth + x ];
@@ -108,14 +108,14 @@ void Texture::save(const std::string& fileName) const
 	wchar_t wideName[512];
 	mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
 
-	Gdiplus::Bitmap bitmap(mWidth, mHeight, mWidth * sizeof(Color), PixelFormat32bppARGB, (BYTE*) mBuffer.get());
+	Gdiplus::Bitmap bitmap(mWidth, mHeight, mWidth * sizeof(Color), PixelFormat32bppARGB, reinterpret_cast<BYTE*>(mBuffer.get()));
 	if (bitmap.Save(wideName, &bmp, nullptr) != Gdiplus::Status::Ok)
 	{
 		throw TextureException(__LINE__, __FILE__, fmt::format("Could not save texture surface to [{}]", fileName));
 	}
 }
 
-void Texture::copy(const Texture& src) noexcept(!MAGE_DEBUG)
+void Texture::copy(const Texture& src) const noexcept(!MAGE_DEBUG)
 {
 	assert(mWidth == src.mWidth);
 	assert(mHeight == src.mHeight);
