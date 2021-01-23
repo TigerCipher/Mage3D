@@ -20,6 +20,40 @@
  */
 #include "Vertex.h"
 
+size_t Attribute::sizeOf(const AttributeType type) noexcept(!MAGE_DEBUG)
+{
+	switch (type)
+	{
+	case POSITION2D: return sizeof(Map<POSITION2D>::sysType);
+	case POSITION3D: return sizeof(Map<POSITION3D>::sysType);
+	case TEXTURE2D: return sizeof(Map<TEXTURE2D>::sysType);
+	case NORMAL: return sizeof(Map<NORMAL>::sysType);
+	case COLOR3F: return sizeof(Map<COLOR3F>::sysType);
+	case COLOR4F: return sizeof(Map<COLOR4F>::sysType);
+	case COLORARGB: return sizeof(Map<COLORARGB>::sysType);
+	default:
+		LOG_ASSERT(false, "Invalid attribute type");
+		return 0;
+	}
+}
+
+D3D11_INPUT_ELEMENT_DESC Attribute::getDesc() const noexcept(!MAGE_DEBUG)
+{
+	switch (mType)
+	{
+	case POSITION2D: return getDesc<POSITION2D>(getOffset());
+	case POSITION3D: return getDesc<POSITION3D>(getOffset());
+	case TEXTURE2D: return getDesc<TEXTURE2D>(getOffset());
+	case NORMAL: return getDesc<NORMAL>(getOffset());
+	case COLOR3F: return getDesc<COLOR3F>(getOffset());
+	case COLOR4F: return getDesc<COLOR4F>(getOffset());
+	case COLORARGB: return getDesc<COLORARGB>(getOffset());
+	default:
+		LOG_ASSERT(false, "Invalid attribute type");
+		return { "INVALID", 0, DXGI_FORMAT_UNKNOWN,
+				 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+	}
+}
 
 const char* Attribute::getCode() const noexcept
 {
@@ -34,6 +68,22 @@ const char* Attribute::getCode() const noexcept
 	case COLORARGB: return Map<COLORARGB>::CODE;
 	default: return "Invalid";
 	}
+}
+
+VertexLayout& VertexLayout::append(AttributeType type) noexcept(!MAGE_DEBUG)
+{
+	mAttribs.emplace_back(type, size());
+	return *this;
+}
+
+list<D3D11_INPUT_ELEMENT_DESC> VertexLayout::getD3dLayout() const noexcept(!MAGE_DEBUG)
+{
+	list< D3D11_INPUT_ELEMENT_DESC> desc;
+	for (const auto& a : mAttribs)
+	{
+		desc.push_back(a.getDesc());
+	}
+	return desc;
 }
 
 std::string VertexLayout::getCode() const noexcept(!MAGE_DEBUG)

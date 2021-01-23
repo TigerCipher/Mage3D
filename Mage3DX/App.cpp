@@ -91,7 +91,7 @@ void calculateFrameStatistics(Timer& timer)
 
 
 	IMGUI_BEGIN("Performance Statistics", nullptr, ImGuiWindowFlags_AlwaysAutoResize)
-	IMGUI_FUNC(Text("Frame Stats: %.3f ms/frame (%.1f FPS)"));
+	IMGUI_FUNC(Text("Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / fps, fps));
 	IMGUI_FUNC(Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps));
 	IMGUI_FUNC(TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount));
 	IMGUI_END
@@ -115,8 +115,7 @@ void App::runFrame()
 	mNano2.render(mDisplay.getGraphics());
 	mLight.render(mDisplay.getGraphics());
 
-	// Sometimes captures input data too fast and one press is seen as multiple
-	if (mDisplay.keyboard.isPressedOnce(VK_INSERT))
+	if (mDisplay.keyboard.isPressedOnce(VK_ESCAPE))
 	{
 		mDisplay.toggleCursor();
 		mDisplay.mouse.toggleRawInput();
@@ -142,7 +141,7 @@ void App::runFrame()
 	{
 		while (const auto d = mDisplay.mouse.readRawDelta())
 		{
-			mCamera.rotate(d->x, d->y);
+			mCamera.rotate(static_cast<float>(d->x), static_cast<float>(d->y));
 		}
 	}
 

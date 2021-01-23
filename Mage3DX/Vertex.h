@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: Vertex.h
  * Date File Created: 10/2/2020 at 8:28 PM
  * Author: Matt
@@ -125,40 +125,9 @@ public:
 		 * \return size_t The size in bytes
 		 *
 		 ************************************************************************************/
-	static constexpr size_t sizeOf(const AttributeType type) noexcept(!MAGE_DEBUG)
-	{
-		switch (type)
-		{
-		case POSITION2D: return sizeof(Map<POSITION2D>::sysType);
-		case POSITION3D: return sizeof(Map<POSITION3D>::sysType);
-		case TEXTURE2D: return sizeof(Map<TEXTURE2D>::sysType);
-		case NORMAL: return sizeof(Map<NORMAL>::sysType);
-		case COLOR3F: return sizeof(Map<COLOR3F>::sysType);
-		case COLOR4F: return sizeof(Map<COLOR4F>::sysType);
-		case COLORARGB: return sizeof(Map<COLORARGB>::sysType);
-		default:
-			LOG_ASSERT(false, "Invalid attribute type");
-			return 0;
-		}
-	}
+	static size_t sizeOf(const AttributeType type) noexcept(!MAGE_DEBUG);
 
-	[[nodiscard]] D3D11_INPUT_ELEMENT_DESC getDesc() const noexcept(!MAGE_DEBUG)
-	{
-		switch (mType)
-		{
-		case POSITION2D: return getDesc<POSITION2D>(getOffset());
-		case POSITION3D: return getDesc<POSITION3D>(getOffset());
-		case TEXTURE2D: return getDesc<TEXTURE2D>(getOffset());
-		case NORMAL: return getDesc<NORMAL>(getOffset());
-		case COLOR3F: return getDesc<COLOR3F>(getOffset());
-		case COLOR4F: return getDesc<COLOR4F>(getOffset());
-		case COLORARGB: return getDesc<COLORARGB>(getOffset());
-		default:
-			LOG_ASSERT(false, "Invalid attribute type");
-			return { "INVALID", 0, DXGI_FORMAT_UNKNOWN,
-			         0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
-		}
-	}
+	[[nodiscard]] D3D11_INPUT_ELEMENT_DESC getDesc() const noexcept(!MAGE_DEBUG);
 
 
 
@@ -199,13 +168,14 @@ public:
 
 	[[nodiscard]] AttributeType getType() const noexcept { return mType; }
 
-	const char* getCode() const noexcept;
+	[[nodiscard]] const char* getCode() const noexcept;
 private:
 
 	template<AttributeType Type>
 	static constexpr D3D11_INPUT_ELEMENT_DESC getDesc(const size_t offset) noexcept
 	{
-		return { Map<Type>::SEMANTIC, 0, Map<Type>::FORMAT, 0, (UINT) offset,
+		return { Map<Type>::SEMANTIC, 0, Map<Type>::FORMAT, 0,
+		         static_cast<UINT>(offset),
 		         D3D11_INPUT_PER_VERTEX_DATA, 0 };
 	}
 
@@ -214,6 +184,7 @@ private:
 	AttributeType mType;
 	size_t mOffset;
 };
+
 
 
 class VertexLayout
@@ -248,21 +219,19 @@ public:
 		 * \return const Attribute& The attribute at the specified index
 		 *
 		 ************************************************************************************/
-	const Attribute& resolve(size_t index) const noexcept(!MAGE_DEBUG) { return mAttribs[index]; }
+	[[nodiscard]] const Attribute& resolve(const size_t index) const noexcept(!MAGE_DEBUG) { return mAttribs[index]; }
 
 
-	/***********************************************************************************
-		 *
-		 * \brief Adds an attribute to the layout
-		 * \param AttributeType type The attribute type being added to the layout
-		 * \return VertexLayout& A reference to the layout the attribute was added to
-		 *
-		 ************************************************************************************/
-	VertexLayout& append(AttributeType type) noexcept(!MAGE_DEBUG)
-	{
-		mAttribs.emplace_back(type, size());
-		return *this;
-	}
+
+	//TODO: Change all docs to this format, makes intellisense spit out less warnings. And supports xml (for stuff like line breaks)
+
+	
+	/// <summary>
+	/// Adds an attribute to the layout
+	/// </summary>
+	/// <param name="type">The attribute type to add</param>
+	/// <returns>A reference to the layout the attribute was added to</returns>
+	VertexLayout& append(AttributeType type) noexcept(!MAGE_DEBUG);
 
 	/***********************************************************************************
 		 *
@@ -284,17 +253,9 @@ public:
 	[[nodiscard]] size_t getNumAttributes() const noexcept { return mAttribs.size(); }
 
 
-	[[nodiscard]] list<D3D11_INPUT_ELEMENT_DESC> getD3dLayout() const noexcept(!MAGE_DEBUG)
-	{
-		list< D3D11_INPUT_ELEMENT_DESC> desc;
-		for (const auto& a : mAttribs)
-		{
-			desc.push_back(a.getDesc());
-		}
-		return desc;
-	}
+	[[nodiscard]] list<D3D11_INPUT_ELEMENT_DESC> getD3dLayout() const noexcept(!MAGE_DEBUG);
 
-	std::string getCode() const noexcept(!MAGE_DEBUG);
+	[[nodiscard]] std::string getCode() const noexcept(!MAGE_DEBUG);
 
 private:
 	list<Attribute> mAttribs{ };
@@ -440,13 +401,13 @@ public:
 
 	Vertex back() noexcept(!MAGE_DEBUG)
 	{
-		LOG_ASSERT(mBuffer.size() != 0, "Buffer is empty");
+		LOG_ASSERT(!mBuffer.empty(), "Buffer is empty");
 		return Vertex{ mBuffer.data() + mBuffer.size() - mLayout.size(), mLayout };
 	}
 
 	Vertex front() noexcept(!MAGE_DEBUG)
 	{
-		LOG_ASSERT(mBuffer.size() != 0, "Buffer is empty");
+		LOG_ASSERT(!mBuffer.empty(), "Buffer is empty");
 		return Vertex{ mBuffer.data(), mLayout };
 	}
 
