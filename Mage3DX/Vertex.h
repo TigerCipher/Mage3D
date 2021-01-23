@@ -53,6 +53,7 @@ template<AttributeType> struct Map;
 
 template<> struct Map<POSITION2D>
 {
+	static constexpr const char* CODE = "P2";
 	static constexpr const char* SEMANTIC = "Position";
 	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32_FLOAT;
 	using sysType = vec2f;
@@ -60,6 +61,7 @@ template<> struct Map<POSITION2D>
 
 template<> struct Map<POSITION3D>
 {
+	static constexpr const char* CODE = "P3";
 	static constexpr const char* SEMANTIC = "Position";
 	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32_FLOAT;
 	using sysType = vec3f;
@@ -67,6 +69,7 @@ template<> struct Map<POSITION3D>
 
 template<> struct Map<TEXTURE2D>
 {
+	static constexpr const char* CODE = "T2";
 	static constexpr const char* SEMANTIC = "TexCoords";
 	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32_FLOAT;
 	using sysType = vec2f;
@@ -74,6 +77,7 @@ template<> struct Map<TEXTURE2D>
 
 template<> struct Map<NORMAL>
 {
+	static constexpr const char* CODE = "N";
 	static constexpr const char* SEMANTIC = "Normal";
 	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32_FLOAT;
 	using sysType = vec3f;
@@ -81,6 +85,7 @@ template<> struct Map<NORMAL>
 
 template<> struct Map<COLOR3F>
 {
+	static constexpr const char* CODE = "C3";
 	static constexpr const char* SEMANTIC = "Color";
 	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32_FLOAT;
 	using sysType = vec3f;
@@ -88,6 +93,7 @@ template<> struct Map<COLOR3F>
 
 template<> struct Map<COLOR4F>
 {
+	static constexpr const char* CODE = "C4";
 	static constexpr const char* SEMANTIC = "Color";
 	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	using sysType = vec4f;
@@ -95,6 +101,7 @@ template<> struct Map<COLOR4F>
 
 template<> struct Map<COLORARGB>
 {
+	static constexpr const char* CODE = "C8";
 	static constexpr const char* SEMANTIC = "Color";
 	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R8G8B8A8_UNORM;
 	using sysType = ColorARGB;
@@ -192,14 +199,17 @@ public:
 
 	[[nodiscard]] AttributeType getType() const noexcept { return mType; }
 
+	const char* getCode() const noexcept;
 private:
 
 	template<AttributeType Type>
-	static constexpr D3D11_INPUT_ELEMENT_DESC getDesc(const size_t offset) noexcept(!MAGE_DEBUG)
+	static constexpr D3D11_INPUT_ELEMENT_DESC getDesc(const size_t offset) noexcept
 	{
 		return { Map<Type>::SEMANTIC, 0, Map<Type>::FORMAT, 0, (UINT) offset,
 		         D3D11_INPUT_PER_VERTEX_DATA, 0 };
 	}
+
+
 
 	AttributeType mType;
 	size_t mOffset;
@@ -284,7 +294,7 @@ public:
 		return desc;
 	}
 
-
+	std::string getCode() const noexcept(!MAGE_DEBUG);
 
 private:
 	list<Attribute> mAttribs{ };

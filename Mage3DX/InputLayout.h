@@ -22,14 +22,21 @@
 
 
 #include "Bindable.h"
+#include "Vertex.h"
 
 class InputLayout : public Bindable
 {
 public:
-	InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout, ID3DBlob* vertexBytecode);
+	InputLayout(Graphics& gfx, VertexLayout layout, ID3DBlob* vertexBytecode);
 	void bind(Graphics& gfx) noexcept override;
+
+	static SharedPtr<InputLayout> resolve(Graphics& gfx, const VertexLayout& layout, ID3DBlob* vsBytecode);
+	static std::string generateUID(const VertexLayout& layout, ID3DBlob* vsBytecode = nullptr);
+
+	std::string getUID() const noexcept override;
 
 protected:
 	COMptr<ID3D11InputLayout> mLayout;
+	VertexLayout mVertexLayout;
 };
 

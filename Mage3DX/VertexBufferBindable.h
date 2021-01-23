@@ -28,28 +28,28 @@
 class VertexBufferBindable : public Bindable
 {
 public:
-	VertexBufferBindable(Graphics& gfx, const VertexBuffer& vData) : mStride(static_cast<UINT>(vData.getLayout().size()))
-	{
-		DEBUG_INFO(gfx);
-
-		D3D11_BUFFER_DESC bd = { };
-		bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-		bd.Usage = D3D11_USAGE_DEFAULT;
-		bd.CPUAccessFlags = 0u;
-		bd.MiscFlags = 0u;
-		bd.ByteWidth = static_cast<UINT>(vData.sizeInBytes());
-		bd.StructureByteStride = mStride;
-		D3D11_SUBRESOURCE_DATA sd = { };
-		sd.pSysMem = vData.getData();
-
-		GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &mBuffer));
-	}
+	VertexBufferBindable(Graphics& gfx, const std::string& tag, const VertexBuffer& vData);
+	VertexBufferBindable(Graphics& gfx, const VertexBuffer& vData);
 
 	void bind(Graphics& gfx) noexcept override;
 
+	static SharedPtr<VertexBufferBindable> resolve(Graphics& gfx, const std::string& tag, const VertexBuffer& vData);
+
+	template<typename... Ignore>
+	static std::string generateUID(const std::string& tag, Ignore&&... ignore)
+	{
+		return generateUID_(tag);
+	}
+
+	std::string getUID() const noexcept override;
+
 protected:
+	std::string mTag;
 	UINT mStride;
 	COMptr<ID3D11Buffer> mBuffer{ };
+
+private:
+	static std::string generateUID_(const std::string& tag);
 };
 
 

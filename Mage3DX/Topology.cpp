@@ -20,9 +20,25 @@
  */
 //#include "pch.h" -intellisense works better with force include being used
 #include "Topology.h"
-
+#include "BindableCodex.h"
 
 void Topology::bind(Graphics& gfx) noexcept
 {
     getContext(gfx)->IASetPrimitiveTopology(mType);
+}
+
+SharedPtr<Topology> Topology::resolve(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type)
+{
+	return BindableCodex::resolve<Topology>(gfx, type);
+}
+
+std::string Topology::generateUID(D3D11_PRIMITIVE_TOPOLOGY type)
+{
+	using namespace std::string_literals;
+	return typeid(Topology).name() + "#"s + std::to_string(type);
+}
+
+std::string Topology::getUID() const noexcept
+{
+	return generateUID(mType);
 }

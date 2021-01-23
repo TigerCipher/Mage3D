@@ -47,6 +47,7 @@ private:
 	bool mRunning;
 	float mGlobalSpeed = 1.0f;
 	Model mNano;
+	Model mNano2;
 	int x = 0, y = 0;
 };
 

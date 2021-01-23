@@ -28,7 +28,9 @@ class Topology : public Bindable
 public:
 	Topology(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type) : mType(type) { }
 	void bind(Graphics& gfx) noexcept override;
-
+	static SharedPtr<Topology> resolve(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type);
+	static std::string generateUID(D3D11_PRIMITIVE_TOPOLOGY type);
+	std::string getUID() const noexcept override;
 protected:
 	D3D11_PRIMITIVE_TOPOLOGY mType;
 };

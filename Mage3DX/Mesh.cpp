@@ -24,7 +24,7 @@
 
 Mesh::Mesh(Graphics& gfx, list<SharedPtr<Bindable> > binds)
 {
-	addBind(createRef<Topology>(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
+	addBind(Topology::resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
 	for (auto & b : binds)
 	{

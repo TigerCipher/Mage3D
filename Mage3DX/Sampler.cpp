@@ -20,6 +20,8 @@
  */
 //#include "pch.h" -intellisense works better with force include being used
 #include "Sampler.h"
+
+#include "BindableCodex.h"
 #include "GraphicsException.h"
 
 
@@ -40,3 +42,14 @@ void Sampler::bind(Graphics& gfx) noexcept
 {
     getContext(gfx)->PSSetSamplers(0, 1, mSampler.GetAddressOf());
 }
+
+SharedPtr<Sampler> Sampler::resolve(Graphics& gfx)
+{
+    return BindableCodex::resolve<Sampler>(gfx);
+}
+
+std::string Sampler::generateUID()
+{
+    return typeid(Sampler).name();
+}
+

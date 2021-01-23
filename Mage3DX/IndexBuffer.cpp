@@ -21,9 +21,18 @@
 //#include "pch.h" -intellisense works better with force include being used
 #include "IndexBuffer.h"
 #include "GraphicsException.h"
+#include "BindableCodex.h"
 
 IndexBuffer::IndexBuffer(Graphics& gfx, const list<ushort>& indices) :
-        mCount(static_cast<UINT>(indices.size()))
+        IndexBuffer(gfx, "?", indices)
+{
+    
+}
+
+
+IndexBuffer::IndexBuffer(Graphics& gfx, std::string tag, const list<ushort>& indices) :
+    mTag(tag),
+    mCount(static_cast<UINT>(indices.size()))
 {
     DEBUG_INFO(gfx);
 
@@ -42,4 +51,23 @@ IndexBuffer::IndexBuffer(Graphics& gfx, const list<ushort>& indices) :
 void IndexBuffer::bind(Graphics& gfx) noexcept
 {
     getContext(gfx)->IASetIndexBuffer(mBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+}
+
+
+SharedPtr<IndexBuffer> IndexBuffer::resolve(Graphics& gfx, const std::string& tag, const list<ushort>& indices)
+{
+    assert(tag != "?");
+    return BindableCodex::resolve<IndexBuffer>(gfx, tag, indices);
+}
+
+
+std::string IndexBuffer::getUID() const noexcept
+{
+    return generateUID_(mTag);
+}
+
+std::string IndexBuffer::generateUID_(const std::string& tag)
+{
+    using namespace std::string_literals;
+    return typeid(IndexBuffer).name() + "#"s + tag;
 }

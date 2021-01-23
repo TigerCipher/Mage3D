@@ -26,10 +26,24 @@ class IndexBuffer : public Bindable
 {
 public:
 	IndexBuffer(Graphics& gfx, const list<ushort>& indices);
+	IndexBuffer(Graphics& gfx, std::string tag, const list<ushort>& indices);
 	void bind(Graphics& gfx) noexcept override;
 	[[nodiscard]] inline UINT getCount() const noexcept { return mCount; }
 
+	static SharedPtr<IndexBuffer> resolve(Graphics& gfx, const std::string& tag, const list<ushort>& indices);
+
+	template<typename... Ignore>
+	static std::string generateUID(const std::string& tag, Ignore&&...ignore)
+	{
+		return generateUID_(tag);
+	}
+
+	std::string getUID() const noexcept override;
 protected:
 	UINT mCount;
 	COMptr<ID3D11Buffer> mBuffer;
+	std::string mTag;
+
+private:
+	static std::string generateUID_(const std::string& tag);
 };

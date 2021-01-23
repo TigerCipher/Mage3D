@@ -279,6 +279,7 @@
     <ClCompile Include="Topology.cpp" />
     <ClCompile Include="TransformConstantBuffer.cpp" />
     <ClCompile Include="Util.cpp" />
+    <ClCompile Include="Vertex.cpp" />
     <ClCompile Include="VertexBufferBindable.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
@@ -295,6 +296,7 @@
     <ClInclude Include="3rdParty\StackWalker\StackWalker.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="Bindable.h" />
+    <ClInclude Include="BindableCodex.h" />
     <ClInclude Include="Bindables.h" />
     <ClInclude Include="Callstack.h" />
     <ClInclude Include="Camera.h" />

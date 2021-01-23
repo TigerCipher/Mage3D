@@ -22,14 +22,16 @@
 #include "TextureData.h"
 #include "GraphicsException.h"
 #include "Texture.h"
+#include "BindableCodex.h"
 
 
-
-TextureData::TextureData(Graphics& gfx, const Texture& surface, uint slot) :
+TextureData::TextureData(Graphics& gfx, const std::string& path, uint slot) :
+	mPath(path),
 	mSlot(slot)
 {
 	DEBUG_INFO(gfx);
 
+	const auto surface = Texture::loadFromFile(path);
 	// create texture resource
 	D3D11_TEXTURE2D_DESC textureDesc = { };
 	textureDesc.Width = surface.getWidth();
@@ -61,4 +63,21 @@ TextureData::TextureData(Graphics& gfx, const Texture& surface, uint slot) :
 void TextureData::bind(Graphics& gfx) noexcept
 {
 	getContext(gfx)->PSSetShaderResources(mSlot, 1, mTextureView.GetAddressOf());
+}
+
+
+SharedPtr<TextureData> TextureData::resolve(Graphics& gfx, const std::string& path, uint slot)
+{
+	return BindableCodex::resolve<TextureData>(gfx, path, slot);
+}
+
+std::string TextureData::generateUID(const std::string& path, uint slot)
+{
+	using namespace std::string_literals;
+	return typeid(TextureData).name() + "#"s + path + "#"s + std::to_string(slot);
+}
+
+std::string TextureData::getUID() const noexcept
+{
+	return generateUID(mPath, mSlot);
 }

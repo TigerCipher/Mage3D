@@ -231,47 +231,48 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 	list<SharedPtr<Bindable> > binds;
 
+		using namespace std::string_literals;
+		const auto basePath = "assets\\textures\\"s;
 
 	if(mesh.mMaterialIndex >= 0)
 	{
-		using namespace std::string_literals;
 		const auto& material = *materials[mesh.mMaterialIndex];
 		aiString textureFile;
-		const auto basePath = "assets\\textures\\"s;
 
 		material.GetTexture(aiTextureType_DIFFUSE, 0, &textureFile);
-		binds.push_back(createRef<TextureData>(gfx, Texture::loadFromFile(basePath + textureFile.C_Str())));
+		binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str()));
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &textureFile) == aiReturn_SUCCESS)
 		{
 			hasSpecMap = true;
-			binds.push_back(createRef<TextureData>(gfx, Texture::loadFromFile(basePath + textureFile.C_Str()), 1));
+			binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str(), 1));
 		}
 		else
 		{
 			material.Get(AI_MATKEY_SHININESS, shininess);
 		}
 
-		binds.push_back(createRef<Sampler>(gfx));
+		binds.push_back(Sampler::resolve(gfx));
 	}
 
+	auto meshTag = basePath + "%" + mesh.mName.C_Str();
+	
+	binds.push_back(VertexBufferBindable::resolve(gfx, meshTag, vData));
+	binds.push_back(IndexBuffer::resolve(gfx, meshTag, indices));
 
-	binds.push_back(createRef<VertexBufferBindable>(gfx, vData));
-	binds.push_back(createRef<IndexBuffer>(gfx, indices));
-
-	auto pvs = createRef<VertexShader>(gfx, L"shaders\\phongVS.cso");
+	auto pvs = VertexShader::resolve(gfx, "shaders\\phongVS.cso");
 	auto* pvsbc = pvs->getBytecode();
 	binds.push_back(std::move(pvs));
 
-	binds.push_back(createRef<InputLayout>(gfx, vData.getLayout().getD3dLayout(), pvsbc));
+	binds.push_back(InputLayout::resolve(gfx, vData.getLayout(), pvsbc));
 
 	if(hasSpecMap)
 	{
-		binds.push_back(createRef<PixelShader>(gfx, L"shaders\\phongSpecPS.cso"));
+		binds.push_back(PixelShader::resolve(gfx, "shaders\\phongSpecPS.cso"));
 	}
 	else
 	{
-		binds.push_back(createRef<PixelShader>(gfx, L"shaders\\phongPS.cso"));
+		binds.push_back(PixelShader::resolve(gfx, "shaders\\phongPS.cso"));
 		struct MaterialConst
 		{
 			float specIntensity = 1.6f;
@@ -281,7 +282,8 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		} matConst;
 		matConst.specPower = shininess;
 
-		binds.push_back(createRef<PixelConstantBuffer<MaterialConst> >(gfx, matConst, 1));
+		// TODO: Meshes will end up sharing the same material
+		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
 	}
 
 	return createScope<Mesh>(gfx, std::move(binds));

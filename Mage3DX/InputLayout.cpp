@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: inputlayout.cpp
  * Date File Created: 9/20/2020 at 9:50 PM
  * Author: Matt
@@ -21,19 +21,39 @@
 //#include "pch.h" -intellisense works better with force include being used
 #include "InputLayout.h"
 #include "GraphicsException.h"
+#include "BindableCodex.h"
 
-InputLayout::InputLayout(Graphics& gfx, const list<D3D11_INPUT_ELEMENT_DESC> layout,
-                               ID3DBlob* vertexBytecode)
+InputLayout::InputLayout(Graphics& gfx, VertexLayout layout,
+                         ID3DBlob* vertexBytecode) :
+	mVertexLayout(std::move(layout))
 {
-    DEBUG_INFO(gfx);
+	DEBUG_INFO(gfx);
 
-    GFX_THROW_INFO(getDevice(gfx)->CreateInputLayout(layout.data(), static_cast<UINT>(layout.size()),
-                                                     vertexBytecode->GetBufferPointer(),
-                                                     vertexBytecode->GetBufferSize(), &mLayout));
+	const auto d3dLayout = mVertexLayout.getD3dLayout();
+	GFX_THROW_INFO(getDevice(gfx)->CreateInputLayout(d3dLayout.data(), static_cast<UINT>(d3dLayout.size()),
+		vertexBytecode->GetBufferPointer(),
+		vertexBytecode->GetBufferSize(),
+		&mLayout));
 }
 
 
 void InputLayout::bind(Graphics& gfx) noexcept
 {
-    getContext(gfx)->IASetInputLayout(mLayout.Get());
+	getContext(gfx)->IASetInputLayout(mLayout.Get());
+}
+
+SharedPtr<InputLayout> InputLayout::resolve(Graphics& gfx, const VertexLayout& layout, ID3DBlob* vsBytecode)
+{
+	return BindableCodex::resolve<InputLayout>(gfx, layout, vsBytecode);
+}
+
+std::string InputLayout::generateUID(const VertexLayout& layout, ID3DBlob* vsBytecode)
+{
+	using namespace std::string_literals;
+	return typeid(InputLayout).name() + "#"s + layout.getCode();
+}
+
+std::string InputLayout::getUID() const noexcept
+{
+	return generateUID(mVertexLayout);
 }

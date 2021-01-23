@@ -21,14 +21,18 @@
 //#include "pch.h" -intellisense works better with force include being used
 #include "Shader.h"
 #include "GraphicsException.h"
+#include "BindableCodex.h"
+
+
 #include <d3dcompiler.h>
 
 
-VertexShader::VertexShader(Graphics& gfx, const std::wstring& path)
+VertexShader::VertexShader(Graphics& gfx, const std::string& path) :
+	mPath(path)
 {
 	DEBUG_INFO(gfx);
 
-	GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &mBytecode));
+	GFX_THROW_INFO(D3DReadFileToBlob(std::wstring{path.begin(), path.end()}.c_str(), & mBytecode));
 	GFX_THROW_INFO(getDevice(gfx)->CreateVertexShader(
 		mBytecode->GetBufferPointer(),
 		mBytecode->GetBufferSize(),
@@ -42,13 +46,29 @@ void VertexShader::bind(Graphics& gfx) noexcept
 	getContext(gfx)->VSSetShader(mShader.Get(), nullptr, 0);
 }
 
+SharedPtr<VertexShader> VertexShader::resolve(Graphics& gfx, const std::string& path)
+{
+	return BindableCodex::resolve<VertexShader>(gfx, path);
+}
 
-PixelShader::PixelShader(Graphics& gfx, const std::wstring& path)
+
+std::string VertexShader::generateUID(const std::string& path)
+{
+	using namespace std::string_literals;
+	return typeid(VertexShader).name() + "#"s + path;
+}
+
+std::string VertexShader::getUID() const noexcept
+{
+	return generateUID(mPath);
+}
+
+PixelShader::PixelShader(Graphics& gfx, const std::string& path)
 {
 	DEBUG_INFO(gfx);
 
 	COMptr<ID3DBlob> blob;
-	GFX_THROW_INFO(D3DReadFileToBlob(path.c_str(), &blob));
+	GFX_THROW_INFO(D3DReadFileToBlob(std::wstring{ path.begin(), path.end() }.c_str(), &blob));
 	GFX_THROW_INFO(getDevice(gfx)->CreatePixelShader(blob->GetBufferPointer(),
 		blob->GetBufferSize(), nullptr, &mShader));
 }
@@ -57,4 +77,20 @@ PixelShader::PixelShader(Graphics& gfx, const std::wstring& path)
 void PixelShader::bind(Graphics& gfx) noexcept
 {
 	getContext(gfx)->PSSetShader(mShader.Get(), nullptr, 0);
+}
+
+SharedPtr<PixelShader> PixelShader::resolve(Graphics& gfx, const std::string& path)
+{
+	return BindableCodex::resolve<PixelShader>(gfx, path);
+}
+
+std::string PixelShader::generateUID(const std::string& path)
+{
+	using namespace std::string_literals;
+	return typeid(PixelShader).name() + "#"s + path;
+}
+
+std::string PixelShader::getUID() const noexcept
+{
+	return generateUID(mPath);
 }

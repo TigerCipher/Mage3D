@@ -28,6 +28,10 @@ class Sampler : public Bindable
 public:
 	explicit Sampler(Graphics& gfx);
 	void bind(Graphics &gfx) noexcept override;
+
+	static SharedPtr<Sampler> resolve(Graphics& gfx);
+	static std::string generateUID();
+
 protected:
 	COMptr<ID3D11SamplerState> mSampler;
 };

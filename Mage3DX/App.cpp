@@ -22,6 +22,7 @@
 #include "GDIPlusManager.h"
 #include "Texture.h"
 #include "ImguiManager.h"
+#include "Bindables.h"
 
 
 GDIPlusManager gGdip;
@@ -30,7 +31,8 @@ App::App(const int width, const int height, const char* title) :
 	mDisplay(width, height, title),
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
-	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj")
+	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
+	mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj")
 {
 
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
@@ -110,6 +112,7 @@ void App::runFrame()
 
 
 	mNano.render(mDisplay.getGraphics());
+	mNano2.render(mDisplay.getGraphics());
 	mLight.render(mDisplay.getGraphics());
 
 	// Sometimes captures input data too fast and one press is seen as multiple

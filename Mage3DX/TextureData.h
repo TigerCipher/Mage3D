@@ -26,11 +26,16 @@
 class TextureData : public Bindable
 {
 public:
-	TextureData(Graphics& gfx, const class Texture& surface, uint slot = 0);
+	TextureData(Graphics& gfx, const std::string& path, uint slot = 0);
 	void bind(Graphics &gfx) noexcept override;
+
+	static SharedPtr<TextureData> resolve(Graphics& gfx, const std::string& path, uint slot = 0);
+	static std::string generateUID(const std::string& path, uint slot = 0);
+	std::string getUID() const noexcept override;
 
 protected:
 	COMptr<ID3D11ShaderResourceView> mTextureView;
+	std::string mPath;
 private:
 	uint mSlot;
 };
