@@ -39,7 +39,6 @@ class InfoException : public MageException
 public:
 	InfoException(int line, const char* file, const list<std::string>& msgs) noexcept;
 	const char* what() const noexcept override;
-	const char* getType() const noexcept override;
 	std::string getErrorInfo() const noexcept;
 
 private:

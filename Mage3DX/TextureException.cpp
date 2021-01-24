@@ -23,15 +23,10 @@
 
 const char* TextureException::what() const noexcept
 {
-    //mWhat = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
-    //std::string t = fmt::format("Test {}", 32);
-    std::ostringstream oss;
+    mWhat = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
+    /*std::ostringstream oss;
     oss << MageException::what() << "\n[Info] " << getInfo();
-    mWhat = oss.str();
+    mWhat = oss.str();*/
     return mWhat.c_str();
 }
 
-const char* TextureException::getType() const noexcept
-{
-    return "Mage Texture Exception";
-}

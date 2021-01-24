@@ -22,8 +22,8 @@
 #include "GraphicsException.h"
 #include "3rdParty/dxerr.h"
 
-GraphicsException::GraphicsException(int line, const char* file, HRESULT hr,
-                                           const list<std::string>& msgs) noexcept:
+GraphicsException::GraphicsException(const int line, const char* file, const HRESULT hr,
+                                     const list<std::string>& msgs) noexcept:
         MageException(line, file),
         mResult(hr)
 {
@@ -40,7 +40,7 @@ GraphicsException::GraphicsException(int line, const char* file, HRESULT hr,
 const char* GraphicsException::what() const noexcept
 {
     std::ostringstream oss;
-    oss << getType()
+    /*oss << getType()
         << "\n[Error Code] 0x" << std::hex << std::uppercase << getErrorCode()
         << std::dec << " (" << (unsigned long) getErrorCode() << ")\n"
         << "[Error String] " << getErrorString()
@@ -48,14 +48,16 @@ const char* GraphicsException::what() const noexcept
     if (!mInfo.empty())
         oss << "\n[Error Info]\n" << getErrorInfo() << "\n\n";
     oss << getOrigin();
-    mWhat = oss.str();
+    mWhat = oss.str();*/
+    oss << std::hex << std::uppercase << getErrorCode() << std::dec;
+    auto hex = oss.str();
+    mWhat = fmt::format("{}\n[Error Code] 0x{} ({})\n[Error String] {}\n[Description] {}\n", getType(), hex,
+        static_cast<ulong>(getErrorCode()), getErrorString(), getErrorDescription());
+    if (!mInfo.empty())
+        mWhat += fmt::format("\n[Error Info]\n{}\n\n", getErrorInfo());
     return mWhat.c_str();
 }
 
-const char* GraphicsException::getType() const noexcept
-{
-    return "Mage Graphics Exception";
-}
 
 HRESULT GraphicsException::getErrorCode() const noexcept
 {
@@ -64,7 +66,7 @@ HRESULT GraphicsException::getErrorCode() const noexcept
 
 std::string GraphicsException::getErrorString() const noexcept
 {
-    return std::string((char*)DXGetErrorString(mResult));
+    return std::string(const_cast<char*>(DXGetErrorString(mResult)));
 }
 
 std::string GraphicsException::getErrorDescription() const noexcept
@@ -77,10 +79,4 @@ std::string GraphicsException::getErrorDescription() const noexcept
 std::string GraphicsException::getErrorInfo() const noexcept
 {
     return mInfo;
-}
-
-
-const char* GraphicsDeviceRemovedException::getType() const noexcept
-{
-    return "Mage Graphics Device Removed Exception - DXGI_ERROR_DEVICE_REMOVED";
 }

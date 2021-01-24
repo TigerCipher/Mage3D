@@ -31,8 +31,8 @@ App::App(const int width, const int height, const char* title) :
 	mDisplay(width, height, title),
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
-	mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj"),
-	mPlane(mDisplay.getGraphics())
+	mPlane(mDisplay.getGraphics()),
+	mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj")
 	//mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
 	//mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
 	//mCube(mDisplay.getGraphics(), 4.0f)

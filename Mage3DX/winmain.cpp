@@ -52,8 +52,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	} catch (const MageException& e)
 	{
 		DestroyWindow(GetActiveWindow());
-		LOG_CRITICAL("Caught a Mage3D exception of type [{}]. Info: {}", e.getType(), e.what());
-		MessageBox(nullptr, e.what(), e.getType(), MB_OK | MB_ICONEXCLAMATION);
+		LOG_CRITICAL("Caught a Mage3D exception of type [{}]. Info:\n{}\n\nStacktrace:\n{}", e.getType(), e.what(), e.getStacktrace());
+		MessageBox(nullptr, e.what(), "Exception Caught!", MB_OK | MB_ICONEXCLAMATION);
 	} catch (const std::exception& e)
 	{
 		DestroyWindow(GetActiveWindow());

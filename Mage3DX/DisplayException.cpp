@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: displayexception.cpp
  * Date File Created: 9/12/2020 at 3:12 PM
  * Author: Matt
@@ -23,16 +23,12 @@
 
 const char* DisplayException::what() const noexcept
 {
-    std::ostringstream oss;
-    oss << getType() << "\n[Error Code] " << getError() << "\n[Description] " << getErrorString() << "\n"
-        << getOrigin();
-    mWhat = oss.str();
-    return mWhat.c_str();
-}
-
-const char* DisplayException::getType() const noexcept
-{
-    return "Mage Display Exception";
+	//std::ostringstream oss;
+	//oss << getType() << "\n[Error Code] " << getError() << "\n[Description] " << getErrorString() << "\n"
+	//    << getOrigin();
+	mWhat = fmt::format("{}\n[Error Code] {}\n[Description] {}\n{}", getType(), getError(), getErrorString(),
+		getOrigin());
+	return mWhat.c_str();
 }
 
 
@@ -40,24 +36,20 @@ const char* DisplayException::getType() const noexcept
 
 std::string DisplayException::getErrorString() const noexcept
 {
-    return ExceptionHelper::translateError(mResult);
+	return ExceptionHelper::translateError(mResult);
 }
 
 
-std::string ExceptionHelper::translateError(HRESULT hr) noexcept
+std::string ExceptionHelper::translateError(const HRESULT hr) noexcept
 {
-    char* msgBuffer = nullptr;
-    const DWORD len = FormatMessage(
-            FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-            nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), reinterpret_cast<LPSTR>(&msgBuffer), 0,
-            nullptr);
-    if(len == 0) return "Unknown";
-    std::string errStr = msgBuffer;
-    LocalFree(msgBuffer);
-    return errStr;
-}
-
-const char* NoGraphicsException::getType() const noexcept
-{
-    return "Mage Display Exception - No graphics";
+	char* msgBuffer = nullptr;
+	const auto len = FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
+		nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		reinterpret_cast<LPSTR>(&msgBuffer), 0,
+		nullptr);
+	if(len == 0) return "Unknown";
+	std::string errStr = msgBuffer;
+	LocalFree(msgBuffer);
+	return errStr;
 }

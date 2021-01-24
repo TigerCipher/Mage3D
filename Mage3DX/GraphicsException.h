@@ -58,7 +58,6 @@ public:
 	GraphicsException(int line, const char* file, HRESULT hr, const list<std::string>& msgs = { }) noexcept;
 
 	const char* what() const noexcept override;
-	const char* getType() const noexcept override;
 	HRESULT getErrorCode() const noexcept;
 	std::string getErrorString() const noexcept;
 	std::string getErrorDescription() const noexcept;
@@ -72,10 +71,9 @@ private:
 class GraphicsDeviceRemovedException : public GraphicsException
 {
 public:
-	GraphicsDeviceRemovedException(int line, const char* file, HRESULT hr, const list<std::string>& msgs) noexcept:
+	GraphicsDeviceRemovedException(const int line, const char* file, const HRESULT hr, const list<std::string>& msgs) noexcept:
 		GraphicsException(line, file, hr, msgs) { }
 
-	const char* getType() const noexcept override;
 };
 
 

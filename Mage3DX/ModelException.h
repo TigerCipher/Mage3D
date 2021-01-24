@@ -30,11 +30,10 @@
 class ModelException : public MageException
 {
 public:
-	ModelException(int line, const char* file, std::string info) noexcept :
+	ModelException(const int line, const char* file, std::string info) noexcept :
 		MageException(line, file),
 		mInfo(std::move(info)) {}
 	const char* what() const noexcept override;
-	const char* getType() const noexcept override;
 	const std::string& getInfo() const noexcept { return mInfo; }
 protected:
 private:

@@ -22,7 +22,7 @@
 #include "InfoException.h"
 #include "Util.h"
 
-InfoException::InfoException(int line, const char* file, const list<std::string>& msgs) noexcept:
+InfoException::InfoException(const int line, const char* file, const list<std::string>& msgs) noexcept:
 	MageException(line, file)
 {
 	from_list(mInfo, msgs);
@@ -30,15 +30,11 @@ InfoException::InfoException(int line, const char* file, const list<std::string>
 
 const char* InfoException::what() const noexcept
 {
-	std::ostringstream oss;
+	/*std::ostringstream oss;
 	oss << getType() << "\n[Error Info]\n" << getErrorInfo() << "\n\n" << getOrigin();
-	mWhat = oss.str();
+	mWhat = oss.str();*/
+	mWhat = fmt::format("{}\n[Error Info]\n{}\n\n{}", getType(), getErrorInfo(), getOrigin());
 	return mWhat.c_str();
-}
-
-const char* InfoException::getType() const noexcept
-{
-	return "Mage Info Exception";
 }
 
 std::string InfoException::getErrorInfo() const noexcept

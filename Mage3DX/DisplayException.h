@@ -34,10 +34,9 @@ public:
 class DisplayException : public MageException
 {
 public:
-	DisplayException(int line, const char* file, HRESULT hr) : MageException(line, file),
-		mResult(hr) { }
+	DisplayException(const int line, const char* file, HRESULT hr) : MageException(line, file),
+	                                                                 mResult(hr) { }
 	const char* what() const noexcept override;
-	const char* getType() const noexcept override;
 	inline HRESULT getError() const noexcept { return mResult; }
 	std::string getErrorString() const noexcept;
 private:
@@ -47,7 +46,6 @@ private:
 class NoGraphicsException : public MageException
 {
 public:
-	NoGraphicsException(int line, const char* file) : MageException(line, file) { }
-	const char* getType() const noexcept override;
+	NoGraphicsException(const int line, const char* file) : MageException(line, file) { }
 };
 

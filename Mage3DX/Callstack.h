@@ -42,14 +42,14 @@ public:
 
 	[[nodiscard]] std::string asString() const
 	{
-		return "Stacktrace code is broken";
-		//std::ostringstream oss;
-		//for(const auto & i : mStack)
-		//{
-		//	oss << i.asString() << "\n";
-		//}
-
-		//return oss.str();
+		//return "Stacktrace code is broken";
+		std::ostringstream oss;
+		for(const auto & i : mStack)
+		{
+			oss << i.asString() << "\n";
+		}
+		
+		return oss.str();
 	}
 
 private:

@@ -24,14 +24,9 @@
 
 const char* ModelException::what() const noexcept
 {
-	//mWhat = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
-	std::ostringstream oss;
+	mWhat = fmt::format("{}\n[Info] {}", MageException::what(), getInfo());
+	/*std::ostringstream oss;
 	oss << MageException::what() << "\n[Info] " << getInfo();
-	mWhat = oss.str();
+	mWhat = oss.str();*/
 	return mWhat.c_str();
-}
-
-const char* ModelException::getType() const noexcept
-{
-	return "Mage Model Exception";
 }
