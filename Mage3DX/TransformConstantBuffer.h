@@ -32,13 +32,28 @@ public:
 	TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot = 0);
 	void bind(Graphics& gfx) noexcept override;
 
-private:
+protected:
 	struct Transforms
 	{
 		mat4f model;
 		mat4f mvp;
 	};
+
+	Transforms getTransforms(Graphics& gfx) noexcept;
+
+private:
 	static UniquePtr<VertexConstantBuffer<Transforms> > sVertexBuffer;
 	const IRenderable& mParent;
+};
+
+
+class TransformPixelConstantBuffer : public TransformConstantBuffer
+{
+public:
+	TransformPixelConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slotv = 0, UINT slotp = 0);
+	void bind(Graphics& gfx) noexcept override;
+
+private:
+	static UniquePtr<PixelConstantBuffer<Transforms>> sPixelBuffer;
 };
 

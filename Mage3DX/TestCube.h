@@ -1,6 +1,6 @@
-/*
+﻿/*
  * Mage3DX
- * Copyright (C) 2020 Blue Moon Development. All rights reserved.
+ * Copyright (C) 2021 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -11,47 +11,38 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
- * File Name: App.h
- * Date File Created: 10/1/2020 at 11:38 PM
+ *
+ * File Name: TestCube.h
+ * Date File Created: 1/23/2021 at 10:13 PM
  * Author: Matt
  */
+
+
 #pragma once
-
-#include "Display.h"
-#include "Timer.h"
-
 #include "IRenderable.h"
-#include "Camera.h"
-#include "PointLight.h"
-#include "Model.h"
-#include "TestPlane.h"
-#include "TestCube.h"
 
-class App
+class TestCube : public IRenderable
 {
 public:
-	App(int width, int height, const char* title);
-	virtual ~App();
-	int run();
-	void stop();
+	TestCube(Graphics& gfx, float size);
+	void setPosition(vec3f pos) noexcept;
+	void setRotation(float roll, float pitch, float yaw) noexcept;
+	mat4f getTransformMatrix() const noexcept override;
+	void spawnControlWindow(Graphics& gfx) noexcept;
+protected:
 private:
-	void runFrame();
+	struct MaterialConstant
+	{
+		float specularIntensity = 0.1f;
+		float specularPower = 20.0f;
+		BOOL normalMapEnabled = TRUE;
+		float padding[1];
+	} mMatConst;
 
-	Display mDisplay;
-	Camera mCamera;
-	PointLight mLight;
-
-	Timer mTimer;
-	Timer mPerformanceTimer;
-	bool mRunning;
-	float mGlobalSpeed = 1.0f;
-	Model mNano;
-	Model mNano2;
-	TestPlane mPlane;
-	TestCube mCube;
-	int x = 0, y = 0;
+	vec3f mPos;
+	float mRoll;
+	float mPitch;
+	float mYaw;
 };
-

@@ -25,6 +25,9 @@
 UniquePtr<VertexConstantBuffer<TransformConstantBuffer::Transforms> >
 TransformConstantBuffer::sVertexBuffer;
 
+UniquePtr<PixelConstantBuffer<TransformConstantBuffer::Transforms> >
+TransformPixelConstantBuffer::sPixelBuffer;
+
 TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slot /*= 0*/) :
 	mParent(parent)
 {
@@ -37,12 +40,33 @@ TransformConstantBuffer::TransformConstantBuffer(Graphics& gfx, const IRenderabl
 
 void TransformConstantBuffer::bind(Graphics& gfx) noexcept
 {
-	const auto modelView = mParent.getTransformMatrix() * gfx.getCamera();
-	const Transforms t = {
-		dx::XMMatrixTranspose(modelView),
-		dx::XMMatrixTranspose(modelView * gfx.getProjection())
-	};
-	sVertexBuffer->update(gfx, t);
+	sVertexBuffer->update(gfx, getTransforms(gfx));
 	sVertexBuffer->bind(gfx);
 }
 
+TransformConstantBuffer::Transforms TransformConstantBuffer::getTransforms(Graphics& gfx) noexcept
+{
+	const auto modelView = mParent.getTransformMatrix() * gfx.getCamera();
+	return {
+		transposeMatrix(modelView),
+		transposeMatrix(modelView * gfx.getProjection())
+	};
+}
+
+TransformPixelConstantBuffer::TransformPixelConstantBuffer(Graphics& gfx, const IRenderable& parent, UINT slotv,
+	UINT slotp) : TransformConstantBuffer(gfx, parent, slotv)
+{
+	if(!sPixelBuffer)
+	{
+		sPixelBuffer = createScope<PixelConstantBuffer<Transforms>>(gfx, slotp);
+	}
+}
+
+
+void TransformPixelConstantBuffer::bind(Graphics& gfx) noexcept
+{
+	const auto tf = getTransforms(gfx);
+	TransformConstantBuffer::bind(gfx);
+	sPixelBuffer->update(gfx, tf);
+	sPixelBuffer->bind(gfx);
+}

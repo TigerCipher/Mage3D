@@ -51,7 +51,7 @@ D3D11_INPUT_ELEMENT_DESC Attribute::getDesc() const noexcept(!MAGE_DEBUG)
 	default:
 		LOG_ASSERT(false, "Invalid attribute type");
 		return { "INVALID", 0, DXGI_FORMAT_UNKNOWN,
-				 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
+		         0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 };
 	}
 }
 
@@ -95,4 +95,19 @@ std::string VertexLayout::getCode() const noexcept(!MAGE_DEBUG)
 	}
 
 	return code;
+}
+
+VertexBuffer::VertexBuffer(VertexLayout layout, size_t size) noexcept(!MAGE_DEBUG) :
+	mLayout(std::move(layout))
+{
+	resize(size);
+}
+
+void VertexBuffer::resize(size_t newSize) noexcept
+{
+	const auto s = size();
+	if(s < newSize)
+	{
+		mBuffer.resize(mBuffer.size() + mLayout.size() * (newSize - s));
+	}
 }

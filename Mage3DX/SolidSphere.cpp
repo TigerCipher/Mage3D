@@ -48,7 +48,7 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 			float padding;
 		} colConst;
 
-		addBind(PixelConstantBuffer<ColorConst>::resolve(gfx, colConst));
+		addBind(PixelConstantBuffer<ColorConst>::resolve(gfx, colConst, 1));
 
 		addBind(InputLayout::resolve(gfx, model.vertices.getLayout(), pvsbc));
 		addBind(Topology::resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));

@@ -39,11 +39,14 @@
 
 #define IMGUI_FUNC_COND(funcName) if(ImGui::funcName)
 
+#define IMGUI_FUNC_R(funcName, defaultValue) ImGui::funcName
+
 #else
 #define IMGUI_BEGIN(...) if(false) { if(false) {
 #define IMGUI_END } }
 #define IMGUI_FUNC(...)
 #define IMGUI_FUNC_COND(...) if(false)
+IMGUI_FUNC_R(funcName, defaultValue) defaultValue
 
 #endif
 

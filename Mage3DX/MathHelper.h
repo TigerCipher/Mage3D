@@ -41,6 +41,27 @@ constexpr float PI = 3.14159265f;
 constexpr double PI_D = 3.1415926535897932;
 
 
+// The following constexprs/macros have no real purpose other than personal convenience
+// and potential future compatibility between both OpenGL and DirectX math libraries
+// Stuff will be added here as I find the need/desire for it
+
+const auto storeVector = dx::XMStoreFloat;
+const auto storeVector3 = dx::XMStoreFloat3;
+const auto storeVector2 = dx::XMStoreFloat2;
+const auto loadVector = dx::XMLoadFloat;
+const auto loadVector3 = dx::XMLoadFloat3;
+const auto loadVector2 = dx::XMLoadFloat2;
+
+const auto rollPitchYaw = dx::XMMatrixRotationRollPitchYaw;
+const auto translateMatrix = dx::XMMatrixTranslation;
+const auto scaleMatrix = dx::XMMatrixScaling;
+const auto transposeMatrix = dx::XMMatrixTranspose;
+
+const auto normalizeVector3 = dx::XMVector3Normalize;
+const auto crossVector3 = dx::XMVector3Cross;
+const auto dotVector3 = dx::XMVector3Dot;
+const auto subVector = dx::XMVectorSubtract;
+
 template<typename T>
 constexpr auto pow2(const T& x)
 {

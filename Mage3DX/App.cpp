@@ -32,14 +32,16 @@ App::App(const int width, const int height, const char* title) :
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
 	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
-	mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj")
+	mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
+	mPlane(mDisplay.getGraphics(), 3.0f),
+	mCube(mDisplay.getGraphics(), 4.0f)
 {
-
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),
 		0.5f, 40.0f));
 	mDisplay.toggleCursor(0);
-
+	mPlane.setPosition({ 5, 5, 4 });
+	mCube.setPosition({ -5, 5, 4 });
 }
 
 App::~App()
@@ -113,6 +115,10 @@ void App::runFrame()
 
 	mNano.render(mDisplay.getGraphics());
 	mNano2.render(mDisplay.getGraphics());
+
+	mPlane.render(mDisplay.getGraphics());
+	mCube.render(mDisplay.getGraphics());
+
 	mLight.render(mDisplay.getGraphics());
 
 	if (mDisplay.keyboard.isPressedOnce(VK_ESCAPE))
@@ -151,6 +157,8 @@ void App::runFrame()
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
 	mNano.showImguiWindow("Nanosuit");
+	mPlane.spawnControlWindow(mDisplay.getGraphics());
+	mCube.spawnControlWindow(mDisplay.getGraphics());
 
 	mDisplay.getGraphics().swap();
 }

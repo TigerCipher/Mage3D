@@ -377,10 +377,11 @@ private:
 class VertexBuffer
 {
 public:
-	VertexBuffer(VertexLayout layout) noexcept(!MAGE_DEBUG) : mLayout(std::move(layout)) { }
+	VertexBuffer(VertexLayout layout, size_t size = 0) noexcept(!MAGE_DEBUG);
 
 	[[nodiscard]] const VertexLayout& getLayout() const noexcept { return mLayout; }
 
+	void resize(size_t size) noexcept;
 
 	/***********************************************************************************
 		 *

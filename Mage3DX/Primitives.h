@@ -54,27 +54,25 @@ public:
 		}
 	}
 
-	//void setNormalsFlat() noexcept(!MAGE_DEBUG)
-	//{
-	//	assert(indices.size() % 3 == 0 && indices.size() > 0);
-	//	for (size_t i = 0; i < indices.size(); i += 3)
-	//	{
-	//		auto& v0 = vertices[ indices[ i ] ];
-	//		auto& v1 = vertices[ indices[ i + 1 ] ];
-	//		auto& v2 = vertices[ indices[ i + 2 ] ];
-	//		const auto p0 = dx::XMLoadFloat3(&v0.pos);
-	//		const auto p1 = dx::XMLoadFloat3(&v1.pos);
-	//		const auto p2 = dx::XMLoadFloat3(&v2.pos);
-
-	//		const auto n = dx::XMVector3Normalize(
-	//			dx::XMVector3Cross(dx::XMVectorSubtract(p1, p0),
-	//				dx::XMVectorSubtract(p2, p0)));
-
-	//		dx::XMStoreFloat3(&v0.normal, n);
-	//		dx::XMStoreFloat3(&v1.normal, n);
-	//		dx::XMStoreFloat3(&v2.normal, n);
-	//	}
-	//}
+	void setNormalsFlat() noexcept(!MAGE_DEBUG)
+	{
+		
+		for (size_t i = 0; i < indices.size(); i += 3)
+		{
+			auto v0 = vertices[ indices[ i ] ];
+			auto v1 = vertices[ indices[ i + 1 ] ];
+			auto v2 = vertices[ indices[ i + 2 ] ];
+			const auto p0 = loadVector3(&v0.attribute<POSITION3D>());
+			const auto p1 = loadVector3(&v1.attribute<POSITION3D>());
+			const auto p2 = loadVector3(&v2.attribute<POSITION3D>());
+	
+			const auto n = normalizeVector3(crossVector3(subVector(p1, p0), subVector(p2, p0)));
+	
+			dx::XMStoreFloat3(&v0.attribute<NORMAL>(), n);
+			dx::XMStoreFloat3(&v1.attribute<NORMAL>(), n);
+			dx::XMStoreFloat3(&v2.attribute<NORMAL>(), n);
+		}
+	}
 
 	VertexBuffer vertices;
 	list<ushort> indices;
@@ -197,253 +195,173 @@ public:
 //};
 //
 //
-//class Cube
-//{
-//public:
-//	template<class V>
-//	static IndexedTriangleList<V> make()
-//	{
-//		constexpr float side = 1.0f / 2.0f;
-//
-//		list<vec3f> vertices;
-//		vertices.emplace_back(-side, -side, -side);
-//		vertices.emplace_back(side,  -side, -side);
-//		vertices.emplace_back(-side, side,  -side);
-//		vertices.emplace_back(side,  side,  -side);
-//		vertices.emplace_back(-side, -side, side);
-//		vertices.emplace_back(side,  -side, side);
-//		vertices.emplace_back(-side, side,  side);
-//		vertices.emplace_back(side,  side,  side);
-//
-//		list<V> verts(vertices.size());
-//		for (size_t i = 0; i < vertices.size(); i++)
-//		{
-//			verts[ i ].pos = vertices[ i ];
-//		}
-//		return {
-//		    std::move(verts),
-//			{
-//				0, 2, 1,
-//				2, 3, 1,
-//				1, 3, 5,
-//				3, 7, 5,
-//				2, 6, 3,
-//				3, 6, 7,
-//				4, 5, 7,
-//				4, 7, 6,
-//				0, 4, 2,
-//				2, 4, 6,
-//				0, 1, 4,
-//				1, 5, 4,
-//			}
-//		};
-//	}
-//
-//	template<class V>
-//	static IndexedTriangleList<V> makeSkinned()
-//	{
-//		constexpr float side = 1.0f / 2.0f;
-//		list<V> vertices(14);
-//
-//		vertices[ 0 ].pos = { -side, -side, -side };
-//		vertices[ 0 ].tex = { 2.0f / 3.0f, 0.0f / 4.0f };
-//		vertices[ 1 ].pos = { side, -side, -side };
-//		vertices[ 1 ].tex = { 1.0f / 3.0f, 0.0f / 4.0f };
-//		vertices[ 2 ].pos = { -side, side, -side };
-//		vertices[ 2 ].tex = { 2.0f / 3.0f, 1.0f / 4.0f };
-//		vertices[ 3 ].pos = { side, side, -side };
-//		vertices[ 3 ].tex = { 1.0f / 3.0f, 1.0f / 4.0f };
-//		vertices[ 4 ].pos = { -side, -side, side };
-//		vertices[ 4 ].tex = { 2.0f / 3.0f, 3.0f / 4.0f };
-//		vertices[ 5 ].pos = { side, -side, side };
-//		vertices[ 5 ].tex = { 1.0f / 3.0f, 3.0f / 4.0f };
-//		vertices[ 6 ].pos = { -side, side, side };
-//		vertices[ 6 ].tex = { 2.0f / 3.0f, 2.0f / 4.0f };
-//		vertices[ 7 ].pos = { side, side, side };
-//		vertices[ 7 ].tex = { 1.0f / 3.0f, 2.0f / 4.0f };
-//		vertices[ 8 ].pos = { -side, -side, -side };
-//		vertices[ 8 ].tex = { 2.0f / 3.0f, 4.0f / 4.0f };
-//		vertices[ 9 ].pos = { side, -side, -side };
-//		vertices[ 9 ].tex = { 1.0f / 3.0f, 4.0f / 4.0f };
-//		vertices[ 10 ].pos = { -side, -side, -side };
-//		vertices[ 10 ].tex = { 3.0f / 3.0f, 1.0f / 4.0f };
-//		vertices[ 11 ].pos = { -side, -side, side };
-//		vertices[ 11 ].tex = { 3.0f / 3.0f, 2.0f / 4.0f };
-//		vertices[ 12 ].pos = { side, -side, -side };
-//		vertices[ 12 ].tex = { 0.0f / 3.0f, 1.0f / 4.0f };
-//		vertices[ 13 ].pos = { side, -side, side };
-//		vertices[ 13 ].tex = { 0.0f / 3.0f, 2.0f / 4.0f };
-//
-//		return {
-//		    std::move(vertices),
-//			{
-//				0, 2, 1,    2, 3, 1,
-//				4, 8, 5,    5, 8, 9,
-//				2, 6, 3,    3, 6, 7,
-//				4, 5, 7,    4, 7, 6,
-//				2, 10, 11,  2, 11, 6,
-//				12, 3, 7,   12, 7, 13
-//			}
-//		};
-//	}
-//
-//	template<class V>
-//	static IndexedTriangleList<V> makeIndependent()
-//	{
-//		constexpr float side = 1.0f / 2.0f;
-//
-//		std::vector<V> vertices(24);
-//
-//		// Near
-//		vertices[ 0 ].pos = { -side,-side,-side };
-//		vertices[ 1 ].pos = { side,-side,-side };
-//		vertices[ 2 ].pos = { -side,side,-side };
-//		vertices[ 3 ].pos = { side,side,-side };
-//
-//		// Far
-//		vertices[ 4 ].pos = { -side,-side,side };
-//		vertices[ 5 ].pos = { side,-side,side };
-//		vertices[ 6 ].pos = { -side,side,side };
-//		vertices[ 7 ].pos = { side,side,side };
-//
-//		// Left
-//		vertices[ 8 ].pos = { -side,-side,-side };
-//		vertices[ 9 ].pos = { -side,side,-side };
-//		vertices[ 10 ].pos = { -side,-side,side };
-//		vertices[ 11 ].pos = { -side,side,side };
-//
-//		// Right
-//		vertices[ 12 ].pos = { side,-side,-side };
-//		vertices[ 13 ].pos = { side,side,-side };
-//		vertices[ 14 ].pos = { side,-side,side };
-//		vertices[ 15 ].pos = { side,side,side };
-//
-//		// Bottom
-//		vertices[ 16 ].pos = { -side,-side,-side };
-//		vertices[ 17 ].pos = { side,-side,-side };
-//		vertices[ 18 ].pos = { -side,-side,side };
-//		vertices[ 19 ].pos = { side,-side,side };
-//
-//		// Top
-//		vertices[ 20 ].pos = { -side,side,-side };
-//		vertices[ 21 ].pos = { side,side,-side };
-//		vertices[ 22 ].pos = { -side,side,side };
-//		vertices[ 23 ].pos = { side,side,side };
-//
-//		return{
-//		    std::move(vertices),
-//			{
-//				0, 2, 1,        2, 3, 1,
-//				4, 5, 7,        4, 7, 6,
-//				8, 10, 9,       10, 11, 9,
-//				12, 13, 15,     12, 15, 14,
-//				16, 17, 18,     18, 17, 19,
-//				20, 23, 21,     20, 22, 23
-//			}
-//		};
-//	}
-//
-//	template <class V>
-//	static IndexedTriangleList<V> makeIndependentTextured()
-//	{
-//		auto initial = makeIndependent<V>();
-//
-//		initial.vertices[0].texCoords = { 0.0f,0.0f };
-//		initial.vertices[1].texCoords = { 1.0f,0.0f };
-//		initial.vertices[2].texCoords = { 0.0f,1.0f };
-//		initial.vertices[3].texCoords = { 1.0f,1.0f };
-//		initial.vertices[4].texCoords = { 0.0f,0.0f };
-//		initial.vertices[5].texCoords = { 1.0f,0.0f };
-//		initial.vertices[6].texCoords = { 0.0f,1.0f };
-//		initial.vertices[7].texCoords = { 1.0f,1.0f };
-//		initial.vertices[8].texCoords = { 0.0f,0.0f };
-//		initial.vertices[9].texCoords = { 1.0f,0.0f };
-//		initial.vertices[10].texCoords = { 0.0f,1.0f };
-//		initial.vertices[11].texCoords = { 1.0f,1.0f };
-//		initial.vertices[12].texCoords = { 0.0f,0.0f };
-//		initial.vertices[13].texCoords = { 1.0f,0.0f };
-//		initial.vertices[14].texCoords = { 0.0f,1.0f };
-//		initial.vertices[15].texCoords = { 1.0f,1.0f };
-//		initial.vertices[16].texCoords = { 0.0f,0.0f };
-//		initial.vertices[17].texCoords = { 1.0f,0.0f };
-//		initial.vertices[18].texCoords = { 0.0f,1.0f };
-//		initial.vertices[19].texCoords = { 1.0f,1.0f };
-//		initial.vertices[20].texCoords = { 0.0f,0.0f };
-//		initial.vertices[21].texCoords = { 1.0f,0.0f };
-//		initial.vertices[22].texCoords = { 0.0f,1.0f };
-//		initial.vertices[23].texCoords = { 1.0f,1.0f };
-//
-//		return initial;
-//	}
-//};
-//
-//class Plane
-//{
-//public:
-//	template<class V>
-//	static IndexedTriangleList<V> makeTesselated(int divisionsX, int divisionsY)
-//	{
-//		assert(divisionsX >= 1);
-//		assert(divisionsY >= 1);
-//
-//		constexpr float width = 2.0f;
-//		constexpr float height = 2.0f;
-//		const int numVertsX = divisionsX + 1;
-//		const int numVertsY = divisionsY + 1;
-//		list<V> vertices(numVertsX * numVertsY);
-//
-//		{
-//			const float sideX = width / 2.0f;
-//			const float sideY = height / 2.0f;
-//			const float divisionSizeX = width / float(divisionsX);
-//			const float divisionSizeY = height / float(divisionsY);
-//			const auto bottomLeft = dx::XMVectorSet(-sideX, -sideY, 0.0f, 0.0f);
-//
-//			for (int y = 0, i = 0; y < numVertsY; y++)
-//			{
-//				const float yPos = float(y) * divisionSizeY;
-//				for (int x = 0; x < numVertsX; x++, i++)
-//				{
-//					const auto v = dx::XMVectorAdd(bottomLeft,
-//						dx::XMVectorSet(float(x) * divisionSizeX, yPos, 0.0f, 0.0f));
-//					dx::XMStoreFloat3(&vertices[ i ].pos, v);
-//				}
-//			}
-//		}
-//
-//		list<ushort> indices;
-//		indices.reserve(pow2(divisionsX * divisionsY) * 6);
-//		{
-//			const auto vxy2i = [ numVertsX ] (size_t x, size_t y) {
-//					return (ushort) (y * numVertsX + x);
-//				};
-//			for (size_t y = 0; y < divisionsY; y++)
-//			{
-//				for (size_t x = 0; x < divisionsX; x++)
-//				{
-//					const std::array<ushort, 4> indexArray = {
-//						vxy2i(x,     y), vxy2i(x + 1, y), vxy2i(x, y + 1),
-//						vxy2i(x + 1, y + 1)
-//					};
-//					indices.push_back(indexArray[ 0 ]);
-//					indices.push_back(indexArray[ 2 ]);
-//					indices.push_back(indexArray[ 1 ]);
-//					indices.push_back(indexArray[ 1 ]);
-//					indices.push_back(indexArray[ 2 ]);
-//					indices.push_back(indexArray[ 3 ]);
-//				}
-//			}
-//		}
-//
-//		return { std::move(vertices), std::move(indices) };
-//	}
-//
-//	template<class V>
-//	static IndexedTriangleList<V> make()
-//	{
-//		return makeTesselated<V>(1, 1);
-//	}
-//};
+class Cube
+{
+public:
+	static IndexedTriangleList makeIndependent(VertexLayout layout)
+	{
+		constexpr auto side = 1.0f / 2.0f;
+
+		VertexBuffer vertices(std::move(layout), 24);
+		
+		// Near
+		vertices[ 0 ].attribute<POSITION3D>() = { -side,-side,-side };
+		vertices[ 1 ].attribute<POSITION3D>() = { side,-side,-side };
+		vertices[ 2 ].attribute<POSITION3D>() = { -side,side,-side };
+		vertices[ 3 ].attribute<POSITION3D>() = { side,side,-side };
+
+		// Far
+		vertices[ 4 ].attribute<POSITION3D>() = { -side,-side,side };
+		vertices[ 5 ].attribute<POSITION3D>() = { side,-side,side };
+		vertices[ 6 ].attribute<POSITION3D>() = { -side,side,side };
+		vertices[ 7 ].attribute<POSITION3D>() = { side,side,side };
+
+		// Left
+		vertices[ 8 ].attribute<POSITION3D>() = { -side,-side,-side };
+		vertices[ 9 ].attribute<POSITION3D>() = { -side,side,-side };
+		vertices[ 10 ].attribute<POSITION3D>() = { -side,-side,side };
+		vertices[ 11 ].attribute<POSITION3D>() = { -side,side,side };
+
+		// Right
+		vertices[ 12 ].attribute<POSITION3D>() = { side,-side,-side };
+		vertices[ 13 ].attribute<POSITION3D>() = { side,side,-side };
+		vertices[ 14 ].attribute<POSITION3D>() = { side,-side,side };
+		vertices[ 15 ].attribute<POSITION3D>() = { side,side,side };
+
+		// Bottom
+		vertices[ 16 ].attribute<POSITION3D>() = { -side,-side,-side };
+		vertices[ 17 ].attribute<POSITION3D>() = { side,-side,-side };
+		vertices[ 18 ].attribute<POSITION3D>() = { -side,-side,side };
+		vertices[ 19 ].attribute<POSITION3D>() = { side,-side,side };
+
+		// Top
+		vertices[ 20 ].attribute<POSITION3D>() = { -side,side,-side };
+		vertices[ 21 ].attribute<POSITION3D>() = { side,side,-side };
+		vertices[ 22 ].attribute<POSITION3D>() = { -side,side,side };
+		vertices[ 23 ].attribute<POSITION3D>() = { side,side,side };
+
+		return{
+		    std::move(vertices),
+			{
+				0, 2, 1,        2, 3, 1,
+				4, 5, 7,        4, 7, 6,
+				8, 10, 9,       10, 11, 9,
+				12, 13, 15,     12, 15, 14,
+				16, 17, 18,     18, 17, 19,
+				20, 23, 21,     20, 22, 23
+			}
+		};
+	}
+
+	static IndexedTriangleList makeIndependentTextured()
+	{
+		auto initial = makeIndependent(std::move(VertexLayout{}
+			.append(POSITION3D)
+			.append(NORMAL)
+			.append(TEXTURE2D)));
+
+		initial.vertices[0].attribute<TEXTURE2D>() = { 0.0f,0.0f };
+		initial.vertices[1].attribute<TEXTURE2D>() = { 1.0f,0.0f };
+		initial.vertices[2].attribute<TEXTURE2D>() = { 0.0f,1.0f };
+		initial.vertices[3].attribute<TEXTURE2D>() = { 1.0f,1.0f };
+		initial.vertices[4].attribute<TEXTURE2D>() = { 0.0f,0.0f };
+		initial.vertices[5].attribute<TEXTURE2D>() = { 1.0f,0.0f };
+		initial.vertices[6].attribute<TEXTURE2D>() = { 0.0f,1.0f };
+		initial.vertices[7].attribute<TEXTURE2D>() = { 1.0f,1.0f };
+		initial.vertices[8].attribute<TEXTURE2D>() = { 0.0f,0.0f };
+		initial.vertices[9].attribute<TEXTURE2D>() = { 1.0f,0.0f };
+		initial.vertices[10].attribute<TEXTURE2D>() = { 0.0f,1.0f };
+		initial.vertices[11].attribute<TEXTURE2D>() = { 1.0f,1.0f };
+		initial.vertices[12].attribute<TEXTURE2D>() = { 0.0f,0.0f };
+		initial.vertices[13].attribute<TEXTURE2D>() = { 1.0f,0.0f };
+		initial.vertices[14].attribute<TEXTURE2D>() = { 0.0f,1.0f };
+		initial.vertices[15].attribute<TEXTURE2D>() = { 1.0f,1.0f };
+		initial.vertices[16].attribute<TEXTURE2D>() = { 0.0f,0.0f };
+		initial.vertices[17].attribute<TEXTURE2D>() = { 1.0f,0.0f };
+		initial.vertices[18].attribute<TEXTURE2D>() = { 0.0f,1.0f };
+		initial.vertices[19].attribute<TEXTURE2D>() = { 1.0f,1.0f };
+		initial.vertices[20].attribute<TEXTURE2D>() = { 0.0f,0.0f };
+		initial.vertices[21].attribute<TEXTURE2D>() = { 1.0f,0.0f };
+		initial.vertices[22].attribute<TEXTURE2D>() = { 0.0f,1.0f };
+		initial.vertices[23].attribute<TEXTURE2D>() = { 1.0f,1.0f };
+
+		return initial;
+	}
+};
+
+class Plane
+{
+public:
+	static IndexedTriangleList makeTesselated(VertexLayout layout, int divisionsX, int divisionsY)
+	{
+		assert(divisionsX >= 1);
+		assert(divisionsY >= 1);
+
+		constexpr float width = 1.0f;
+		constexpr float height = 1.0f;
+		const int numVertsX = divisionsX + 1;
+		const int numVertsY = divisionsY + 1;
+
+		VertexBuffer vb(std::move(layout));
+		
+		{
+			const auto sideX = width / 2.0f;
+			const auto sideY = height / 2.0f;
+			const auto divisionSizeX = width / static_cast<float>(divisionsX);
+			const auto divisionSizeXTan = 1.0f / static_cast<float>(divisionsX);
+			const auto divisionSizeY = height / static_cast<float>(divisionsY);
+			const auto divisionSizeYTan = 1.0f / static_cast<float>(divisionsY);
+			const auto bottomLeft = dx::XMVectorSet(-sideX, -sideY, 0.0f, 0.0f);
+
+			for (int y = 0, i = 0; y < numVertsY; y++)
+			{
+				const auto yPos = static_cast<float>(y) * divisionSizeY - 1.0f;
+				const auto yPosTan = 1.0f - static_cast<float>(y) * divisionSizeYTan;
+				for (int x = 0; x < numVertsX; x++, i++)
+				{
+					const auto xPos = static_cast<float>(x) * divisionSizeX - 1.0f;
+					const auto xPosTan = static_cast<float>(x) * divisionSizeXTan;
+
+					vb.emplaceBack(vec3f(xPos, yPos, 0.0f), vec3f(0, 0, -1), vec2f(xPosTan, yPosTan));
+					
+				}
+			}
+		}
+
+		list<ushort> indices;
+		indices.reserve(pow2(divisionsX * divisionsY) * 6);
+		{
+			const auto vxy2i = [ numVertsX ] (size_t x, size_t y) {
+					return static_cast<ushort>(y * numVertsX + x);
+				};
+			for (size_t y = 0; y < divisionsY; y++)
+			{
+				for (size_t x = 0; x < divisionsX; x++)
+				{
+					const std::array<ushort, 4> indexArray = {
+						vxy2i(x,     y), vxy2i(x + 1, y), vxy2i(x, y + 1),
+						vxy2i(x + 1, y + 1)
+					};
+					indices.push_back(indexArray[ 0 ]);
+					indices.push_back(indexArray[ 2 ]);
+					indices.push_back(indexArray[ 1 ]);
+					indices.push_back(indexArray[ 1 ]);
+					indices.push_back(indexArray[ 2 ]);
+					indices.push_back(indexArray[ 3 ]);
+				}
+			}
+		}
+
+		return { std::move(vb), std::move(indices) };
+	}
+
+	static IndexedTriangleList make()
+	{
+		VertexLayout layout;
+		layout.append(POSITION3D).append(NORMAL).append(TEXTURE2D);
+		return makeTesselated(std::move(layout), 1, 1);
+	}
+};
 //
 //class Prism
 //{

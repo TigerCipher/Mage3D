@@ -272,6 +272,8 @@
     <ClCompile Include="Sampler.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="SolidSphere.cpp" />
+    <ClCompile Include="TestCube.cpp" />
+    <ClCompile Include="TestPlane.cpp" />
     <ClCompile Include="TextureData.cpp" />
     <ClCompile Include="TextureException.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -332,6 +334,8 @@
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SolidSphere.h" />
     <ClInclude Include="StacktraceException.h" />
+    <ClInclude Include="TestCube.h" />
+    <ClInclude Include="TestPlane.h" />
     <ClInclude Include="TextureData.h" />
     <ClInclude Include="TextureException.h" />
     <ClInclude Include="Texture.h" />
@@ -384,6 +388,12 @@
     <FxCompile Include="assets\shaders\blendedPhongVS.hlsl" />
     <FxCompile Include="assets\shaders\indexedPhongPS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\phongNormalPS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="assets\shaders\phongPS.hlsl">
