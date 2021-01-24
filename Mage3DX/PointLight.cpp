@@ -27,7 +27,7 @@ PointLight::PointLight(Graphics& gfx, float radius) :
 	mBuffer(gfx)
 {
 	mCbuf = {
-		{ 0, 0, 0 },
+		{ 2.0f, 0, -5.0f },
 		{ 0.05f, 0.05f, 0.05f },
 		{ 1.0f, 1.0f, 1.0f },
 		1.0f,

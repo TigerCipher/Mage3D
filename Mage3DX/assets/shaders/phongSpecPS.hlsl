@@ -32,15 +32,35 @@ cbuffer LightCBuf
 	float attQuad;
 };
 
+cbuffer ModelCbuf
+{
+	bool normalMapEnabled;
+	float padding[3];
+}
+
 Texture2D tex;
 Texture2D spec;
+Texture2D norm;
 
 SamplerState smpl;
 
 static const float specPowerFactor = 13.0f;
 
-float4 main(float3 viewPos : Position, float3 n : Normal, float2 tc : TexCoords) : SV_Target
+float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords) : SV_Target
 {
+
+	if(normalMapEnabled)
+	{
+		const float3x3 tanToView = float3x3(normalize(tan), normalize(bitan), normalize(n));
+		const float3 normalSample = norm.Sample(smpl, tc);
+		n.x = normalSample.x * 2.0f - 1.0f;
+		n.y = -normalSample.y * 2.0f + 1.0f;
+		n.z = normalSample.z * 2.0f - 1.0f;
+
+		n = mul(n, tanToView);
+	}
+
+	
 	// fragment to light vector data
 	const float3 vToL = lightPos - viewPos;
 	const float distToL = length(vToL);

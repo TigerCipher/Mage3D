@@ -31,6 +31,8 @@ size_t Attribute::sizeOf(const AttributeType type) noexcept(!MAGE_DEBUG)
 	case COLOR3F: return sizeof(Map<COLOR3F>::sysType);
 	case COLOR4F: return sizeof(Map<COLOR4F>::sysType);
 	case COLORARGB: return sizeof(Map<COLORARGB>::sysType);
+	case TANGENT: return sizeof(Map<TANGENT>::sysType);
+	case BITANGENT: return sizeof(Map<BITANGENT>::sysType);
 	default:
 		LOG_ASSERT(false, "Invalid attribute type");
 		return 0;
@@ -48,6 +50,8 @@ D3D11_INPUT_ELEMENT_DESC Attribute::getDesc() const noexcept(!MAGE_DEBUG)
 	case COLOR3F: return getDesc<COLOR3F>(getOffset());
 	case COLOR4F: return getDesc<COLOR4F>(getOffset());
 	case COLORARGB: return getDesc<COLORARGB>(getOffset());
+	case TANGENT: return getDesc<TANGENT>(getOffset());
+	case BITANGENT: return getDesc<BITANGENT>(getOffset());
 	default:
 		LOG_ASSERT(false, "Invalid attribute type");
 		return { "INVALID", 0, DXGI_FORMAT_UNKNOWN,

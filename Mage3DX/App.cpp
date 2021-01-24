@@ -31,17 +31,18 @@ App::App(const int width, const int height, const char* title) :
 	mDisplay(width, height, title),
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
-	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
-	mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
-	mPlane(mDisplay.getGraphics(), 3.0f),
-	mCube(mDisplay.getGraphics(), 4.0f)
+	mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj"),
+	mPlane(mDisplay.getGraphics(), 2.0f)
+	//mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
+	//mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
+	//mCube(mDisplay.getGraphics(), 4.0f)
 {
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),
 		0.5f, 40.0f));
 	mDisplay.toggleCursor(0);
-	mPlane.setPosition({ 5, 5, 4 });
-	mCube.setPosition({ -5, 5, 4 });
+
+	mPlane.setPosition({ 4.0f, 1.0f, 0 });
 }
 
 App::~App()
@@ -113,11 +114,9 @@ void App::runFrame()
 	mLight.bind(mDisplay.getGraphics(), mCamera.getViewMatrix());
 
 
-	mNano.render(mDisplay.getGraphics());
-	mNano2.render(mDisplay.getGraphics());
-
+	mWall.render(mDisplay.getGraphics());
+	//mNano.render(mDisplay.getGraphics());
 	mPlane.render(mDisplay.getGraphics());
-	mCube.render(mDisplay.getGraphics());
 
 	mLight.render(mDisplay.getGraphics());
 
@@ -156,9 +155,9 @@ void App::runFrame()
 
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
-	mNano.showImguiWindow("Nanosuit");
+	mWall.showImguiWindow("Brickwall");
 	mPlane.spawnControlWindow(mDisplay.getGraphics());
-	mCube.spawnControlWindow(mDisplay.getGraphics());
+	//mNano.showImguiWindow("Nanosuit");
 
 	mDisplay.getGraphics().swap();
 }

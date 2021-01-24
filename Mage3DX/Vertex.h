@@ -44,7 +44,9 @@ enum AttributeType
 	NORMAL,
 	COLOR3F,
 	COLOR4F,
-	COLORARGB
+	COLORARGB,
+	TANGENT,
+	BITANGENT
 };
 
 // Compile time look up table for the attribute type D3D semantics/formats
@@ -105,6 +107,22 @@ template<> struct Map<COLORARGB>
 	static constexpr const char* SEMANTIC = "Color";
 	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R8G8B8A8_UNORM;
 	using sysType = ColorARGB;
+};
+
+template<> struct Map<TANGENT>
+{
+	static constexpr const char* CODE = "Nt";
+	static constexpr const char* SEMANTIC = "Tangent";
+	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32_FLOAT;
+	using sysType = vec3f;
+};
+
+template<> struct Map<BITANGENT>
+{
+	static constexpr const char* CODE = "Nb";
+	static constexpr const char* SEMANTIC = "Bitangent";
+	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32_FLOAT;
+	using sysType = vec3f;
 };
 
 
@@ -319,6 +337,12 @@ public:
 			break;
 		case COLORARGB:
 			setAttribute<COLORARGB>(attrib, std::forward<T>(val));
+			break;
+		case TANGENT:
+			setAttribute<TANGENT>(attrib, std::forward<T>(val));
+			break;
+		case BITANGENT:
+			setAttribute<BITANGENT>(attrib, std::forward<T>(val));
 			break;
 		default:
 			LOG_ASSERT(false, "Bad attribute type");

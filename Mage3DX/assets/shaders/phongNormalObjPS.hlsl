@@ -14,8 +14,8 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: phongNormalPS.hlsl
- * Date File Created: 1/23/2021 at 8:04 PM
+ * File Name: phongNormalObjPS.hlsl
+ * Date File Created: 1/24/2021 at 12:35 AM
  * Author: Matt
  */
 
@@ -53,39 +53,38 @@ Texture2D norm : register(t2);
 
 SamplerState smpl;
 
-float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords) : SV_Target
+float4 main(float3 viewPos : Position, float3 n : Normal, float2 tc : TexCoords) : SV_Target
 {
 
 
 	if (normalMapEnabled)
 	{
-		const float3x3 tanToView = float3x3(normalize(tan), normalize(bitan), normalize(n));
 		const float3 normalSample = norm.Sample(smpl, tc);
 		n.x = normalSample.x * 2.0f - 1.0f;
 		n.y = -normalSample.y * 2.0f + 1.0f;
-		n.z = normalSample.z * 2.0f - 1.0f;
+		n.z = -normalSample.z * 2.0f + 1.0f;
 
-		n = mul(n, tanToView);
+		n = mul(n, (float3x3) model);
 	}
-	
-	// fragment to light vector data
-	const float3 vToL = lightPos - viewPos;
-	const float distToL = length(vToL);
-	const float3 dirToL = vToL / distToL;
 
-	// Attenuation
-	const float att = 1.0f / (attConst + attLin * distToL + attQuad * (distToL * distToL));
+// fragment to light vector data
+const float3 vToL = lightPos - viewPos;
+const float distToL = length(vToL);
+const float3 dirToL = vToL / distToL;
 
-	// diffuse intensity
-	const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, n));
+// Attenuation
+const float att = 1.0f / (attConst + attLin * distToL + attQuad * (distToL * distToL));
 
-	// Light reflection vectors
-	const float3 w = n * dot(vToL, n);
-	const float3 r = w * 2.0f - vToL;
+// diffuse intensity
+const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, n));
 
-	// Specular intensity
-	const float3 spec = att * (diffuseColor * diffuseIntensity) * specularIntensity
-		* pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
+// Light reflection vectors
+const float3 w = n * dot(vToL, n);
+const float3 r = w * 2.0f - vToL;
 
-	return float4(saturate((diffuse + ambient) * tex.Sample(smpl, tc).rgb + spec), 1.0f);
+// Specular intensity
+const float3 spec = att * (diffuseColor * diffuseIntensity) * specularIntensity
+	* pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
+
+return float4(saturate((diffuse + ambient) * tex.Sample(smpl, tc).rgb + spec), 1.0f);
 }

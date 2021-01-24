@@ -71,6 +71,8 @@ public:
 
 	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
 
+	void setRootTransform(mat4f tf) const noexcept;
+
 	void showImguiWindow(const char* windowName) const noexcept;
 
 

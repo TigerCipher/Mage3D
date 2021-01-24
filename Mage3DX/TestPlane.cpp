@@ -37,7 +37,7 @@ TestPlane::TestPlane(Graphics& gfx, const float size)
 	auto* vsb = vs->getBytecode();
 	addBind(std::move(vs));
 
-	addBind(PixelShader::resolve(gfx, "shaders\\phongNormalPS.cso"));
+	addBind(PixelShader::resolve(gfx, "shaders\\phongNormalObjPS.cso"));
 
 	
 

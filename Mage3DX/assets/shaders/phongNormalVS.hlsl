@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Mage3DX
  * Copyright (C) 2021 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
@@ -14,36 +14,35 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: TestPlane.h
- * Date File Created: 1/23/2021 at 5:52 PM
+ * File Name: phongNormalVS.hlsl
+ * Date File Created: 1/23/2021 at 11:54 PM
  * Author: Matt
  */
-#pragma once
 
-#include "IRenderable.h"
-
-class TestPlane : public IRenderable
+cbuffer Cbuf
 {
-public:
-	TestPlane(Graphics& gfx, float size);
-	void setPosition(vec3f pos) noexcept;
-	void setRotation(float roll, float pitch, float yaw) noexcept;
-	mat4f getTransformMatrix() const noexcept override;
+	matrix modelView;
+	matrix mvp;
+}
 
-	void spawnControlWindow(Graphics& gfx) noexcept;
-protected:
-private:
-
-	struct MaterialConstant
-	{
-		float specularIntensity = 0.18f;
-		float specularPower = 18.0f;
-		BOOL normalMapEnabled = TRUE;
-		float padding[1];
-	} mMatConst;
-	
-	vec3f mPos = { 1, 1, 1 };
-	float mRoll = 0;
-	float mPitch = 0;
-	float mYaw = 0;
+struct VSOut
+{
+	float3 viewPos : Position;
+	float3 normal : Normal;
+	float3 tan : Tangent;
+	float3 bitan : Bitangent;
+	float2 tc : TexCoords;
+	float4 pos : SV_Position;
 };
+
+VSOut main(float3 pos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords)
+{
+	VSOut vso;
+	vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
+	vso.normal = mul(n, (float3x3) modelView);
+	vso.tan = mul(tan, (float3x3) modelView);
+	vso.bitan = mul(bitan, (float3x3) modelView);
+	vso.pos = mul(float4(pos, 1.0f), mvp);
+	vso.tc = tc;
+	return vso;
+}

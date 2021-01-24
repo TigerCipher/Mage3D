@@ -158,7 +158,7 @@ Model::Model(Graphics& gfx, const std::string& fileName) :
 	Assimp::Importer imp;
 
 	const aiScene* scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices
-		| aiProcess_ConvertToLeftHanded | aiProcess_GenNormals);
+		| aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace);
 
 	if(!scene)
 	{
@@ -206,13 +206,16 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	bool hasSpecMap = false;
 	float shininess = 35.0f;
 
-	VertexBuffer vData(std::move(VertexLayout{ }.append(POSITION3D).append(NORMAL).append(TEXTURE2D)));
+	VertexBuffer vData(std::move(VertexLayout{ }.append(POSITION3D).append(NORMAL)
+		.append(TANGENT).append(BITANGENT).append(TEXTURE2D)));
 
 	for (uint i = 0; i < mesh.mNumVertices; i++)
 	{
 		vData.emplaceBack(
 			*reinterpret_cast<vec3f*>(&mesh.mVertices[i]),
 			*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
+			*reinterpret_cast<vec3f*>(&mesh.mTangents[i]),
+			*reinterpret_cast<vec3f*>(&mesh.mBitangents[i]),
 			*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
 			);
 	}
@@ -231,8 +234,8 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 	list<SharedPtr<Bindable> > binds;
 
-		using namespace std::string_literals;
-		const auto basePath = "assets\\textures\\"s;
+	using namespace std::string_literals;
+	const auto basePath = "assets\\textures\\"s;
 
 	if(mesh.mMaterialIndex >= 0)
 	{
@@ -252,15 +255,20 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 			material.Get(AI_MATKEY_SHININESS, shininess);
 		}
 
+		if(material.GetTexture(aiTextureType_NORMALS, 0, &textureFile) == aiReturn_SUCCESS)
+		{
+			binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str(), 2));
+		}
+
 		binds.push_back(Sampler::resolve(gfx));
 	}
 
 	auto meshTag = basePath + "%" + mesh.mName.C_Str();
-	
+
 	binds.push_back(VertexBufferBindable::resolve(gfx, meshTag, vData));
 	binds.push_back(IndexBuffer::resolve(gfx, meshTag, indices));
 
-	auto pvs = VertexShader::resolve(gfx, "shaders\\phongVS.cso");
+	auto pvs = VertexShader::resolve(gfx, "shaders\\phongNormalVS.cso");
 	auto* pvsbc = pvs->getBytecode();
 	binds.push_back(std::move(pvs));
 
@@ -269,16 +277,22 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	if(hasSpecMap)
 	{
 		binds.push_back(PixelShader::resolve(gfx, "shaders\\phongSpecPS.cso"));
+		struct MaterialConst
+		{
+			BOOL normalMapEnabled = TRUE;
+			float padding[3];
+		} matConst;
+		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
 	}
 	else
 	{
-		binds.push_back(PixelShader::resolve(gfx, "shaders\\phongPS.cso"));
+		binds.push_back(PixelShader::resolve(gfx, "shaders\\phongNormalPS.cso"));
 		struct MaterialConst
 		{
-			float specIntensity = 1.6f;
-			float specPower;
-
-			float padding[2];
+			float specIntensity = 0.18f;
+			float specPower = 20.0f;
+			BOOL normalMapEnabled = TRUE;
+			float padding[1];
 		} matConst;
 		matConst.specPower = shininess;
 
@@ -296,6 +310,11 @@ void Model::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
 		node->setAppliedTransform(mWindow->getTransform());
 	}
 	mRoot->render(gfx, dx::XMMatrixIdentity());
+}
+
+void Model::setRootTransform(const mat4f tf) const noexcept
+{
+	mRoot->setAppliedTransform(tf);
 }
 
 void Model::showImguiWindow(const char* windowName) const noexcept
