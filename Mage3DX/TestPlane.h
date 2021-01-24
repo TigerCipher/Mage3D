@@ -25,7 +25,7 @@
 class TestPlane : public IRenderable
 {
 public:
-	TestPlane(Graphics& gfx, float size);
+	TestPlane(Graphics& gfx, float size = 1.0f);
 	void setPosition(vec3f pos) noexcept;
 	void setRotation(float roll, float pitch, float yaw) noexcept;
 	mat4f getTransformMatrix() const noexcept override;

@@ -32,7 +32,7 @@ App::App(const int width, const int height, const char* title) :
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
 	mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj"),
-	mPlane(mDisplay.getGraphics(), 2.0f)
+	mPlane(mDisplay.getGraphics())
 	//mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
 	//mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
 	//mCube(mDisplay.getGraphics(), 4.0f)
@@ -42,7 +42,7 @@ App::App(const int width, const int height, const char* title) :
 		0.5f, 40.0f));
 	mDisplay.toggleCursor(0);
 
-	mPlane.setPosition({ 4.0f, 1.0f, 0 });
+	mPlane.setPosition({ 4.0f, 0, 0 });
 }
 
 App::~App()
@@ -77,10 +77,10 @@ void calculateFrameStatistics(Timer& timer)
 	static float prntAvgFps = 0;
 	static int prntFrameCount = 0;
 
-	if (ImguiManager::isEnabled())
+	IMGUI_BEGIN("Performance Statistics", nullptr, ImGuiWindowFlags_AlwaysAutoResize)
 	{
 		frameCount++;
-		fps = ImGui::GetIO().Framerate;
+		fps = IMGUI_FUNC_R(GetIO().Framerate, frameCount);
 		avgFps += fps;
 		if (timer.peek() >= 1.0f)
 		{
@@ -90,13 +90,12 @@ void calculateFrameStatistics(Timer& timer)
 			frameCount = 0;
 			timer.markPoint();
 		}
+
+
+		IMGUI_FUNC(Text("Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / fps, fps));
+		IMGUI_FUNC(Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps));
+		IMGUI_FUNC(TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount));
 	}
-
-
-	IMGUI_BEGIN("Performance Statistics", nullptr, ImGuiWindowFlags_AlwaysAutoResize)
-	IMGUI_FUNC(Text("Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / fps, fps));
-	IMGUI_FUNC(Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps));
-	IMGUI_FUNC(TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount));
 	IMGUI_END
 }
 

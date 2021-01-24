@@ -297,8 +297,8 @@ public:
 		assert(divisionsX >= 1);
 		assert(divisionsY >= 1);
 
-		constexpr float width = 1.0f;
-		constexpr float height = 1.0f;
+		constexpr float width = 2.0f;
+		constexpr float height = 2.0f;
 		const int numVertsX = divisionsX + 1;
 		const int numVertsY = divisionsY + 1;
 
@@ -315,11 +315,11 @@ public:
 
 			for (int y = 0, i = 0; y < numVertsY; y++)
 			{
-				const auto yPos = static_cast<float>(y) * divisionSizeY - 1.0f;
+				const auto yPos = static_cast<float>(y) * divisionSizeY - sideY;
 				const auto yPosTan = 1.0f - static_cast<float>(y) * divisionSizeYTan;
 				for (int x = 0; x < numVertsX; x++, i++)
 				{
-					const auto xPos = static_cast<float>(x) * divisionSizeX - 1.0f;
+					const auto xPos = static_cast<float>(x) * divisionSizeX - sideX;
 					const auto xPosTan = static_cast<float>(x) * divisionSizeXTan;
 
 					vb.emplaceBack(vec3f(xPos, yPos, 0.0f), vec3f(0, 0, -1), vec2f(xPosTan, yPosTan));
