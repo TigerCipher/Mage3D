@@ -204,9 +204,33 @@ UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* materials)
 {
 	bool hasSpecMap = false;
-	bool hasNormalMap = false;
-	bool hasDiffuseMap = false;
 	float shininess = 35.0f;
+
+	VertexBuffer vData(std::move(VertexLayout{ }.append(POSITION3D).append(NORMAL)
+		.append(TANGENT).append(BITANGENT).append(TEXTURE2D)));
+
+	for (uint i = 0; i < mesh.mNumVertices; i++)
+	{
+		vData.emplaceBack(
+			*reinterpret_cast<vec3f*>(&mesh.mVertices[i]),
+			*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
+			*reinterpret_cast<vec3f*>(&mesh.mTangents[i]),
+			*reinterpret_cast<vec3f*>(&mesh.mBitangents[i]),
+			*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
+			);
+	}
+
+	list<ushort> indices;
+	indices.reserve(mesh.mNumFaces * 3);
+
+	for(uint i = 0; i < mesh.mNumFaces; i++)
+	{
+		const auto& face = mesh.mFaces[i];
+		assert(face.mNumIndices == 3);
+		indices.push_back(face.mIndices[0]);
+		indices.push_back(face.mIndices[1]);
+		indices.push_back(face.mIndices[2]);
+	}
 
 	list<SharedPtr<Bindable> > binds;
 
@@ -218,11 +242,8 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		const auto& material = *materials[mesh.mMaterialIndex];
 		aiString textureFile;
 
-		if(material.GetTexture(aiTextureType_DIFFUSE, 0, &textureFile) == aiReturn_SUCCESS)
-		{
-			binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str()));
-			hasDiffuseMap = true;
-		}
+		material.GetTexture(aiTextureType_DIFFUSE, 0, &textureFile);
+		binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str()));
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &textureFile) == aiReturn_SUCCESS)
 		{
@@ -237,78 +258,35 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		if(material.GetTexture(aiTextureType_NORMALS, 0, &textureFile) == aiReturn_SUCCESS)
 		{
 			binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str(), 2));
-			hasNormalMap = true;
 		}
 
-		if(hasDiffuseMap || hasSpecMap || hasNormalMap)
-			binds.push_back(Sampler::resolve(gfx));
+		binds.push_back(Sampler::resolve(gfx));
 	}
 
-	const auto meshTag = basePath + "%" + mesh.mName.C_Str();
+	auto meshTag = basePath + "%" + mesh.mName.C_Str();
 
-	VertexBuffer vData(std::move(VertexLayout{ }.append(POSITION3D).append(NORMAL)));
-	std::string vertShader;
-	std::string pixShader;
+	binds.push_back(VertexBufferBindable::resolve(gfx, meshTag, vData));
+	binds.push_back(IndexBuffer::resolve(gfx, meshTag, indices));
 
-	constexpr float scale = 6.0f;
-	
-	if(hasDiffuseMap && hasNormalMap && hasSpecMap)
+	auto pvs = VertexShader::resolve(gfx, "shaders\\phongNormalVS.cso");
+	auto* pvsbc = pvs->getBytecode();
+	binds.push_back(std::move(pvs));
+
+	binds.push_back(InputLayout::resolve(gfx, vData.getLayout(), pvsbc));
+
+	if(hasSpecMap)
 	{
-		
-		 vData = VertexBuffer(std::move(VertexLayout{ }.append(POSITION3D).append(NORMAL)
-			.append(TANGENT).append(BITANGENT).append(TEXTURE2D)));
-
-		for (uint i = 0; i < mesh.mNumVertices; i++)
-		{
-			vData.emplaceBack(
-				vec3f(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
-				*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
-				*reinterpret_cast<vec3f*>(&mesh.mTangents[i]),
-				*reinterpret_cast<vec3f*>(&mesh.mBitangents[i]),
-				*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
-			);
-		}
-
-		vertShader = "shaders\\phongNormalVS.cso";
-		pixShader = "shaders\\phongSpecPS.cso";
-
+		binds.push_back(PixelShader::resolve(gfx, "shaders\\phongSpecPS.cso"));
 		struct MaterialConst
 		{
 			BOOL normalMapEnabled = TRUE;
 			float padding[3];
 		} matConst;
 		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
-		
-	} else if(hasDiffuseMap && hasNormalMap)
+	}
+	else
 	{
-		vData = VertexBuffer(std::move(VertexLayout{ }.append(POSITION3D).append(NORMAL)
-			.append(TANGENT).append(BITANGENT).append(TEXTURE2D)));
-
-		for (uint i = 0; i < mesh.mNumVertices; i++)
-		{
-			vData.emplaceBack(
-				vec3f(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
-				*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
-				*reinterpret_cast<vec3f*>(&mesh.mTangents[i]),
-				*reinterpret_cast<vec3f*>(&mesh.mBitangents[i]),
-				*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
-			);
-		}
-
-		list<ushort> indices;
-		indices.reserve(mesh.mNumFaces * 3);
-
-		for (uint i = 0; i < mesh.mNumFaces; i++)
-		{
-			const auto& face = mesh.mFaces[i];
-			assert(face.mNumIndices == 3);
-			indices.push_back(face.mIndices[0]);
-			indices.push_back(face.mIndices[1]);
-			indices.push_back(face.mIndices[2]);
-		}
-
-		vertShader = "shaders\\phongNormalVS.cso";
-		pixShader = "shaders\\phongNormalPS.cso";
+		binds.push_back(PixelShader::resolve(gfx, "shaders\\phongNormalPS.cso"));
 		struct MaterialConst
 		{
 			float specIntensity = 0.18f;
@@ -318,88 +296,16 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		} matConst;
 		matConst.specPower = shininess;
 
+		// TODO: Meshes will end up sharing the same material
 		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
-	}else if(hasDiffuseMap)
-	{
-		vData = VertexBuffer(std::move(VertexLayout{ }.append(POSITION3D).append(NORMAL)
-			.append(TEXTURE2D)));
-
-		for (uint i = 0; i < mesh.mNumVertices; i++)
-		{
-			vData.emplaceBack(
-				vec3f(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
-				*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
-				*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
-			);
-		}
-
-		vertShader = "shaders\\phongVS.cso";
-		pixShader = "shaders\\phongPS.cso";
-		
-		struct MaterialConst
-		{
-			float specIntensity = 0.18f;
-			float specPower = 20.0f;
-			float padding[2];
-		} matConst;
-		matConst.specPower = shininess;
-
-		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
-	}else if(!hasDiffuseMap && !hasNormalMap && !hasSpecMap)
-	{
-		for (uint i = 0; i < mesh.mNumVertices; i++)
-		{
-			vData.emplaceBack(
-				vec3f(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
-				*reinterpret_cast<vec3f*>(&mesh.mNormals[i])
-			);
-		}
-
-		vertShader = "shaders\\phongNotexVS.cso";
-		pixShader = "shaders\\phongNotexPS.cso";
-		struct MaterialConst
-		{
-			vec4f materialColor = { 0.75f, 0.2f, 0.4f, 1.0f };
-			float specIntensity = 0.18f;
-			float specPower = 20.0f;
-			float padding[2];
-		} matConst;
-		matConst.specPower = shininess;
-
-		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
-	}else
-	{
-		throw ModelException(__LINE__, __FILE__, "Failed to parsh mesh");
 	}
-
-
-	list<ushort> indices;
-	indices.reserve(mesh.mNumFaces * 3);
-
-	for (uint i = 0; i < mesh.mNumFaces; i++)
-	{
-		const auto& face = mesh.mFaces[i];
-		assert(face.mNumIndices == 3);
-		indices.push_back(face.mIndices[0]);
-		indices.push_back(face.mIndices[1]);
-		indices.push_back(face.mIndices[2]);
-	}
-	binds.push_back(VertexBufferBindable::resolve(gfx, meshTag, vData));
-	binds.push_back(IndexBuffer::resolve(gfx, meshTag, indices));
-	auto pvs = VertexShader::resolve(gfx, vertShader);
-	auto* pvsbc = pvs->getBytecode();
-	binds.push_back(std::move(pvs));
-
-	binds.push_back(InputLayout::resolve(gfx, vData.getLayout(), pvsbc));
-	binds.push_back(PixelShader::resolve(gfx, pixShader));
-	
 
 	return createScope<Mesh>(gfx, std::move(binds));
 }
 
 void Model::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
 {
-	if(auto* node = mWindow->getSelectedNode())
+	if(auto node = mWindow->getSelectedNode())
 	{
 		node->setAppliedTransform(mWindow->getTransform());
 	}

@@ -48,12 +48,11 @@ private:
 	Timer mPerformanceTimer;
 	bool mRunning;
 	float mGlobalSpeed = 1.0f;
-	Model mNano;
+	//Model mNano;
 	//Model mNano2;
-	//TestPlane mPlane;
+	TestPlane mPlane;
 	//TestCube mCube;
-	//Model mWall;
-	Model mGoblin;
+	Model mWall;
 	int x = 0, y = 0;
 };
 
