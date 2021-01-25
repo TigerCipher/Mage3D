@@ -21,7 +21,6 @@
 #pragma once
 
 #include "Keyboard.h"
-#include "DisplayException.h"
 #include "Graphics.h"
 #include "winwrapper.h"
 #include "Mouse.h"
@@ -34,7 +33,7 @@ public:
 	Display(const Display& disp) = delete;
 	Display& operator=(const Display& disp) = delete;
 
-	void setTitle(const std::string& title);
+	void setTitle(const std::string& title) const;
 
 	/// <summary>
 	/// Toggles the cursor visibility
@@ -44,7 +43,7 @@ public:
 	
 	static std::optional<int> processMessages() noexcept;
 
-	Graphics& getGraphics();
+	Graphics& getGraphics() const;
 
 	[[nodiscard]] int getWidth() const noexcept { return mWidth; }
 	[[nodiscard]] int getHeight() const noexcept { return mHeight; }

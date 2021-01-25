@@ -125,6 +125,10 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	ImGui::GetIO().FontGlobalScale = uiScale;
 	ImGui::GetIO().FontAllowUserScaling = true;
 	ImGui::GetStyle().ScaleAllSizes(uiScale);
+
+	mFont = createScope<DirectX::SpriteFont>(mDevice.Get(), L"assets\\fonts\\courier_new.spritefont");
+	mFont->SetDefaultCharacter(L'?');
+	mSpriteBatch = createScope<DirectX::SpriteBatch>(mContext.Get());
 }
 
 void Graphics::swap()
@@ -140,8 +144,7 @@ void Graphics::swap()
 #if MAGE_DEBUG
 		std::string debugMsgs;
 		from_list(debugMsgs, mDebugInfo.getMessages());
-		//TODO This errors on the new PC for some reason
-		//LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(m_debugInfo.getMessages(), "\n"));
+		//LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(mDebugInfo.getMessages(), "\n"));
 		LOG_ERROR("Swap chain failed. Reasoning: \n{}", debugMsgs);
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)
 			throw GFX_DEVICE_REMOVED_EXCEPT(mDevice->GetDeviceRemovedReason());
@@ -150,7 +153,7 @@ void Graphics::swap()
 	}
 }
 
-void Graphics::clear(float r, float g, float b) noexcept
+void Graphics::clear(const float r, const float g, const float b) const noexcept
 {
 	ImguiManager::newFrame();
 	const float color[] = { r, g, b, 1.0f };
@@ -161,4 +164,21 @@ void Graphics::clear(float r, float g, float b) noexcept
 void Graphics::drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG)
 {
 	GFX_THROW_INFO_ONLY(mContext->DrawIndexed(numIndices, 0, 0));
+}
+
+void Graphics::testRenderFont(const std::string& text, const float x, const float y)
+{
+	mSpriteBatch->Begin();
+
+	//const auto* output = std::wstring{ text.begin(), text.end() }.c_str();
+
+	using namespace dx;
+	
+	//vec4f origin = mFont->MeasureString(std::wstring{ text.begin(), text.end() }.c_str()) / 2.0f;
+
+	mFont->DrawString(mSpriteBatch.get(), std::wstring{ text.begin(), text.end() }.c_str(), { x, y },
+		Colors::White, 0.0f, {0, 0, 0});
+
+
+	mSpriteBatch->End();
 }

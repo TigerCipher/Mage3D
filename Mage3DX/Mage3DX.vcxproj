@@ -246,6 +246,7 @@
     <ClCompile Include="DebugTools.cpp" />
     <ClCompile Include="Display.cpp" />
     <ClCompile Include="DisplayException.cpp" />
+    <ClCompile Include="Fonts.cpp" />
     <ClCompile Include="GDIPlusManager.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GraphicsException.cpp" />
@@ -310,6 +311,7 @@
     <ClInclude Include="DebugTools.h" />
     <ClInclude Include="Display.h" />
     <ClInclude Include="DisplayException.h" />
+    <ClInclude Include="Fonts.h" />
     <ClInclude Include="GDIPlusManager.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GraphicsException.h" />

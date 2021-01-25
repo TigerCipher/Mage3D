@@ -24,6 +24,7 @@
 #include "DebugInfo.h"
 
 #include <d3d11.h>
+#include <DirectXTK/SpriteFont.h>
 
 
 class Graphics
@@ -38,14 +39,14 @@ public:
 	Graphics& operator=(const Graphics& rhs) = delete;
 
 	void swap();
-	void clear(float r, float g, float b) noexcept;
+	void clear(float r, float g, float b) const noexcept;
 
 	void drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG);
 
-	void setProjection(mat4f proj) noexcept { mProjection = proj; }
+	void setProjection(const mat4f proj) noexcept { mProjection = proj; }
 	[[nodiscard]] mat4f getProjection() const noexcept { return mProjection; }
 
-	void setCamera(mat4f cam) noexcept { mCamera = cam; }
+	void setCamera(const mat4f cam) noexcept { mCamera = cam; }
 	[[nodiscard]] mat4f getCamera() const noexcept { return mCamera; }
 
 	void toggleImgui() noexcept { mImguiEnabled = !mImguiEnabled; }
@@ -53,6 +54,8 @@ public:
 	void disableImgui() noexcept { mImguiEnabled = false; }
 
 	[[nodiscard]] bool isImguiEnabled() const noexcept { return mImguiEnabled; }
+
+	void testRenderFont(const std::string& text, const float x, const float y);
 
 
 protected:
@@ -62,6 +65,8 @@ private:
 	COMptr<ID3D11DeviceContext> mContext { };
 	COMptr<ID3D11RenderTargetView> mTarget { };
 	COMptr<ID3D11DepthStencilView> mDepthStencilView { };
+	UniquePtr<DirectX::SpriteFont> mFont;
+	UniquePtr<DirectX::SpriteBatch> mSpriteBatch;
 
 	mat4f mProjection{ };
 	mat4f mCamera{ };

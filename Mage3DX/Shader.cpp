@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: Shader.cpp
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
@@ -32,13 +32,15 @@ VertexShader::VertexShader(Graphics& gfx, const std::string& path) :
 {
 	DEBUG_INFO(gfx);
 
-	GFX_THROW_INFO(D3DReadFileToBlob(std::wstring{path.begin(), path.end()}.c_str(), & mBytecode));
+	GFX_THROW_INFO(D3DReadFileToBlob(std::wstring{ path.begin(), path.end() }.c_str(), &mBytecode))
 	GFX_THROW_INFO(getDevice(gfx)->CreateVertexShader(
 		mBytecode->GetBufferPointer(),
 		mBytecode->GetBufferSize(),
 		nullptr,
 		&mShader
-	));
+		))
+
+	LOG_INFO("Vertex shader [{}] created", path);
 }
 
 void VertexShader::bind(Graphics& gfx) noexcept
@@ -63,14 +65,17 @@ std::string VertexShader::getUID() const noexcept
 	return generateUID(mPath);
 }
 
-PixelShader::PixelShader(Graphics& gfx, const std::string& path)
+PixelShader::PixelShader(Graphics& gfx, const std::string& path) :
+	mPath(path)
 {
 	DEBUG_INFO(gfx);
 
 	COMptr<ID3DBlob> blob;
-	GFX_THROW_INFO(D3DReadFileToBlob(std::wstring{ path.begin(), path.end() }.c_str(), &blob));
+	GFX_THROW_INFO(D3DReadFileToBlob(std::wstring{ path.begin(), path.end() }.c_str(), &blob))
 	GFX_THROW_INFO(getDevice(gfx)->CreatePixelShader(blob->GetBufferPointer(),
-		blob->GetBufferSize(), nullptr, &mShader));
+		blob->GetBufferSize(), nullptr, &mShader))
+
+	LOG_INFO("Pixel shader [{}] created", path);
 }
 
 

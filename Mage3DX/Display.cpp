@@ -20,6 +20,8 @@
  */
 //#include "pch.h" -intellisense works better with force include being used
 #include "Display.h"
+
+#include "DisplayException.h"
 #include "resource.h"
 #include "ImguiManager.h"
 
@@ -81,7 +83,7 @@ Display::Display(int width, int height, const char* title) : mCursor(true)
 	LOG_INFO("Centered window to position ({}, {})", region.left, region.top);
 	mWidth = width;
 	mHeight = height;
-	mAspectRatio = (float) mHeight / (float) mWidth;
+	mAspectRatio = static_cast<float>(mHeight) / static_cast<float>(mWidth);
 	if (!AdjustWindowRect(&region, WS_CAPTION | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_SYSMENU, false))
 	{
 		throw DISPLAY_LAST_EXCEPTION();
@@ -128,13 +130,13 @@ void Display::showCursor() noexcept
 {
 	// winapi ShowCursor
 	while (ShowCursor(TRUE) < 0);
-	ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse;
+	IMGUI_FUNC(GetIO().ConfigFlags &= ~ImGuiConfigFlags_NoMouse);
 }
 
 void Display::hideCursor() noexcept
 {
 	while (ShowCursor(FALSE) >= 0);
-	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse;
+	IMGUI_FUNC(GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouse);
 }
 
 void Display::trapCursor() const noexcept
@@ -150,7 +152,8 @@ void Display::freeCursor() noexcept
 	ClipCursor(nullptr);
 }
 
-LRESULT CALLBACK Display::handleMessageSetup(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) noexcept
+LRESULT CALLBACK Display::handleMessageSetup(const HWND hWnd, const UINT msg,
+	const WPARAM wParam, const LPARAM lParam) noexcept
 {
 	if (msg == WM_NCCREATE)
 	{
@@ -296,7 +299,7 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	}
 
 	case WM_INPUT:
-		{
+	{
 		if (!mouse.isRawInputEnabled()) break;
 		UINT size;
 		if (GetRawInputData(reinterpret_cast<HRAWINPUT>(lParam), RID_INPUT,
@@ -314,12 +317,12 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 		}
 
 		auto& ri = reinterpret_cast<RAWINPUT&>(*mRawBuffer.data());
-			if(ri.header.dwType == RIM_TYPEMOUSE && (ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0))
-			{
-				mouse.onRawDelta(ri.data.mouse.lLastX, ri.data.mouse.lLastY);
-			}
-		break;
+		if(ri.header.dwType == RIM_TYPEMOUSE && (ri.data.mouse.lLastX != 0 || ri.data.mouse.lLastY != 0))
+		{
+			mouse.onRawDelta(ri.data.mouse.lLastX, ri.data.mouse.lLastY);
 		}
+		break;
+	}
 	case WM_KILLFOCUS:
 		keyboard.clearState();
 		break;
@@ -351,7 +354,7 @@ LRESULT Display::handleMessage(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
-void Display::setTitle(const std::string& title)
+void Display::setTitle(const std::string& title) const
 {
 	if (!SetWindowText(mHwnd, title.c_str()))
 	{
@@ -390,14 +393,14 @@ std::optional<int> Display::processMessages() noexcept
 	while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 	{
 		if (msg.message == WM_QUIT)
-			return (int) msg.wParam;
+			return static_cast<int>(msg.wParam);
 		TranslateMessage(&msg);
 		DispatchMessage(&msg);
 	}
 	return { };
 }
 
-Graphics& Display::getGraphics()
+Graphics& Display::getGraphics() const
 {
 	if (!mGfx) throw DISPLAY_NO_GFX_EXCEPTION();
 	return *mGfx;

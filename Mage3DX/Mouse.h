@@ -113,17 +113,17 @@ public:
 
 private:
 
-	void onRawDelta(int dx, int dy) noexcept;
-	void onMouseMove(int x, int y) noexcept;
-	void onLeftPressed(int x, int y) noexcept;
-	void onLeftReleased(int x, int y) noexcept;
-	void onRightPressed(int x, int y) noexcept;
-	void onRightReleased(int x, int y) noexcept;
-	void onWheelUp(int x, int y) noexcept;
-	void onWheelDown(int x, int y) noexcept;
-	void onMouseEnter() noexcept;
-	void onMouseLeave() noexcept;
-	void onWheelDelta(int x, int y, int delta) noexcept;
+	void onRawDelta(int dx, int dy);
+	void onMouseMove(int x, int y);
+	void onLeftPressed(int x, int y);
+	void onLeftReleased(int x, int y);
+	void onRightPressed(int x, int y);
+	void onRightReleased(int x, int y);
+	void onWheelUp(int x, int y);
+	void onWheelDown(int x, int y);
+	void onMouseEnter();
+	void onMouseLeave();
+	void onWheelDelta(int x, int y, int delta);
 	void trim() noexcept;
 	void trimRawInputBuffer() noexcept;
 

@@ -53,13 +53,13 @@ void Mouse::toggleRawInput(const int16 mode)
     else mRawInput = true;
 }
 
-void Mouse::onRawDelta(int dx, int dy) noexcept
+void Mouse::onRawDelta(int dx, int dy)
 {
     mRawDeltaBuffer.push({ dx, dy });
     trimRawInputBuffer();
 }
 
-void Mouse::onMouseMove(int x, int y) noexcept
+void Mouse::onMouseMove(int x, int y)
 {
     mXPos = x;
     mYPos = y;
@@ -67,61 +67,61 @@ void Mouse::onMouseMove(int x, int y) noexcept
     trim();
 }
 
-void Mouse::onLeftPressed(int x, int y) noexcept
+void Mouse::onLeftPressed(int x, int y)
 {
     mLeft = true;
     mBuffer.push(Event(Event::Type::LEFT_PRESS, *this));
     trim();
 }
 
-void Mouse::onLeftReleased(int x, int y) noexcept
+void Mouse::onLeftReleased(int x, int y)
 {
     mLeft = false;
     mBuffer.push(Event(Event::Type::LEFT_RELEASE, *this));
     trim();
 }
 
-void Mouse::onRightPressed(int x, int y) noexcept
+void Mouse::onRightPressed(int x, int y)
 {
     mRight = true;
     mBuffer.push(Event(Event::Type::RIGHT_PRESS, *this));
     trim();
 }
 
-void Mouse::onRightReleased(int x, int y) noexcept
+void Mouse::onRightReleased(int x, int y)
 {
     mRight = false;
     mBuffer.push(Event(Event::Type::RIGHT_RELEASE, *this));
     trim();
 }
 
-void Mouse::onWheelUp(int x, int y) noexcept
+void Mouse::onWheelUp(int x, int y)
 {
     mBuffer.push(Event(Event::Type::WHEEL_UP, *this));
     trim();
 }
 
-void Mouse::onWheelDown(int x, int y) noexcept
+void Mouse::onWheelDown(int x, int y)
 {
     mBuffer.push(Event(Event::Type::WHEEL_DOWN, *this));
     trim();
 }
 
-void Mouse::onMouseEnter() noexcept
+void Mouse::onMouseEnter()
 {
     mInWindow = true;
     mBuffer.push(Event(Event::Type::ENTER, *this));
     trim();
 }
 
-void Mouse::onMouseLeave() noexcept
+void Mouse::onMouseLeave()
 {
     mInWindow = false;
     mBuffer.push(Event(Event::Type::LEAVE, *this));
     trim();
 }
 
-void Mouse::onWheelDelta(int x, int y, int delta) noexcept
+void Mouse::onWheelDelta(int x, int y, int delta)
 {
     mWheelDelta += delta;
     while(mWheelDelta >= WHEEL_DELTA)

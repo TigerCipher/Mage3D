@@ -20,9 +20,7 @@
  */
 #include "App.h"
 #include "GDIPlusManager.h"
-#include "Texture.h"
 #include "ImguiManager.h"
-#include "Bindables.h"
 
 
 GDIPlusManager gGdip;
@@ -69,7 +67,7 @@ void App::stop()
 	mRunning = false;
 }
 
-void calculateFrameStatistics(Timer& timer)
+void calculate_frame_statistics(Timer& timer, float* retFps)
 {
 	static float fps = 0;
 	static float avgFps = 0;
@@ -85,6 +83,7 @@ void calculateFrameStatistics(Timer& timer)
 		if (timer.peek() >= 1.0f)
 		{
 			prntAvgFps = avgFps / static_cast<float>(frameCount);
+			*retFps = prntAvgFps;
 			avgFps = 0;
 			prntFrameCount = frameCount;
 			frameCount = 0;
@@ -104,8 +103,6 @@ void App::runFrame()
 {
 	const auto delta = mTimer.markPoint() * mGlobalSpeed;
 
-	// TODO Fix input data capture rate
-	// Sometimes captures input data too fast and one press is seen as multiple
 	if (mDisplay.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
 
 	mDisplay.getGraphics().clear(0.07f, 0, 0.12f);
@@ -114,7 +111,6 @@ void App::runFrame()
 
 
 	mWall.render(mDisplay.getGraphics());
-	//mNano.render(mDisplay.getGraphics());
 	mPlane.render(mDisplay.getGraphics());
 
 	mLight.render(mDisplay.getGraphics());
@@ -149,14 +145,15 @@ void App::runFrame()
 		}
 	}
 
-
-	calculateFrameStatistics(mPerformanceTimer);
+	static float fps = 0;
+	calculate_frame_statistics(mPerformanceTimer, &fps);
 
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
 	mWall.showImguiWindow("Brickwall");
 	mPlane.spawnControlWindow(mDisplay.getGraphics());
-	//mNano.showImguiWindow("Nanosuit");
+
+	mDisplay.getGraphics().testRenderFont(fmt::format("FPS: {:.2f}", fps), 5, 5);
 
 	mDisplay.getGraphics().swap();
 }

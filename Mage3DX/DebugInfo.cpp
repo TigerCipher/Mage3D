@@ -20,6 +20,7 @@
  */
 //#include "pch.h" -intellisense works better with force include being used
 #include "DebugInfo.h"
+#include "DisplayException.h"
 #include "Display.h"
 #include "GraphicsException.h"
 
@@ -65,7 +66,7 @@ list<std::string> DebugInfo::getMessages() const
 		SIZE_T msgLen;
 		GFX_THROW_FAILED(mInfoQueue->GetMessage(DXGI_DEBUG_ALL, i, nullptr, &msgLen));
 		auto bytes = createScope<byte[ ]>(msgLen);
-		auto msg = reinterpret_cast<DXGI_INFO_QUEUE_MESSAGE*>(bytes.get());
+		DXGI_INFO_QUEUE_MESSAGE* msg = reinterpret_cast<DXGI_INFO_QUEUE_MESSAGE*>(bytes.get());
 		GFX_THROW_FAILED(mInfoQueue->GetMessage(DXGI_DEBUG_ALL, i, msg, &msgLen));
 		messages.emplace_back(msg->pDescription);
 	}

@@ -23,13 +23,11 @@
 #include "Bindables.h"
 #include "ImguiManager.h"
 #include "ModelException.h"
-#include "Texture.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "TextureException.h"
 
 
 void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG)
@@ -174,6 +172,8 @@ Model::Model(Graphics& gfx, const std::string& fileName) :
 
 	int nextId = 0;
 	mRoot = parseNode(nextId, *scene->mRootNode);
+
+	LOG_INFO("Loaded model [{}]", fileName);
 }
 
 Model::~Model() noexcept = default;
