@@ -41,13 +41,13 @@ App::App(const int width, const int height, const char* title) :
 		0.5f, 1000.0f));
 	mDisplay.toggleCursor(0);
 
-	mDisplay.getGraphics().addFont("Courier New", "assets\\fonts\\courier_new.sf");
-	mDisplay.getGraphics().addFont("Agency FB", "assets\\fonts\\agencyfb.sf");
-	mDisplay.getGraphics().addFont("Arial", "assets\\fonts\\arial.sf");
-	mDisplay.getGraphics().addFont("Impact", "assets\\fonts\\impact.sf");
-	mDisplay.getGraphics().addFont("Ink Free", "assets\\fonts\\inkfree.sf");
-	mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
-	mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
+	//mDisplay.getGraphics().addFont("Courier New", "assets\\fonts\\courier_new.sf");
+	//mDisplay.getGraphics().addFont("Agency FB", "assets\\fonts\\agencyfb.sf");
+	//mDisplay.getGraphics().addFont("Arial", "assets\\fonts\\arial.sf");
+	//mDisplay.getGraphics().addFont("Impact", "assets\\fonts\\impact.sf");
+	//mDisplay.getGraphics().addFont("Ink Free", "assets\\fonts\\inkfree.sf");
+	//mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
+	//mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
 
 }
 
@@ -117,10 +117,10 @@ void App::runFrame()
 	mDisplay.getGraphics().setCamera(mCamera.getViewMatrix());
 	mLight.bind(mDisplay.getGraphics(), mCamera.getViewMatrix());
 
+	mLight.render(mDisplay.getGraphics());
 
 	mGoblin.render(mDisplay.getGraphics());
 	mNano.render(mDisplay.getGraphics());
-	mLight.render(mDisplay.getGraphics());
 
 	if (mDisplay.keyboard.isPressedOnce(VK_ESCAPE))
 	{
@@ -160,10 +160,10 @@ void App::runFrame()
 	mGoblin.showImguiWindow("Goblin");
 	mNano.showImguiWindow("Nanosuit");
 
-	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
+	//mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
 
-	mDisplay.getGraphics().drawText("Kristen ITC", "Hello!", 400, 400,
-		DirectX::Colors::OrangeRed, 2.0f, 45);
+	//mDisplay.getGraphics().drawText("Kristen ITC", "Hello!", 400, 400,
+	//	DirectX::Colors::OrangeRed, 2.0f, 45);
 
 	mDisplay.getGraphics().swap();
 }

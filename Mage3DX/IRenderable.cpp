@@ -30,6 +30,7 @@ void IRenderable::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
     {
         b->bind(gfx);
     }
+
     gfx.drawIndexed(mIndexBuffer->getCount());
 }
 

@@ -45,15 +45,14 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	//UINT h = r.bottom - r.top;
 	LOG_INFO("Setting swap chain buffer dimensions ({}, {})", width, height);
 	DXGI_SWAP_CHAIN_DESC swapDesc = { };
-	swapDesc.BufferDesc.Width = width;
-	swapDesc.BufferDesc.Height = height;
+	swapDesc.BufferDesc.Width = 0;
+	swapDesc.BufferDesc.Height = 0;
 	swapDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	swapDesc.BufferDesc.RefreshRate.Numerator = 0;
-	swapDesc.BufferDesc.RefreshRate.Denominator = 0;
+	swapDesc.BufferDesc.RefreshRate.Denominator = 1;
 	swapDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 	swapDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 
-	// No AA for now
 	swapDesc.SampleDesc.Count = 1;
 	swapDesc.SampleDesc.Quality = 0;
 
@@ -62,6 +61,7 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	swapDesc.OutputWindow = hwnd;
 	swapDesc.Windowed = TRUE;
 	swapDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+	//swapDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
 	swapDesc.Flags = 0;
 
 	UINT flg = 0;
@@ -78,15 +78,6 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	GFX_THROW_INFO(mSwap->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
 	GFX_THROW_INFO(mDevice->CreateRenderTargetView(backBuffer.Get(), nullptr, &mTarget));
 
-	D3D11_DEPTH_STENCIL_DESC depth = { };
-	depth.DepthEnable = TRUE;
-	depth.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
-	depth.DepthFunc = D3D11_COMPARISON_LESS;
-
-	COMptr<ID3D11DepthStencilState> depthState;
-	GFX_THROW_INFO(mDevice->CreateDepthStencilState(&depth, &depthState));
-
-	mContext->OMSetDepthStencilState(depthState.Get(), 1);
 
 	LOG_INFO("Setting depth stencil dimensions ({}, {})", width, height);
 	COMptr<ID3D11Texture2D> depthStencil;
@@ -102,12 +93,23 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
 	GFX_THROW_INFO(mDevice->CreateTexture2D(&texDesc, nullptr, &depthStencil));
 
+	D3D11_DEPTH_STENCIL_DESC depth = { };
+	depth.DepthEnable = TRUE;
+	depth.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depth.DepthFunc = D3D11_COMPARISON_LESS;
+
+
+	COMptr<ID3D11DepthStencilState> depthState;
+	GFX_THROW_INFO(mDevice->CreateDepthStencilState(&depth, &depthState));
+
+
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = { };
 	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
 	dsvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	dsvDesc.Texture2D.MipSlice = 0;
 	GFX_THROW_INFO(mDevice->CreateDepthStencilView(depthStencil.Get(), &dsvDesc, &mDepthStencilView));
 
+	mContext->OMSetDepthStencilState(depthState.Get(), 1);
 	mContext->OMSetRenderTargets(1, mTarget.GetAddressOf(), mDepthStencilView.Get());
 
 	LOG_INFO("Setting viewport dimensions ({}, {})", width, height);
@@ -126,7 +128,8 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	ImGui::GetIO().FontAllowUserScaling = true;
 	ImGui::GetStyle().ScaleAllSizes(uiScale);
 
-	mSpriteBatch = createScope<DirectX::SpriteBatch>(mContext.Get());
+	//mSpriteBatch = createScope<DirectX::SpriteBatch>(mContext.Get());
+	
 }
 
 void Graphics::swap()
@@ -165,24 +168,24 @@ void Graphics::drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG)
 }
 
 
-void Graphics::addFont(const std::string& fontName, const std::string& fontFile)
-{
-	mFonts[fontName] = createScope<DirectX::SpriteFont>(mDevice.Get(),
-		std::wstring{ fontFile.begin(), fontFile.end() }.c_str());
-	mFonts[fontName]->SetDefaultCharacter(L'?');
-	LOG_INFO("Loaded font {} from file [{}]", fontName, fontFile);
-}
+//void Graphics::addFont(const std::string& fontName, const std::string& fontFile)
+//{
+//	mFonts[fontName] = createScope<DirectX::SpriteFont>(mDevice.Get(),
+//		std::wstring{ fontFile.begin(), fontFile.end() }.c_str());
+//	mFonts[fontName]->SetDefaultCharacter(L'?');
+//	LOG_INFO("Loaded font {} from file [{}]", fontName, fontFile);
+//}
 
-void Graphics::drawText(const std::string& fontName, const std::string& text,
-	const float x, const float y, dx::XMVECTORF32 color, const float scale, const float rotation)
-{
-	mSpriteBatch->Begin();
-
-	mFonts[fontName]->DrawString(mSpriteBatch.get(), std::wstring{ text.begin(), text.end() }.c_str(),
-		{ x, y },
-		color, toRadians(rotation),
-		{ 0, 0, 0 }, scale);
-
-
-	mSpriteBatch->End();
-}
+//void Graphics::drawText(const std::string& fontName, const std::string& text,
+//	const float x, const float y, dx::XMVECTORF32 color, const float scale, const float rotation)
+//{
+//	mSpriteBatch->Begin();
+//
+//	mFonts[fontName]->DrawString(mSpriteBatch.get(), std::wstring{ text.begin(), text.end() }.c_str(),
+//		{ x, y },
+//		color, toRadians(rotation),
+//		{ 0, 0, 0 }, scale);
+//
+//
+//	mSpriteBatch->End();
+//}

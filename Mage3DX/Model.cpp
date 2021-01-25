@@ -41,6 +41,7 @@ void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAG
 		m->render(gfx, transform);
 	}
 
+	
 	for(const auto& c : mChildren)
 	{
 		c->render(gfx, transform);
@@ -113,9 +114,9 @@ public:
 			IMGUI_FUNC(SliderAngle("Pitch", &transform.pitch, -180, 180));
 			IMGUI_FUNC(SliderAngle("Yaw", &transform.yaw, -180, 180));
 			IMGUI_FUNC(Text("Position"));
-			IMGUI_FUNC(SliderFloat("X", &transform.x, -20, 20));
-			IMGUI_FUNC(SliderFloat("Y", &transform.y, -20, 20));
-			IMGUI_FUNC(SliderFloat("Z", &transform.z, -20, 20));
+			IMGUI_FUNC(SliderFloat("X", &transform.x, -200, 200));
+			IMGUI_FUNC(SliderFloat("Y", &transform.y, -200, 200));
+			IMGUI_FUNC(SliderFloat("Z", &transform.z, -200, 200));
 		}
 		IMGUI_END
 	}
@@ -203,6 +204,7 @@ UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 
 UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* materials)
 {
+	LOG_DEBUG("Loading mesh {}", mesh.mName.C_Str());
 	bool hasSpecMap = false;
 	bool hasNormalMap = false;
 	bool hasDiffuseMap = false;
@@ -250,7 +252,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	std::string vertShader;
 	std::string pixShader;
 
-	constexpr float scale = 6.0f;
+	constexpr float scale = 1.0f;
 	
 	if(hasDiffuseMap && hasNormalMap && hasSpecMap)
 	{
