@@ -53,9 +53,8 @@ float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, 
 	{
 		const float3x3 tanToView = float3x3(normalize(tan), normalize(bitan), normalize(n));
 		const float3 normalSample = norm.Sample(smpl, tc);
-		n.x = normalSample.x * 2.0f - 1.0f;
-		n.y = -normalSample.y * 2.0f + 1.0f;
-		n.z = normalSample.z * 2.0f - 1.0f;
+
+		n = normalSample * 2.0f - 1.0f;
 
 		n = mul(n, tanToView);
 	}
