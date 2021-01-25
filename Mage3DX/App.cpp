@@ -30,14 +30,14 @@ App::App(const int width, const int height, const char* title) :
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
 	mPlane(mDisplay.getGraphics()),
+	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
 	mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj")
-	//mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
 	//mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
 	//mCube(mDisplay.getGraphics(), 4.0f)
 {
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),
-		0.5f, 40.0f));
+		0.5f, 1000.0f));
 	mDisplay.toggleCursor(0);
 
 	mDisplay.getGraphics().addFont("Courier New", "assets\\fonts\\courier_new.sf");
@@ -120,6 +120,7 @@ void App::runFrame()
 
 	mWall.render(mDisplay.getGraphics());
 	mPlane.render(mDisplay.getGraphics());
+	mNano.render(mDisplay.getGraphics());
 
 	mLight.render(mDisplay.getGraphics());
 
@@ -159,6 +160,7 @@ void App::runFrame()
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
 	mWall.showImguiWindow("Brickwall");
+	mNano.showImguiWindow("Nanosuit");
 	mPlane.spawnControlWindow(mDisplay.getGraphics());
 
 	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
