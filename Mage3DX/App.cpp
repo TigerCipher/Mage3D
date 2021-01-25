@@ -40,6 +40,14 @@ App::App(const int width, const int height, const char* title) :
 		0.5f, 40.0f));
 	mDisplay.toggleCursor(0);
 
+	mDisplay.getGraphics().addFont("Courier New", "assets\\fonts\\courier_new.sf");
+	mDisplay.getGraphics().addFont("Agency FB", "assets\\fonts\\agencyfb.sf");
+	mDisplay.getGraphics().addFont("Arial", "assets\\fonts\\arial.sf");
+	mDisplay.getGraphics().addFont("Impact", "assets\\fonts\\impact.sf");
+	mDisplay.getGraphics().addFont("Ink Free", "assets\\fonts\\inkfree.sf");
+	mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
+	mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
+
 	mPlane.setPosition({ 4.0f, 0, 0 });
 }
 
@@ -153,7 +161,7 @@ void App::runFrame()
 	mWall.showImguiWindow("Brickwall");
 	mPlane.spawnControlWindow(mDisplay.getGraphics());
 
-	mDisplay.getGraphics().testRenderFont(fmt::format("FPS: {:.2f}", fps), 5, 5);
+	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
 
 	mDisplay.getGraphics().swap();
 }

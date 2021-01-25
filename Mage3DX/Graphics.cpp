@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: graphics.cpp
  * Date File Created: 9/27/2020 at 3:28 PM
  * Author: Matt
@@ -69,10 +69,10 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	flg |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 	GFX_THROW_INFO(D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr,
-	                                             flg,
-	                                             nullptr, 0,
-	                                             D3D11_SDK_VERSION, &swapDesc, &mSwap, &mDevice, nullptr,
-	                                             &mContext));
+		flg,
+		nullptr, 0,
+		D3D11_SDK_VERSION, &swapDesc, &mSwap, &mDevice, nullptr,
+		&mContext));
 
 	COMptr<ID3D11Resource> backBuffer;
 	GFX_THROW_INFO(mSwap->GetBuffer(0, __uuidof(ID3D11Resource), &backBuffer));
@@ -112,8 +112,8 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 
 	LOG_INFO("Setting viewport dimensions ({}, {})", width, height);
 	D3D11_VIEWPORT vp;
-	vp.Width = (float)width;
-	vp.Height = (float)height;
+	vp.Width = (float) width;
+	vp.Height = (float) height;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	vp.TopLeftX = 0.0f;
@@ -126,8 +126,6 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	ImGui::GetIO().FontAllowUserScaling = true;
 	ImGui::GetStyle().ScaleAllSizes(uiScale);
 
-	mFont = createScope<DirectX::SpriteFont>(mDevice.Get(), L"assets\\fonts\\courier_new.spritefont");
-	mFont->SetDefaultCharacter(L'?');
 	mSpriteBatch = createScope<DirectX::SpriteBatch>(mContext.Get());
 }
 
@@ -166,18 +164,24 @@ void Graphics::drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG)
 	GFX_THROW_INFO_ONLY(mContext->DrawIndexed(numIndices, 0, 0));
 }
 
-void Graphics::testRenderFont(const std::string& text, const float x, const float y)
+
+void Graphics::addFont(const std::string& fontName, const std::string& fontFile)
+{
+	mFonts[fontName] = createScope<DirectX::SpriteFont>(mDevice.Get(),
+		std::wstring{ fontFile.begin(), fontFile.end() }.c_str());
+	mFonts[fontName]->SetDefaultCharacter(L'?');
+	LOG_INFO("Loaded font {} from file [{}]", fontName, fontFile);
+}
+
+void Graphics::drawText(const std::string& fontName, const std::string& text,
+	const float x, const float y, dx::XMVECTORF32 color)
 {
 	mSpriteBatch->Begin();
 
-	//const auto* output = std::wstring{ text.begin(), text.end() }.c_str();
-
-	using namespace dx;
-	
-	//vec4f origin = mFont->MeasureString(std::wstring{ text.begin(), text.end() }.c_str()) / 2.0f;
-
-	mFont->DrawString(mSpriteBatch.get(), std::wstring{ text.begin(), text.end() }.c_str(), { x, y },
-		Colors::White, 0.0f, {0, 0, 0});
+	mFonts[fontName]->DrawString(mSpriteBatch.get(), std::wstring{ text.begin(), text.end() }.c_str(),
+		{ x, y },
+		color, 0.0f,
+		{ 0, 0, 0 });
 
 
 	mSpriteBatch->End();

@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: Graphics.h
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
@@ -55,7 +55,9 @@ public:
 
 	[[nodiscard]] bool isImguiEnabled() const noexcept { return mImguiEnabled; }
 
-	void testRenderFont(const std::string& text, const float x, const float y);
+	void addFont(const std::string& fontName, const std::string& fontFile);
+	void drawText(const std::string& fontName, const std::string& text,
+	              float x, float y, dx::XMVECTORF32 color = DirectX::Colors::White);
 
 
 protected:
@@ -65,8 +67,8 @@ private:
 	COMptr<ID3D11DeviceContext> mContext { };
 	COMptr<ID3D11RenderTargetView> mTarget { };
 	COMptr<ID3D11DepthStencilView> mDepthStencilView { };
-	UniquePtr<DirectX::SpriteFont> mFont;
 	UniquePtr<DirectX::SpriteBatch> mSpriteBatch;
+	std::unordered_map<std::string, UniquePtr<DirectX::SpriteFont> > mFonts;
 
 	mat4f mProjection{ };
 	mat4f mCamera{ };
