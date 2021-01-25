@@ -70,6 +70,8 @@ const char* Attribute::getCode() const noexcept
 	case COLOR3F: return Map<COLOR3F>::CODE;
 	case COLOR4F: return Map<COLOR4F>::CODE;
 	case COLORARGB: return Map<COLORARGB>::CODE;
+	case TANGENT: return Map<TANGENT>::CODE;
+	case BITANGENT: return Map<BITANGENT>::CODE;
 	default: return "Invalid";
 	}
 }
