@@ -478,12 +478,6 @@
     <FxCompile Include="assets\shaders\phongNormalObjPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
-    <FxCompile Include="assets\shaders\phongNotexVS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
-    <FxCompile Include="assets\shaders\phongNotexPS.hlsl">
-      <Filter>Shaders</Filter>
-    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="mage3dx.ico">
