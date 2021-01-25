@@ -174,14 +174,14 @@ void Graphics::addFont(const std::string& fontName, const std::string& fontFile)
 }
 
 void Graphics::drawText(const std::string& fontName, const std::string& text,
-	const float x, const float y, dx::XMVECTORF32 color)
+	const float x, const float y, dx::XMVECTORF32 color, const float scale, const float rotation)
 {
 	mSpriteBatch->Begin();
 
 	mFonts[fontName]->DrawString(mSpriteBatch.get(), std::wstring{ text.begin(), text.end() }.c_str(),
 		{ x, y },
-		color, 0.0f,
-		{ 0, 0, 0 });
+		color, toRadians(rotation),
+		{ 0, 0, 0 }, scale);
 
 
 	mSpriteBatch->End();

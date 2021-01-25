@@ -163,6 +163,9 @@ void App::runFrame()
 
 	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
 
+	mDisplay.getGraphics().drawText("Kristen ITC", "Hello!", 400, 400,
+		DirectX::Colors::OrangeRed, 2.0f, 45);
+
 	mDisplay.getGraphics().swap();
 }
 

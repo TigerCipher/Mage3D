@@ -57,7 +57,7 @@ public:
 
 	void addFont(const std::string& fontName, const std::string& fontFile);
 	void drawText(const std::string& fontName, const std::string& text,
-	              float x, float y, dx::XMVECTORF32 color = DirectX::Colors::White);
+	              float x, float y, dx::XMVECTORF32 color = DirectX::Colors::White, float scale = 1.0f, float rotation = 0);
 
 
 protected:
