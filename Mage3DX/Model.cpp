@@ -32,8 +32,8 @@
 
 void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAGE_DEBUG)
 {
-	const auto transform = dx::XMLoadFloat4x4(&mAppliedTransform)
-	    * dx::XMLoadFloat4x4(&mBaseTransform)
+	const auto transform = dx::XMLoadFloat4x4(&mBaseTransform)
+	    * dx::XMLoadFloat4x4(&mAppliedTransform)
 	    * accumulatedTransform;
 
 	for (const auto* m : mMeshes)
@@ -250,7 +250,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	std::string vertShader;
 	std::string pixShader;
 
-	constexpr float scale = 1.0f;
+	constexpr float scale = 6.0f;
 	
 	if(hasDiffuseMap && hasNormalMap && hasSpecMap)
 	{
