@@ -118,8 +118,8 @@ void App::runFrame()
 	mLight.bind(mDisplay.getGraphics(), mCamera.getViewMatrix());
 
 
-	mGoblin.render(mDisplay.getGraphics());
 	mNano.render(mDisplay.getGraphics());
+	mGoblin.render(mDisplay.getGraphics());
 	mLight.render(mDisplay.getGraphics());
 
 	if (mDisplay.keyboard.isPressedOnce(VK_ESCAPE))
