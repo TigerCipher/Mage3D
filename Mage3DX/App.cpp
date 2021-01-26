@@ -25,6 +25,8 @@
 
 GDIPlusManager gGdip;
 
+void show_debug_console();
+
 App::App(const int width, const int height, const char* title) :
 	mDisplay(width, height, title),
 	mLight(mDisplay.getGraphics()),
@@ -164,7 +166,22 @@ void App::runFrame()
 
 	//mDisplay.getGraphics().drawText("Kristen ITC", "Hello!", 400, 400,
 	//	DirectX::Colors::OrangeRed, 2.0f, 45);
+	show_debug_console();
 
 	mDisplay.getGraphics().swap();
 }
 
+
+
+void show_debug_console()
+{
+	IMGUI_BEGIN("Debug")
+		static char buf[512] = {};
+		ImGui::InputText("", buf, 512);
+		if (ImGui::Button("Run Command"))
+		{
+			LOG_DEBUG("Executing test command \"{}\"", buf);
+		}
+	
+	IMGUI_END
+}
