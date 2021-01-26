@@ -99,8 +99,8 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	depth.DepthFunc = D3D11_COMPARISON_LESS;
 
 
-	COMptr<ID3D11DepthStencilState> depthState;
-	GFX_THROW_INFO(mDevice->CreateDepthStencilState(&depth, &depthState));
+	/*COMptr<ID3D11DepthStencilState> mDepthState;*/
+	GFX_THROW_INFO(mDevice->CreateDepthStencilState(&depth, &mDepthState));
 
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC dsvDesc = { };
@@ -109,18 +109,18 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	dsvDesc.Texture2D.MipSlice = 0;
 	GFX_THROW_INFO(mDevice->CreateDepthStencilView(depthStencil.Get(), &dsvDesc, &mDepthStencilView));
 
-	mContext->OMSetDepthStencilState(depthState.Get(), 1);
+	mContext->OMSetDepthStencilState(mDepthState.Get(), 1);
 	mContext->OMSetRenderTargets(1, mTarget.GetAddressOf(), mDepthStencilView.Get());
 
 	LOG_INFO("Setting viewport dimensions ({}, {})", width, height);
-	D3D11_VIEWPORT vp;
-	vp.Width = (float) width;
-	vp.Height = (float) height;
-	vp.MinDepth = 0.0f;
-	vp.MaxDepth = 1.0f;
-	vp.TopLeftX = 0.0f;
-	vp.TopLeftY = 0.0f;
-	mContext->RSSetViewports(1, &vp);
+	
+	mViewport.Width = static_cast<float>(width);
+	mViewport.Height = static_cast<float>(height);
+	mViewport.MinDepth = 0.0f;
+	mViewport.MaxDepth = 1.0f;
+	mViewport.TopLeftX = 0.0f;
+	mViewport.TopLeftY = 0.0f;
+	mContext->RSSetViewports(1, &mViewport);
 
 	ImguiManager::initDx11(mDevice.Get(), mContext.Get());
 	constexpr float uiScale = 1.5f;
@@ -128,7 +128,7 @@ Graphics::Graphics(HWND hwnd, int width, int height)
 	ImGui::GetIO().FontAllowUserScaling = true;
 	ImGui::GetStyle().ScaleAllSizes(uiScale);
 
-	//mSpriteBatch = createScope<DirectX::SpriteBatch>(mContext.Get());
+	mSpriteBatch = createScope<DirectX::SpriteBatch>(mContext.Get());
 	
 }
 
@@ -158,6 +158,12 @@ void Graphics::clear(const float r, const float g, const float b) const noexcept
 {
 	ImguiManager::newFrame();
 	const float color[] = { r, g, b, 1.0f };
+	
+	// Seems like with DirectXTK states must be set each frame to be able to use SpriteBatch for font rendering
+	mContext->RSSetViewports(1, &mViewport);
+	mContext->OMSetDepthStencilState(mDepthState.Get(), 1);
+	mContext->OMSetRenderTargets(1, mTarget.GetAddressOf(), mDepthStencilView.Get());
+	
 	mContext->ClearRenderTargetView(mTarget.Get(), color);
 	mContext->ClearDepthStencilView(mDepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
@@ -168,24 +174,24 @@ void Graphics::drawIndexed(UINT numIndices) noexcept(!MAGE_DEBUG)
 }
 
 
-//void Graphics::addFont(const std::string& fontName, const std::string& fontFile)
-//{
-//	mFonts[fontName] = createScope<DirectX::SpriteFont>(mDevice.Get(),
-//		std::wstring{ fontFile.begin(), fontFile.end() }.c_str());
-//	mFonts[fontName]->SetDefaultCharacter(L'?');
-//	LOG_INFO("Loaded font {} from file [{}]", fontName, fontFile);
-//}
+void Graphics::addFont(const std::string& fontName, const std::string& fontFile)
+{
+	mFonts[fontName] = createScope<DirectX::SpriteFont>(mDevice.Get(),
+		std::wstring{ fontFile.begin(), fontFile.end() }.c_str());
+	mFonts[fontName]->SetDefaultCharacter(L'?');
+	LOG_INFO("Loaded font {} from file [{}]", fontName, fontFile);
+}
 
-//void Graphics::drawText(const std::string& fontName, const std::string& text,
-//	const float x, const float y, dx::XMVECTORF32 color, const float scale, const float rotation)
-//{
-//	mSpriteBatch->Begin();
-//
-//	mFonts[fontName]->DrawString(mSpriteBatch.get(), std::wstring{ text.begin(), text.end() }.c_str(),
-//		{ x, y },
-//		color, toRadians(rotation),
-//		{ 0, 0, 0 }, scale);
-//
-//
-//	mSpriteBatch->End();
-//}
+void Graphics::drawText(const std::string& fontName, const std::string& text,
+	const float x, const float y, dx::XMVECTORF32 color, const float scale, const float rotation)
+{
+	mSpriteBatch->Begin();
+
+	mFonts[fontName]->DrawString(mSpriteBatch.get(), std::wstring{ text.begin(), text.end() }.c_str(),
+		{ x, y },
+		color, toRadians(rotation),
+		{ 0, 0, 0 }, scale);
+
+
+	mSpriteBatch->End();
+}

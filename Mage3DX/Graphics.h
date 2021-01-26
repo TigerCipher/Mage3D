@@ -24,7 +24,7 @@
 #include "DebugInfo.h"
 
 #include <d3d11.h>
-//#include <DirectXTK/SpriteFont.h>
+#include <DirectXTK/SpriteFont.h>
 
 
 class Graphics
@@ -55,9 +55,9 @@ public:
 
 	[[nodiscard]] bool isImguiEnabled() const noexcept { return mImguiEnabled; }
 
-	//void addFont(const std::string& fontName, const std::string& fontFile);
-	//void drawText(const std::string& fontName, const std::string& text,
-	//              float x, float y, dx::XMVECTORF32 color = DirectX::Colors::White, float scale = 1.0f, float rotation = 0);
+	void addFont(const std::string& fontName, const std::string& fontFile);
+	void drawText(const std::string& fontName, const std::string& text,
+	              float x, float y, dx::XMVECTORF32 color = DirectX::Colors::White, float scale = 1.0f, float rotation = 0);
 
 
 protected:
@@ -66,9 +66,11 @@ private:
 	COMptr<IDXGISwapChain> mSwap { };
 	COMptr<ID3D11DeviceContext> mContext { };
 	COMptr<ID3D11RenderTargetView> mTarget { };
+	D3D11_VIEWPORT mViewport;
 	COMptr<ID3D11DepthStencilView> mDepthStencilView { };
-	//UniquePtr<DirectX::SpriteBatch> mSpriteBatch;
-	//std::unordered_map<std::string, UniquePtr<DirectX::SpriteFont> > mFonts;
+	COMptr<ID3D11DepthStencilState> mDepthState;
+	UniquePtr<DirectX::SpriteBatch> mSpriteBatch;
+	std::unordered_map<std::string, UniquePtr<DirectX::SpriteFont> > mFonts;
 
 	mat4f mProjection{ };
 	mat4f mCamera{ };

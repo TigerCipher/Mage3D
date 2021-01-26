@@ -47,7 +47,7 @@ App::App(const int width, const int height, const char* title) :
 	//mDisplay.getGraphics().addFont("Impact", "assets\\fonts\\impact.sf");
 	//mDisplay.getGraphics().addFont("Ink Free", "assets\\fonts\\inkfree.sf");
 	//mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
-	//mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
+	mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
 
 }
 
@@ -160,7 +160,7 @@ void App::runFrame()
 	mGoblin.showImguiWindow("Goblin");
 	mNano.showImguiWindow("Nanosuit");
 
-	//mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
+	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
 
 	//mDisplay.getGraphics().drawText("Kristen ITC", "Hello!", 400, 400,
 	//	DirectX::Colors::OrangeRed, 2.0f, 45);
