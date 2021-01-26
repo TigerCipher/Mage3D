@@ -21,7 +21,7 @@
 //#include "pch.h" -intellisense works better with force include being used
 #include "MathHelper.h"
 
-float dot(vec4f v1, vec4f v2)
+float dot(vec v1, vec v2)
 {
     auto result = dx::XMVector4Dot(v1, v2);
     auto d = dx::XMVectorGetX(result);

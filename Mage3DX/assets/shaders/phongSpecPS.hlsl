@@ -35,7 +35,11 @@ cbuffer LightCBuf
 cbuffer ModelCbuf
 {
 	bool normalMapEnabled;
-	float padding[3];
+	bool specularMapEnabled;
+	bool hasGloss;
+	float specularPower;
+	float3 specularColor;
+	float specularMapWeight;
 }
 
 Texture2D tex;
@@ -46,13 +50,14 @@ SamplerState smpl;
 
 static const float specPowerFactor = 13.0f;
 
-float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords) : SV_Target
+float4 main(float3 viewPos : Position, float3 n : Normal,
+			float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords) : SV_Target
 {
 
 	if(normalMapEnabled)
 	{
 		const float3x3 tanToView = float3x3(normalize(tan), normalize(bitan), normalize(n));
-		const float3 normalSample = norm.Sample(smpl, tc);
+		const float3 normalSample = norm.Sample(smpl, tc).rgb;
 
 		n = normalSample * 2.0f - 1.0f;
 
@@ -76,9 +81,21 @@ float4 main(float3 viewPos : Position, float3 n : Normal, float3 tan : Tangent, 
 	const float3 r = w * 2.0f - vToL;
 
 	// Specular intensity
-	const float4 specSample = spec.Sample(smpl, tc);
-	const float3 specColorIntensity = specSample.rgb;
-	const float specPower = pow(2.0f, specSample.a * specPowerFactor);
+	float3 specColorIntensity;
+
+	float specPower = specularPower;
+	if(specularMapEnabled)
+	{
+		const float4 specSample = spec.Sample(smpl, tc);
+		specColorIntensity = specSample.rgb * specularMapWeight;
+		if(hasGloss)
+		{
+			specPower = pow(2.0f, specSample.a * specPowerFactor);	
+		}
+	}else
+	{
+		specColorIntensity = specularColor;
+	}
 	const float3 specular = att * (diffuseColor * diffuseIntensity) * pow(max(0, dot(normalize(-r), normalize(viewPos))), specPower);
 
 	return float4(saturate((diffuse + ambient) * tex.Sample(smpl, tc).rgb + specular * specColorIntensity), 1.0f);

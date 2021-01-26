@@ -31,7 +31,7 @@ App::App(const int width, const int height, const char* title) :
 	mDisplay(width, height, title),
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
-	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
+	//mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
 	mGoblin(mDisplay.getGraphics(), "assets\\models\\goblin.obj")
 	//mPlane(mDisplay.getGraphics()),
 	//mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj")
@@ -122,7 +122,6 @@ void App::runFrame()
 	mLight.render(mDisplay.getGraphics());
 
 	mGoblin.render(mDisplay.getGraphics());
-	mNano.render(mDisplay.getGraphics());
 
 	if (mDisplay.keyboard.isPressedOnce(VK_ESCAPE))
 	{
@@ -159,14 +158,13 @@ void App::runFrame()
 
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
-	mGoblin.showImguiWindow("Goblin");
-	mNano.showImguiWindow("Nanosuit");
+	mGoblin.showImguiWindow(mDisplay.getGraphics(), "Goblin");
 
 	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
 
 	//mDisplay.getGraphics().drawText("Kristen ITC", "Hello!", 400, 400,
 	//	DirectX::Colors::OrangeRed, 2.0f, 45);
-	show_debug_console();
+	//show_debug_console();
 
 	mDisplay.getGraphics().swap();
 }

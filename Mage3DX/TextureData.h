@@ -33,11 +33,14 @@ public:
 	static std::string generateUID(const std::string& path, uint slot = 0);
 	std::string getUID() const noexcept override;
 
+	[[nodiscard]] bool hasAlpha() const noexcept { return mAlpha; }
+
 protected:
 	COMptr<ID3D11ShaderResourceView> mTextureView;
 	std::string mPath;
 private:
 	uint mSlot;
+	bool mAlpha = false;
 };
 
 

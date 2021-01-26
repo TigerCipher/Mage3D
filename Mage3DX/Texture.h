@@ -25,20 +25,21 @@
 class Texture
 {
 public:
-	Texture(uint width, uint height, uint pitch) noexcept :
+	Texture(const uint width, const uint height, const uint pitch) noexcept :
+		mBuffer(createScope<Color[]>(pitch * height)),
 		mWidth(width),
-		mHeight(height),
-		mBuffer(createScope<Color[]>(pitch * height))
+		mHeight(height)
 	{ }
-	Texture(uint width, uint height) noexcept : Texture(width, height, width) { }
+	Texture(const uint width, const uint height) noexcept : Texture(width, height, width) { }
 
 	virtual ~Texture() = default;
 	Texture(const Texture& rhs) = delete;
 	Texture& operator=(const Texture& rhs) = delete;
 	Texture(Texture&& src) noexcept :
+		mBuffer(std::move(src.mBuffer)),
 		mWidth(src.mWidth),
 		mHeight(src.mHeight),
-		mBuffer(std::move(src.mBuffer))
+		mAlphaLoaded(src.mAlphaLoaded)
 	{ }
 	Texture& operator=(Texture&& src) noexcept;
 
@@ -55,19 +56,23 @@ public:
 	void save(const std::string& fileName) const;
 	void copy(const Texture& src) const noexcept(!MAGE_DEBUG);
 
+	bool isAlphaLoaded() const noexcept { return mAlphaLoaded; }
+
 	static Texture loadFromFile(const std::string& fileName);
 
 protected:
 private:
-	Texture(uint width, uint height, UniquePtr<Color[]> buffer) noexcept :
+	Texture(const uint width, const uint height, UniquePtr<Color[]> buffer, bool alphaLoaded = false) noexcept :
+		mBuffer(std::move(buffer)),
 		mWidth(width),
 		mHeight(height),
-		mBuffer(std::move(buffer))
+		mAlphaLoaded(alphaLoaded)
 	{ }
 
 	UniquePtr<Color[]> mBuffer;
 	uint mWidth;
 	uint mHeight;
+	bool mAlphaLoaded = false;
 };
 
 

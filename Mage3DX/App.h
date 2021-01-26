@@ -48,7 +48,7 @@ private:
 	Timer mPerformanceTimer;
 	bool mRunning;
 	float mGlobalSpeed = 1.0f;
-	Model mNano;
+	//Model mNano;
 	//Model mNano2;
 	//TestPlane mPlane;
 	//TestCube mCube;

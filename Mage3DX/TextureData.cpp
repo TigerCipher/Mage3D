@@ -32,6 +32,9 @@ TextureData::TextureData(Graphics& gfx, const std::string& path, uint slot) :
 	DEBUG_INFO(gfx);
 
 	const auto surface = Texture::loadFromFile(path);
+
+	mAlpha = surface.isAlphaLoaded();
+	
 	// create texture resource
 	D3D11_TEXTURE2D_DESC textureDesc = { };
 	textureDesc.Width = surface.getWidth();
@@ -71,7 +74,7 @@ SharedPtr<TextureData> TextureData::resolve(Graphics& gfx, const std::string& pa
 	return BindableCodex::resolve<TextureData>(gfx, path, slot);
 }
 
-std::string TextureData::generateUID(const std::string& path, uint slot)
+std::string TextureData::generateUID(const std::string& path, const uint slot)
 {
 	using namespace std::string_literals;
 	return typeid(TextureData).name() + "#"s + path + "#"s + std::to_string(slot);

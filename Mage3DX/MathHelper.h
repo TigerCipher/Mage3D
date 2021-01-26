@@ -33,7 +33,8 @@ typedef dx::XMFLOAT4X3 mat4x3;
 typedef dx::XMFLOAT3X4 mat3x4;
 
 
-typedef dx::XMVECTOR vec4f;
+typedef dx::XMVECTOR vec;
+typedef dx::XMFLOAT4 vec4f;
 typedef dx::XMFLOAT3 vec3f;
 typedef dx::XMFLOAT2 vec2f;
 
@@ -88,5 +89,5 @@ T wrapAngle(T theta)
 }
 
 
-extern float dot(vec4f v1, vec4f v2);
+extern float dot(vec v1, vec v2);
 

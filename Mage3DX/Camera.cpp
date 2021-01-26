@@ -73,7 +73,7 @@ void Camera::translate(vec3f translation) noexcept
 mat4f Camera::getViewMatrix() const noexcept
 {
 	using namespace dx; // required in scope for operator overloads
-	const vec4f forward = XMVectorSet(0, 0, 1.0f, 0);
+	const vec forward = XMVectorSet(0, 0, 1.0f, 0);
 	const auto look = XMVector3Transform(forward, XMMatrixRotationRollPitchYaw(mPitch, mYaw, 0.0f));
 	const auto camPos = XMLoadFloat3(&mPosition);
 	const auto camTarget = camPos + look;

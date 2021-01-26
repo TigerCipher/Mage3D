@@ -38,6 +38,7 @@ Texture& Texture::operator=(Texture&& src) noexcept
 	mWidth = src.mWidth;
 	mHeight = src.mHeight;
 	mBuffer = std::move(src.mBuffer);
+	mAlphaLoaded = src.mAlphaLoaded;
 	src.mBuffer = nullptr;
 	return *this;
 }
@@ -127,6 +128,7 @@ Texture Texture::loadFromFile(const std::string& fileName)
 	uint width = 0;
 	uint height = 0;
 	Scope<Color[]> buf;
+	bool alphaLoaded = false;
 
 	{
 		wchar_t wideName[512];
@@ -152,11 +154,13 @@ Texture Texture::loadFromFile(const std::string& fileName)
 				Gdiplus::Color c;
 				bitmap.GetPixel(x, y, &c);
 				buf[ y * width + x ] = c.GetValue();
+				if (c.GetAlpha() != 255)
+					alphaLoaded = true;
 			}
 		}
 	}
 
 	LOG_TRACE("Loaded texture [{}]", fileName);
-	return Texture(width, height, std::move(buf));
+	return Texture(width, height, std::move(buf), alphaLoaded);
 }
 

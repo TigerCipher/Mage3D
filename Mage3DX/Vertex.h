@@ -98,7 +98,7 @@ template<> struct Map<COLOR4F>
 	static constexpr const char* CODE = "C4";
 	static constexpr const char* SEMANTIC = "Color";
 	static constexpr DXGI_FORMAT FORMAT = DXGI_FORMAT_R32G32B32A32_FLOAT;
-	using sysType = vec4f;
+	using sysType = vec;
 };
 
 template<> struct Map<COLORARGB>

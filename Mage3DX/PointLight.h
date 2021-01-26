@@ -39,8 +39,8 @@ private:
 	struct PointLightCBuf
 	{
 		alignas(16) vec3f pos;
-		alignas(16) vec3f diffuseColor;
 		alignas(16) vec3f ambient;
+		alignas(16) vec3f diffuseColor;
 
 		float diffuseIntensity;
 

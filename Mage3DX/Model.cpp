@@ -81,6 +81,7 @@ void Node::setAppliedTransform(mat4f transform) noexcept
 	dx::XMStoreFloat4x4(&mAppliedTransform, transform);
 }
 
+
 void Node::addChild(UniquePtr<Node> child) noexcept(!MAGE_DEBUG)
 {
 	assert(child && "Child must not be null");
@@ -93,7 +94,7 @@ void Node::addChild(UniquePtr<Node> child) noexcept(!MAGE_DEBUG)
 class ModelWindow
 {
 public:
-	void show(const char* windowName, const Node & root) noexcept
+	void show(Graphics& gfx, const char* windowName, const Node & root) noexcept
 	{
 		if (!windowName) windowName = "Model";
 
@@ -117,6 +118,12 @@ public:
 			IMGUI_FUNC(SliderFloat("X", &transform.x, -200, 200));
 			IMGUI_FUNC(SliderFloat("Y", &transform.y, -200, 200));
 			IMGUI_FUNC(SliderFloat("Z", &transform.z, -200, 200));
+
+			// Material
+			if(!mSelectedNode->showMaterialControl(gfx, mMatFull))
+			{
+				mSelectedNode->showMaterialControl(gfx, mMatNotex);
+			}
 		}
 		IMGUI_END
 	}
@@ -145,6 +152,8 @@ private:
 
 
 	Node* mSelectedNode;
+	Node::MaterialConstFull mMatFull;
+	Node::MaterialConstNotex mMatNotex;
 	std::unordered_map<int, TransformParameters> mTransforms;
 };
 
@@ -208,7 +217,10 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	bool hasSpecMap = false;
 	bool hasNormalMap = false;
 	bool hasDiffuseMap = false;
-	float shininess = 35.0f;
+	bool hasAlphaGloss = false;
+	float shininess = 2.0f;
+	vec4f specColor = { 0.18f, 0.18f, 0.18f, 1.0f };
+	vec4f diffColor = { 0.85f, 0.45f, 0.85f, 1.0f };
 
 	list<SharedPtr<Bindable> > binds;
 
@@ -224,22 +236,32 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		{
 			binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str()));
 			hasDiffuseMap = true;
+		}else
+		{
+			material.Get(AI_MATKEY_COLOR_DIFFUSE, reinterpret_cast<aiColor3D&>(diffColor));
 		}
 
 		if (material.GetTexture(aiTextureType_SPECULAR, 0, &textureFile) == aiReturn_SUCCESS)
 		{
+			auto spec = TextureData::resolve(gfx, basePath + textureFile.C_Str(), 1);
+			hasAlphaGloss = spec->hasAlpha();
 			hasSpecMap = true;
-			binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str(), 1));
+			binds.push_back(std::move(spec));
+		}else
+		{
+			material.Get(AI_MATKEY_COLOR_SPECULAR, reinterpret_cast<aiColor3D&>(specColor));
 		}
-		else
+		if(!hasAlphaGloss)
 		{
 			material.Get(AI_MATKEY_SHININESS, shininess);
 		}
 
 		if(material.GetTexture(aiTextureType_NORMALS, 0, &textureFile) == aiReturn_SUCCESS)
 		{
-			binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str(), 2));
+			auto norm = TextureData::resolve(gfx, basePath + textureFile.C_Str(), 2);
 			hasNormalMap = true;
+			hasAlphaGloss = norm->hasAlpha();
+			binds.push_back(std::move(norm));
 		}
 
 		if(hasDiffuseMap || hasSpecMap || hasNormalMap)
@@ -274,12 +296,10 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		vertShader = "shaders\\phongNormalVS.cso";
 		pixShader = "shaders\\phongSpecPS.cso";
 
-		struct MaterialConst
-		{
-			BOOL normalMapEnabled = TRUE;
-			float padding[3];
-		} matConst;
-		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
+		Node::MaterialConstFull matConst;
+		matConst.specularPower = shininess;
+		matConst.hasGlossMap = hasAlphaGloss ? TRUE : FALSE;
+		binds.push_back(PixelConstantBuffer<Node::MaterialConstFull>::resolve(gfx, matConst, 1));
 		
 	} else if(hasDiffuseMap && hasNormalMap)
 	{
@@ -313,13 +333,13 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		pixShader = "shaders\\phongNormalPS.cso";
 		struct MaterialConst
 		{
-			float specIntensity = 0.18f;
-			float specPower = 20.0f;
+			float specIntensity;
+			float specPower;
 			BOOL normalMapEnabled = TRUE;
 			float padding[1];
 		} matConst;
 		matConst.specPower = shininess;
-
+		matConst.specIntensity = (specColor.x + specColor.y + specColor.z) / 3.0f;
 		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
 	}else if(hasDiffuseMap)
 	{
@@ -340,12 +360,12 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		
 		struct MaterialConst
 		{
-			float specIntensity = 0.18f;
-			float specPower = 20.0f;
+			float specIntensity;
+			float specPower;
 			float padding[2];
 		} matConst;
 		matConst.specPower = shininess;
-
+		matConst.specIntensity = (specColor.x + specColor.y + specColor.z) / 3.0f;
 		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
 	}else if(!hasDiffuseMap && !hasNormalMap && !hasSpecMap)
 	{
@@ -359,19 +379,15 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 		vertShader = "shaders\\phongNotexVS.cso";
 		pixShader = "shaders\\phongNotexPS.cso";
-		struct MaterialConst
-		{
-			vec4f materialColor = { 0.75f, 0.2f, 0.4f, 1.0f };
-			float specIntensity = 0.18f;
-			float specPower = 20.0f;
-			float padding[2];
-		} matConst;
-		matConst.specPower = shininess;
 
-		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
+		Node::MaterialConstNotex matConst;
+		matConst.specPower = shininess;
+		matConst.specColor = specColor;
+		matConst.materialColor = diffColor; 
+		binds.push_back(PixelConstantBuffer<Node::MaterialConstNotex>::resolve(gfx, matConst, 1));
 	}else
 	{
-		throw ModelException(__LINE__, __FILE__, "Failed to parsh mesh");
+		throw ModelException(__LINE__, __FILE__, "Failed to parse mesh");
 	}
 
 
@@ -413,9 +429,9 @@ void Model::setRootTransform(const mat4f tf) const noexcept
 	mRoot->setAppliedTransform(tf);
 }
 
-void Model::showImguiWindow(const char* windowName) const noexcept
+void Model::showImguiWindow(Graphics& gfx, const char* windowName) const noexcept
 {
-	mWindow->show(windowName, *mRoot);
+	mWindow->show(gfx, windowName, *mRoot);
 }
 
 

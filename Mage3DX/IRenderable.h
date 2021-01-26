@@ -39,8 +39,6 @@ public:
 	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
 	//virtual void update(float delta) noexcept { }
 
-protected:
-
 	template<class T>
 	T* queryBindable() noexcept
 	{
@@ -53,6 +51,7 @@ protected:
 		return nullptr;
 	}
 
+protected:
 	void addBind(SharedPtr<Bindable> bind) noexcept(!MAGE_DEBUG);
 private:
 

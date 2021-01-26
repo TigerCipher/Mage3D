@@ -35,10 +35,9 @@ cbuffer LightCBuf
 
 cbuffer ModelCBuf
 {
-	float materialColor;
-	float specularIntensity;
+	float4 materialColor;
+	float4 specularColor;
 	float specularPower;
-	float padding[2];
 }
 
 
@@ -60,9 +59,9 @@ float4 main(float3 viewPos : Position, float3 n : Normal) : SV_Target
 	const float3 r = w * 2.0f - vToL;
 
 	// Specular intensity
-	const float3 spec = att * (diffuseColor * diffuseIntensity) * specularIntensity
+	const float4 spec = att * (float4(diffuseColor, 1.0f) * diffuseIntensity) * specularColor
 		* pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
 
-	return float4(saturate((diffuse + ambient) * materialColor + spec), 1.0f);
+	return saturate(float4(diffuse + ambient, 1.0f) * materialColor + spec);
 	
 }
