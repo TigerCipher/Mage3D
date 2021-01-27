@@ -45,7 +45,10 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float2 tc : T
 	if (normalMapEnabled)
 	{
 		const float3 normalSample = norm.Sample(smpl, tc).xyz;
-		const float3 objNormal = normalSample * 2.0f - 1.0f;
+		float3 objNormal;
+		objNormal.x = normalSample.x * 2.0f - 1.0f;
+		objNormal.y = -normalSample.y * 2.0f + 1.0f;
+		objNormal.z = -normalSample.z * 2.0f + 1.0f;
 
 		viewNormal = normalize(mul(objNormal, (float3x3) modelView));
 	}
