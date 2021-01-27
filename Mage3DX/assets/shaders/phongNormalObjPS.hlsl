@@ -19,20 +19,9 @@
  * Author: Matt
  */
 
+#include "lighting.hlsl"
+#include "pointlight.hlsl"
 
-cbuffer LightCBuf
-{
-	float3 lightPos;
-	float3 ambient;
-
-	float3 diffuseColor;
-	float diffuseIntensity;
-
-	// Attenuation
-	float attConst;
-	float attLin;
-	float attQuad;
-}
 
 cbuffer ModelCBuf
 {
@@ -42,49 +31,34 @@ cbuffer ModelCBuf
 	float padding[1];
 }
 
-cbuffer TransformCBuf
-{
-	matrix model;
-	matrix mvp;
-}
+#include "base.hlsl"
 
 Texture2D tex;
 Texture2D norm : register(t2);
 
 SamplerState smpl;
 
-float4 main(float3 viewPos : Position, float3 n : Normal, float2 tc : TexCoords) : SV_Target
+float4 main(float3 viewPos : Position, float3 viewNormal : Normal, float2 tc : TexCoords) : SV_Target
 {
 
 
 	if (normalMapEnabled)
 	{
-		const float3 normalSample = norm.Sample(smpl, tc);
-		n.x = normalSample.x * 2.0f - 1.0f;
-		n.y = -normalSample.y * 2.0f + 1.0f;
-		n.z = -normalSample.z * 2.0f + 1.0f;
+		const float3 normalSample = norm.Sample(smpl, tc).xyz;
+		const float3 objNormal = normalSample * 2.0f - 1.0f;
 
-		n = mul(n, (float3x3) model);
+		viewNormal = normalize(mul(objNormal, (float3x3) modelView));
 	}
 
-	// fragment to light vector data
-	const float3 vToL = lightPos - viewPos;
-	const float distToL = length(vToL);
-	const float3 dirToL = vToL / distToL;
+	const LightVectorData lvd = calculate_light_vector(viewLightPos, viewPos);
 
 	// Attenuation
-	const float att = 1.0f / (attConst + attLin * distToL + attQuad * (distToL * distToL));
+	const float att = attenuate(attConst, attLin, attQuad, lvd.distToL);
 
-	// diffuse intensity
-	const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, n));
-
-	// Light reflection vectors
-	const float3 w = n * dot(vToL, n);
-	const float3 r = w * 2.0f - vToL;
+	const float3 diff = diffuse(diffuseColor, diffuseIntensity, att, lvd.dirToL, viewNormal);
 
 	// Specular intensity
-	const float3 spec = att * (diffuseColor * diffuseIntensity) * specularIntensity
-		* pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
+	const float3 spec = speculate(specularIntensity.rrr, 1.0f, viewNormal, lvd.vToL, viewPos, att, specularPower);
 
-	return float4(saturate((diffuse + ambient) * tex.Sample(smpl, tc).rgb + spec), 1.0f);
+	return float4(saturate((diff + ambient) * tex.Sample(smpl, tc).rgb + spec), 1.0f);
 }

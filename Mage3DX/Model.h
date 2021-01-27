@@ -127,13 +127,11 @@ private:
 class Model
 {
 public:
-	Model(Graphics& gfx, const std::string& fileName);
+	Model(Graphics& gfx, const std::string& fileName, const float scale = 1.0f);
 	virtual ~Model() noexcept;
 
 	UniquePtr<Node> parseNode(int& nextId, const struct aiNode& node) noexcept;
 
-	static UniquePtr<Mesh> parseMesh(Graphics& gfx, const struct aiMesh& mesh, const struct
-	                                 aiMaterial* const* materials);
 
 	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
 
@@ -143,6 +141,9 @@ public:
 
 
 private:
+	static UniquePtr<Mesh> parseMesh(Graphics& gfx, const struct aiMesh& mesh, const struct
+	                                 aiMaterial* const* materials, const float scale);
+	
 	UniquePtr<Node> mRoot;
 	list<UniquePtr<Mesh> > mMeshes;
 

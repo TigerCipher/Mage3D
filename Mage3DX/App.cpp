@@ -31,10 +31,10 @@ App::App(const int width, const int height, const char* title) :
 	mDisplay(width, height, title),
 	mLight(mDisplay.getGraphics()),
 	mRunning(true),
-	//mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
-	mGoblin(mDisplay.getGraphics(), "assets\\models\\goblin.obj")
-	//mPlane(mDisplay.getGraphics()),
-	//mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj")
+	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj", 2),
+	mPlane(mDisplay.getGraphics(), 6),
+	mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj", 6),
+	mGoblin(mDisplay.getGraphics(), "assets\\models\\goblin.obj", 6)
 	//mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
 	//mCube(mDisplay.getGraphics(), 4.0f)
 {
@@ -43,13 +43,20 @@ App::App(const int width, const int height, const char* title) :
 		0.5f, 1000.0f));
 	mDisplay.toggleCursor(0);
 
-	//mDisplay.getGraphics().addFont("Courier New", "assets\\fonts\\courier_new.sf");
-	//mDisplay.getGraphics().addFont("Agency FB", "assets\\fonts\\agencyfb.sf");
-	//mDisplay.getGraphics().addFont("Arial", "assets\\fonts\\arial.sf");
-	//mDisplay.getGraphics().addFont("Impact", "assets\\fonts\\impact.sf");
-	//mDisplay.getGraphics().addFont("Ink Free", "assets\\fonts\\inkfree.sf");
-	//mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
+	mDisplay.getGraphics().addFont("Courier New", "assets\\fonts\\courier_new.sf");
+	mDisplay.getGraphics().addFont("Agency FB", "assets\\fonts\\agencyfb.sf");
+	mDisplay.getGraphics().addFont("Arial", "assets\\fonts\\arial.sf");
+	mDisplay.getGraphics().addFont("Impact", "assets\\fonts\\impact.sf");
+	mDisplay.getGraphics().addFont("Ink Free", "assets\\fonts\\inkfree.sf");
+	mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
 	mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
+
+
+
+	mWall.setRootTransform(translateMatrix(-1.5f, 0, 0));
+	mPlane.setPosition({ 12, 0, 0 });
+	mNano.setRootTransform(translateMatrix(0, -7, 6));
+	mGoblin.setRootTransform(translateMatrix(0, 0, -4));
 
 }
 
@@ -122,6 +129,9 @@ void App::runFrame()
 	mLight.render(mDisplay.getGraphics());
 
 	mGoblin.render(mDisplay.getGraphics());
+	mWall.render(mDisplay.getGraphics());
+	mNano.render(mDisplay.getGraphics());
+	mPlane.render(mDisplay.getGraphics());
 
 	if (mDisplay.keyboard.isPressedOnce(VK_ESCAPE))
 	{
@@ -159,6 +169,9 @@ void App::runFrame()
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
 	mGoblin.showImguiWindow(mDisplay.getGraphics(), "Goblin");
+	mNano.showImguiWindow(mDisplay.getGraphics(), "Nanosuit");
+	mWall.showImguiWindow(mDisplay.getGraphics(), "Wall");
+	mPlane.spawnControlWindow(mDisplay.getGraphics());
 
 	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
 

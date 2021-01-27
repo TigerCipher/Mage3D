@@ -1,5 +1,5 @@
 ﻿extensions: designer.cs generated.cs
-extensions: .cpp .h .c .hpp .cc .cxx .inl .hlsl .glsl
+extensions: .cpp .h .c .hpp .cc .cxx .inl .hlsl .glsl .hlsli
 /*
  * %Project%
  * Copyright (C) %CreationYear% Blue Moon Development. All rights reserved.

@@ -18,6 +18,7 @@
  * Date File Created: 10/5/2020 at 6:17 PM
  * Author: Matt
  */
+// ReSharper disable CppClangTidyClangDiagnosticImplicitIntConversion
 #include "Model.h"
 #include "Vertex.h"
 #include "Bindables.h"
@@ -160,7 +161,7 @@ private:
 
 //////////////////////////////////////////////////////////////
 
-Model::Model(Graphics& gfx, const std::string& fileName) :
+Model::Model(Graphics& gfx, const std::string& fileName, const float scale) :
 	mWindow(createScope<ModelWindow>())
 {
 	Assimp::Importer imp;
@@ -177,7 +178,7 @@ Model::Model(Graphics& gfx, const std::string& fileName) :
 
 	for(size_t i = 0; i < scene->mNumMeshes; i++)
 	{
-		mMeshes.push_back(parseMesh(gfx, *scene->mMeshes[i], scene->mMaterials));
+		mMeshes.push_back(parseMesh(gfx, *scene->mMeshes[i], scene->mMaterials, scale));
 	}
 
 	int nextId = 0;
@@ -211,7 +212,7 @@ UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 	return currentNode;
 }
 
-UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* materials)
+UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* materials, const float scale)
 {
 	LOG_DEBUG("Loading mesh {}", mesh.mName.C_Str());
 	bool hasSpecMap = false;
@@ -274,7 +275,6 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	std::string vertShader;
 	std::string pixShader;
 
-	constexpr float scale = 1.0f;
 	
 	if(hasDiffuseMap && hasNormalMap && hasSpecMap)
 	{
@@ -333,10 +333,10 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		pixShader = "shaders\\phongNormalPS.cso";
 		struct MaterialConst
 		{
-			float specIntensity;
-			float specPower;
+			float specIntensity{};
+			float specPower{};
 			BOOL normalMapEnabled = TRUE;
-			float padding[1];
+			float padding[1]{};
 		} matConst;
 		matConst.specPower = shininess;
 		matConst.specIntensity = (specColor.x + specColor.y + specColor.z) / 3.0f;

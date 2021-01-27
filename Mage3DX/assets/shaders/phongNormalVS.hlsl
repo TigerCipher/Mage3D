@@ -35,11 +35,11 @@ struct VSOut
 	float4 pos : SV_Position;
 };
 
-VSOut main(float3 pos : Position, float3 n : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords)
+VSOut main(float3 pos : Position, float3 viewNormal : Normal, float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords)
 {
 	VSOut vso;
 	vso.viewPos = (float3) mul(float4(pos, 1.0f), modelView);
-	vso.normal = mul(n, (float3x3) modelView);
+	vso.normal = mul(viewNormal, (float3x3) modelView);
 	vso.tan = mul(tan, (float3x3) modelView);
 	vso.bitan = mul(bitan, (float3x3) modelView);
 	vso.pos = mul(float4(pos, 1.0f), mvp);

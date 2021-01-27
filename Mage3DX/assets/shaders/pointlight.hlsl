@@ -1,6 +1,6 @@
 /*
  * Mage3DX
- * Copyright (C) 2020 Blue Moon Development. All rights reserved.
+ * Copyright (C) 2021 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -14,30 +14,20 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: blendedPhongVS.hlsl
- * Date File Created: 10/1/2020 at 3:13 PM
+ * File Name: pointlight.hlsl
+ * Date File Created: 1/26/2021 at 8:21 PM
  * Author: Matt
  */
-cbuffer CBuf
-{
-    matrix modelView;
-    matrix modelViewProj;
-};
 
-struct VSOut
+cbuffer PointLightCBuf
 {
-    float3 worldPos : Position;
-    float3 normal : Normal;
-    float3 color : Color;
-    float4 pos : SV_Position;
-};
+	float3 viewLightPos;
+	float3 ambient;
+	float3 diffuseColor;
 
-VSOut main(float3 pos : Position, float3 n : Normal, float3 color : Color)
-{
-    VSOut vso;
-    vso.worldPos = (float3) mul(float4(pos, 1.0f), modelView);
-    vso.normal = mul(n, (float3x3) modelView);
-    vso.pos = mul(float4(pos, 1.0f), modelViewProj);
-    vso.color = color;
-    return vso;
+	float diffuseIntensity;
+	// Attenuation
+	float attConst;
+	float attLin;
+	float attQuad;
 }
