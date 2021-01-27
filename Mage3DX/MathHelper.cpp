@@ -27,3 +27,28 @@ float dot(vec v1, vec v2)
     auto d = dx::XMVectorGetX(result);
     return d;
 }
+
+vec3f extract_euler_angles(const mat4x4& matrix)
+{
+    vec3f euler;
+
+    euler.x = asinf(-matrix._32); // Extracts pitch
+
+	// Check if its not at poles
+	if(cosf(euler.x) > 0.0001f)
+	{
+        euler.y = atan2f(matrix._31, matrix._33); // Extracts yaw
+        euler.z = atan2f(matrix._12, matrix._22); // Extracts roll
+	}else
+	{
+		euler.y = 0.0f; // yaw
+		euler.z = atan2f(-matrix._21, matrix._11); // Extracts roll
+	}
+
+	return euler;
+}
+
+vec3f extract_translation(const mat4x4& matrix)
+{
+	return { matrix._41, matrix._42, matrix._43 };
+}

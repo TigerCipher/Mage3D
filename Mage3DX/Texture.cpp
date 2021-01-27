@@ -88,6 +88,7 @@ void Texture::save(const std::string& fileName) const
 			}
 
 			Gdiplus::GetImageEncoders(num, size, codecInfo);
+			LOG_DEBUG("Num {} Size {}", num, size);
 			for (UINT i = 0; i < num; i++)
 			{
 				if (wcscmp(codecInfo[ i ].MimeType, format) == 0)
@@ -104,7 +105,7 @@ void Texture::save(const std::string& fileName) const
 		};
 
 	CLSID bmp;
-	getEncoder(L"ibmp", &bmp);
+	getEncoder(L"image/bmp", &bmp);
 
 	wchar_t wideName[512];
 	mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
@@ -138,10 +139,7 @@ Texture Texture::loadFromFile(const std::string& fileName)
 		if (errStatus != Gdiplus::Status::Ok)
 		{
 			LOG_ERROR("Failed to load texture [{}]. Status {}", fileName, errStatus);
-			// TODO: Fmt format is broken - causes read access violations
-			std::ostringstream oss;
-			oss << "Failed to load texture [" << fileName << "]";
-			throw TextureException(__LINE__, __FILE__, oss.str()/*fmt::format("Failed to load texture [{}]", fileName)*/);
+			throw TextureException(__LINE__, __FILE__, fmt::format("Failed to load texture [{}]", fileName));
 		}
 		width = bitmap.GetWidth();
 		height = bitmap.GetHeight();

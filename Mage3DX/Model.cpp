@@ -100,30 +100,47 @@ public:
 		if (!windowName) windowName = "Model";
 
 		int nodeIndex = 0;
-
 		IMGUI_BEGIN(windowName)
-		IMGUI_FUNC(Columns(2, nullptr, true));
-		root.showTree(mSelectedNode);
-
-		IMGUI_FUNC(NextColumn());
-
-		if(mSelectedNode)
 		{
-			auto& transform = mTransforms[mSelectedNode->getId()];
-			IMGUI_FUNC(Text("Node ID: %i", mSelectedNode->getId()));
-			IMGUI_FUNC(Text("Orientation"));
-			IMGUI_FUNC(SliderAngle("Roll", &transform.roll, -180, 180));
-			IMGUI_FUNC(SliderAngle("Pitch", &transform.pitch, -180, 180));
-			IMGUI_FUNC(SliderAngle("Yaw", &transform.yaw, -180, 180));
-			IMGUI_FUNC(Text("Position"));
-			IMGUI_FUNC(SliderFloat("X", &transform.x, -200, 200));
-			IMGUI_FUNC(SliderFloat("Y", &transform.y, -200, 200));
-			IMGUI_FUNC(SliderFloat("Z", &transform.z, -200, 200));
+			IMGUI_FUNC(Columns(2, nullptr, true));
+			root.showTree(mSelectedNode);
 
-			// Material
-			if(!mSelectedNode->showMaterialControl(gfx, mMatFull))
+			IMGUI_FUNC(NextColumn());
+
+			if(mSelectedNode)
 			{
-				mSelectedNode->showMaterialControl(gfx, mMatNotex);
+				const auto id = mSelectedNode->getId();
+				auto i = mTransforms.find(id);
+				if(i == mTransforms.end())
+				{
+					const auto& applied = mSelectedNode->getAppliedTransform();
+					const auto angles = extract_euler_angles(applied);
+					const auto translation = extract_translation(applied);
+
+					TransformParameters tp = {
+						angles.z, angles.x, angles.y,
+						translation.x, translation.y, translation.z
+					};
+
+					std::tie(i, std::ignore) = mTransforms.insert({ id, tp });
+				}
+				auto& transform = i->second;
+				
+				IMGUI_FUNC(Text("Node ID: %i", mSelectedNode->getId()));
+				IMGUI_FUNC(Text("Orientation"));
+				IMGUI_FUNC(SliderAngle("Roll", &transform.roll, -180, 180));
+				IMGUI_FUNC(SliderAngle("Pitch", &transform.pitch, -180, 180));
+				IMGUI_FUNC(SliderAngle("Yaw", &transform.yaw, -180, 180));
+				IMGUI_FUNC(Text("Position"));
+				IMGUI_FUNC(SliderFloat("X", &transform.x, -200, 200));
+				IMGUI_FUNC(SliderFloat("Y", &transform.y, -200, 200));
+				IMGUI_FUNC(SliderFloat("Z", &transform.z, -200, 200));
+
+				// Material
+				if(!mSelectedNode->showMaterialControl(gfx, mMatFull))
+				{
+					mSelectedNode->showMaterialControl(gfx, mMatNotex);
+				}
 			}
 		}
 		IMGUI_END
@@ -294,7 +311,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		}
 
 		vertShader = "shaders\\phongNormalVS.cso";
-		pixShader = "shaders\\phongSpecPS.cso";
+		pixShader = "shaders\\phongSpecNormalPS.cso";
 
 		Node::MaterialConstFull matConst;
 		matConst.specularPower = shininess;
@@ -385,6 +402,36 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		matConst.specColor = specColor;
 		matConst.materialColor = diffColor; 
 		binds.push_back(PixelConstantBuffer<Node::MaterialConstNotex>::resolve(gfx, matConst, 1));
+	}
+	else if (hasDiffuseMap && hasSpecMap && !hasNormalMap)
+	{
+		vData = VertexBuffer(std::move(VertexLayout{ }.append(POSITION3D).append(NORMAL)
+			.append(TEXTURE2D)));
+
+		for (uint i = 0; i < mesh.mNumVertices; i++)
+		{
+			vData.emplaceBack(
+				vec3f(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
+				*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
+				*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
+			);
+		}
+
+		vertShader = "shaders\\phongVS.cso";
+		pixShader = "shaders\\phongSpecPS.cso";
+
+		struct MaterialConstant
+		{
+			float specularPower;
+			BOOL hasGloss;
+			float specularMapWeight;
+			float padding;
+		}matConst;
+
+		matConst.specularPower = shininess;
+		matConst.hasGloss = hasAlphaGloss ? TRUE : FALSE;
+		matConst.specularMapWeight = 1.0f;
+		binds.push_back(PixelConstantBuffer<MaterialConstant>::resolve(gfx, matConst, 1));
 	}else
 	{
 		throw ModelException(__LINE__, __FILE__, "Failed to parse mesh");

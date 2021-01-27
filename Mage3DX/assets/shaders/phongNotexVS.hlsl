@@ -19,12 +19,7 @@
  * Author: Matt
  */
 
-
-cbuffer CBuf
-{
-	matrix modelView;
-	matrix mvp;
-}
+#include "transform.hlsl"
 
 struct VSOut
 {

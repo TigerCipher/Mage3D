@@ -21,23 +21,42 @@
 #include "App.h"
 #include "GDIPlusManager.h"
 #include "ImguiManager.h"
+#include "NormalMapTweaker.h"
+
+#include <shellapi.h>
 
 
 GDIPlusManager gGdip;
 
 void show_debug_console();
 
-App::App(const int width, const int height, const char* title) :
+App::App(const int width, const int height, const char* title, const std::string& cmdLine) :
+	mCommandLine(cmdLine),
 	mDisplay(width, height, title),
-	mLight(mDisplay.getGraphics()),
 	mRunning(true),
+	mLight(mDisplay.getGraphics()),
 	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj", 2),
 	mPlane(mDisplay.getGraphics(), 6),
 	mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj", 6),
 	mGoblin(mDisplay.getGraphics(), "assets\\models\\goblin.obj", 6)
-	//mNano2(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj"),
-	//mCube(mDisplay.getGraphics(), 4.0f)
 {
+
+	if(!cmdLine.empty())
+	{
+		int args;
+		const auto* lineW = GetCommandLineW();
+		const auto* pArgs = CommandLineToArgvW(lineW, &args);
+
+		if(args >= 4 && std::wstring(pArgs[1]) == L"--ntweak-rotx180")
+		{
+			const std::wstring pathSrcWide = pArgs[2];
+			const std::wstring pathDestWide = pArgs[3];
+			NormalMapTweaker::rotateXAxis(std::string(pathSrcWide.begin(), pathSrcWide.end()),
+				std::string(pathDestWide.begin(), pathDestWide.end()));
+			throw stacktraceRuntimeError("Normal map processed. Fake error");
+		}
+	}
+	
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),
 		0.5f, 1000.0f));
@@ -53,10 +72,10 @@ App::App(const int width, const int height, const char* title) :
 
 
 
-	mWall.setRootTransform(translateMatrix(-1.5f, 0, 0));
-	mPlane.setPosition({ 12, 0, 0 });
-	mNano.setRootTransform(translateMatrix(0, -7, 6));
-	mGoblin.setRootTransform(translateMatrix(0, 0, -4));
+	mWall.setRootTransform(translateMatrix(-12, 0, 4));
+	mPlane.setPosition({ 12, 0, 4 });
+	mNano.setRootTransform(translateMatrix(0, -7, 10));
+	mGoblin.setRootTransform(translateMatrix(0, 0, 0));
 
 }
 
@@ -168,9 +187,11 @@ void App::runFrame()
 
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
-	mGoblin.showImguiWindow(mDisplay.getGraphics(), "Goblin");
-	mNano.showImguiWindow(mDisplay.getGraphics(), "Nanosuit");
-	mWall.showImguiWindow(mDisplay.getGraphics(), "Wall");
+	//IMGUI_BEGIN("Model Control")
+		mGoblin.showImguiWindow(mDisplay.getGraphics(), "Goblin");
+		mNano.showImguiWindow(mDisplay.getGraphics(), "Nanosuit");
+		mWall.showImguiWindow(mDisplay.getGraphics(), "Wall");
+	//IMGUI_END
 	mPlane.spawnControlWindow(mDisplay.getGraphics());
 
 	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);

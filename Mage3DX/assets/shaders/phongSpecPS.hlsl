@@ -15,44 +15,29 @@
  * Contact: team@bluemoondev.org
  * 
  * File Name: phongSpecPS.hlsl
- * Date File Created: 1/21/2021 at 8:48 PM
+ * Date File Created: 1/27/2021 at 11:31 AM
  * Author: Matt
  */
 
-#include "pointlight.hlsl"
 #include "lighting.hlsl"
+#include "pointlight.hlsl"
 
-cbuffer ModelCbuf
+cbuffer ModelCBuf
 {
-	bool normalMapEnabled;
-	bool specularMapEnabled;
-	bool hasGloss;
 	float specularPower;
-	float3 specularColor;
+	bool hasGloss;
 	float specularMapWeight;
 }
 
 Texture2D tex;
 Texture2D spec;
-Texture2D norm;
 
 SamplerState smpl;
 
-
 float4 main(float3 viewPos : Position, float3 viewNormal : Normal,
-			float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords) : SV_Target
+	float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords) : SV_Target
 {
-
-	if(normalMapEnabled)
-	{
-		viewNormal = normal_map_viewspace(
-			normalize(tan), 
-			normalize(bitan), 
-			normalize(viewNormal),
-			tc, norm, smpl);
-	}
-
-	
+	viewNormal = normalize(viewNormal);
 	// fragment to light vector data
 	const LightVectorData lvd = calculate_light_vector(viewLightPos, viewPos);
 
@@ -62,21 +47,12 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal,
 	// diffuse intensity
 	const float3 diff = diffuse(diffuseColor, diffuseIntensity, att, lvd.dirToL, viewNormal);
 
-	// Specular intensity
-	float3 specColorIntensity;
-
 	float specPower = specularPower;
-	if(specularMapEnabled)
+	const float4 specSample = spec.Sample(smpl, tc);
+	const float3 specColorIntensity = specSample.rgb * specularMapWeight;
+	if (hasGloss)
 	{
-		const float4 specSample = spec.Sample(smpl, tc);
-		specColorIntensity = specSample.rgb * specularMapWeight;
-		if(hasGloss)
-		{
-			specPower = pow(2.0f, specSample.a * specPowerFactor);	
-		}
-	}else
-	{
-		specColorIntensity = specularColor;
+		specPower = pow(2.0f, specSample.a * specPowerFactor);
 	}
 	const float3 specular = speculate(specColorIntensity, 1.0f, viewNormal, lvd.vToL, viewPos, att, specPower);
 

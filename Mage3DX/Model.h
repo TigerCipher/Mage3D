@@ -45,6 +45,8 @@ public:
 
 	void setAppliedTransform(mat4f transform) noexcept;
 
+	const mat4x4& getAppliedTransform() const noexcept { return mAppliedTransform; }
+
 	int getId() const noexcept { return mId; }
 
 	struct MaterialConstFull

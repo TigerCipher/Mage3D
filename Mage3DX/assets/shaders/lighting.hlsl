@@ -40,7 +40,10 @@ LightVectorData calculate_light_vector(const in float3 lightPos, const in float3
 }
 
 
-float3 normal_map_viewspace(const in float3 viewTan, const in float3 viewBitan, const in float3 viewNormal, const in float2 tc, uniform Texture2D norm, uniform SamplerState smpl)
+float3 normal_map_viewspace(const in float3 viewTan,
+	const in float3 viewBitan,
+	const in float3 viewNormal,
+	const in float2 tc, uniform Texture2D norm, uniform SamplerState smpl)
 {
 	const float3x3 tanToView = float3x3(viewTan, viewBitan, viewNormal);
 	const float3 normalSample = norm.Sample(smpl, tc).rgb;
@@ -55,12 +58,15 @@ float attenuate(uniform float attConst, uniform float attLin, uniform float attQ
 	return 1.0f / (attConst + attLin * distFragToL + attQuad * (distFragToL * distFragToL));
 }
 
-float3 diffuse(uniform float3 diffuseColor, uniform float diffuseIntensity, const in float att, const in float3 viewDirToL, const in float3 viewNormal)
+float3 diffuse(uniform float3 diffuseColor, uniform float diffuseIntensity,
+	const in float att, const in float3 viewDirToL, const in float3 viewNormal)
 {
 	return diffuseColor * diffuseIntensity * att * max(0.0f, dot(viewDirToL, viewNormal));
 }
 
-float3 speculate(const in float3 specularColor, uniform float specularIntensity, const in float3 viewNormal, const in float3 viewToL, const in float3 viewPos, const in float att, const in float specularPower)
+float3 speculate(const in float3 specularColor, uniform float specularIntensity,
+	const in float3 viewNormal, const in float3 viewToL, const in float3 viewPos,
+	const in float att, const in float specularPower)
 {
 	const float3 w = viewNormal * dot(viewToL, viewNormal);
 	const float3 r = normalize(2 * 2.0f - viewToL);

@@ -22,19 +22,19 @@
 #include "PointLight.h"
 #include "ImguiManager.h"
 
-PointLight::PointLight(Graphics& gfx, float radius) :
-	mMesh(gfx, radius),
-	mBuffer(gfx)
-{
-	mCbuf = {
-		{ 2.0f, 0, -5.0f },
+PointLight::PointLight(Graphics& gfx, const float radius) :
+	mCbuf{
+		{ 2, 5, -15.0f },
 		{ 0.1f, 0.1f, 0.1f },
 		{ 1.0f, 1.0f, 1.0f },
 		1.0f,
 		1.0f,
 		0.045f,
 		0.0075f
-	};
+	},
+	mMesh(gfx, radius),
+	mBuffer(gfx)
+{
 }
 
 void PointLight::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)

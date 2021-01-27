@@ -23,35 +23,34 @@
 #include "Display.h"
 #include "Timer.h"
 
-#include "IRenderable.h"
 #include "Camera.h"
 #include "PointLight.h"
 #include "Model.h"
 #include "TestPlane.h"
-#include "TestCube.h"
 
 class App
 {
 public:
-	App(int width, int height, const char* title);
+	App(int width, int height, const char* title, const std::string& cmdLine);
 	virtual ~App();
 	int run();
 	void stop();
 private:
 	void runFrame();
 
+	std::string mCommandLine;
+	
 	Display mDisplay;
 	Camera mCamera;
-	PointLight mLight;
 
 	Timer mTimer;
 	Timer mPerformanceTimer;
 	bool mRunning;
 	float mGlobalSpeed = 1.0f;
+	
+	PointLight mLight;
 	Model mNano;
-	//Model mNano2;
 	TestPlane mPlane;
-	//TestCube mCube;
 	Model mWall;
 	Model mGoblin;
 	int x = 0, y = 0;

@@ -18,11 +18,8 @@
  * Date File Created: 9/26/2020 at 3:55 PM
  * Author: Matt
  */
-cbuffer CBuf
-{
-	matrix modelView;
-	matrix mvp; // model * view * projection
-};
+
+#include "transform.hlsl"
 
 
 struct VSOut

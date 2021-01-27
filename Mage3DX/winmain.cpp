@@ -40,7 +40,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		{
 			// Inner scope so when in Debug mode the display closes and the console remains open
 			// This way system("pause") can be used properly
-			App app(1920, 1080, "Mage3DX Game Engine");
+			App app(1920, 1080, "Mage3DX Game Engine", lpCmdLine);
 			ret = app.run();
 		}
 

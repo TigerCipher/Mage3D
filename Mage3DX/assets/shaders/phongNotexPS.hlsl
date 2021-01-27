@@ -19,19 +19,8 @@
  * Author: Matt
  */
 
-cbuffer LightCBuf
-{
-	float3 lightPos;
-	float3 ambient;
-
-	float3 diffuseColor;
-	float diffuseIntensity;
-
-	// Attenuation
-	float attConst;
-	float attLin;
-	float attQuad;
-}
+#include "lighting.hlsl"
+#include "pointlight.hlsl"
 
 cbuffer ModelCBuf
 {
@@ -46,25 +35,14 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal) : SV_Target
 
 	viewNormal = normalize(viewNormal);
 	
-	// fragment to light vector data
-	const float3 vToL = lightPos - viewPos;
-	const float distToL = length(vToL);
-	const float3 dirToL = vToL / distToL;
+	const LightVectorData lvd = calculate_light_vector(viewLightPos, viewPos);
 
-	// Attenuation
-	const float att = 1.0f / (attConst + attLin * distToL + attQuad * (distToL * distToL));
+	const float att = attenuate(attConst, attLin, attQuad, lvd.distToL);
 
-	// diffuse intensity
-	const float3 diffuse = diffuseColor * diffuseIntensity * att * max(0.0f, dot(dirToL, viewNormal));
+	const float3 diff = diffuse(diffuseColor, diffuseIntensity, att, lvd.dirToL, viewNormal);
 
-	// Light reflection vectors
-	const float3 w = viewNormal * dot(vToL, viewNormal);
-	const float3 r = w * 2.0f - vToL;
+	const float3 spec = speculate(diffuseColor, diffuseIntensity, viewNormal, lvd.vToL, viewPos, att, specularPower);
 
-	// Specular intensity
-	const float4 spec = att * (float4(diffuseColor, 1.0f) * diffuseIntensity) * specularColor
-		* pow(max(0.0f, dot(normalize(-r), normalize(viewPos))), specularPower);
-
-	return saturate(float4(diffuse + ambient, 1.0f) * materialColor + spec);
+	return float4(saturate(float4(diff + ambient, 1.0f) * materialColor + spec), 1.0f);
 	
 }
