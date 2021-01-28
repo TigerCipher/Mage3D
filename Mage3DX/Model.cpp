@@ -189,7 +189,7 @@ Model::Model(Graphics& gfx, const std::string& fileName, const float scale) :
 
 	if(!scene)
 	{
-		std::string errStr = imp.GetErrorString();
+		const std::string errStr = imp.GetErrorString();
 		LOG_ERROR("Failed to load model {} with error reported by Assimp: {}", fileName, errStr);
 		MODEL_THROW_EXCEPTION(errStr);
 	}

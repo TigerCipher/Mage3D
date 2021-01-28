@@ -39,6 +39,10 @@ public:
 
 	[[nodiscard]] mat4f getViewMatrix() const noexcept;
 
+	void setSpeed(const float speed) { mSpeed = speed; }
+	void increaseSpeed(const float factor) { mSpeed *= factor; }
+	void decreaseSpeed(const float factor) { mSpeed /= factor; }
+
 
 private:
 	float mPitch = 0.0f;

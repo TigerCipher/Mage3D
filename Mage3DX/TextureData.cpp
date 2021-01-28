@@ -39,28 +39,30 @@ TextureData::TextureData(Graphics& gfx, const std::string& path, uint slot) :
 	D3D11_TEXTURE2D_DESC textureDesc = { };
 	textureDesc.Width = surface.getWidth();
 	textureDesc.Height = surface.getHeight();
-	textureDesc.MipLevels = 1;
+	textureDesc.MipLevels = 0;
 	textureDesc.ArraySize = 1;
 	textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	textureDesc.SampleDesc.Count = 1;
 	textureDesc.SampleDesc.Quality = 0;
 	textureDesc.Usage = D3D11_USAGE_DEFAULT;
-	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
 	textureDesc.CPUAccessFlags = 0;
-	textureDesc.MiscFlags = 0;
-	D3D11_SUBRESOURCE_DATA sd = { };
-	sd.pSysMem = surface.getBuffer();
-	sd.SysMemPitch = surface.getWidth() * sizeof(Color);
+	textureDesc.MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS;
 	COMptr<ID3D11Texture2D> tex;
-	GFX_THROW_INFO(getDevice(gfx)->CreateTexture2D(&textureDesc, &sd, &tex));
+	GFX_THROW_INFO(getDevice(gfx)->CreateTexture2D(&textureDesc, nullptr, &tex));
 
+	getContext(gfx)->UpdateSubresource(tex.Get(), 0, nullptr,
+		surface.getBuffer(), surface.getWidth() * sizeof(Color), 0);
+	
 	// create the resource view on the texture
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = { };
 	srvDesc.Format = textureDesc.Format;
 	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.MipLevels = -1;
 	GFX_THROW_INFO(getDevice(gfx)->CreateShaderResourceView(tex.Get(), &srvDesc, &mTextureView));
+
+	getContext(gfx)->GenerateMips(mTextureView.Get());
 }
 
 void TextureData::bind(Graphics& gfx) noexcept

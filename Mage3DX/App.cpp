@@ -155,6 +155,16 @@ void App::runFrame()
 
 	if(!mDisplay.isCursorEnabled())
 	{
+		static bool changed = false;
+		if(mDisplay.keyboard.isPressed(VK_SHIFT) && !changed)
+		{
+			mCamera.increaseSpeed(4.0f);
+			changed = true;
+		}else if(!mDisplay.keyboard.isPressed(VK_SHIFT) && changed)
+		{
+			changed = false;
+			mCamera.decreaseSpeed(4.0f);
+		}
 		if (mDisplay.keyboard.isPressed('W'))
 			mCamera.translate({ 0, 0, delta });
 		if (mDisplay.keyboard.isPressed('A'))

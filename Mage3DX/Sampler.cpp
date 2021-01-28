@@ -29,10 +29,17 @@ Sampler::Sampler(Graphics& gfx)
 {
     DEBUG_INFO(gfx);
     D3D11_SAMPLER_DESC sd = {};
-    sd.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sd.Filter = D3D11_FILTER_ANISOTROPIC;
     sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
     sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
     sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+	// AF x16
+    sd.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
+	
+    sd.MipLODBias = 0.0f;
+    sd.MinLOD = 0.0f;
+    sd.MaxLOD = D3D11_FLOAT32_MAX;
 
     GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &mSampler));
 }
