@@ -184,8 +184,8 @@ Model::Model(Graphics& gfx, const std::string& fileName, const float scale) :
 	LOG_TRACE("Loading model [{}]", fileName);
 	Assimp::Importer imp;
 
-	const aiScene* scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices
-		| aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace);
+	const auto* scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices
+	                          | aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace);
 
 	if(!scene)
 	{
