@@ -19,30 +19,62 @@
  * Author: Matt
  */
 #include "TextureProcessor.h"
-#include "Texture.h"
+#include "ModelException.h"
+
+#include <filesystem>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 
 
 void TextureProcessor::rotateXAxis(const std::string& pathSrc, const std::string& pathDest)
 {
 	const auto rot = rotateXMatrix(PI);
-	auto texIn = Texture::loadFromFile(pathSrc);
 
-	const auto pixels = texIn.getWidth() * texIn.getHeight();
-	auto* beg = texIn.getBuffer();
-	const auto* end = texIn.getBuffer() + pixels;
+	const auto func = [rot] (const vec n) -> vec
+		{
+			return transformVector3(n, rot);
+		};
 
-	for(auto* cur = beg; cur < end; cur++)
+	transformFile(pathSrc, pathDest, func);
+}
+
+void TextureProcessor::flipYForAllModelNormalMaps(const std::string& modelPath)
+{
+	using namespace std::string_literals;
+	const auto texturePath = "assets\\textures\\"s;
+
+	Assimp::Importer imp;
+	const auto* scene = imp.ReadFile(modelPath.c_str(), 0);
+	if(!scene)
 	{
-		auto n = colorToVector(*cur);
-		n = transformVector3(n, rot);
-		*cur = vectorToColor(n);
+		throw ModelException(__LINE__, __FILE__, imp.GetErrorString());
 	}
 
-	texIn.save(pathDest);
+	const auto flipY = setVector(1, -1, 1, 1);
+	const auto func = [flipY] (const vec n) -> vec
+		{
+			return mulVector(n, flipY);
+		};
+
+
+	for(uint i = 0; i < scene->mNumMaterials; i++)
+	{
+		const auto& mat = *scene->mMaterials[i];
+		aiString texFile;
+		if(mat.GetTexture(aiTextureType_NORMALS, 0, &texFile) == aiReturn_SUCCESS)
+		{
+			const auto path = texturePath + texFile.C_Str();
+			const auto backupPath = std::filesystem::path(path).parent_path().string() + "\\backup"s;
+			std::filesystem::create_directories(backupPath);
+			std::filesystem::copy_file(path, backupPath + path.substr(path.find_last_of('\\')),
+				std::filesystem::copy_options::overwrite_existing);
+			transformFile(path, path, func);
+		}
+	}
 }
 
 
-vec TextureProcessor::colorToVector(Color col)
+vec TextureProcessor::colorToVector(const Color& col)
 {
 	auto n = setVector(static_cast<float>(col.getRed()),
 		static_cast<float>(col.getGreen()),
@@ -56,7 +88,7 @@ vec TextureProcessor::colorToVector(Color col)
 	return n;
 }
 
-Color TextureProcessor::vectorToColor(vec n)
+Color TextureProcessor::vectorToColor(const vec n)
 {
 	const auto all1 = replicateVector(1.0f);
 	vec out = addVector(n, all1);
@@ -65,8 +97,8 @@ Color TextureProcessor::vectorToColor(vec n)
 	vec3f floats;
 	storeVector3(&floats, out);
 	return {
-		static_cast<uchar>(round(floats.x)),
-		static_cast<uchar>(round(floats.y)),
-		static_cast<uchar>(round(floats.z))
+	    static_cast<uchar>(round(floats.x)),
+	    static_cast<uchar>(round(floats.y)),
+	    static_cast<uchar>(round(floats.z))
 	};
 }

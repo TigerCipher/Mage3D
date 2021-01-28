@@ -24,18 +24,43 @@
 
 #include "MathHelper.h"
 #include "Color.h"
+#include "Texture.h"
 
 class TextureProcessor
 {
 public:
+
+	// Rotates 180 degrees
 	static void rotateXAxis(const std::string& pathSrc, const std::string& pathDest);
 
+	// Rotates 180 degrees
 	static void rotateXAxis(const std::string& pathSrc)
 	{
 		rotateXAxis(pathSrc, pathSrc);
 	}
+
+
+	static void flipYForAllModelNormalMaps(const std::string& modelPath);
 private:
 
-	static vec colorToVector(Color col);
+	template<typename F>
+	static void transformFile(const std::string& pathSrc, const std::string& pathDest, F&& func)
+	{
+		auto tex = Texture::loadFromFile(pathSrc);
+
+		const auto pixels = tex.getWidth() * tex.getHeight();
+		auto* beg = tex.getBuffer();
+		const auto* end = tex.getBuffer() + pixels;
+
+		for(auto* cur = beg; cur < end; cur++)
+		{
+			const auto n = colorToVector(*cur);
+			*cur = vectorToColor(func(n));
+		}
+
+		tex.save(pathDest);
+	}
+
+	static vec colorToVector(const Color& col);
 	static Color vectorToColor(vec n);
 };

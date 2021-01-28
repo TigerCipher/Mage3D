@@ -69,7 +69,7 @@ HINSTANCE Display::Window::getInstance() noexcept
 	return sWinClass.mHInst;
 }
 
-Display::Display(int width, int height, const char* title) : mCursor(true)
+Display::Display(int width, int height, const char* title, bool showAtCreation) : mCursor(true), mShown(showAtCreation)
 {
 	ImguiManager::start();
 	LOG_INFO("Creating display of size: ({}, {})", width, height);
@@ -103,7 +103,10 @@ Display::Display(int width, int height, const char* title) : mCursor(true)
 	{
 		throw DISPLAY_LAST_EXCEPTION();
 	}
-	ShowWindow(mHwnd, SW_SHOWDEFAULT);
+
+	// Flag so the display could be shown via the show function to avoid blank display while resources are still loading
+	if(showAtCreation)
+		ShowWindow(mHwnd, SW_SHOWDEFAULT);
 
 	ImguiManager::initWin32(mHwnd);
 
@@ -119,6 +122,7 @@ Display::Display(int width, int height, const char* title) : mCursor(true)
 	{
 		DISPLAY_LAST_EXCEPTION();
 	}
+
 }
 
 Display::~Display()
@@ -359,6 +363,15 @@ void Display::setTitle(const std::string& title) const
 	if (!SetWindowText(mHwnd, title.c_str()))
 	{
 		throw DISPLAY_LAST_EXCEPTION();
+	}
+}
+
+void Display::show()
+{
+	if (!mShown)
+	{
+		ShowWindow(mHwnd, SW_SHOWDEFAULT);
+		mShown = true;
 	}
 }
 

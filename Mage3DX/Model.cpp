@@ -181,6 +181,7 @@ private:
 Model::Model(Graphics& gfx, const std::string& fileName, const float scale) :
 	mWindow(createScope<ModelWindow>())
 {
+	LOG_TRACE("Loading model [{}]", fileName);
 	Assimp::Importer imp;
 
 	const aiScene* scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices
@@ -192,7 +193,7 @@ Model::Model(Graphics& gfx, const std::string& fileName, const float scale) :
 		LOG_ERROR("Failed to load model {} with error reported by Assimp: {}", fileName, errStr);
 		MODEL_THROW_EXCEPTION(errStr);
 	}
-
+	mNumMeshes = static_cast<float>(scene->mNumMeshes);
 	for(size_t i = 0; i < scene->mNumMeshes; i++)
 	{
 		mMeshes.push_back(parseMesh(gfx, *scene->mMeshes[i], scene->mMaterials, scale));
@@ -213,7 +214,7 @@ UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 
 	list<Mesh*> currentMeshes;
 	currentMeshes.reserve(node.mNumMeshes);
-
+	
 	for(size_t i = 0; i < node.mNumMeshes; i++)
 	{
 		const auto meshId = node.mMeshes[i];
@@ -229,9 +230,11 @@ UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 	return currentNode;
 }
 
+
 UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* materials, const float scale)
 {
-	LOG_DEBUG("Loading mesh {}", mesh.mName.C_Str());
+	mMeshesLoaded++;
+	LOG_DEBUG("Loading mesh {} - {:.2f}%", mesh.mName.C_Str(), (mMeshesLoaded / mNumMeshes) * 100.0f);
 	bool hasSpecMap = false;
 	bool hasNormalMap = false;
 	bool hasDiffuseMap = false;

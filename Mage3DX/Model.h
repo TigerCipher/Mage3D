@@ -143,12 +143,17 @@ public:
 
 
 private:
-	static UniquePtr<Mesh> parseMesh(Graphics& gfx, const struct aiMesh& mesh, const struct
+	UniquePtr<Mesh> parseMesh(Graphics& gfx, const struct aiMesh& mesh, const struct
 	                                 aiMaterial* const* materials, const float scale);
 	
 	UniquePtr<Node> mRoot;
 	list<UniquePtr<Mesh> > mMeshes;
 
 	UniquePtr<class ModelWindow> mWindow;
+
+
+	// Just because I like knowing this information for logging/debug purposes
+	float mMeshesLoaded = 0;
+	float mNumMeshes;
 };
 

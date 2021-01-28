@@ -32,12 +32,12 @@ void show_debug_console();
 
 App::App(const int width, const int height, const char* title, const std::string& cmdLine) :
 	mCommandLine(cmdLine),
-	mDisplay(width, height, title),
+	mDisplay(width, height, title, false),
 	mRunning(true),
 	mLight(mDisplay.getGraphics()),
 	mSponza(mDisplay.getGraphics(), "assets\\models\\sponza.obj", 1.0f / 20.0f)
 {
-
+	
 	if(!cmdLine.empty())
 	{
 		int args;
@@ -51,6 +51,12 @@ App::App(const int width, const int height, const char* title, const std::string
 			TextureProcessor::rotateXAxis(std::string(pathSrcWide.begin(), pathSrcWide.end()),
 				std::string(pathDestWide.begin(), pathDestWide.end()));
 			throw stacktraceRuntimeError("Normal map processed. Fake error");
+		}
+		if(args >= 3 && std::wstring(pArgs[1]) == L"--flipAllY")
+		{
+			const std::wstring pathSrcWide = pArgs[2];
+			TextureProcessor::flipYForAllModelNormalMaps(std::string(pathSrcWide.begin(), pathSrcWide.end()));
+			throw stacktraceRuntimeError("All normal map Ys flipped. Fake error");
 		}
 	}
 	
@@ -67,6 +73,7 @@ App::App(const int width, const int height, const char* title, const std::string
 	mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
 	mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
 
+	mDisplay.show();
 }
 
 App::~App()

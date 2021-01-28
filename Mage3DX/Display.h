@@ -28,12 +28,14 @@
 class Display
 {
 public:
-	Display(int width, int height, const char* title);
+	Display(int width, int height, const char* title, bool showAtCreation = true);
 	virtual ~Display();
 	Display(const Display& disp) = delete;
 	Display& operator=(const Display& disp) = delete;
 
 	void setTitle(const std::string& title) const;
+
+	void show();
 
 	/// <summary>
 	/// Toggles the cursor visibility
@@ -75,6 +77,7 @@ private:
 	float mAspectRatio;
 
 	bool mCursor;
+	bool mShown;
 	
 	HWND mHwnd;
 	UniquePtr<Graphics> mGfx;
