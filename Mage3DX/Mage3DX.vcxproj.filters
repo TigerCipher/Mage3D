@@ -219,7 +219,7 @@
     <ClCompile Include="TestCube.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
-    <ClCompile Include="NormalMapTweaker.cpp">
+    <ClCompile Include="TextureProcessor.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
   </ItemGroup>
@@ -404,7 +404,7 @@
     <ClInclude Include="TestCube.h">
       <Filter>Header Files\entities</Filter>
     </ClInclude>
-    <ClInclude Include="NormalMapTweaker.h">
+    <ClInclude Include="TextureProcessor.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>

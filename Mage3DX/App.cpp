@@ -21,7 +21,7 @@
 #include "App.h"
 #include "GDIPlusManager.h"
 #include "ImguiManager.h"
-#include "NormalMapTweaker.h"
+#include "TextureProcessor.h"
 
 #include <shellapi.h>
 
@@ -48,7 +48,7 @@ App::App(const int width, const int height, const char* title, const std::string
 		{
 			const std::wstring pathSrcWide = pArgs[2];
 			const std::wstring pathDestWide = pArgs[3];
-			NormalMapTweaker::rotateXAxis(std::string(pathSrcWide.begin(), pathSrcWide.end()),
+			TextureProcessor::rotateXAxis(std::string(pathSrcWide.begin(), pathSrcWide.end()),
 				std::string(pathDestWide.begin(), pathDestWide.end()));
 			throw stacktraceRuntimeError("Normal map processed. Fake error");
 		}

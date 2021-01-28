@@ -14,7 +14,7 @@
  *
  * Contact: team@bluemoondev.org
  *
- * File Name: NormalMapTweaker.h
+ * File Name: TextureProcessor.h
  * Date File Created: 1/26/2021 at 11:25 PM
  * Author: Matt
  */
@@ -25,7 +25,7 @@
 #include "MathHelper.h"
 #include "Color.h"
 
-class NormalMapTweaker
+class TextureProcessor
 {
 public:
 	static void rotateXAxis(const std::string& pathSrc, const std::string& pathDest);

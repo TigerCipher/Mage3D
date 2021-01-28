@@ -14,15 +14,15 @@
  *
  * Contact: team@bluemoondev.org
  *
- * File Name: NormalMapTweaker.cpp
+ * File Name: TextureProcessor.cpp
  * Date File Created: 1/26/2021 at 11:25 PM
  * Author: Matt
  */
-#include "NormalMapTweaker.h"
+#include "TextureProcessor.h"
 #include "Texture.h"
 
 
-void NormalMapTweaker::rotateXAxis(const std::string& pathSrc, const std::string& pathDest)
+void TextureProcessor::rotateXAxis(const std::string& pathSrc, const std::string& pathDest)
 {
 	const auto rot = rotateXMatrix(PI);
 	auto texIn = Texture::loadFromFile(pathSrc);
@@ -42,7 +42,7 @@ void NormalMapTweaker::rotateXAxis(const std::string& pathSrc, const std::string
 }
 
 
-vec NormalMapTweaker::colorToVector(Color col)
+vec TextureProcessor::colorToVector(Color col)
 {
 	auto n = setVector(static_cast<float>(col.getRed()),
 		static_cast<float>(col.getGreen()),
@@ -56,7 +56,7 @@ vec NormalMapTweaker::colorToVector(Color col)
 	return n;
 }
 
-Color NormalMapTweaker::vectorToColor(vec n)
+Color TextureProcessor::vectorToColor(vec n)
 {
 	const auto all1 = replicateVector(1.0f);
 	vec out = addVector(n, all1);
