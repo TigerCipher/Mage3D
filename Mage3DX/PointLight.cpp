@@ -24,8 +24,8 @@
 
 PointLight::PointLight(Graphics& gfx, const float radius) :
 	mCbuf{
-		{ 2, 5, -15.0f },
-		{ 0.1f, 0.1f, 0.1f },
+		{ 10, 9, 2.5f },
+		{ 0.05f, 0.05f, 0.05f },
 		{ 1.0f, 1.0f, 1.0f },
 		1.0f,
 		1.0f,

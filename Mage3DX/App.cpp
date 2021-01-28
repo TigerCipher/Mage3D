@@ -35,10 +35,7 @@ App::App(const int width, const int height, const char* title, const std::string
 	mDisplay(width, height, title),
 	mRunning(true),
 	mLight(mDisplay.getGraphics()),
-	mNano(mDisplay.getGraphics(), "assets\\models\\nanosuit.obj", 2),
-	mPlane(mDisplay.getGraphics(), 6),
-	mWall(mDisplay.getGraphics(), "assets\\models\\brickwall.obj", 6),
-	mGoblin(mDisplay.getGraphics(), "assets\\models\\goblin.obj", 6)
+	mSponza(mDisplay.getGraphics(), "assets\\models\\sponza.obj", 1.0f / 20.0f)
 {
 
 	if(!cmdLine.empty())
@@ -59,7 +56,7 @@ App::App(const int width, const int height, const char* title, const std::string
 	
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),
-		0.5f, 1000.0f));
+		0.5f, 400.0f));
 	mDisplay.toggleCursor(0);
 
 	mDisplay.getGraphics().addFont("Courier New", "assets\\fonts\\courier_new.sf");
@@ -69,13 +66,6 @@ App::App(const int width, const int height, const char* title, const std::string
 	mDisplay.getGraphics().addFont("Ink Free", "assets\\fonts\\inkfree.sf");
 	mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
 	mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
-
-
-
-	mWall.setRootTransform(translateMatrix(-12, 0, 4));
-	mPlane.setPosition({ 12, 0, 4 });
-	mNano.setRootTransform(translateMatrix(0, -7, 10));
-	mGoblin.setRootTransform(translateMatrix(0, 0, 0));
 
 }
 
@@ -110,6 +100,7 @@ void calculate_frame_statistics(Timer& timer, float* retFps)
 	static int frameCount = 0;
 	static float prntAvgFps = 0;
 	static int prntFrameCount = 0;
+
 
 	IMGUI_BEGIN("Performance Statistics", nullptr, ImGuiWindowFlags_AlwaysAutoResize)
 	{
@@ -147,10 +138,7 @@ void App::runFrame()
 
 	mLight.render(mDisplay.getGraphics());
 
-	mGoblin.render(mDisplay.getGraphics());
-	mWall.render(mDisplay.getGraphics());
-	mNano.render(mDisplay.getGraphics());
-	mPlane.render(mDisplay.getGraphics());
+	mSponza.render(mDisplay.getGraphics());
 
 	if (mDisplay.keyboard.isPressedOnce(VK_ESCAPE))
 	{
@@ -187,12 +175,8 @@ void App::runFrame()
 
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
-	//IMGUI_BEGIN("Model Control")
-		mGoblin.showImguiWindow(mDisplay.getGraphics(), "Goblin");
-		mNano.showImguiWindow(mDisplay.getGraphics(), "Nanosuit");
-		mWall.showImguiWindow(mDisplay.getGraphics(), "Wall");
-	//IMGUI_END
-	mPlane.spawnControlWindow(mDisplay.getGraphics());
+
+	mSponza.showImguiWindow(mDisplay.getGraphics(), "Crytek Sponza");
 
 	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
 

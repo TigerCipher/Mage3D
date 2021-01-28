@@ -49,10 +49,8 @@ private:
 	float mGlobalSpeed = 1.0f;
 	
 	PointLight mLight;
-	Model mNano;
-	TestPlane mPlane;
-	Model mWall;
-	Model mGoblin;
 	int x = 0, y = 0;
+
+	Model mSponza;
 };
 

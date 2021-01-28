@@ -69,7 +69,7 @@ float3 speculate(const in float3 specularColor, uniform float specularIntensity,
 	const in float att, const in float specularPower)
 {
 	const float3 w = viewNormal * dot(viewToL, viewNormal);
-	const float3 r = normalize(2 * 2.0f - viewToL);
+	const float3 r = normalize(w * 2.0f - viewToL);
 	const float3 viewCamToFrag = normalize(viewPos);
 
 	return att * specularColor * specularIntensity * pow(max(0.0f, dot(-r, viewCamToFrag)), specularPower);
