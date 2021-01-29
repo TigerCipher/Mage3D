@@ -178,6 +178,8 @@ private:
 
 //////////////////////////////////////////////////////////////
 
+Model::Model() : mWindow(createScope<ModelWindow>()) {}
+
 Model::Model(Graphics& gfx, const std::string& fileName, const float scale) :
 	mWindow(createScope<ModelWindow>())
 {
@@ -228,6 +230,32 @@ UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 	}
 
 	return currentNode;
+}
+
+void Model::load(Graphics& gfx, const std::string& fileName, const float scale)
+{
+	LOG_TRACE("Loading model [{}]", fileName);
+	Assimp::Importer imp;
+
+	const auto* scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices
+		| aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace);
+
+	if (!scene)
+	{
+		const std::string errStr = imp.GetErrorString();
+		LOG_ERROR("Failed to load model {} with error reported by Assimp: {}", fileName, errStr);
+		MODEL_THROW_EXCEPTION(errStr);
+	}
+	mNumMeshes = static_cast<float>(scene->mNumMeshes);
+	for (size_t i = 0; i < scene->mNumMeshes; i++)
+	{
+		mMeshes.push_back(parseMesh(gfx, *scene->mMeshes[i], scene->mMaterials, scale));
+	}
+
+	int nextId = 0;
+	mRoot = parseNode(nextId, *scene->mRootNode);
+
+	LOG_INFO("Loaded model [{}]", fileName);
 }
 
 

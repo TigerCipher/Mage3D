@@ -129,11 +129,13 @@ private:
 class Model
 {
 public:
+	Model();
 	Model(Graphics& gfx, const std::string& fileName, const float scale = 1.0f);
 	virtual ~Model() noexcept;
 
 	UniquePtr<Node> parseNode(int& nextId, const struct aiNode& node) noexcept;
 
+	void load(Graphics& gfx, const std::string& fileName, const float scale = 1.0f);
 
 	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
 
