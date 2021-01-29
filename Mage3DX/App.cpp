@@ -22,6 +22,7 @@
 #include "GDIPlusManager.h"
 #include "ImguiManager.h"
 #include "TextureProcessor.h"
+#include "Settings.h"
 
 #include <shellapi.h>
 
@@ -37,7 +38,7 @@ App::App(const int width, const int height, const char* title, const std::string
 	mLight(mDisplay.getGraphics()),
 	mSponza(mDisplay.getGraphics(), "assets\\models\\sponza.obj", 1.0f / 20.0f)
 {
-	
+#pragma warning(disable: 4244)
 	if(!cmdLine.empty())
 	{
 		int args;
@@ -59,6 +60,7 @@ App::App(const int width, const int height, const char* title, const std::string
 			throw stacktraceRuntimeError("All normal map Ys flipped. Fake error");
 		}
 	}
+
 	
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),

@@ -23,6 +23,7 @@
 
 #include "BindableCodex.h"
 #include "GraphicsException.h"
+#include "Settings.h"
 
 
 Sampler::Sampler(Graphics& gfx)
@@ -35,7 +36,8 @@ Sampler::Sampler(Graphics& gfx)
     sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
 	// AF x16
-    sd.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
+    const UINT anistropy = Settings::getInt("Graphics", "Anistropy", { 4, 8, 16 });
+    sd.MaxAnisotropy = anistropy;
 	
     sd.MipLODBias = 0.0f;
     sd.MinLOD = 0.0f;

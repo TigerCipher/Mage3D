@@ -23,6 +23,8 @@
 #include "Display.h"
 #include "MageException.h"
 #include "DebugTools.h"
+#include "Settings.h"
+
 
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
@@ -40,7 +42,9 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 		{
 			// Inner scope so when in Debug mode the display closes and the console remains open
 			// This way system("pause") can be used properly
-			App app(1920, 1080, "Mage3DX Game Engine", lpCmdLine);
+			Settings::load("settings.ini");
+			App app(Settings::getInt("Display", "Width"), 
+				Settings::getInt("Display", "Height"), "Mage3DX Game Engine", lpCmdLine);
 			ret = app.run();
 		}
 

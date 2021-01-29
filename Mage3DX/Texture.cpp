@@ -88,7 +88,6 @@ void Texture::save(const std::string& fileName) const
 			}
 
 			Gdiplus::GetImageEncoders(num, size, codecInfo);
-			LOG_DEBUG("Num {} Size {}", num, size);
 			for (UINT i = 0; i < num; i++)
 			{
 				if (wcscmp(codecInfo[ i ].MimeType, format) == 0)

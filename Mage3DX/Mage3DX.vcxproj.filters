@@ -222,6 +222,9 @@
     <ClCompile Include="TextureProcessor.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointLight.h">
@@ -407,6 +410,9 @@
     <ClInclude Include="TextureProcessor.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Settings.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdParty\DXGetErrorDescription.inl">
@@ -431,6 +437,9 @@
       <Filter>Misc</Filter>
     </None>
     <None Include="Mage3DX.sln.licenseheader" />
+    <None Include="..\settings.ini">
+      <Filter>Misc</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shaders\phongPS.hlsl">

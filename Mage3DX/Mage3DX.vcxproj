@@ -140,7 +140,7 @@
       <AdditionalDependencies>bmd.lib;d3d11.lib;D3DCompiler.lib;gdiplus.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(ProjectDir)scripts\prepare.bat $(TargetDir)assets</Command>
+      <Command>$(ProjectDir)scripts\prepare.bat $(TargetDir)</Command>
     </PostBuildEvent>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
@@ -177,7 +177,7 @@
       <AdditionalDependencies>bmd.lib;d3d11.lib;D3DCompiler.lib;gdiplus.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(ProjectDir)scripts\prepare.bat $(TargetDir)assets</Command>
+      <Command>$(ProjectDir)scripts\prepare.bat $(TargetDir)</Command>
     </PostBuildEvent>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
@@ -262,6 +262,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelException.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Settings.cpp" />
     <ClCompile Include="TextureProcessor.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -327,6 +328,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelException.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Settings.h" />
     <ClInclude Include="TextureProcessor.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="PointLight.h" />
@@ -358,6 +360,7 @@
   <ItemGroup>
     <None Include="..\.gitignore" />
     <None Include="..\README.md" />
+    <None Include="..\settings.ini" />
     <None Include="3rdParty\DXGetErrorDescription.inl" />
     <None Include="3rdParty\DXGetErrorString.inl" />
     <None Include="3rdParty\DXTrace.inl" />
