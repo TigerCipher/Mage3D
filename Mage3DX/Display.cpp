@@ -52,6 +52,9 @@ Display::Window::Window() noexcept:
 	wc.hIconSm = static_cast<HICON>(LoadImage(mHInst, MAKEINTRESOURCE(IDI_ICON1),
 		IMAGE_ICON, 16, 16, 0));
 	RegisterClassEx(&wc);
+
+	// TODO Not 100% positive if COINIT_MULTITHREADED is what I want
+	CoInitializeEx(nullptr, COINIT_SPEED_OVER_MEMORY);
 }
 
 Display::Window::~Window()

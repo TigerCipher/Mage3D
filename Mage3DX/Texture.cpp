@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: Texture.cpp
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
@@ -22,142 +22,117 @@
 #include "Texture.h"
 #include "TextureException.h"
 
-#define FULL_WINTARD
+#include <filesystem>
 
-#include "winwrapper.h"
-
-namespace Gdiplus
+Texture::Texture(const uint width, const uint height)
 {
-	using std::max;
-	using std::min;
-}// namespace Gdiplus
-#include <gdiplus.h>
+	HRESULT hr = mScratch.Initialize2D(TEXTURE_FORMAT, width, height, 1u, 1u);
 
-Texture& Texture::operator=(Texture&& src) noexcept
-{
-	mWidth = src.mWidth;
-	mHeight = src.mHeight;
-	mBuffer = std::move(src.mBuffer);
-	mAlphaLoaded = src.mAlphaLoaded;
-	src.mBuffer = nullptr;
-	return *this;
+	if(FAILED(hr))
+	{
+		throw TextureException(__LINE__, __FILE__, "Failed to initialize DirectX ScratchImage", hr);
+	}
 }
 
-void Texture::clear(const Color fill) const noexcept
+void Texture::clear(const Color fillValue) const noexcept
 {
-	memset(mBuffer.get(), fill.dword, mWidth * mHeight * sizeof(Color));
+	const auto w = getWidth();
+	const auto h = getHeight();
+	auto& img = *mScratch.GetImage(0, 0, 0);
+
+	for(size_t y = 0; y < h; y++)
+	{
+		auto* row = reinterpret_cast<Color*>(img.pixels + img.rowPitch * y);
+		std::fill(row, row + img.width, fillValue);
+	}
 }
 
 void Texture::setPixel(const uint x, const uint y, const Color col) const noexcept(!MAGE_DEBUG)
 {
-	assert(x >= 0 && y >= 0 && x < mWidth && y < mHeight);
-	mBuffer[ y * mWidth + x ] = col;
+	assert(x >= 0 && y >= 0 && x < getWidth() && y < getHeight());
+	auto& img = *mScratch.GetImage(0, 0, 0);
+	reinterpret_cast<Color*>(&img.pixels[y * img.rowPitch])[x] = col;
 }
 
 Color Texture::getPixel(const uint x, const uint y) const noexcept(!MAGE_DEBUG)
 {
-	assert(x >= 0 && y >= 0 && x < mWidth && y < mHeight);
-	return mBuffer[ y * mWidth + x ];
+	assert(x >= 0 && y >= 0 && x < getWidth() && y < getHeight());
+	auto& img = *mScratch.GetImage(0, 0, 0);
+	return reinterpret_cast<Color*>(&img.pixels[y * img.rowPitch])[x];
 }
 
 void Texture::save(const std::string& fileName) const
 {
-	auto getEncoder = [ &fileName ] (const WCHAR* format, CLSID* clsid) -> void
+	const std::filesystem::path path = fileName;
+	const auto ext = path.extension().string();
+	auto getEncoder = [ ext ] (const std::string& file)
 		{
-			UINT num = 0;
-			UINT size = 0;
+		if (ext == ".png") return dx::WIC_CODEC_PNG;
+		if (ext == ".bmp") return dx::WIC_CODEC_BMP;
+		if (ext == ".gif") return dx::WIC_CODEC_GIF;
+		if (ext == ".jpg") return dx::WIC_CODEC_JPEG;
+		if (ext == ".tif") return dx::WIC_CODEC_TIFF;
+		if (ext == ".ico") return dx::WIC_CODEC_ICO;
 
-			Gdiplus::ImageCodecInfo* codecInfo = nullptr;
-			Gdiplus::GetImageEncodersSize(&num, &size);
-			if (size == 0)
-			{
-				throw TextureException(
-					__LINE__, __FILE__,
-					fmt::format("Could not save texture surface to [{}]; Failed to get encoder. Size = 0", fileName));
-			}
-
-			codecInfo = static_cast<Gdiplus::ImageCodecInfo*>(malloc(size));
-
-			if (!codecInfo)
-			{
-				throw TextureException(
-					__LINE__, __FILE__,
-					fmt::format(
-						"Could not save texture surface to [{}]; Failed to get encoder; Could not allocate memory",
-						fileName));
-			}
-
-			Gdiplus::GetImageEncoders(num, size, codecInfo);
-			for (UINT i = 0; i < num; i++)
-			{
-				if (wcscmp(codecInfo[ i ].MimeType, format) == 0)
-				{
-					*clsid = codecInfo[ i ].Clsid;
-					free(codecInfo);
-					return;
-				}
-			}
-
-			free(codecInfo);
-			throw TextureException(__LINE__, __FILE__,
-				fmt::format("Could not save texture surface to [{}]; Failed to get encoder", fileName));
+		throw TextureException(__LINE__, __FILE__, fmt::format("Texture format not supported [{}]", file));
 		};
-
-	CLSID bmp;
-	getEncoder(L"image/bmp", &bmp);
 
 	wchar_t wideName[512];
 	mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
+	
+	HRESULT hr;
+	if (ext == ".dds")
+		hr = dx::SaveToDDSFile(*mScratch.GetImage(0, 0, 0), dx::DDS_FLAGS_NONE, wideName);
+	else
+		hr = dx::SaveToWICFile(*mScratch.GetImage(0, 0, 0),
+			dx::WIC_FLAGS_NONE, dx::GetWICCodec(getEncoder(fileName)), wideName);
 
-	Gdiplus::Bitmap bitmap(mWidth, mHeight, mWidth * sizeof(Color), PixelFormat32bppARGB, reinterpret_cast<BYTE*>(mBuffer.get()));
-	if (bitmap.Save(wideName, &bmp, nullptr) != Gdiplus::Status::Ok)
+	if(FAILED(hr))
 	{
-		throw TextureException(__LINE__, __FILE__, fmt::format("Could not save texture surface to [{}]", fileName));
+		throw TextureException(__LINE__, __FILE__, fmt::format("Failed to save texture [{}]", fileName), hr);
 	}
 }
 
-void Texture::copy(const Texture& src) const noexcept(!MAGE_DEBUG)
-{
-	assert(mWidth == src.mWidth);
-	assert(mHeight == src.mHeight);
-	memcpy(mBuffer.get(), src.mBuffer.get(), mWidth * mHeight * sizeof(Color));
-}
 
 Texture Texture::loadFromFile(const std::string& fileName)
 {
-	uint width = 0;
-	uint height = 0;
-	Scope<Color[]> buf;
-	bool alphaLoaded = false;
+	const std::filesystem::path path = fileName;
+	const auto ext = path.extension().string();
+	wchar_t wideName[512];
+	mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
 
+	dx::ScratchImage scratch;
+	HRESULT hr;
+
+	if (ext == ".dds")
+		hr = dx::LoadFromDDSFile(wideName, dx::DDS_FLAGS_NONE, nullptr, scratch);
+	else if (ext == ".png" || ext == ".jpg" || ext == ".bmp" || ext == ".tif" || ext == ".gif")
+		hr = dx::LoadFromWICFile(wideName, dx::WIC_FLAGS_NONE, nullptr, scratch);
+	else
+		throw TextureException(__LINE__, __FILE__,
+			fmt::format("Textures of format [{}] are not current supported", ext));
+
+	if(FAILED(hr))
 	{
-		wchar_t wideName[512];
-		mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
-		Gdiplus::Bitmap bitmap(wideName);
-		Gdiplus::Status errStatus = bitmap.GetLastStatus();
-		if (errStatus != Gdiplus::Status::Ok)
-		{
-			LOG_ERROR("Failed to load texture [{}]. Status {}", fileName, errStatus);
-			throw TextureException(__LINE__, __FILE__, fmt::format("Failed to load texture [{}]", fileName));
-		}
-		width = bitmap.GetWidth();
-		height = bitmap.GetHeight();
-		buf = createScope<Color[]>(width * height);
+		throw TextureException(__LINE__, __FILE__, fmt::format("Could not load texture [{}]", fileName), hr);
+	}
 
-		for (uint y = 0; y < height; y++)
+	if(scratch.GetImage(0, 0, 0)->format != TEXTURE_FORMAT)
+	{
+		LOG_DEBUG("Texture [{}] is of format {}", fileName, scratch.GetImage(0, 0, 0)->format);
+		dx::ScratchImage converted;
+		hr = dx::Convert(*scratch.GetImage(0, 0, 0), TEXTURE_FORMAT,
+			dx::TEX_FILTER_DEFAULT, dx::TEX_THRESHOLD_DEFAULT, converted);
+		if(FAILED(hr))
 		{
-			for (uint x = 0; x < width; x++)
-			{
-				Gdiplus::Color c;
-				bitmap.GetPixel(x, y, &c);
-				buf[ y * width + x ] = c.GetValue();
-				if (c.GetAlpha() != 255)
-					alphaLoaded = true;
-			}
+			throw TextureException(__LINE__, __FILE__,
+				fmt::format("Failed to convert texture format [{}]", fileName), hr);
 		}
+		LOG_TRACE("Loaded and converted texture [{}]", fileName);
+		return Texture(std::move(converted));
 	}
 
 	LOG_TRACE("Loaded texture [{}]", fileName);
-	return Texture(width, height, std::move(buf), alphaLoaded);
+	return Texture(std::move(scratch));
 }
 

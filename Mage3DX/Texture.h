@@ -22,57 +22,55 @@
 
 #include "Color.h"
 
+#include <DirectXTex.h>
+
+namespace dx = DirectX;
+
 class Texture
 {
+	friend class TextureProcessor;
 public:
-	Texture(const uint width, const uint height, const uint pitch) noexcept :
-		mBuffer(createScope<Color[]>(pitch * height)),
-		mWidth(width),
-		mHeight(height)
-	{ }
-	Texture(const uint width, const uint height) noexcept : Texture(width, height, width) { }
+
+	enum TextureType
+	{
+		WIC, // png, jpg, bmp, tif, gif
+		DDS
+	};
+	
+	Texture(const uint width, const uint height);
 
 	virtual ~Texture() = default;
+	Texture(Texture&& src) noexcept = default;
+	Texture& operator=(Texture&& src) noexcept = default;
+	
 	Texture(const Texture& rhs) = delete;
 	Texture& operator=(const Texture& rhs) = delete;
-	Texture(Texture&& src) noexcept :
-		mBuffer(std::move(src.mBuffer)),
-		mWidth(src.mWidth),
-		mHeight(src.mHeight),
-		mAlphaLoaded(src.mAlphaLoaded)
-	{ }
-	Texture& operator=(Texture&& src) noexcept;
 
 	void clear(Color fill) const noexcept;
 	void setPixel(uint x, uint y, Color col) const noexcept(!MAGE_DEBUG);
 	[[nodiscard]] Color getPixel(uint x, uint y) const noexcept(!MAGE_DEBUG);
 
-	Color* getBuffer() noexcept { return mBuffer.get(); }
-	[[nodiscard]] const Color* getBuffer() const noexcept { return mBuffer.get(); }
+	Color* getBuffer() noexcept { return reinterpret_cast<Color*>(mScratch.GetPixels()); }
+	[[nodiscard]] const Color* getBuffer() const noexcept { return const_cast<Texture*>(this)->getBuffer(); }
 
-	[[nodiscard]] uint getWidth() const noexcept { return mWidth; }
-	[[nodiscard]] uint getHeight() const noexcept { return mHeight; }
+	[[nodiscard]] uint getWidth() const noexcept { return static_cast<uint>(mScratch.GetMetadata().width); }
+	[[nodiscard]] uint getHeight() const noexcept { return static_cast<uint>(mScratch.GetMetadata().height); }
 
 	void save(const std::string& fileName) const;
-	void copy(const Texture& src) const noexcept(!MAGE_DEBUG);
 
-	bool isAlphaLoaded() const noexcept { return mAlphaLoaded; }
+	[[nodiscard]] bool isAlphaLoaded() const noexcept { return !mScratch.IsAlphaAllOpaque(); }
 
 	static Texture loadFromFile(const std::string& fileName);
 
+	static constexpr DXGI_FORMAT TEXTURE_FORMAT = DXGI_FORMAT_B8G8R8A8_UNORM;
 protected:
 private:
-	Texture(const uint width, const uint height, UniquePtr<Color[]> buffer, bool alphaLoaded = false) noexcept :
-		mBuffer(std::move(buffer)),
-		mWidth(width),
-		mHeight(height),
-		mAlphaLoaded(alphaLoaded)
-	{ }
+	Texture(dx::ScratchImage scratch) noexcept : mScratch(std::move(scratch)) {}
 
-	UniquePtr<Color[]> mBuffer;
-	uint mWidth;
-	uint mHeight;
-	bool mAlphaLoaded = false;
+	
+	
+	dx::ScratchImage mScratch{};
+	
 };
 
 

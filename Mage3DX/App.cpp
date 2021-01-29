@@ -19,7 +19,7 @@
  * Author: Matt
  */
 #include "App.h"
-#include "GDIPlusManager.h"
+//#include "GDIPlusManager.h"
 #include "ImguiManager.h"
 #include "TextureProcessor.h"
 #include "Settings.h"
@@ -27,7 +27,7 @@
 #include <shellapi.h>
 
 #include <DirectXTex.h>
-GDIPlusManager gGdip;
+//GDIPlusManager gGdip;
 
 void show_debug_console();
 
@@ -36,18 +36,8 @@ App::App(const int width, const int height, const char* title, const std::string
 	mDisplay(width, height, title, false),
 	mRunning(true),
 	mLight(mDisplay.getGraphics()),
-	mSponza(mDisplay.getGraphics(), "assets\\models\\brickwall.obj", 1.0f / 20.0f)
+	mSponza(mDisplay.getGraphics(), "assets\\models\\sponza.obj", 1.0f / 20.0f)
 {
-	CoInitialize(nullptr); // TODO: This allows WIC from DirectXTex to work - probs best to move it to Display/Window?
-
-	auto scratch = DirectX::ScratchImage{};
-	HRESULT hr = DirectX::LoadFromWICFile(L"assets\\textures\\brickwall.jpg", DirectX::WIC_FLAGS_NONE, nullptr, scratch);
-	if(FAILED(hr))
-	{
-		throw stacktraceRuntimeError("Failed to load image");
-	}
-	auto image = scratch.GetImage(0, 0, 0);
-	
 #pragma warning(disable: 4244)
 	if(!cmdLine.empty())
 	{
@@ -68,6 +58,12 @@ App::App(const int width, const int height, const char* title, const std::string
 			const std::wstring pathSrcWide = pArgs[2];
 			TextureProcessor::flipYForAllModelNormalMaps(std::string(pathSrcWide.begin(), pathSrcWide.end()));
 			throw stacktraceRuntimeError("All normal map Ys flipped. Fake error");
+		}
+		if (args >= 3 && std::wstring(pArgs[1]) == L"--reformat")
+		{
+			const std::wstring pathSrcWide = pArgs[2];
+			TextureProcessor::reformatAllTextures(std::string(pathSrcWide.begin(), pathSrcWide.end()));
+			throw stacktraceRuntimeError("All textures reformatted. Fake error");
 		}
 	}
 

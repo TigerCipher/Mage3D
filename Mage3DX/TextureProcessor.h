@@ -41,6 +41,9 @@ public:
 
 
 	static void flipYForAllModelNormalMaps(const std::string& modelPath);
+
+	static void reformatTexture(const std::string& fileName);
+	static void reformatAllTextures(const std::string& modelPath);
 private:
 
 	template<typename F>

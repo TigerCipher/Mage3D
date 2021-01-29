@@ -21,14 +21,18 @@
 #pragma once
 
 #include "MageException.h"
+#include "DisplayException.h"
 
 class TextureException : public MageException
 {
 public:
-	TextureException(const int line, const char* file, std::string info) noexcept :
+	TextureException(const int line, const char* file, std::string info, std::optional<HRESULT> hr = {}) noexcept :
 		MageException(line, file),
 		mInfo(std::move(info))
-	{ }
+	{
+		if (hr)
+			mInfo = fmt::format("[Error Code] {}\n{}", ExceptionHelper::translateError(*hr), mInfo);
+	}
 	const char* what() const noexcept override;
 	const std::string& getInfo() const noexcept { return mInfo; }
 

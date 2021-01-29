@@ -195,9 +195,6 @@
     <ClCompile Include="ModelException.cpp">
       <Filter>Source Files\debug</Filter>
     </ClCompile>
-    <ClCompile Include="GDIPlusManager.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="TextureData.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
@@ -381,9 +378,6 @@
       <Filter>Header Files\debug</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="GDIPlusManager.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
     <ClInclude Include="TextureData.h">

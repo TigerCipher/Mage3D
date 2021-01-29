@@ -25,6 +25,8 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
+#include "TextureException.h"
+
 
 void TextureProcessor::rotateXAxis(const std::string& pathSrc, const std::string& pathDest)
 {
@@ -73,6 +75,93 @@ void TextureProcessor::flipYForAllModelNormalMaps(const std::string& modelPath)
 	}
 }
 
+void TextureProcessor::reformatTexture(const std::string& fileName)
+{
+	const std::filesystem::path path = fileName;
+	const auto ext = path.extension().string();
+	using namespace std::string_literals;
+	const auto backupPath = std::filesystem::path(path).parent_path().string() + "\\backup"s;
+	std::filesystem::create_directories(backupPath);
+	const auto newPath = backupPath + fileName.substr(fileName.find_last_of('\\'));
+	LOG_DEBUG("Backing up texture [{}] to [{}]", fileName, newPath);
+	std::filesystem::copy_file(path, newPath,
+		std::filesystem::copy_options::overwrite_existing);
+	wchar_t wideName[512];
+	mbstowcs_s(nullptr, wideName, fileName.c_str(), _TRUNCATE);
+
+	dx::ScratchImage scratch;
+	HRESULT hr;
+
+	if (ext == ".dds")
+		hr = dx::LoadFromDDSFile(wideName, dx::DDS_FLAGS_NONE, nullptr, scratch);
+	else if (ext == ".png" || ext == ".jpg" || ext == ".bmp" || ext == ".tif" || ext == ".gif")
+		hr = dx::LoadFromWICFile(wideName, dx::WIC_FLAGS_NONE, nullptr, scratch);
+	else
+		throw TextureException(__LINE__, __FILE__,
+			fmt::format("Textures of format [{}] are not current supported", ext));
+
+	if (FAILED(hr))
+	{
+		throw TextureException(__LINE__, __FILE__, fmt::format("Could not load texture [{}]", fileName), hr);
+	}
+
+	if (scratch.GetImage(0, 0, 0)->format != Texture::TEXTURE_FORMAT)
+	{
+
+		LOG_TRACE("Converting texture [{}] from format {} to {}", fileName,
+			scratch.GetImage(0, 0, 0)->format, Texture::TEXTURE_FORMAT);
+		dx::ScratchImage converted;
+		hr = dx::Convert(*scratch.GetImage(0, 0, 0), Texture::TEXTURE_FORMAT,
+			dx::TEX_FILTER_DEFAULT, dx::TEX_THRESHOLD_DEFAULT, converted);
+		if (FAILED(hr))
+		{
+			throw TextureException(__LINE__, __FILE__,
+				fmt::format("Failed to convert texture format [{}]", fileName), hr);
+		}
+		LOG_TRACE("Reformatted texture [{}]", fileName);
+		const Texture tex(std::move(converted));
+		tex.save(fileName);
+	}else
+	{
+		LOG_TRACE("Skipping texture [{}]", fileName);
+	}
+}
+
+
+void TextureProcessor::reformatAllTextures(const std::string& modelPath)
+{
+	using namespace std::string_literals;
+	const auto texturePath = "assets\\textures\\"s;
+
+	Assimp::Importer imp;
+	const auto* scene = imp.ReadFile(modelPath.c_str(), 0);
+	if (!scene)
+	{
+		throw ModelException(__LINE__, __FILE__, imp.GetErrorString());
+	}
+
+
+	for (uint i = 0; i < scene->mNumMaterials; i++)
+	{
+		const auto& mat = *scene->mMaterials[i];
+		aiString texFile;
+		if (mat.GetTexture(aiTextureType_DIFFUSE, 0, &texFile) == aiReturn_SUCCESS)
+		{
+			const auto path = texturePath + texFile.C_Str();
+			reformatTexture(path);
+		}
+		if (mat.GetTexture(aiTextureType_NORMALS, 0, &texFile) == aiReturn_SUCCESS)
+		{
+			const auto path = texturePath + texFile.C_Str();
+			reformatTexture(path);
+		}
+		if (mat.GetTexture(aiTextureType_SPECULAR, 0, &texFile) == aiReturn_SUCCESS)
+		{
+			const auto path = texturePath + texFile.C_Str();
+			reformatTexture(path);
+		}
+	}
+}
 
 vec TextureProcessor::colorToVector(const Color& col)
 {
