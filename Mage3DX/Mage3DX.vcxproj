@@ -137,7 +137,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>bmd.lib;d3d11.lib;D3DCompiler.lib;gdiplus.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>bmd.lib;d3d11.lib;D3DCompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(ProjectDir)scripts\prepare.bat $(TargetDir)</Command>
@@ -174,7 +174,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(ProjectDir)libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>bmd.lib;d3d11.lib;D3DCompiler.lib;gdiplus.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>bmd.lib;d3d11.lib;D3DCompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>$(ProjectDir)scripts\prepare.bat $(TargetDir)</Command>

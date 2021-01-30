@@ -49,7 +49,6 @@ private:
 	float mGlobalSpeed = 1.0f;
 	
 	PointLight mLight;
-	int x = 0, y = 0;
 
 	Model mSponza;
 };

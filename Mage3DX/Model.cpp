@@ -492,7 +492,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	binds.push_back(InputLayout::resolve(gfx, vData.getLayout(), pvsbc));
 	binds.push_back(PixelShader::resolve(gfx, pixShader));
 
-	binds.push_back(Blender::resolve(gfx, hasAlphaDiffuse));
+	//binds.push_back(Blender::resolve(gfx, hasAlphaDiffuse));
 
 	return createScope<Mesh>(gfx, std::move(binds));
 }

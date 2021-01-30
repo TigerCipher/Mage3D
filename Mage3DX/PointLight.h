@@ -28,6 +28,7 @@ class PointLight
 {
 public:
 	explicit PointLight(Graphics& gfx, float radius = 0.5f);
+	PointLight(Graphics& gfx, float x, float y, float z, float radius = 0.5f);
 
 	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
 	void bind(Graphics& gfx, mat4f view) const noexcept;

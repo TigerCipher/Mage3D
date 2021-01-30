@@ -23,18 +23,20 @@
 #include "ImguiManager.h"
 
 PointLight::PointLight(Graphics& gfx, const float radius) :
-	mCbuf{
-		{ 10, 9, 2.5f },
-		{ 0.05f, 0.05f, 0.05f },
-		{ 1.0f, 1.0f, 1.0f },
-		1.0f,
-		1.0f,
-		0.045f,
-		0.0075f
-	},
 	mMesh(gfx, radius),
 	mBuffer(gfx)
 {
+	reset();
+}
+
+PointLight::PointLight(Graphics& gfx, float x, float y, float z, float radius) :
+	mMesh(gfx, radius),
+	mBuffer(gfx)
+{
+	reset();
+	mCbuf.pos.x = x;
+	mCbuf.pos.y = y;
+	mCbuf.pos.z = z;
 }
 
 void PointLight::render(Graphics& gfx) const noexcept(!MAGE_DEBUG)
@@ -71,23 +73,23 @@ void PointLight::spawnControlWindow() noexcept
 		IMGUI_FUNC(SliderFloat("Linear", &mCbuf.attLin, 0.0001f, 4.0f, "%.4f", 8));
 		IMGUI_FUNC(SliderFloat("Quadradic", &mCbuf.attQuad, 0.0000001f, 10.0f, "%.7f", 10));
 
-		reset();
+		IMGUI_FUNC_COND(Button("Reset"))
+		{
+			reset();
+		}
 	}
 	IMGUI_END
 }
 
 void PointLight::reset() noexcept
 {
-	IMGUI_FUNC_COND(Button("Reset"))
-	{
-		mCbuf = {
-			{ 0, 0, 0 },
-			{ 0.05f, 0.05f, 0.05f },
-			{ 1.0f, 1.0f, 1.0f },
-			1.0f,
-			1.0f,
-			0.045f,
-			0.0075f
-		};
-	}
+	mCbuf = {
+		{ 10, 9, 2.5f },
+		{ 0.05f, 0.05f, 0.05f },
+		{ 1.0f, 1.0f, 1.0f },
+		1.0f,
+		1.0f,
+		0.045f,
+		0.0075f
+	};
 }

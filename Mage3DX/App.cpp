@@ -52,6 +52,8 @@ App::App(const int width, const int height, const char* title, const std::string
 	mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
 	mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
 
+
+
 	mDisplay.show();
 }
 
@@ -95,11 +97,16 @@ void calculate_frame_statistics(Timer& timer, float fps, Graphics& gfx)
 		prntFrameCount = frameCount;
 		frameCount = 0;
 		timer.markPoint();
+		fmt::print("FPS: {:.2f}    -    {:.3f} ms/frame\n", prntAvgFps, 1000.0f / prntAvgFps);
 	}
 	
-	
-	gfx.outlineText("OCR", fmt::format("FPS: {:.2f}", prntAvgFps), 5, 5, dx::Colors::Red);
-	gfx.drawText("OCR", fmt::format("{:.3f} ms/frame", 1000.0f / prntAvgFps), 5, 45);
+	// TODO: Text rendering performance needs to be improved
+	// Drawing text seems to be a bit of a performance impact
+	// Initial testing suggests an average of a 30-40 FPS loss
+	// Currently drawing text starts and ends a spritebatch each call. Might be best to create a UI/text layer and have all
+	// text draw calls queued up to be rendered in the same spritebatch load?
+	//gfx.drawText("OCR", fmt::format("FPS: {:.2f}", prntAvgFps), 5, 5, dx::Colors::Red);
+	//gfx.drawText("OCR", fmt::format("{:.3f} ms/frame", 1000.0f / prntAvgFps), 5, 45);
 }
 
 
@@ -113,6 +120,7 @@ void App::runFrame()
 	mDisplay.getGraphics().clear(0.07f, 0, 0.12f);
 	mDisplay.getGraphics().setCamera(mCamera.getViewMatrix());
 	mLight.bind(mDisplay.getGraphics(), mCamera.getViewMatrix());
+	
 
 	mLight.render(mDisplay.getGraphics());
 

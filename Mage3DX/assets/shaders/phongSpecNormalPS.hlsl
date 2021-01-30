@@ -42,6 +42,8 @@ SamplerState smpl;
 float4 main(float3 viewPos : Position, float3 viewNormal : Normal,
 			float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords) : SV_Target
 {
+	float4 diftex = tex.Sample(smpl, tc);
+	clip(diftex.a < 0.1f ? -1 : 1);
 
 	if(normalMapEnabled)
 	{
@@ -50,6 +52,9 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal,
 			normalize(bitan), 
 			normalize(viewNormal),
 			tc, norm, smpl);
+	}else
+	{
+		viewNormal = normalize(viewNormal);
 	}
 
 	
@@ -80,7 +85,6 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal,
 	}
 	const float3 specular = speculate(specColorIntensity, 1.0f, viewNormal, lvd.vToL, viewPos, att, specPower);
 
-	float4 diftex = tex.Sample(smpl, tc);
 	
 	return float4(saturate((diff + ambient) * diftex.rgb + specular * specColorIntensity), diftex.a);
 }
