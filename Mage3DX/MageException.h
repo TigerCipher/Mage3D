@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: mageexception.h
  * Date File Created: 9/12/2020 at 3:01 PM
  * Author: Matt
@@ -23,22 +23,29 @@
 
 #include "StacktraceException.h"
 
-    class MageException : public std::exception, public StacktraceExceptionBase
-    {
-    public:
-        MageException(const int line, const char* file) noexcept : StacktraceExceptionBase(true), mLine(line), mFile(file) {}
-        [[nodiscard]] const char* what() const noexcept override;
-        virtual const char* getType() const noexcept;
-        inline int getLine() const noexcept { return mLine; }
-        inline const std::string& getFile() const noexcept { return mFile; }
-        std::string getOrigin() const noexcept;
-        std::string getStacktrace() const noexcept;
-    protected:
-        mutable std::string mWhat = "Test";
-        mutable std::string mType;
-    private:
-        int mLine;
-        std::string mFile;
-    };
+class ExceptionHelper
+{
+public:
+	static std::string translateError(HRESULT hr) noexcept;
+};
 
+class MageException : public std::exception, public StacktraceExceptionBase
+{
+public:
+	MageException(const int line, const char* file) noexcept : StacktraceExceptionBase(true),
+		mLine(line),
+		mFile(file) { }
+	[[nodiscard]] const char* what() const noexcept override;
+	virtual const char* getType() const noexcept;
+	inline int getLine() const noexcept { return mLine; }
+	inline const std::string& getFile() const noexcept { return mFile; }
+	std::string getOrigin() const noexcept;
+	std::string getStacktrace() const noexcept;
+protected:
+	mutable std::string mWhat = "Test";
+	mutable std::string mType;
+private:
+	int mLine;
+	std::string mFile;
+};
 

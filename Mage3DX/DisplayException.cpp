@@ -38,18 +38,3 @@ std::string DisplayException::getErrorString() const noexcept
 {
 	return ExceptionHelper::translateError(mResult);
 }
-
-
-std::string ExceptionHelper::translateError(const HRESULT hr) noexcept
-{
-	char* msgBuffer = nullptr;
-	const auto len = FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM | FORMAT_MESSAGE_IGNORE_INSERTS,
-		nullptr, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		reinterpret_cast<LPSTR>(&msgBuffer), 0,
-		nullptr);
-	if(len == 0) return "Unknown";
-	std::string errStr = msgBuffer;
-	LocalFree(msgBuffer);
-	return errStr;
-}

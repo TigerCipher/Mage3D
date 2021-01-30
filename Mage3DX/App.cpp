@@ -79,41 +79,33 @@ void App::stop()
 	mRunning = false;
 }
 
-void calculate_frame_statistics(Timer& timer, float* retFps)
+void calculate_frame_statistics(Timer& timer, float fps, Graphics& gfx)
 {
-	static float fps = 0;
 	static float avgFps = 0;
 	static int frameCount = 0;
-	static float prntAvgFps = 0;
+	static float prntAvgFps = 1;
 	static int prntFrameCount = 0;
 
-
-	IMGUI_BEGIN("Performance Statistics", nullptr, ImGuiWindowFlags_AlwaysAutoResize)
+	frameCount++;
+	avgFps += fps;
+	if (timer.peek() >= 1.0f)
 	{
-		frameCount++;
-		fps = IMGUI_FUNC_R(GetIO().Framerate, frameCount);
-		avgFps += fps;
-		if (timer.peek() >= 1.0f)
-		{
-			prntAvgFps = avgFps / static_cast<float>(frameCount);
-			*retFps = prntAvgFps;
-			avgFps = 0;
-			prntFrameCount = frameCount;
-			frameCount = 0;
-			timer.markPoint();
-		}
-
-
-		IMGUI_FUNC(Text("Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / fps, fps));
-		IMGUI_FUNC(Text("Average Frame Stats: %.3f ms/frame (%.1f FPS)", 1000.0f / prntAvgFps, prntAvgFps));
-		IMGUI_FUNC(TextColored(ImVec4(1, 1, 0, 1), "Processed %i frames", prntFrameCount));
+		prntAvgFps = avgFps / static_cast<float>(frameCount);
+		avgFps = 0;
+		prntFrameCount = frameCount;
+		frameCount = 0;
+		timer.markPoint();
 	}
-	IMGUI_END
+	
+	
+	gfx.outlineText("OCR", fmt::format("FPS: {:.2f}", prntAvgFps), 5, 5, dx::Colors::Red);
+	gfx.drawText("OCR", fmt::format("{:.3f} ms/frame", 1000.0f / prntAvgFps), 5, 45);
 }
 
 
 void App::runFrame()
 {
+	float fps = 1.0f / mTimer.peek();
 	const auto delta = mTimer.markPoint() * mGlobalSpeed;
 
 	if (mDisplay.keyboard.isPressedOnce(VK_NUMPAD5)) ImguiManager::toggle();
@@ -166,20 +158,18 @@ void App::runFrame()
 		}
 	}
 
-	static float fps = 0;
-	calculate_frame_statistics(mPerformanceTimer, &fps);
 
 	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
 
 	mSponza.showImguiWindow(mDisplay.getGraphics(), "Crytek Sponza");
 
-	mDisplay.getGraphics().drawText("OCR", fmt::format("FPS: {:.2f}", fps), 5, 5);
 
 	//mDisplay.getGraphics().drawText("Kristen ITC", "Hello!", 400, 400,
 	//	DirectX::Colors::OrangeRed, 2.0f, 45);
 	//show_debug_console();
 
+	calculate_frame_statistics(mPerformanceTimer, fps, mDisplay.getGraphics());
 	mDisplay.getGraphics().swap();
 }
 

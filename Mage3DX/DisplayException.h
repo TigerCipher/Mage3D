@@ -26,18 +26,14 @@
 #define DISPLAY_LAST_EXCEPTION()      DisplayException(__LINE__, __FILE__, GetLastError())
 #define DISPLAY_NO_GFX_EXCEPTION()    NoGraphicsException(__LINE__, __FILE__)
 
-class ExceptionHelper
-{
-public:
-	static std::string translateError(HRESULT hr) noexcept;
-};
+
 class DisplayException : public MageException
 {
 public:
 	DisplayException(const int line, const char* file, HRESULT hr) : MageException(line, file),
 	                                                                 mResult(hr) { }
 	const char* what() const noexcept override;
-	inline HRESULT getError() const noexcept { return mResult; }
+	HRESULT getError() const noexcept { return mResult; }
 	std::string getErrorString() const noexcept;
 private:
 	HRESULT mResult;
@@ -48,4 +44,3 @@ class NoGraphicsException : public MageException
 public:
 	NoGraphicsException(const int line, const char* file) : MageException(line, file) { }
 };
-

@@ -195,3 +195,14 @@ void Graphics::drawText(const std::string& fontName, const std::string& text,
 
 	mSpriteBatch->End();
 }
+
+void Graphics::outlineText(const std::string& fontName, const std::string& text, float x, float y,
+	dx::XMVECTORF32 outlineColor, dx::XMVECTORF32 color, float scale, float rotation)
+{
+	drawText(fontName, text, x + 1, y + 1, outlineColor, scale, rotation);
+	drawText(fontName, text, x - 1, y + 1, outlineColor, scale, rotation);
+	drawText(fontName, text, x - 1, y - 1, outlineColor, scale, rotation);
+	drawText(fontName, text, x + 1, y - 1, outlineColor, scale, rotation);
+	
+	drawText(fontName, text, x, y, color, scale, rotation);
+}
