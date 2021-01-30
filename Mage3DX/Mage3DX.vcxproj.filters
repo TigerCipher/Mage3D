@@ -223,6 +223,9 @@
       <Filter>Source Files\core</Filter>
     </ClCompile>
     <ClCompile Include="Blender.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="Rasterizer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -411,6 +414,9 @@
       <Filter>Header Files\core</Filter>
     </ClInclude>
     <ClInclude Include="Blender.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="Rasterizer.h">
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
   </ItemGroup>

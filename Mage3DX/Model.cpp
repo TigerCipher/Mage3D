@@ -494,6 +494,9 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 	//binds.push_back(Blender::resolve(gfx, hasAlphaDiffuse));
 
+	// really only accurate specifically for sponza, not all models may be the same way
+	binds.push_back(Rasterizer::resolve(gfx, hasAlphaDiffuse));
+
 	return createScope<Mesh>(gfx, std::move(binds));
 }
 

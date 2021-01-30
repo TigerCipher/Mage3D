@@ -262,6 +262,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="ModelException.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Rasterizer.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="TextureProcessor.cpp" />
     <ClCompile Include="pch.cpp">
@@ -328,6 +329,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="ModelException.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Rasterizer.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="TextureProcessor.h" />
     <ClInclude Include="pch.h" />
