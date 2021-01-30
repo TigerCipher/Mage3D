@@ -29,19 +29,19 @@
 Sampler::Sampler(Graphics& gfx)
 {
     DEBUG_INFO(gfx);
-    D3D11_SAMPLER_DESC sd = {};
+    D3D11_SAMPLER_DESC sd = CD3D11_SAMPLER_DESC{ CD3D11_DEFAULT{} };
     sd.Filter = D3D11_FILTER_ANISOTROPIC;
     sd.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
     sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    //sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
 	// AF x16
     const UINT anistropy = Settings::getInt("Graphics", "Anistropy", { 4, 8, 16 });
     sd.MaxAnisotropy = anistropy;
 	
-    sd.MipLODBias = 0.0f;
-    sd.MinLOD = 0.0f;
-    sd.MaxLOD = D3D11_FLOAT32_MAX;
+    //sd.MipLODBias = 0.0f;
+    //sd.MinLOD = 0.0f;
+    //sd.MaxLOD = D3D11_FLOAT32_MAX;
 
     GFX_THROW_INFO(getDevice(gfx)->CreateSamplerState(&sd, &mSampler));
 }

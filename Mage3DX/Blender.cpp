@@ -28,9 +28,8 @@ Blender::Blender(Graphics& gfx, bool blending) :
 {
 	DEBUG_INFO(gfx);
 
-	D3D11_BLEND_DESC blendDesc = { };
+	D3D11_BLEND_DESC blendDesc = CD3D11_BLEND_DESC{ CD3D11_DEFAULT{} };
 	auto& brt = blendDesc.RenderTarget[0];
-	brt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 
 	if(blending)
 	{
@@ -41,9 +40,7 @@ Blender::Blender(Graphics& gfx, bool blending) :
 		brt.SrcBlendAlpha = D3D11_BLEND_ZERO;
 		brt.DestBlendAlpha = D3D11_BLEND_ZERO;
 		brt.BlendOpAlpha = D3D11_BLEND_OP_ADD;
-	}else
-	{
-		brt.BlendEnable = FALSE;
+		brt.RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
 	}
 
 	GFX_THROW_INFO(getDevice(gfx)->CreateBlendState(&blendDesc, &mBlender));

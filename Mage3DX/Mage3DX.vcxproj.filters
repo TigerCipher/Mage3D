@@ -226,7 +226,7 @@
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
     <ClCompile Include="Rasterizer.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\bindables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -488,6 +488,9 @@
       <Filter>Shaders</Filter>
     </FxCompile>
     <FxCompile Include="assets\shaders\transform.hlsl">
+      <Filter>Shaders</Filter>
+    </FxCompile>
+    <FxCompile Include="assets\shaders\phongSpecNormalMaskPS.hlsl">
       <Filter>Shaders</Filter>
     </FxCompile>
   </ItemGroup>

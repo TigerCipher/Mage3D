@@ -345,7 +345,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		}
 
 		vertShader = "shaders\\phongNormalVS.cso";
-		pixShader = "shaders\\phongSpecNormalPS.cso";
+		pixShader = hasAlphaDiffuse ? "shaders\\phongSpecNormalMaskPS.cso" : "shaders\\phongSpecNormalPS.cso";
 
 		Node::MaterialConstFull matConst;
 		matConst.specularPower = shininess;

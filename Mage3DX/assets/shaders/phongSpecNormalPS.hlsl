@@ -43,18 +43,27 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal,
 			float3 tan : Tangent, float3 bitan : Bitangent, float2 tc : TexCoords) : SV_Target
 {
 	float4 diftex = tex.Sample(smpl, tc);
+
+#ifdef USE_MASK
 	clip(diftex.a < 0.1f ? -1 : 1);
 
+	// back faces should have the normals flipped
+	if(dot(viewNormal, viewPos) >= 0.0f)
+	{
+		viewNormal = -viewNormal;
+	}
+
+#endif
+
+	viewNormal = normalize(viewNormal);
+	
 	if(normalMapEnabled)
 	{
 		viewNormal = normal_map_viewspace(
 			normalize(tan), 
 			normalize(bitan), 
-			normalize(viewNormal),
+			viewNormal,
 			tc, norm, smpl);
-	}else
-	{
-		viewNormal = normalize(viewNormal);
 	}
 
 	

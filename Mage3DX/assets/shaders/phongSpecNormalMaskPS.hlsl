@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Mage3DX
  * Copyright (C) 2021 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
@@ -14,25 +14,10 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: Rasterizer.h
- * Date File Created: 1/30/2021 at 2:40 PM
+ * File Name: phongSpecNormalMaskPS.hlsl
+ * Date File Created: 1/30/2021 at 2:57 PM
  * Author: Matt
  */
-#pragma once
 
-#include "Bindable.h"
-
-
-class Rasterizer : public Bindable
-{
-public:
-	Rasterizer(Graphics& gfx, bool twoSided);
-	void bind(Graphics& gfx) noexcept override;
-
-	static SharedPtr<Rasterizer> resolve(Graphics& gfx, bool twoSided);
-	static std::string generateUID(bool twoSided);
-	std::string getUID() const noexcept override;
-protected:
-	COMptr<ID3D11RasterizerState> mRasterizer;
-	bool mTwoSided;
-};
+#define USE_MASK
+#include "phongSpecNormalPS.hlsl"
