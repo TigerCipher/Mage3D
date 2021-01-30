@@ -267,6 +267,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	bool hasNormalMap = false;
 	bool hasDiffuseMap = false;
 	bool hasAlphaGloss = false;
+	bool hasAlphaDiffuse = false;
 	float shininess = 2.0f;
 	vec4f specColor = { 0.18f, 0.18f, 0.18f, 1.0f };
 	vec4f diffColor = { 0.85f, 0.45f, 0.85f, 1.0f };
@@ -283,7 +284,9 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 		if(material.GetTexture(aiTextureType_DIFFUSE, 0, &textureFile) == aiReturn_SUCCESS)
 		{
-			binds.push_back(TextureData::resolve(gfx, basePath + textureFile.C_Str()));
+			auto tex = TextureData::resolve(gfx, basePath + textureFile.C_Str());
+			hasAlphaDiffuse = tex->hasAlpha();
+			binds.push_back(std::move(tex));
 			hasDiffuseMap = true;
 		}else
 		{
@@ -488,7 +491,8 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 	binds.push_back(InputLayout::resolve(gfx, vData.getLayout(), pvsbc));
 	binds.push_back(PixelShader::resolve(gfx, pixShader));
-	
+
+	binds.push_back(Blender::resolve(gfx, hasAlphaDiffuse));
 
 	return createScope<Mesh>(gfx, std::move(binds));
 }

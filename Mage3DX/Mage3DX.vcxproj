@@ -239,6 +239,7 @@
     </ClCompile>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Bindable.cpp" />
+    <ClCompile Include="Blender.cpp" />
     <ClCompile Include="Callstack.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DebugInfo.cpp" />
@@ -301,6 +302,7 @@
     <ClInclude Include="Bindable.h" />
     <ClInclude Include="BindableCodex.h" />
     <ClInclude Include="Bindables.h" />
+    <ClInclude Include="Blender.h" />
     <ClInclude Include="Callstack.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />

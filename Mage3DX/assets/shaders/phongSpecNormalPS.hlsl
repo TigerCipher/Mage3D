@@ -80,5 +80,7 @@ float4 main(float3 viewPos : Position, float3 viewNormal : Normal,
 	}
 	const float3 specular = speculate(specColorIntensity, 1.0f, viewNormal, lvd.vToL, viewPos, att, specPower);
 
-	return float4(saturate((diff + ambient) * tex.Sample(smpl, tc).rgb + specular * specColorIntensity), 1.0f);
+	float4 diftex = tex.Sample(smpl, tc);
+	
+	return float4(saturate((diff + ambient) * diftex.rgb + specular * specColorIntensity), diftex.a);
 }

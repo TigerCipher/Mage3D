@@ -220,6 +220,9 @@
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
     <ClCompile Include="Settings.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Blender.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -406,6 +409,9 @@
     </ClInclude>
     <ClInclude Include="Settings.h">
       <Filter>Header Files\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Blender.h">
+      <Filter>Header Files\bindables</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

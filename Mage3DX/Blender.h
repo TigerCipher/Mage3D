@@ -1,6 +1,6 @@
-/*
+﻿/*
  * Mage3DX
- * Copyright (C) 2020 Blue Moon Development. All rights reserved.
+ * Copyright (C) 2021 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -11,22 +11,28 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
- * File Name: bindables.h
- * Date File Created: 9/20/2020 at 11:04 PM
+ *
+ * File Name: Blender.h
+ * Date File Created: 1/29/2021 at 8:20 PM
  * Author: Matt
  */
+
 #pragma once
 
-#include "ConstantBuffer.h"
-#include "IndexBuffer.h"
-#include "InputLayout.h"
-#include "Topology.h"
-#include "TransformConstantBuffer.h"
-#include "VertexBufferBindable.h"
-#include "Shader.h"
-#include "TextureData.h"
-#include "Sampler.h"
-#include "Blender.h"
+#include "Bindable.h"
+
+class Blender : public Bindable
+{
+public:
+	Blender(Graphics& gfx, bool blending);
+	void bind(Graphics& gfx) noexcept override;
+
+	static SharedPtr<Blender> resolve(Graphics& gfx, bool blending);
+	static std::string generateUID(bool blending);
+	std::string getUID() const noexcept override;
+protected:
+	COMptr<ID3D11BlendState> mBlender;
+	bool mBlending;
+};
