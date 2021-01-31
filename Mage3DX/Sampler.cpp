@@ -35,7 +35,7 @@ Sampler::Sampler(Graphics& gfx)
     sd.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
     //sd.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-	// AF x16
+	// AF x4 is default
     const UINT anistropy = Settings::getInt("Graphics", "Anistropy", { 4, 8, 16 });
     sd.MaxAnisotropy = anistropy;
 	

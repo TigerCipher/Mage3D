@@ -32,7 +32,9 @@ App::App(const int width, const int height, const char* title, const std::string
 	mCommandLine(cmdLine),
 	mDisplay(width, height, title, false),
 	mRunning(true),
-	mLight(mDisplay.getGraphics())
+	mLight(mDisplay.getGraphics()),
+	mBluePlane(mDisplay.getGraphics(), 6.0f, {0.2f, 0.2f, 1.0f, 0}),
+	mRedPlane(mDisplay.getGraphics(), 6.0f, {1.0f, 0.2f, 0.2f, 0})
 {
 
 	parse_cmdline_args(cmdLine);
@@ -52,7 +54,8 @@ App::App(const int width, const int height, const char* title, const std::string
 	mDisplay.getGraphics().addFont("Kristen ITC", "assets\\fonts\\kristen_itc.sf");
 	mDisplay.getGraphics().addFont("OCR", "assets\\fonts\\ocr.sf");
 
-
+	mBluePlane.setPosition(mCamera.getPosition());
+	mRedPlane.setPosition(mCamera.getPosition());
 
 	mDisplay.show();
 }
@@ -125,6 +128,8 @@ void App::runFrame()
 	mLight.render(mDisplay.getGraphics());
 
 	mSponza.render(mDisplay.getGraphics());
+	mBluePlane.render(mDisplay.getGraphics());
+	mRedPlane.render(mDisplay.getGraphics());
 
 	if (mDisplay.keyboard.isPressedOnce(VK_ESCAPE))
 	{
@@ -171,7 +176,8 @@ void App::runFrame()
 	mLight.spawnControlWindow();
 
 	mSponza.showImguiWindow(mDisplay.getGraphics(), "Crytek Sponza");
-
+	mBluePlane.spawnControlWindow(mDisplay.getGraphics(), "Blue Plane");
+	mRedPlane.spawnControlWindow(mDisplay.getGraphics(), "Red Plane");
 
 	//mDisplay.getGraphics().drawText("Kristen ITC", "Hello!", 400, 400,
 	//	DirectX::Colors::OrangeRed, 2.0f, 45);

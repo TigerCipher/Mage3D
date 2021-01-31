@@ -51,5 +51,7 @@ private:
 	PointLight mLight;
 
 	Model mSponza;
+	TestPlane mBluePlane;
+	TestPlane mRedPlane;
 };
 

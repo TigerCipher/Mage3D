@@ -26,13 +26,18 @@
 class Blender : public Bindable
 {
 public:
-	Blender(Graphics& gfx, bool blending);
+	Blender(Graphics& gfx, bool blending, std::optional<float> factor = {});
 	void bind(Graphics& gfx) noexcept override;
 
-	static SharedPtr<Blender> resolve(Graphics& gfx, bool blending);
-	static std::string generateUID(bool blending);
+	void setFactor(float factor) NOX;
+
+	float getFactor() const NOX;
+	
+	static SharedPtr<Blender> resolve(Graphics& gfx, bool blending, std::optional<float> factor = {});
+	static std::string generateUID(bool blending, std::optional<float> factor = {});
 	std::string getUID() const noexcept override;
 protected:
 	COMptr<ID3D11BlendState> mBlender;
 	bool mBlending;
+	std::optional<std::array<float, 4>> mFactors;
 };

@@ -54,6 +54,9 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 		addBind(Topology::resolve(gfx, D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST));
 
 	addBind(createRef<TransformConstantBuffer>(gfx, *this));
+
+	addBind(Blender::resolve(gfx, false));
+	addBind(Rasterizer::resolve(gfx, false));
 }
 
 

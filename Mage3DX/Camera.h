@@ -43,6 +43,7 @@ public:
 	void increaseSpeed(const float factor) { mSpeed *= factor; }
 	void decreaseSpeed(const float factor) { mSpeed /= factor; }
 
+	vec3f getPosition() const noexcept { return mPosition; }
 
 private:
 	float mPitch = 0.0f;

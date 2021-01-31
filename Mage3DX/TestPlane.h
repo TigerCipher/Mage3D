@@ -25,21 +25,17 @@
 class TestPlane : public IRenderable
 {
 public:
-	TestPlane(Graphics& gfx, float size = 1.0f);
+	TestPlane(Graphics& gfx, float size = 1.0f, vec4f color = {1, 1, 1, 0});
 	void setPosition(vec3f pos) noexcept;
 	void setRotation(float roll, float pitch, float yaw) noexcept;
 	mat4f getTransformMatrix() const noexcept override;
 
-	void spawnControlWindow(Graphics& gfx) noexcept;
-protected:
+	void spawnControlWindow(Graphics& gfx, const std::string& name) noexcept;
 private:
 
 	struct MaterialConstant
 	{
-		float specularIntensity = 0.18f;
-		float specularPower = 18.0f;
-		BOOL normalMapEnabled = TRUE;
-		float padding[1];
+		vec4f color;
 	} mMatConst;
 	
 	vec3f mPos = { 1, 1, 1 };
