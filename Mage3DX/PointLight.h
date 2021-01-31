@@ -27,7 +27,10 @@
 class PointLight
 {
 public:
-	explicit PointLight(Graphics& gfx, float radius = 0.5f);
+	explicit PointLight(Graphics& gfx, float radius = 0.5f,
+		vec3f pos = { 10, 9, 2.5f },
+		vec3f ambient = {0.05f, 0.05f, 0.05f},
+		vec3f color = {1.0f, 1.0f, 1.0f});
 	PointLight(Graphics& gfx, float x, float y, float z, float radius = 0.5f);
 
 	void render(Graphics& gfx) const noexcept(!MAGE_DEBUG);
@@ -50,7 +53,8 @@ private:
 		float attQuad;
 	};
 
-	PointLightCBuf mCbuf;
+	PointLightCBuf mStartingBuf{};
+	PointLightCBuf mCbuf{};
 	mutable SolidSphere mMesh;
 	mutable PixelConstantBuffer<PointLightCBuf> mBuffer;
 };

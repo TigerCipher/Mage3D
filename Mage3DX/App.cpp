@@ -172,7 +172,6 @@ void App::runFrame()
 	}
 
 
-	mCamera.spawnControlWindow();
 	mLight.spawnControlWindow();
 
 	mSponza.showImguiWindow(mDisplay.getGraphics(), "Crytek Sponza");

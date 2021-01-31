@@ -22,10 +22,19 @@
 #include "PointLight.h"
 #include "ImguiManager.h"
 
-PointLight::PointLight(Graphics& gfx, const float radius) :
+PointLight::PointLight(Graphics& gfx, const float radius, vec3f pos, vec3f ambient, vec3f color) :
 	mMesh(gfx, radius),
 	mBuffer(gfx)
 {
+	mStartingBuf = {
+		pos,
+		ambient,
+		color,
+		1.0f,
+		1.0f,
+		0.045f,
+		0.0075f
+	};
 	reset();
 }
 
@@ -83,13 +92,5 @@ void PointLight::spawnControlWindow() noexcept
 
 void PointLight::reset() noexcept
 {
-	mCbuf = {
-		{ 10, 9, 2.5f },
-		{ 0.05f, 0.05f, 0.05f },
-		{ 1.0f, 1.0f, 1.0f },
-		1.0f,
-		1.0f,
-		0.045f,
-		0.0075f
-	};
+	mCbuf = mStartingBuf;
 }
