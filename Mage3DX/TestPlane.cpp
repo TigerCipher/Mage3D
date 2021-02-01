@@ -46,17 +46,18 @@ TestPlane::TestPlane(Graphics& gfx, const float size, vec4f color) :
 
 	addBind(createRef<TransformConstantBuffer>(gfx, *this, 0));
 
-	addBind(Blender::resolve(gfx, true, 0.5f));
+	//addBind(Blender::resolve(gfx, true, 0.5f));
+	addBind(createRef<Blender>(gfx, true, 0.5f));
 	addBind(Rasterizer::resolve(gfx, true));
 	
 }
 
-void TestPlane::setPosition(vec3f pos) noexcept
+void TestPlane::setPosition(const vec3f pos) noexcept
 {
 	mPos = pos;
 }
 
-void TestPlane::setRotation(float roll, float pitch, float yaw) noexcept
+void TestPlane::setRotation(const float roll, const float pitch, const float yaw) noexcept
 {
 	mRoll = roll;
 	mPitch = pitch;
@@ -81,8 +82,8 @@ void TestPlane::spawnControlWindow(Graphics& gfx, const std::string& name) noexc
 		IMGUI_FUNC(SliderAngle("Pitch", &mPitch, -180.0f, 180.0f));
 		IMGUI_FUNC(SliderAngle("Yaw", &mYaw, -180.0f, 180.0f));
 		IMGUI_FUNC(Text("Shading"));
-		auto blender = queryBindable<Blender>();
-		float factor = blender->getFactor();
+		auto* blender = queryBindable<Blender>();
+		auto factor = blender->getFactor();
 		IMGUI_FUNC(SliderFloat("Translucency", &factor, 0.0f, 1.0f));
 		blender->setFactor(factor);
 	}

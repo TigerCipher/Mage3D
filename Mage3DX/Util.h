@@ -21,3 +21,25 @@
 #pragma once
 
 extern void from_list(std::string& str, const list<std::string>& strList);
+
+/// <summary>
+/// Converts a narrow std::string to a wide std::wstring.
+/// Maximum length supported is 512 characters (including null terminating character)
+/// </summary>
+/// <param name="str">The narrow string to be converted</param>
+/// <returns>A wide string</returns>
+extern std::wstring to_wide(const std::string& str);
+
+
+
+/// <summary>
+/// Converts a wide std::wstring to a narrow std::string.
+/// Maximum length supported is 512 characters (including null terminating character)
+/// </summary>
+/// <param name="str">The wide string to be converted</param>
+/// <returns>A narrow string</returns>
+extern std::string to_narrow(const std::wstring& str);
+
+
+
+extern list<std::string> tokenize_quoted(const std::string& input);

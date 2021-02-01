@@ -18,7 +18,7 @@
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-//#include "pch.h" -intellisense works better with force include being used
+
 #include "Util.h"
 
 
@@ -32,4 +32,34 @@ void from_list(std::string& str, const list<std::string>& strList)
 
 	if(!str.empty())
 		str.pop_back();
+}
+
+std::wstring to_wide(const std::string& str)
+{
+	wchar_t buf[512];
+	mbstowcs_s(nullptr, buf, str.c_str(), _TRUNCATE);
+	return buf;
+}
+
+
+std::string to_narrow(const std::wstring& str)
+{
+	char buf[512];
+	wcstombs_s(nullptr, buf, str.c_str(), _TRUNCATE);
+	return buf;
+}
+
+list<std::string> tokenize_quoted(const std::string& input)
+{
+	std::istringstream iss;
+	iss.str(input);
+	list<std::string> tokens;
+	std::string token;
+
+	while(iss >> std::quoted(token))
+	{
+		tokens.push_back(std::move(token));
+	}
+
+	return tokens;
 }

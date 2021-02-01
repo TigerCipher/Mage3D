@@ -18,11 +18,11 @@
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-//#include "pch.h" -intellisense works better with force include being used
+
 #include "Shader.h"
 #include "GraphicsException.h"
 #include "BindableCodex.h"
-
+#include "Util.h"
 
 #include <d3dcompiler.h>
 
@@ -32,7 +32,7 @@ VertexShader::VertexShader(Graphics& gfx, const std::string& path) :
 {
 	DEBUG_INFO(gfx);
 
-	GFX_THROW_INFO(D3DReadFileToBlob(std::wstring{ path.begin(), path.end() }.c_str(), &mBytecode))
+	GFX_THROW_INFO(D3DReadFileToBlob(to_wide(path).c_str(), &mBytecode))
 	GFX_THROW_INFO(getDevice(gfx)->CreateVertexShader(
 		mBytecode->GetBufferPointer(),
 		mBytecode->GetBufferSize(),

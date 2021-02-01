@@ -18,7 +18,6 @@
  * Date File Created: 9/27/2020 at 3:28 PM
  * Author: Matt
  */
-//#include "pch.h" -intellisense works better with force include being used
 #include "Graphics.h"
 #include "GraphicsException.h"
 #include "InfoException.h"
@@ -28,6 +27,7 @@
 
 #include "ImguiManager.h"
 #include "Util.h"
+#include "Settings.h"
 
 // might do this since for release id be using visual studio to build, likely with different
 //compiler flags than set up in cmake currently
@@ -39,6 +39,7 @@ constexpr int VSYNC_FLAG = 0;
 
 Graphics::Graphics(HWND hwnd, int width, int height)
 {
+	mVsync = Settings::getBool("Display", "VSync");
 	//RECT r;
 	//GetClientRect(hwnd, &r);
 	//UINT w = r.right - r.left;
@@ -140,7 +141,7 @@ void Graphics::swap()
 #if MAGE_DEBUG
 	mDebugInfo.set();
 #endif
-	if (FAILED(hr = mSwap->Present(VSYNC_FLAG, 0)))
+	if (FAILED(hr = mSwap->Present(mVsync, 0)))
 	{
 #if MAGE_DEBUG
 		std::string debugMsgs;

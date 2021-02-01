@@ -44,7 +44,7 @@ public:
 	{
 		for (auto& pixelBuffer : mBindables)
 		{
-			if(auto pb = dynamic_cast<T*>(pixelBuffer.get()))
+			if(auto* pb = dynamic_cast<T*>(pixelBuffer.get()))
 				return pb;
 		}
 

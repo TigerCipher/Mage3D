@@ -78,6 +78,8 @@ private:
 	mat4f mCamera{ };
 	bool mImguiEnabled = true;
 
+	uint mVsync;
+
 #if MAGE_DEBUG
 	DebugInfo mDebugInfo;
 #endif
