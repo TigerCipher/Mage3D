@@ -186,9 +186,6 @@
     <ClCompile Include="DebugTools.cpp">
       <Filter>Source Files\debug</Filter>
     </ClCompile>
-    <ClCompile Include="VertexBufferBindable.cpp">
-      <Filter>Source Files\bindables</Filter>
-    </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -230,6 +227,9 @@
     </ClCompile>
     <ClCompile Include="ScriptCommander.cpp">
       <Filter>Source Files\core</Filter>
+    </ClCompile>
+    <ClCompile Include="VertexBuffer.cpp">
+      <Filter>Source Files\bindables</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -380,9 +380,6 @@
     <ClInclude Include="DebugTools.h">
       <Filter>Header Files\debug</Filter>
     </ClInclude>
-    <ClInclude Include="VertexBufferBindable.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
     <ClInclude Include="ModelException.h">
       <Filter>Header Files\debug</Filter>
     </ClInclude>
@@ -425,6 +422,9 @@
     <ClInclude Include="ScriptCommander.h">
       <Filter>Header Files\core</Filter>
     </ClInclude>
+    <ClInclude Include="VertexBuffer.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdParty\DXGetErrorDescription.inl">
@@ -435,9 +435,6 @@
     </None>
     <None Include="3rdParty\DXTrace.inl">
       <Filter>3rdParty\DXErr</Filter>
-    </None>
-    <None Include="scripts\prepare.bat">
-      <Filter>Scripts</Filter>
     </None>
     <None Include="uncrustify.cfg">
       <Filter>Misc</Filter>
@@ -453,6 +450,9 @@
       <Filter>Misc</Filter>
     </None>
     <None Include="..\preprocess.json">
+      <Filter>Scripts</Filter>
+    </None>
+    <None Include="..\prepare.bat">
       <Filter>Scripts</Filter>
     </None>
   </ItemGroup>

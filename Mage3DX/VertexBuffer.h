@@ -11,10 +11,10 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
- * File Name: VertexBufferBindable.h
+ *
+ * File Name: VertexBuffer.h
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
@@ -25,17 +25,18 @@
 #include "Bindable.h"
 #include "Vertex.h"
 
-class VertexBufferBindable : public Bindable
+
+class VertexBuffer : public Bindable
 {
 public:
-	VertexBufferBindable(Graphics& gfx, const std::string& tag, const VertexBuffer& vData);
-	VertexBufferBindable(Graphics& gfx, const VertexBuffer& vData);
+	VertexBuffer(Graphics& gfx, const std::string& tag, const vtx::VertexBuffer& vData);
+	VertexBuffer(Graphics& gfx, const vtx::VertexBuffer& vData);
 
 	void bind(Graphics& gfx) noexcept override;
 
-	static SharedPtr<VertexBufferBindable> resolve(Graphics& gfx, const std::string& tag, const VertexBuffer& vData);
+	static SharedPtr<VertexBuffer> resolve(Graphics& gfx, const std::string& tag, const vtx::VertexBuffer& vData);
 
-	template<typename... Ignore>
+	template<typename ... Ignore>
 	static std::string generateUID(const std::string& tag, Ignore&&... ignore)
 	{
 		return generateUID_(tag);
@@ -51,5 +52,3 @@ protected:
 private:
 	static std::string generateUID_(const std::string& tag);
 };
-
-

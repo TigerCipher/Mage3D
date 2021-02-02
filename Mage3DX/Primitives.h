@@ -36,7 +36,7 @@ class IndexedTriangleList
 public:
 	IndexedTriangleList() = default;
 
-	IndexedTriangleList(VertexBuffer verts, list<ushort> ints) :
+	IndexedTriangleList(vtx::VertexBuffer verts, list<ushort> ints) :
 		vertices(std::move(verts)),
 		indices(std::move(ints))
 	{
@@ -49,7 +49,7 @@ public:
 		
 		for (int i = 0; i < vertices.size(); i++)
 		{
-			auto& pos = vertices[i].attribute<AttributeType::POSITION3D>();
+			auto& pos = vertices[i].attribute<POSITION3D>();
 			dx::XMStoreFloat3(&pos, dx::XMVector3Transform(dx::XMLoadFloat3(&pos), matrix));
 		}
 	}
@@ -74,7 +74,7 @@ public:
 		}
 	}
 
-	VertexBuffer vertices;
+	vtx::VertexBuffer vertices;
 	list<ushort> indices;
 };
 
@@ -198,11 +198,11 @@ public:
 class Cube
 {
 public:
-	static IndexedTriangleList makeIndependent(VertexLayout layout)
+	static IndexedTriangleList makeIndependent(vtx::VertexLayout layout)
 	{
 		constexpr auto side = 1.0f / 2.0f;
 
-		VertexBuffer vertices(std::move(layout), 24);
+		vtx::VertexBuffer vertices(std::move(layout), 24);
 		
 		// Near
 		vertices[ 0 ].attribute<POSITION3D>() = { -side,-side,-side };
@@ -255,10 +255,10 @@ public:
 
 	static IndexedTriangleList makeIndependentTextured()
 	{
-		auto initial = makeIndependent(std::move(VertexLayout{}
-			.append(POSITION3D)
-			.append(NORMAL)
-			.append(TEXTURE2D)));
+		auto initial = makeIndependent(std::move(vtx::VertexLayout{}
+		                                         .append(POSITION3D)
+		                                         .append(NORMAL)
+		                                         .append(TEXTURE2D)));
 
 		initial.vertices[0].attribute<TEXTURE2D>() = { 0.0f,0.0f };
 		initial.vertices[1].attribute<TEXTURE2D>() = { 1.0f,0.0f };
@@ -292,7 +292,7 @@ public:
 class Plane
 {
 public:
-	static IndexedTriangleList makeTesselated(VertexLayout layout, int divisionsX, int divisionsY)
+	static IndexedTriangleList makeTesselated(vtx::VertexLayout layout, int divisionsX, int divisionsY)
 	{
 		assert(divisionsX >= 1);
 		assert(divisionsY >= 1);
@@ -302,7 +302,7 @@ public:
 		const int numVertsX = divisionsX + 1;
 		const int numVertsY = divisionsY + 1;
 
-		VertexBuffer vb(std::move(layout));
+		vtx::VertexBuffer vb(std::move(layout));
 		
 		{
 			const auto sideX = width / 2.0f;
@@ -357,7 +357,7 @@ public:
 
 	static IndexedTriangleList make()
 	{
-		VertexLayout layout;
+		vtx::VertexLayout layout;
 		layout.append(POSITION3D).append(NORMAL).append(TEXTURE2D);
 		return makeTesselated(std::move(layout), 1, 1);
 	}
@@ -553,7 +553,7 @@ public:
 class Sphere
 {
 public:
-	static IndexedTriangleList makeTesselated(VertexLayout layout, int latDiv, int longDiv)
+	static IndexedTriangleList makeTesselated(vtx::VertexLayout layout, int latDiv, int longDiv)
 	{
 		assert(latDiv >= 3);
 		assert(longDiv >= 3);
@@ -563,7 +563,7 @@ public:
 		const float lattitudeAngle = PI / (float) latDiv;
 		const float longitudeAngle = 2.0f * PI / (float) longDiv;
 
-		VertexBuffer vb{ std::move(layout) };
+		vtx::VertexBuffer vb{ std::move(layout) };
 		for (int iLat = 1; iLat < latDiv; iLat++)
 		{
 			const auto latBase = dx::XMVector3Transform(base, dx::XMMatrixRotationX(lattitudeAngle * (float) iLat));
@@ -637,10 +637,10 @@ public:
 		return { std::move(vb), std::move(indices) };
 	}
 
-	static IndexedTriangleList make(std::optional<VertexLayout> layout = std::nullopt)
+	static IndexedTriangleList make(std::optional<vtx::VertexLayout> layout = std::nullopt)
 	{
 		if (!layout)
-			layout = VertexLayout{}.append(AttributeType::POSITION3D);
+			layout = vtx::VertexLayout{}.append(AttributeType::POSITION3D);
 		return makeTesselated(std::move(*layout), 12, 24);
 	}
 };

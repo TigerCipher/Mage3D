@@ -20,7 +20,7 @@
  */
 #include "Vertex.h"
 
-size_t Attribute::sizeOf(const AttributeType type) noexcept(!MAGE_DEBUG)
+size_t vtx::Attribute::sizeOf(const AttributeType type) noexcept(!MAGE_DEBUG)
 {
 	switch (type)
 	{
@@ -39,7 +39,7 @@ size_t Attribute::sizeOf(const AttributeType type) noexcept(!MAGE_DEBUG)
 	}
 }
 
-D3D11_INPUT_ELEMENT_DESC Attribute::getDesc() const noexcept(!MAGE_DEBUG)
+D3D11_INPUT_ELEMENT_DESC vtx::Attribute::getDesc() const noexcept(!MAGE_DEBUG)
 {
 	switch (mType)
 	{
@@ -59,7 +59,7 @@ D3D11_INPUT_ELEMENT_DESC Attribute::getDesc() const noexcept(!MAGE_DEBUG)
 	}
 }
 
-const char* Attribute::getCode() const noexcept
+const char* vtx::Attribute::getCode() const noexcept
 {
 	switch(mType)
 	{
@@ -76,13 +76,13 @@ const char* Attribute::getCode() const noexcept
 	}
 }
 
-VertexLayout& VertexLayout::append(AttributeType type) noexcept(!MAGE_DEBUG)
+vtx::VertexLayout& vtx::VertexLayout::append(AttributeType type) noexcept(!MAGE_DEBUG)
 {
 	mAttribs.emplace_back(type, size());
 	return *this;
 }
 
-list<D3D11_INPUT_ELEMENT_DESC> VertexLayout::getD3dLayout() const noexcept(!MAGE_DEBUG)
+list<D3D11_INPUT_ELEMENT_DESC> vtx::VertexLayout::getD3dLayout() const noexcept(!MAGE_DEBUG)
 {
 	list< D3D11_INPUT_ELEMENT_DESC> desc;
 	for (const auto& a : mAttribs)
@@ -92,7 +92,7 @@ list<D3D11_INPUT_ELEMENT_DESC> VertexLayout::getD3dLayout() const noexcept(!MAGE
 	return desc;
 }
 
-std::string VertexLayout::getCode() const noexcept(!MAGE_DEBUG)
+std::string vtx::VertexLayout::getCode() const noexcept(!MAGE_DEBUG)
 {
 	std::string code;
 	for(const auto& attr : mAttribs)
@@ -103,13 +103,13 @@ std::string VertexLayout::getCode() const noexcept(!MAGE_DEBUG)
 	return code;
 }
 
-VertexBuffer::VertexBuffer(VertexLayout layout, size_t size) noexcept(!MAGE_DEBUG) :
+vtx::VertexBuffer::VertexBuffer(VertexLayout layout, size_t size) noexcept(!MAGE_DEBUG) :
 	mLayout(std::move(layout))
 {
 	resize(size);
 }
 
-void VertexBuffer::resize(size_t newSize) noexcept
+void vtx::VertexBuffer::resize(size_t newSize) noexcept
 {
 	const auto s = size();
 	if(s < newSize)

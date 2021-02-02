@@ -29,7 +29,7 @@ TestPlane::TestPlane(Graphics& gfx, const float size, vec4f color) :
 	auto model = Plane::make();
 	model.transform(scaleMatrix(size, size, 1));
 	const auto tag = "@plane." + std::to_string(size);
-	addBind(VertexBufferBindable::resolve(gfx, tag, model.vertices));
+	addBind(VertexBuffer::resolve(gfx, tag, model.vertices));
 	addBind(IndexBuffer::resolve(gfx, tag, model.indices));
 
 	auto vs = VertexShader::resolve(gfx, "shaders\\solidVS.cso");

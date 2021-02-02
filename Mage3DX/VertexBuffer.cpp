@@ -14,17 +14,17 @@
  *
  * Contact: team@bluemoondev.org
  *
- * File Name: VertexBufferBindable.cpp
+ * File Name: VertexBuffer.cpp
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-//#include "pch.h" -intellisense works better with force include being used
-#include "VertexBufferBindable.h"
+
+#include "VertexBuffer.h"
 #include "BindableCodex.h"
 
-VertexBufferBindable::VertexBufferBindable(Graphics& gfx, const std::string& tag, const VertexBuffer& vData) :
-mTag(tag),
-mStride(static_cast<UINT>(vData.getLayout().size()))
+VertexBuffer::VertexBuffer(Graphics& gfx, const std::string& tag, const vtx::VertexBuffer& vData) :
+	mTag(tag),
+	mStride(static_cast<UINT>(vData.getLayout().size()))
 {
 	DEBUG_INFO(gfx);
 
@@ -41,13 +41,12 @@ mStride(static_cast<UINT>(vData.getLayout().size()))
 	GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &mBuffer));
 }
 
-VertexBufferBindable::VertexBufferBindable(Graphics& gfx, const VertexBuffer& vData) :
-	VertexBufferBindable(gfx, "?", vData)
+VertexBuffer::VertexBuffer(Graphics& gfx, const vtx::VertexBuffer& vData) :
+	VertexBuffer(gfx, "?", vData)
 {
-
 }
 
-void VertexBufferBindable::bind(Graphics& gfx) noexcept
+void VertexBuffer::bind(Graphics& gfx) noexcept
 {
 	static const UINT offset = 0;
 	getContext(gfx)->IASetVertexBuffers(0, 1, mBuffer.GetAddressOf(), &mStride, &offset);
@@ -55,19 +54,20 @@ void VertexBufferBindable::bind(Graphics& gfx) noexcept
 
 
 
-SharedPtr<VertexBufferBindable> VertexBufferBindable::resolve(Graphics& gfx, const std::string& tag, const VertexBuffer& vData)
+SharedPtr<VertexBuffer> VertexBuffer::resolve(Graphics& gfx, const std::string& tag, const
+	vtx::VertexBuffer& vData)
 {
 	assert(tag != "?");
-	return BindableCodex::resolve<VertexBufferBindable>(gfx, tag, vData);
+	return BindableCodex::resolve<VertexBuffer>(gfx, tag, vData);
 }
 
-std::string VertexBufferBindable::getUID() const noexcept
+std::string VertexBuffer::getUID() const noexcept
 {
 	return generateUID(mTag);
 }
 
-std::string VertexBufferBindable::generateUID_(const std::string& tag)
+std::string VertexBuffer::generateUID_(const std::string& tag)
 {
 	using namespace std::string_literals;
-	return typeid(VertexBufferBindable).name() + "#"s + tag;
+	return typeid(VertexBuffer).name() + "#"s + tag;
 }

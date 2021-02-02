@@ -25,7 +25,7 @@
 #include "InputLayout.h"
 #include "Topology.h"
 #include "TransformConstantBuffer.h"
-#include "VertexBufferBindable.h"
+#include "VertexBuffer.h"
 #include "Shader.h"
 #include "TextureData.h"
 #include "Sampler.h"

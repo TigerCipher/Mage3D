@@ -33,7 +33,7 @@ SolidSphere::SolidSphere(Graphics& gfx, float radius)
 
 		const auto tag = "@sphere." + std::to_string(radius);
 	
-		addBind(VertexBufferBindable::resolve(gfx, tag, model.vertices));
+		addBind(VertexBuffer::resolve(gfx, tag, model.vertices));
 		addBind(IndexBuffer::resolve(gfx, tag, model.indices));
 
 		auto pvs = VertexShader::resolve(gfx, "shaders\\solidVS.cso");

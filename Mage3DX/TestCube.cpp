@@ -32,7 +32,7 @@ TestCube::TestCube(Graphics& gfx, float size)
 	model.setNormalsFlat();
 	const auto tag = "@cube." + std::to_string(size);
 
-	addBind(VertexBufferBindable::resolve(gfx, tag, model.vertices));
+	addBind(VertexBuffer::resolve(gfx, tag, model.vertices));
 	addBind(IndexBuffer::resolve(gfx, tag, model.indices));
 
 	addBind(TextureData::resolve(gfx, "assets\\textures\\brickwall.jpg"));

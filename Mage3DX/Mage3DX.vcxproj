@@ -144,7 +144,7 @@
       <AdditionalDependencies>bmd.lib;d3d11.lib;D3DCompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(ProjectDir)scripts\prepare.bat $(TargetDir)</Command>
+      <Command>$(SolutionDir)prepare.bat $(TargetDir)</Command>
     </PostBuildEvent>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
@@ -189,7 +189,7 @@
       <AdditionalDependencies>bmd.lib;d3d11.lib;D3DCompiler.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(ProjectDir)scripts\prepare.bat $(TargetDir)</Command>
+      <Command>$(SolutionDir)prepare.bat $(TargetDir)</Command>
     </PostBuildEvent>
     <FxCompile>
       <ShaderModel>5.0</ShaderModel>
@@ -306,7 +306,7 @@
     <ClCompile Include="TransformConstantBuffer.cpp" />
     <ClCompile Include="Util.cpp" />
     <ClCompile Include="Vertex.cpp" />
-    <ClCompile Include="VertexBufferBindable.cpp" />
+    <ClCompile Include="VertexBuffer.cpp" />
     <ClCompile Include="winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -371,7 +371,7 @@
     <ClInclude Include="Topology.h" />
     <ClInclude Include="TransformConstantBuffer.h" />
     <ClInclude Include="Util.h" />
-    <ClInclude Include="VertexBufferBindable.h" />
+    <ClInclude Include="VertexBuffer.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="winwrapper.h" />
   </ItemGroup>
@@ -383,6 +383,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\.gitignore" />
+    <None Include="..\prepare.bat" />
     <None Include="..\preprocess.json" />
     <None Include="..\README.md" />
     <None Include="..\settings.ini" />
@@ -390,7 +391,6 @@
     <None Include="3rdParty\DXGetErrorString.inl" />
     <None Include="3rdParty\DXTrace.inl" />
     <None Include="Mage3DX.sln.licenseheader" />
-    <None Include="scripts\prepare.bat" />
     <None Include="uncrustify.cfg" />
   </ItemGroup>
   <ItemGroup>

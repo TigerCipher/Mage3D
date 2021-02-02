@@ -23,7 +23,7 @@
 #include "GraphicsException.h"
 #include "BindableCodex.h"
 
-InputLayout::InputLayout(Graphics& gfx, VertexLayout layout,
+InputLayout::InputLayout(Graphics& gfx, vtx::VertexLayout layout,
                          ID3DBlob* vertexBytecode) :
 	mVertexLayout(std::move(layout))
 {
@@ -42,12 +42,12 @@ void InputLayout::bind(Graphics& gfx) noexcept
 	getContext(gfx)->IASetInputLayout(mLayout.Get());
 }
 
-SharedPtr<InputLayout> InputLayout::resolve(Graphics& gfx, const VertexLayout& layout, ID3DBlob* vsBytecode)
+SharedPtr<InputLayout> InputLayout::resolve(Graphics& gfx, const vtx::VertexLayout& layout, ID3DBlob* vsBytecode)
 {
 	return BindableCodex::resolve<InputLayout>(gfx, layout, vsBytecode);
 }
 
-std::string InputLayout::generateUID(const VertexLayout& layout, ID3DBlob* vsBytecode)
+std::string InputLayout::generateUID(const vtx::VertexLayout& layout, ID3DBlob* vsBytecode)
 {
 	using namespace std::string_literals;
 	return typeid(InputLayout).name() + "#"s + layout.getCode();
