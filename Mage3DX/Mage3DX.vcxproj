@@ -328,6 +328,7 @@
     <ClInclude Include="Callstack.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
+    <ClInclude Include="DynamicConstantBuffer.h" />
     <ClInclude Include="ScriptCommander.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConstantBuffer.h" />
