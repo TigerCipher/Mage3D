@@ -23,28 +23,27 @@
 #include "TextureProcessor.h"
 #include "Settings.h"
 
-#include <shellapi.h>
+#include "Util.h"
 
 
-void parse_cmdline_args(const std::string& cmdLine);
 
 App::App(const int width, const int height, const char* title, const std::string& cmdLine) :
 	mCommandLine(cmdLine),
 	mDisplay(width, height, title, false),
 	mRunning(true),
+	mScriptCommander(tokenize_quoted(cmdLine)),
 	mLight(mDisplay.getGraphics()),
+	mSponza(mDisplay.getGraphics(), "assets\\models\\sponza.obj", 1.0f / 20.0f),
 	mBluePlane(mDisplay.getGraphics(), 6.0f, {0.2f, 0.2f, 1.0f, 0}),
 	mRedPlane(mDisplay.getGraphics(), 6.0f, {1.0f, 0.2f, 0.2f, 0})
 {
 
-	parse_cmdline_args(cmdLine);
-	
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),
 		0.5f, 400.0f));
 	mDisplay.toggleCursor(0);
 
-	mSponza.load(mDisplay.getGraphics(), "assets\\models\\sponza.obj", 1.0f / 20.0f);
+	//mSponza.load(mDisplay.getGraphics(), "assets\\models\\sponza.obj", 1.0f / 20.0f);
 
 	mDisplay.getGraphics().addFont("Courier New", "assets\\fonts\\courier_new.sf");
 	mDisplay.getGraphics().addFont("Agency FB", "assets\\fonts\\agencyfb.sf");
@@ -128,8 +127,9 @@ void App::runFrame()
 	mLight.render(mDisplay.getGraphics());
 
 	mSponza.render(mDisplay.getGraphics());
-	mBluePlane.render(mDisplay.getGraphics());
+
 	mRedPlane.render(mDisplay.getGraphics());
+	mBluePlane.render(mDisplay.getGraphics());
 
 	if (mDisplay.keyboard.isPressedOnce(VK_ESCAPE))
 	{
@@ -186,42 +186,4 @@ void App::runFrame()
 	mDisplay.getGraphics().swap();
 }
 
-
-void parse_cmdline_args(const std::string& cmdLine)
-{
-#pragma warning(disable: 4244)
-	if (!cmdLine.empty())
-	{
-		int args;
-		const auto* lineW = GetCommandLineW();
-		const auto* pArgs = CommandLineToArgvW(lineW, &args);
-
-		if (args >= 4 && std::wstring(pArgs[1]) == L"--ntweak-rotx180")
-		{
-			const std::wstring pathSrcWide = pArgs[2];
-			const std::wstring pathDestWide = pArgs[3];
-			TextureProcessor::rotateXAxis(std::string(pathSrcWide.begin(), pathSrcWide.end()),
-				std::string(pathDestWide.begin(), pathDestWide.end()));
-			throw stacktraceRuntimeError("Normal map processed. Fake error");
-		}
-		if (args >= 3 && std::wstring(pArgs[1]) == L"--flipAllY")
-		{
-			const std::wstring pathSrcWide = pArgs[2];
-			TextureProcessor::flipYForAllModelNormalMaps(std::string(pathSrcWide.begin(), pathSrcWide.end()));
-			throw stacktraceRuntimeError("All normal map Ys flipped. Fake error");
-		}
-		if (args >= 3 && std::wstring(pArgs[1]) == L"--reformatAll")
-		{
-			const std::wstring pathSrcWide = pArgs[2];
-			TextureProcessor::reformatAllTextures(std::string(pathSrcWide.begin(), pathSrcWide.end()));
-			throw stacktraceRuntimeError("All textures reformatted. Fake error");
-		}
-		if (args >= 3 && std::wstring(pArgs[1]) == L"--reformat")
-		{
-			const std::wstring pathSrcWide = pArgs[2];
-			TextureProcessor::reformatTexture(std::string(pathSrcWide.begin(), pathSrcWide.end()));
-			throw stacktraceRuntimeError("Texture reformatted. Fake error");
-		}
-	}
-}
 

@@ -20,7 +20,13 @@
  */
 #pragma once
 
-extern void from_list(std::string& str, const list<std::string>& strList);
+/// <summary>
+/// Turns a vector of strings into a specified char separated single string
+/// </summary>
+/// <param name="strList">The vector of strings</param>
+/// <param name="sep">The character to separate each string element by</param>
+/// <returns>A specified char separated string of the values from the vector</returns>
+extern std::string from_list(const list<std::string>& strList, const char sep = '\n');
 
 /// <summary>
 /// Converts a narrow std::string to a wide std::wstring.
@@ -43,3 +49,13 @@ extern std::string to_narrow(const std::wstring& str);
 
 
 extern list<std::string> tokenize_quoted(const std::string& input);
+
+
+/// <summary>
+/// Centers the given string into a string of <code>targetSize</code> length
+/// </summary>
+/// <param name="original">The string to center</param>
+/// <param name="targetSize">The desired length/width of the new string</param>
+/// <param name="fill">The character to fill before and after the original string, default is a space</param>
+/// <returns>The original string, centered</returns>
+extern std::string centered(const std::string& original, const int targetSize, const char fill = ' ');

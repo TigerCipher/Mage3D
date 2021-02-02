@@ -36,7 +36,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 #endif
 		
 		Log::init();
-		
+
 		auto ret = 0;
 		
 		{

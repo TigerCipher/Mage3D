@@ -39,28 +39,37 @@ public:
 		rotateXAxis(pathSrc, pathSrc);
 	}
 
+	static void flipYNormalMap(const std::string& src, const std::string& dest);
 
 	static void flipYForAllModelNormalMaps(const std::string& modelPath);
 
 	static void reformatTexture(const std::string& fileName);
 	static void reformatAllTextures(const std::string& modelPath);
+
+	static void validateNormalMap(const std::string& path, const float minThreshold, const float maxThreshold);
 private:
 
+	template<typename F>
+	static void transformTexture(Texture& tex, F&& func)
+	{
+		const auto w = tex.getWidth();
+		const auto h = tex.getHeight();
+
+		for(uint y = 0; y < h; y++)
+		{
+			for(uint x = 0; x < w; x++)
+			{
+				const auto n = colorToVector(tex.getPixel(x, y));
+				tex.setPixel(x, y, vectorToColor(func(n, x, y)));
+			}
+		}
+	}
+	
 	template<typename F>
 	static void transformFile(const std::string& pathSrc, const std::string& pathDest, F&& func)
 	{
 		auto tex = Texture::loadFromFile(pathSrc);
-
-		const auto pixels = tex.getWidth() * tex.getHeight();
-		auto* beg = tex.getBuffer();
-		const auto* end = tex.getBuffer() + pixels;
-
-		for(auto* cur = beg; cur < end; cur++)
-		{
-			const auto n = colorToVector(*cur);
-			*cur = vectorToColor(func(n));
-		}
-
+		transformTexture(tex, func);
 		tex.save(pathDest);
 	}
 

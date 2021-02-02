@@ -22,6 +22,7 @@
 
 #include "Display.h"
 #include "Timer.h"
+#include "ScriptCommander.h"
 
 #include "Camera.h"
 #include "PointLight.h"
@@ -47,6 +48,8 @@ private:
 	Timer mPerformanceTimer;
 	bool mRunning;
 	float mGlobalSpeed = 1.0f;
+
+	ScriptCommander mScriptCommander;
 	
 	PointLight mLight;
 

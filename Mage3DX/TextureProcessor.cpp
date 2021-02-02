@@ -32,12 +32,23 @@ void TextureProcessor::rotateXAxis(const std::string& pathSrc, const std::string
 {
 	const auto rot = rotateXMatrix(PI);
 
-	const auto func = [rot] (const vec n) -> vec
+	const auto func = [rot] (const vec n, int x, int y) -> vec
 		{
 			return transformVector3(n, rot);
 		};
 
 	transformFile(pathSrc, pathDest, func);
+}
+
+void TextureProcessor::flipYNormalMap(const std::string& src, const std::string& dest)
+{
+	const auto flipY = setVector(1, -1, 1, 1);
+	const auto func = [flipY](const vec n, int x, int y) -> vec
+	{
+		return mulVector(n, flipY);
+	};
+
+	transformFile(src, dest, func);
 }
 
 void TextureProcessor::flipYForAllModelNormalMaps(const std::string& modelPath)
@@ -52,12 +63,6 @@ void TextureProcessor::flipYForAllModelNormalMaps(const std::string& modelPath)
 		throw ModelException(__LINE__, __FILE__, imp.GetErrorString());
 	}
 
-	const auto flipY = setVector(1, -1, 1, 1);
-	const auto func = [flipY] (const vec n) -> vec
-		{
-			return mulVector(n, flipY);
-		};
-
 
 	for(uint i = 0; i < scene->mNumMaterials; i++)
 	{
@@ -70,7 +75,8 @@ void TextureProcessor::flipYForAllModelNormalMaps(const std::string& modelPath)
 			std::filesystem::create_directories(backupPath);
 			std::filesystem::copy_file(path, backupPath + path.substr(path.find_last_of('\\')),
 				std::filesystem::copy_options::overwrite_existing);
-			transformFile(path, path, func);
+
+			flipYNormalMap(path, path);
 		}
 	}
 }
@@ -161,6 +167,44 @@ void TextureProcessor::reformatAllTextures(const std::string& modelPath)
 			reformatTexture(path);
 		}
 	}
+}
+
+void TextureProcessor::validateNormalMap(const std::string& path, const float minThreshold, const float maxThreshold)
+{
+	LOG_DEBUG("Validating normal map [{}]. See debug console", path);
+	auto sum = dx::XMVectorZero();
+
+	const auto func = [minThreshold, maxThreshold, &sum](dx::FXMVECTOR n, int x, int y) -> vec
+	{
+		const float len = dx::XMVectorGetX(dx::XMVector3Length(n));
+		const float z = dx::XMVectorGetZ(n);
+		if(len < minThreshold || len > maxThreshold)
+		{
+			vec3f v;
+			storeVector3(&v, n);
+			auto s = fmt::format("Bad normal length: {} at ({}, {}). Normal: ({}, {}, {})\n",
+			                     len, x, y, v.x, v.y, v.z);
+			OutputDebugString(s.c_str());
+		}
+		if(z < 0.0f)
+		{
+			vec3f v;
+			storeVector3(&v, n);
+			auto s = fmt::format("Bad normal z direction at: ({}, {}). Normal: ({}, {}, {})\n", 
+				x, y, v.x, v.y, v.z);
+			OutputDebugString(s.c_str());
+		}
+		sum = addVector(sum, n);
+		return n;
+	};
+
+	auto tex = Texture::loadFromFile(path);
+	transformTexture(tex, func);
+
+	vec2f sumv;
+	storeVector2(&sumv, sum);
+	auto s = fmt::format("Normal map bias: ({}, {})\n", sumv.x, sumv.y);
+	OutputDebugString(s.c_str());
 }
 
 vec TextureProcessor::colorToVector(const Color& col)

@@ -18,14 +18,14 @@
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
-//#include "pch.h" -intellisense works better with force include being used
+
 #include "InfoException.h"
 #include "Util.h"
 
 InfoException::InfoException(const int line, const char* file, const list<std::string>& msgs) noexcept:
 	MageException(line, file)
 {
-	from_list(mInfo, msgs);
+	mInfo = from_list(msgs);
 }
 
 const char* InfoException::what() const noexcept

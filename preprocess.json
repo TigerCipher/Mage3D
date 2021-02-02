@@ -1,0 +1,25 @@
+{
+  "enabled": false,
+  "commands": [
+    {
+      "command": "validate-normals",
+      "params": {
+        "source": "assets\\textures\\ref_normal.png",
+        "min": 0.8,
+        "max": 1.2
+      }
+    },
+    {
+      "command": "reformatAll",
+      "params": {
+        "model": "assets\\models\\sponza.obj"
+      }
+    },
+    {
+      "command": "reformat",
+      "params": {
+        "source": "assets\\textures\\default.png"
+      }
+    }
+  ]
+}

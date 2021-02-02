@@ -35,7 +35,6 @@
 //#pragma comment(lib, "D3DCompiler.lib")
 
 
-constexpr int VSYNC_FLAG = 0;
 
 Graphics::Graphics(HWND hwnd, int width, int height)
 {
@@ -144,8 +143,7 @@ void Graphics::swap()
 	if (FAILED(hr = mSwap->Present(mVsync, 0)))
 	{
 #if MAGE_DEBUG
-		std::string debugMsgs;
-		from_list(debugMsgs, mDebugInfo.getMessages());
+		auto debugMsgs = from_list(mDebugInfo.getMessages());
 		//LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(mDebugInfo.getMessages(), "\n"));
 		LOG_ERROR("Swap chain failed. Reasoning: \n{}", debugMsgs);
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)

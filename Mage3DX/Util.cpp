@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: Util.cpp
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
@@ -22,16 +22,19 @@
 #include "Util.h"
 
 
-void from_list(std::string& str, const list<std::string>& strList)
+std::string from_list(const list<std::string>& strList, const char sep)
 {
+	std::string str;
 	for(const auto& s : strList)
 	{
 		str += s;
-		str.push_back('\n');
+		str.push_back(sep);
 	}
 
 	if(!str.empty())
 		str.pop_back();
+
+	return str;
 }
 
 std::wstring to_wide(const std::string& str)
@@ -62,4 +65,14 @@ list<std::string> tokenize_quoted(const std::string& input)
 	}
 
 	return tokens;
+}
+
+std::string centered(const std::string& original, const int targetSize, const char fill)
+{
+	assert(targetSize >= 0);
+	const auto padding = targetSize - static_cast<int>(original.size());
+
+	return padding > 0 ?
+	       std::string(padding / 2, fill) + original + std::string(targetSize - (padding / 2), fill)
+	                   : original;
 }

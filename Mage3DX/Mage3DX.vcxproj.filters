@@ -228,6 +228,9 @@
     <ClCompile Include="Rasterizer.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
+    <ClCompile Include="ScriptCommander.cpp">
+      <Filter>Source Files\core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointLight.h">
@@ -419,6 +422,9 @@
     <ClInclude Include="Rasterizer.h">
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
+    <ClInclude Include="ScriptCommander.h">
+      <Filter>Header Files\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdParty\DXGetErrorDescription.inl">
@@ -445,6 +451,9 @@
     <None Include="Mage3DX.sln.licenseheader" />
     <None Include="..\settings.ini">
       <Filter>Misc</Filter>
+    </None>
+    <None Include="..\preprocess.json">
+      <Filter>Scripts</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
