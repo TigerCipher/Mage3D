@@ -231,6 +231,9 @@
     <ClCompile Include="VertexBuffer.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
+    <ClCompile Include="DynamicConstantBuffer.cpp">
+      <Filter>Source Files\graphics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointLight.h">
@@ -426,7 +429,7 @@
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
     <ClInclude Include="DynamicConstantBuffer.h">
-      <Filter>Source Files\graphics</Filter>
+      <Filter>Header Files\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -25,6 +25,8 @@
 
 #include "Util.h"
 
+#include "DynamicConstantBuffer.h"
+
 
 
 App::App(const int width, const int height, const char* title, const std::string& cmdLine) :
@@ -37,6 +39,18 @@ App::App(const int width, const int height, const char* title, const std::string
 	mBluePlane(mDisplay.getGraphics(), 6.0f, {0.2f, 0.2f, 1.0f, 0}),
 	mRedPlane(mDisplay.getGraphics(), 6.0f, {1.0f, 0.2f, 0.2f, 0})
 {
+
+
+	dcb::Struct s{ 0 };
+	s.add<dcb::Struct>("test");
+	s["test"].asStruct().add<dcb::Float3>("idk");
+	s["test"].asStruct().add<dcb::Float>("wut");
+	dcb::Buffer b(s);
+	b["test"]["idk"] = vec3f(0, 1, 0);
+	b["test"]["wut"] = 34.25f;
+	vec3f v = b["test"]["idk"];
+	float w = b["test"]["wut"];
+	
 
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),

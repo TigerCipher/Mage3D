@@ -23,6 +23,28 @@
 
 #include "MathHelper.h"
 
+#define RESOLVE_BASE(et)										\
+	virtual size_t resolve ## et() const NOX					\
+	{	assert(false && "Cannot resolve to" #et); return 0; }
+
+
+#define LEAF_ELEMENT(et, systype)							\
+	class et : public LayoutElement							\
+	{														\
+	public:													\
+		using LayoutElement::LayoutElement;					\
+		size_t resolve ## et() const NOX override final		\
+		{ return getOffsetBegin(); }						\
+		size_t getOffsetEnd() const noexcept override final \
+		{ return getOffsetBegin() + sizeof(systype); }		\
+	};														\
+
+#define REF_CONVERSION(et, systype)												\
+	operator systype&() NOX														\
+	{ return *reinterpret_cast<systype*>(mBytes + mLayout->resolve ## et()); }	\
+	systype& operator=(const systype& rhs) NOX									\
+	{ return static_cast<systype&>(*this) = rhs; }
+
 namespace dcb
 {
 	class LayoutElement
@@ -34,15 +56,13 @@ namespace dcb
 
 		virtual LayoutElement& operator[](const std::string& key)
 		{
-			// temporary
-			assert(false);
+			assert(false && "Cannot access member on non Struct");
 			return *this;
 		}
 
 		virtual const LayoutElement& operator[](const std::string& key) const
 		{
-			// temporary
-			assert(false);
+			assert(false && "Cannot access member on non Struct");
 			return *this;
 		}
 
@@ -50,35 +70,25 @@ namespace dcb
 
 		[[nodiscard]] virtual size_t getOffsetEnd() const noexcept = 0;
 
-		[[nodiscard]] virtual size_t resolveVec3f() const NOX
-		{
-			// temporary
-			assert(false);
-			return 0;
-		}
+		class Struct& asStruct() NOX;
+
+		RESOLVE_BASE(Float3)
+		RESOLVE_BASE(Float)
 
 	private:
 		size_t mOffset;
 	};
 
-	class Vector3 : public LayoutElement
-	{
-	public:
-		[[nodiscard]] size_t resolveVec3f() const NOX override
-		{
-			return getOffsetBegin();
-		}
-
-		[[nodiscard]] size_t getOffsetEnd() const noexcept override
-		{
-			return getOffsetBegin() + sizeof(vec3f);
-		}
-	};
+	LEAF_ELEMENT(Float3, vec3f)
+	
+	LEAF_ELEMENT(Float, float)
 
 
 	class Struct : public LayoutElement
 	{
 	public:
+		using LayoutElement::LayoutElement;
+		
 		LayoutElement& operator[](const std::string& key) override final
 		{
 			return *mMap.at(key);
@@ -89,20 +99,20 @@ namespace dcb
 			return *mMap.at(key);
 		}
 
-		size_t getOffsetEnd() const noexcept override final
+		[[nodiscard]] size_t getOffsetEnd() const noexcept override final
 		{
 			return mElements.empty() ? getOffsetBegin() : mElements.back()->getOffsetEnd();
 		}
 
 		template<typename T>
-		void add(const std::string& name)
+		Struct& add(const std::string& name) NOX
 		{
 			mElements.push_back(createScope<T>(getOffsetEnd()));
 			if(!mMap.emplace(name, mElements.back().get()).second)
 			{
-				// temporary
 				assert(false);
 			}
+			return *this;
 		}
 
 	private:
@@ -120,17 +130,9 @@ namespace dcb
 			return { &(*mLayout)[key], mBytes };
 		}
 
-		operator vec3f&() const NOX
-		{
-			return *reinterpret_cast<vec3f*>(mBytes + mLayout->resolveVec3f());
-		}
-
-		vec3f& operator=(const vec3f& rhs) const NOX
-		{
-			auto& ref = *reinterpret_cast<vec3f*>(mBytes + mLayout->resolveVec3f());
-			ref = rhs;
-			return ref;
-		}
+		REF_CONVERSION(Float3, vec3f)
+		REF_CONVERSION(Float, float)
+	
 	private:
 		//const class LayoutElement* mLayout;
 		const LayoutElement* mLayout;
