@@ -36,7 +36,7 @@ class IndexedTriangleList
 public:
 	IndexedTriangleList() = default;
 
-	IndexedTriangleList(vtx::VertexBuffer verts, list<ushort> ints) :
+	IndexedTriangleList(vtx::Buffer verts, list<ushort> ints) :
 		vertices(std::move(verts)),
 		indices(std::move(ints))
 	{
@@ -74,7 +74,7 @@ public:
 		}
 	}
 
-	vtx::VertexBuffer vertices;
+	vtx::Buffer vertices;
 	list<ushort> indices;
 };
 
@@ -202,7 +202,7 @@ public:
 	{
 		constexpr auto side = 1.0f / 2.0f;
 
-		vtx::VertexBuffer vertices(std::move(layout), 24);
+		vtx::Buffer vertices(std::move(layout), 24);
 		
 		// Near
 		vertices[ 0 ].attribute<POSITION3D>() = { -side,-side,-side };
@@ -302,7 +302,7 @@ public:
 		const int numVertsX = divisionsX + 1;
 		const int numVertsY = divisionsY + 1;
 
-		vtx::VertexBuffer vb(std::move(layout));
+		vtx::Buffer vb(std::move(layout));
 		
 		{
 			const auto sideX = width / 2.0f;
@@ -563,7 +563,7 @@ public:
 		const float lattitudeAngle = PI / (float) latDiv;
 		const float longitudeAngle = 2.0f * PI / (float) longDiv;
 
-		vtx::VertexBuffer vb{ std::move(layout) };
+		vtx::Buffer vb{ std::move(layout) };
 		for (int iLat = 1; iLat < latDiv; iLat++)
 		{
 			const auto latBase = dx::XMVector3Transform(base, dx::XMMatrixRotationX(lattitudeAngle * (float) iLat));

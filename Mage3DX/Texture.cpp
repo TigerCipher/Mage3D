@@ -110,10 +110,11 @@ Texture Texture::loadFromFile(const std::string& fileName)
 		hr = dx::LoadFromWICFile(wideName, dx::WIC_FLAGS_NONE, nullptr, scratch);
 	else
 		throw TextureException(__LINE__, __FILE__,
-			fmt::format("Textures of format [{}] are not current supported", ext));
+			fmt::format("Textures of format [{}] are not currently supported", ext));
 
 	if(FAILED(hr))
 	{
+		LOG_WARN("Could not load texture [{}]", fileName);
 		throw TextureException(__LINE__, __FILE__, fmt::format("Could not load texture [{}]", fileName), hr);
 	}
 

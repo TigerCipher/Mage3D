@@ -322,7 +322,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 	const auto meshTag = basePath + "%" + mesh.mName.C_Str();
 
-	vtx::VertexBuffer vData(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)));
+	vtx::Buffer vData(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)));
 	std::string vertShader;
 	std::string pixShader;
 
@@ -330,7 +330,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	if(hasDiffuseMap && hasNormalMap && hasSpecMap)
 	{
 		
-		 vData = vtx::VertexBuffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
+		 vData = vtx::Buffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
 			.append(TANGENT).append(BITANGENT).append(TEXTURE2D)));
 
 		for (uint i = 0; i < mesh.mNumVertices; i++)
@@ -354,7 +354,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		
 	} else if(hasDiffuseMap && hasNormalMap)
 	{
-		vData = vtx::VertexBuffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
+		vData = vtx::Buffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
 			.append(TANGENT).append(BITANGENT).append(TEXTURE2D)));
 
 		for (uint i = 0; i < mesh.mNumVertices; i++)
@@ -394,7 +394,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
 	}else if(hasDiffuseMap)
 	{
-		vData = vtx::VertexBuffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
+		vData = vtx::Buffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
 			.append(TEXTURE2D)));
 
 		for (uint i = 0; i < mesh.mNumVertices; i++)
@@ -439,7 +439,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	}
 	else if (hasDiffuseMap && hasSpecMap && !hasNormalMap)
 	{
-		vData = vtx::VertexBuffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
+		vData = vtx::Buffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
 			.append(TEXTURE2D)));
 
 		for (uint i = 0; i < mesh.mNumVertices; i++)

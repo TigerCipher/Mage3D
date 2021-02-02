@@ -25,6 +25,7 @@
 #include "Bindables.h"
 #include "ImguiManager.h"
 
+
 TestCube::TestCube(Graphics& gfx, float size)
 {
 	auto model = Cube::makeIndependentTextured();

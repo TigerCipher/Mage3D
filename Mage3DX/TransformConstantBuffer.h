@@ -25,7 +25,6 @@
 #include "IRenderable.h"
 #include "MathHelper.h"
 
-
 class TransformConstantBuffer : public Bindable
 {
 public:

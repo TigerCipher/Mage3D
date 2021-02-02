@@ -14,27 +14,25 @@
  *
  * Contact: team@bluemoondev.org
  *
- * File Name: VertexBuffer.h
+ * File Name: Buffer.h
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
 #pragma once
 
 
-#include "GraphicsException.h"
 #include "Bindable.h"
 #include "Vertex.h"
-
 
 class VertexBuffer : public Bindable
 {
 public:
-	VertexBuffer(Graphics& gfx, const std::string& tag, const vtx::VertexBuffer& vData);
-	VertexBuffer(Graphics& gfx, const vtx::VertexBuffer& vData);
+	VertexBuffer(Graphics& gfx, const std::string& tag, const vtx::Buffer& vData);
+	VertexBuffer(Graphics& gfx, const vtx::Buffer& vData);
 
 	void bind(Graphics& gfx) noexcept override;
 
-	static SharedPtr<VertexBuffer> resolve(Graphics& gfx, const std::string& tag, const vtx::VertexBuffer& vData);
+	static SharedPtr<VertexBuffer> resolve(Graphics& gfx, const std::string& tag, const vtx::Buffer& vData);
 
 	template<typename ... Ignore>
 	static std::string generateUID(const std::string& tag, Ignore&&... ignore)
@@ -42,7 +40,8 @@ public:
 		return generateUID_(tag);
 	}
 
-	std::string getUID() const noexcept override;
+
+	[[nodiscard]] std::string getUID() const noexcept override;
 
 protected:
 	std::string mTag;

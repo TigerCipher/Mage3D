@@ -23,6 +23,7 @@
 #include "Primitives.h"
 #include "ImguiManager.h"
 
+
 TestPlane::TestPlane(Graphics& gfx, const float size, vec4f color) :
 	mMatConst({color})
 {

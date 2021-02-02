@@ -26,6 +26,7 @@
 #include "GraphicsException.h"
 #include "Vertex.h"
 
+
 SolidSphere::SolidSphere(Graphics& gfx, float radius)
 {
 		auto model = Sphere::make();

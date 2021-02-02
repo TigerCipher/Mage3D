@@ -14,7 +14,7 @@
  *
  * Contact: team@bluemoondev.org
  *
- * File Name: VertexBuffer.cpp
+ * File Name: Buffer.cpp
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
  */
@@ -22,7 +22,10 @@
 #include "VertexBuffer.h"
 #include "BindableCodex.h"
 
-VertexBuffer::VertexBuffer(Graphics& gfx, const std::string& tag, const vtx::VertexBuffer& vData) :
+#include "GraphicsException.h"
+
+
+VertexBuffer::VertexBuffer(Graphics& gfx, const std::string& tag, const vtx::Buffer& vData) :
 	mTag(tag),
 	mStride(static_cast<UINT>(vData.getLayout().size()))
 {
@@ -41,7 +44,7 @@ VertexBuffer::VertexBuffer(Graphics& gfx, const std::string& tag, const vtx::Ver
 	GFX_THROW_INFO(getDevice(gfx)->CreateBuffer(&bd, &sd, &mBuffer));
 }
 
-VertexBuffer::VertexBuffer(Graphics& gfx, const vtx::VertexBuffer& vData) :
+VertexBuffer::VertexBuffer(Graphics& gfx, const vtx::Buffer& vData) :
 	VertexBuffer(gfx, "?", vData)
 {
 }
@@ -55,7 +58,7 @@ void VertexBuffer::bind(Graphics& gfx) noexcept
 
 
 SharedPtr<VertexBuffer> VertexBuffer::resolve(Graphics& gfx, const std::string& tag, const
-	vtx::VertexBuffer& vData)
+	vtx::Buffer& vData)
 {
 	assert(tag != "?");
 	return BindableCodex::resolve<VertexBuffer>(gfx, tag, vData);

@@ -281,7 +281,7 @@ namespace vtx
 
 	class Vertex
 	{
-		friend class VertexBuffer;
+		friend class Buffer;
 
 	public:
 
@@ -397,10 +397,10 @@ namespace vtx
 		Vertex mVertex;
 	};
 
-	class VertexBuffer
+	class Buffer
 	{
 	public:
-		VertexBuffer(VertexLayout layout, size_t size = 0) noexcept(!MAGE_DEBUG);
+		Buffer(VertexLayout layout, size_t size = 0) noexcept(!MAGE_DEBUG);
 
 		[[nodiscard]] const VertexLayout& getLayout() const noexcept { return mLayout; }
 
@@ -443,17 +443,17 @@ namespace vtx
 
 		[[nodiscard]] ConstantVertex back() const noexcept(!MAGE_DEBUG)
 		{
-			return const_cast<VertexBuffer*>(this)->back();
+			return const_cast<Buffer*>(this)->back();
 		}
 
 		[[nodiscard]] ConstantVertex front() const noexcept(!MAGE_DEBUG)
 		{
-			return const_cast<VertexBuffer*>(this)->front();
+			return const_cast<Buffer*>(this)->front();
 		}
 
 		ConstantVertex operator[](const size_t i) const noexcept(!MAGE_DEBUG)
 		{
-			return const_cast<VertexBuffer&>(*this)[i];
+			return const_cast<Buffer&>(*this)[i];
 		}
 
 		template<typename ... Args>

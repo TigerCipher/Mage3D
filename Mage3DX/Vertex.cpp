@@ -103,13 +103,13 @@ std::string vtx::VertexLayout::getCode() const noexcept(!MAGE_DEBUG)
 	return code;
 }
 
-vtx::VertexBuffer::VertexBuffer(VertexLayout layout, size_t size) noexcept(!MAGE_DEBUG) :
+vtx::Buffer::Buffer(VertexLayout layout, size_t size) noexcept(!MAGE_DEBUG) :
 	mLayout(std::move(layout))
 {
 	resize(size);
 }
 
-void vtx::VertexBuffer::resize(size_t newSize) noexcept
+void vtx::Buffer::resize(size_t newSize) noexcept
 {
 	const auto s = size();
 	if(s < newSize)
