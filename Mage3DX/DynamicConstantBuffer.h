@@ -47,6 +47,10 @@
 
 namespace dcb
 {
+
+	class Struct;
+	class Array;
+	
 	class LayoutElement
 	{
 	public:
@@ -70,18 +74,47 @@ namespace dcb
 
 		[[nodiscard]] virtual size_t getOffsetEnd() const noexcept = 0;
 
-		class Struct& asStruct() NOX;
+		[[nodiscard]] size_t getSizeInBytes() const noexcept
+		{
+			return getOffsetEnd() - getOffsetBegin();
+		}
 
+		virtual LayoutElement& type()
+		{
+			assert(false);
+			return *this;
+		}
+
+		[[nodiscard]] virtual const LayoutElement& type() const
+		{
+			assert(false);
+			return *this;
+		}
+
+		template<typename T>
+		Struct& add(const std::string& key) NOX;
+
+		template<typename T>
+		Array& set(const size_t size) NOX;
+
+		RESOLVE_BASE(Float4)
 		RESOLVE_BASE(Float3)
+		RESOLVE_BASE(Float2)
 		RESOLVE_BASE(Float)
+		RESOLVE_BASE(Bool)
+		RESOLVE_BASE(Matrix)
 
 	private:
 		size_t mOffset;
 	};
 
+	LEAF_ELEMENT(Float4, vec4f)
 	LEAF_ELEMENT(Float3, vec3f)
-	
+	LEAF_ELEMENT(Float2, vec2f)
 	LEAF_ELEMENT(Float, float)
+	LEAF_ELEMENT(Matrix, mat4f)
+	LEAF_ELEMENT(Bool, BOOL)
+	
 
 
 	class Struct : public LayoutElement
@@ -120,23 +153,69 @@ namespace dcb
 		list<UniquePtr<LayoutElement> > mElements;
 	};
 
+	class Array : public LayoutElement
+	{
+	public:
+		using LayoutElement::LayoutElement;
+
+		[[nodiscard]] size_t getOffsetEnd() const noexcept override final
+		{
+			assert(mElement);
+			return getOffsetBegin() + mElement->getSizeInBytes() * mSize;
+		}
+
+		template<typename T>
+		Array& set(const size_t size) NOX
+		{
+			mElement = createScope<T>(getOffsetBegin());
+			mSize = size;
+			return *this;
+		}
+
+		LayoutElement& type() override final
+		{
+			return *mElement;
+		}
+
+		[[nodiscard]] const LayoutElement& type() const override final
+		{
+			return *mElement;
+		}
+	
+	private:
+		size_t mSize = 0;
+		UniquePtr<LayoutElement> mElement;
+	};
+
 	class ElementRef
 	{
 	public:
-		ElementRef(const LayoutElement* layout, char* bytes) : mLayout(layout),
-			mBytes(bytes) { }
+		ElementRef(const LayoutElement* layout, char* bytes, const size_t offset) : mLayout(layout),
+			mBytes(bytes), mOffset(offset) { }
+		
 		ElementRef operator[](const std::string& key) const NOX
 		{
-			return { &(*mLayout)[key], mBytes };
+			return { &(*mLayout)[key], mBytes, mOffset };
 		}
 
+		ElementRef operator[](size_t index) NOX
+		{
+			const auto& t = mLayout->type();
+			return { &t, mBytes, mOffset + t.getSizeInBytes() * index };
+		}
+
+		REF_CONVERSION(Float4, vec4f)
 		REF_CONVERSION(Float3, vec3f)
+		REF_CONVERSION(Float2, vec2f)
 		REF_CONVERSION(Float, float)
+		REF_CONVERSION(Matrix, mat4f)
+		REF_CONVERSION(Bool, BOOL)
 	
 	private:
 		//const class LayoutElement* mLayout;
 		const LayoutElement* mLayout;
 		char* mBytes;
+		size_t mOffset;
 	};
 
 	class Buffer
@@ -147,11 +226,29 @@ namespace dcb
 		
 		ElementRef operator[](const std::string& key) NOX
 		{
-			return { &(*mLayout)[key], mBytes.data() };
+			return { &(*mLayout)[key], mBytes.data(), 0 };
 		}
 
 	private:
 		const Struct* mLayout;
 		list<char> mBytes;
 	};
+
+	// LayoutElement::add -> depends on Struct definition, but Struct definition depends on LayoutElement
+	template<typename T>
+	Struct& LayoutElement::add(const std::string& key) NOX
+	{
+		auto* s = dynamic_cast<Struct*>(this);
+		assert(s != nullptr);
+		return s->add<T>(key);
+	}
+
+
+	template <typename T>
+	Array& LayoutElement::set(const size_t size) NOX
+	{
+		auto* a = dynamic_cast<Array*>(this);
+		assert(a != nullptr);
+		return a->set<T>(size);
+	}
 } // namespace dcb
