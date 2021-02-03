@@ -74,8 +74,6 @@ App::App(const int width, const int height, const char* title, const std::string
 	float ffgd = b["arr"][2]["meta"][5][3];
 	float fdsg = b["bork"][0]["meow"];
 	float srefd = b["bork"][1]["moo"];
-	s.add<dcb::Float>("hi");
-	b["hi"] = 6645.43f;
 	
 
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
