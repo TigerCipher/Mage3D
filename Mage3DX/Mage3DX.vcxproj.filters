@@ -461,6 +461,9 @@
     <None Include="..\prepare.bat">
       <Filter>Scripts</Filter>
     </None>
+    <None Include="..\.gitattributes">
+      <Filter>Misc</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shaders\phongPS.hlsl">

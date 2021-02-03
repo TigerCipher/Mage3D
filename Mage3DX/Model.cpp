@@ -387,7 +387,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		lay.add<dcb::Float>("specularIntensity");
 		lay.add<dcb::Float>("specularPower");
 		lay.add<dcb::Bool>("normalMapEnabled");
-		lay.add<dcb::Float>("padding");
+		//lay.add<dcb::Float>("padding");
 
 		dcb::Buffer cbuf(lay);
 		cbuf["specularIntensity"] = (specColor.x + specColor.y + specColor.z) / 3.0f;

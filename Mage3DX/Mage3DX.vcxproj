@@ -384,6 +384,7 @@
     <ResourceCompile Include="Mage3DX.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.gitattributes" />
     <None Include="..\.gitignore" />
     <None Include="..\prepare.bat" />
     <None Include="..\preprocess.json" />

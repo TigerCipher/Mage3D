@@ -28,19 +28,21 @@
 	{ assert(false && "Cannot resolve to" #et); return 0; }
 
 
-#define LEAF_ELEMENT(et, systype)								\
-	class et : public LayoutElement								\
-	{															\
-	public:														\
-		using SysType = systype;								\
-		size_t resolve ## et() const NOX override final			\
-		{ return getOffsetBegin(); }							\
-		size_t getOffsetEnd() const noexcept override final		\
-		{ return getOffsetBegin() + sizeof(systype); }			\
-	protected:													\
-		size_t finish(const size_t offset) override				\
-		{ mOffset = offset; return offset + sizeof(systype); }	\
-	};															\
+#define LEAF_ELEMENT(et, systype)                              \
+	class et : public LayoutElement                            \
+	{                                                          \
+	public:                                                    \
+		using SysType = systype;                               \
+		size_t resolve ## et() const NOX override final        \
+		{ return getOffsetBegin(); }                           \
+		size_t getOffsetEnd() const noexcept override final    \
+		{ return getOffsetBegin() + calculateSize(); }         \
+	protected:                                                 \
+		size_t finish(const size_t offset) override final      \
+		{ mOffset = offset; return offset + calculateSize(); } \
+		size_t calculateSize() const NOX override final        \
+		{ return sizeof(SysType); }                            \
+	};                                                         \
 
 #define REF_CONVERSION(et)                                                         \
 	operator et::SysType&()NOX                                                     \
@@ -61,9 +63,9 @@ namespace dcb
 
 	class LayoutElement
 	{
-		friend class Struct;
-		friend class Array;
-		friend class Layout;
+	friend class Struct;
+	friend class Array;
+	friend class Layout;
 	public:
 		virtual ~LayoutElement() = default;
 
@@ -106,6 +108,12 @@ namespace dcb
 		template<typename T>
 		Array& set(const size_t size) NOX;
 
+		static size_t getNextOffset(const size_t offset)
+		{
+			// HLSL structs are multiples of 16 bytes each
+			return offset + (16 - offset % 16) % 16;
+		}
+
 		RESOLVE_BASE(Float4)
 		RESOLVE_BASE(Float3)
 		RESOLVE_BASE(Float2)
@@ -115,6 +123,9 @@ namespace dcb
 
 	protected:
 		virtual size_t finish(const size_t offset) = 0;
+		virtual size_t calculateSize() const NOX = 0;
+
+
 		size_t mOffset = 0;
 	};
 
@@ -144,7 +155,7 @@ namespace dcb
 
 		[[nodiscard]] size_t getOffsetEnd() const noexcept override final
 		{
-			return mElements.empty() ? getOffsetBegin() : mElements.back()->getOffsetEnd();
+			return getNextOffset(mElements.back()->getOffsetEnd());
 		}
 
 		template<typename T>
@@ -159,7 +170,7 @@ namespace dcb
 		}
 
 	protected:
-		size_t finish(const size_t offset) override
+		size_t finish(const size_t offset) override final
 		{
 			assert(!mElements.empty());
 			mOffset = offset;
@@ -172,7 +183,28 @@ namespace dcb
 			return getOffsetEnd();
 		}
 
+		size_t calculateSize() const NOX override final
+		{
+			size_t next = 0;
+			for(auto& e : mElements)
+			{
+				const auto size = e->calculateSize();
+				next += getPadding(next, size) + size;
+			}
+			return getNextOffset(next);
+		}
+
 	private:
+
+		static size_t getPadding(const size_t offset, const size_t size) noexcept
+		{
+			if(offset / 16 != (offset + size - 1) / 16)
+			{
+				return getNextOffset(offset) - offset;
+			}
+			return offset;
+		}
+
 		std::unordered_map<std::string, LayoutElement*> mMap;
 		list<UniquePtr<LayoutElement> > mElements;
 	};
@@ -184,8 +216,7 @@ namespace dcb
 
 		[[nodiscard]] size_t getOffsetEnd() const noexcept override final
 		{
-			assert(mElement);
-			return getOffsetBegin() + mElement->getSizeInBytes() * mSize;
+			return getOffsetBegin() + getNextOffset(mElement->getSizeInBytes()) * mSize;
 		}
 
 		template<typename T>
@@ -207,12 +238,17 @@ namespace dcb
 		}
 
 	protected:
-		size_t finish(const size_t offset) override
+		size_t finish(const size_t offset) override final
 		{
 			assert(mSize != 0 && mElement);
 			mOffset = offset;
 			mElement->finish(offset);
 			return offset + mElement->getSizeInBytes() * mSize;
+		}
+
+		size_t calculateSize() const NOX override final
+		{
+			return getNextOffset(mElement->calculateSize()) * mSize;
 		}
 
 	private:
@@ -284,10 +320,11 @@ namespace dcb
 			return { &(*mLayout)[key], mBytes, mOffset };
 		}
 
-		ElementRef operator[](size_t index) const NOX
+		ElementRef operator[](const size_t index) const NOX
 		{
 			const auto& t = mLayout->type();
-			return { &t, mBytes, mOffset + t.getSizeInBytes()* index };
+			const auto size = LayoutElement::getNextOffset(t.getSizeInBytes());
+			return { &t, mBytes, mOffset + size* index };
 		}
 
 		ElementPtr operator&() NOX

@@ -1,0 +1,10 @@
+# Not used by visual studio, I saw on stackoverflow this can change Github tab size from 8 to 4
+
+root = true
+
+# Matches multiple files with brace expansion notation
+[*.{js,jsx,html,sass,h,cpp,c,cc,cxx,hpp,hh}]
+charset = utf-8
+indent_style = tab
+indent_size = 4
+trim_trailing_whitespace = true
