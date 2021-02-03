@@ -382,16 +382,18 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 		vertShader = "shaders\\phongNormalVS.cso";
 		pixShader = "shaders\\phongNormalPS.cso";
-		struct MaterialConst
-		{
-			float specIntensity{};
-			float specPower{};
-			BOOL normalMapEnabled = TRUE;
-			float padding[1]{};
-		} matConst;
-		matConst.specPower = shininess;
-		matConst.specIntensity = (specColor.x + specColor.y + specColor.z) / 3.0f;
-		binds.push_back(PixelConstantBuffer<MaterialConst>::resolve(gfx, matConst, 1));
+
+		dcb::Layout lay;
+		lay.add<dcb::Float>("specularIntensity");
+		lay.add<dcb::Float>("specularPower");
+		lay.add<dcb::Bool>("normalMapEnabled");
+		lay.add<dcb::Float>("padding");
+
+		dcb::Buffer cbuf(lay);
+		cbuf["specularIntensity"] = (specColor.x + specColor.y + specColor.z) / 3.0f;
+		cbuf["specularPower"] = shininess;
+		cbuf["normalMapEnabled"] = TRUE;
+		binds.push_back(createRef<PixelConstantBufferEx>(gfx, cbuf, 1));
 	}else if(hasDiffuseMap)
 	{
 		vData = vtx::Buffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)

@@ -46,6 +46,11 @@ constexpr double PI_D = 3.1415926535897932;
 // and potential future compatibility between both OpenGL and DirectX math libraries
 // Stuff will be added here as I find the need/desire for it
 
+const auto storeMatrix4 = dx::XMStoreFloat4x4;
+const auto storeMatrix3 = dx::XMStoreFloat3x3;
+const auto loadMatrix4 = dx::XMLoadFloat4x4;
+const auto loadMatrix3 = dx::XMLoadFloat3x3;
+
 const auto storeVector = dx::XMStoreFloat;
 const auto storeVector4 = dx::XMStoreFloat4;
 const auto storeVector3 = dx::XMStoreFloat3;
@@ -54,6 +59,8 @@ const auto loadVector = dx::XMLoadFloat;
 const auto loadVector4 = dx::XMLoadFloat4;
 const auto loadVector3 = dx::XMLoadFloat3;
 const auto loadVector2 = dx::XMLoadFloat2;
+
+const auto identityMatrix = dx::XMMatrixIdentity;
 
 const auto rollPitchYaw = dx::XMMatrixRotationRollPitchYaw;
 const auto translateMatrix = dx::XMMatrixTranslation;

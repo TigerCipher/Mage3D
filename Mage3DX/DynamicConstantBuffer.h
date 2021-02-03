@@ -23,40 +23,39 @@
 
 #include "MathHelper.h"
 
-#define RESOLVE_BASE(et)										\
-	virtual size_t resolve ## et() const NOX					\
-	{	assert(false && "Cannot resolve to" #et); return 0; }
+#define RESOLVE_BASE(et)                     \
+	virtual size_t resolve ## et() const NOX \
+	{ assert(false && "Cannot resolve to" #et); return 0; }
 
 
-#define LEAF_ELEMENT(et, systype)							\
-	class et : public LayoutElement							\
-	{														\
-	public:													\
-		using SysType = systype;							\
-		using LayoutElement::LayoutElement;					\
-		size_t resolve ## et() const NOX override final		\
-		{ return getOffsetBegin(); }						\
+#define LEAF_ELEMENT(et, systype)                           \
+	class et : public LayoutElement                         \
+	{                                                       \
+	public:                                                 \
+		using SysType = systype;                            \
+		using LayoutElement::LayoutElement;                 \
+		size_t resolve ## et() const NOX override final     \
+		{ return getOffsetBegin(); }                        \
 		size_t getOffsetEnd() const noexcept override final \
-		{ return getOffsetBegin() + sizeof(systype); }		\
-	};														\
+		{ return getOffsetBegin() + sizeof(systype); }      \
+	};                                                      \
 
-#define REF_CONVERSION(et)															\
-	operator et::SysType&() NOX														\
-	{ return *reinterpret_cast<et::SysType*>(mBytes + mLayout->resolve ## et()); }	\
-	et::SysType& operator=(const et::SysType& rhs) NOX								\
+#define REF_CONVERSION(et)                                                         \
+	operator et::SysType&()NOX                                                     \
+	{ return *reinterpret_cast<et::SysType*>(mBytes + mLayout->resolve ## et()); } \
+	et::SysType& operator=(const et::SysType& rhs) NOX                             \
 	{ return static_cast<et::SysType&>(*this) = rhs; }
 
 
-#define PTR_CONVERSION(et)						\
-	operator et::SysType*() NOX					\
+#define PTR_CONVERSION(et)     \
+	operator et::SysType*()NOX \
 	{ return &static_cast<et::SysType&>(mRef); }
 
 namespace dcb
 {
-
 	class Struct;
 	class Array;
-	
+
 	class LayoutElement
 	{
 	public:
@@ -118,16 +117,16 @@ namespace dcb
 	LEAF_ELEMENT(Float3, vec3f)
 	LEAF_ELEMENT(Float2, vec2f)
 	LEAF_ELEMENT(Float, float)
-	LEAF_ELEMENT(Matrix, mat4f)
+	LEAF_ELEMENT(Matrix, mat4x4)
 	LEAF_ELEMENT(Bool, BOOL)
-	
+
 
 
 	class Struct : public LayoutElement
 	{
 	public:
 		using LayoutElement::LayoutElement;
-		
+
 		LayoutElement& operator[](const std::string& key) override final
 		{
 			return *mMap.at(key);
@@ -187,10 +186,44 @@ namespace dcb
 		{
 			return *mElement;
 		}
-	
+
 	private:
 		size_t mSize = 0;
 		UniquePtr<LayoutElement> mElement;
+	};
+
+
+	class Layout
+	{
+	public:
+		Layout() : mLayout(createRef<Struct>(0)) { }
+
+		LayoutElement& operator[](const std::string& key)
+		{
+			assert(!mFinished && "Cannot modify a completed layout");
+			return (*mLayout)[key];
+		}
+
+		size_t getSizeInBytes() const noexcept
+		{
+			return mLayout->getSizeInBytes();
+		}
+
+		template<typename T>
+		LayoutElement& add(const std::string& key) NOX
+		{
+			assert(!mFinished && "Cannot modify a completed layout");
+			return mLayout->add<T>(key);
+		}
+
+		SharedPtr<LayoutElement> finish()
+		{
+			mFinished = true;
+			return mLayout;
+		}
+	private:
+		bool mFinished = false;
+		SharedPtr<LayoutElement> mLayout;
 	};
 
 	class ElementRef
@@ -200,7 +233,7 @@ namespace dcb
 		class ElementPtr
 		{
 		public:
-			ElementPtr(ElementRef& ref) : mRef(ref) {}
+			ElementPtr(ElementRef& ref) : mRef(ref) { }
 
 			PTR_CONVERSION(Float4)
 			PTR_CONVERSION(Float3)
@@ -208,14 +241,15 @@ namespace dcb
 			PTR_CONVERSION(Float)
 			PTR_CONVERSION(Bool)
 			PTR_CONVERSION(Matrix)
-		
+
 		private:
 			ElementRef& mRef;
 		};
-		
+
 		ElementRef(const LayoutElement* layout, char* bytes, const size_t offset) : mLayout(layout),
-			mBytes(bytes), mOffset(offset) { }
-		
+			mBytes(bytes),
+			mOffset(offset) { }
+
 		ElementRef operator[](const std::string& key) const NOX
 		{
 			return { &(*mLayout)[key], mBytes, mOffset };
@@ -224,7 +258,7 @@ namespace dcb
 		ElementRef operator[](size_t index) const NOX
 		{
 			const auto& t = mLayout->type();
-			return { &t, mBytes, mOffset + t.getSizeInBytes() * index };
+			return { &t, mBytes, mOffset + t.getSizeInBytes()* index };
 		}
 
 		ElementPtr operator&() NOX
@@ -238,7 +272,7 @@ namespace dcb
 		REF_CONVERSION(Float)
 		REF_CONVERSION(Matrix)
 		REF_CONVERSION(Bool)
-	
+
 	private:
 		const LayoutElement* mLayout;
 		char* mBytes;
@@ -248,9 +282,10 @@ namespace dcb
 	class Buffer
 	{
 	public:
-		Buffer(SharedPtr<Struct> layout) : mLayout(layout),
-			mBytes(layout->getOffsetEnd()) { }
-		
+		Buffer(Layout& layout) :
+			mLayout(std::static_pointer_cast<Struct>(layout.finish())),
+			mBytes(mLayout->getOffsetEnd()) { }
+
 		ElementRef operator[](const std::string& key) NOX
 		{
 			return { &(*mLayout)[key], mBytes.data(), 0 };
