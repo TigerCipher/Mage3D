@@ -41,12 +41,12 @@ App::App(const int width, const int height, const char* title, const std::string
 {
 
 
-	dcb::Struct s{ 0 };
+	auto ps = createRef<dcb::Struct>(0);
+	dcb::Struct& s = *ps;
 	s.add<dcb::Struct>("test");
 	s["test"].add<dcb::Float3>("idk");
 	s["test"].add<dcb::Float>("wut");
 	
-
 	s.add<dcb::Array>("arr");
 	s["arr"].set<dcb::Struct>(4);
 	s["arr"].type().add<dcb::Float>("flour");
@@ -55,32 +55,25 @@ App::App(const int width, const int height, const char* title, const std::string
 	s["arr"].type().add<dcb::Array>("meta");
 	s["arr"].type()["meta"].set<dcb::Array>(6);
 	s["arr"].type()["meta"].type().set<dcb::Float>(4);
-
 	s.add<dcb::Array>("bork");
 	s["bork"].set<dcb::Struct>(2);
 	s["bork"].type().add<dcb::Float>("meow");
 	s["bork"].type().add<dcb::Float>("moo");
-
-	dcb::Buffer b(s);
+	dcb::Buffer b(std::move(ps));
 	b["test"]["idk"] = vec3f(0, 1, 0);
 	b["test"]["wut"] = 34.25f;
 	vec3f v = b["test"]["idk"];
 	float w = b["test"]["wut"];
-
 	b["arr"][2]["monkey"][5] = 12.5f;
 	b["arr"][2]["meta"][5][3] = 123.5f;
-
 	b["bork"][0]["meow"] = 2.45f;
 	b["bork"][0]["moo"] = 4532.2344f;
 	b["bork"][1]["meow"] = 2.2f;
 	b["bork"][1]["moo"] = 234.00234f;
-
 	float fg = b["arr"][2]["monkey"][5];
 	float ffgd = b["arr"][2]["meta"][5][3];
-
 	float fdsg = b["bork"][0]["meow"];
 	float srefd = b["bork"][1]["moo"];
-
 	s.add<dcb::Float>("hi");
 	b["hi"] = 6645.43f;
 	

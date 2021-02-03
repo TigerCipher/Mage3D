@@ -231,6 +231,9 @@
     <ClCompile Include="VertexBuffer.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>Source Files\bindables</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointLight.h">

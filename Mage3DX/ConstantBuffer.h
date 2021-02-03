@@ -11,9 +11,9 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
+ *
  * File Name: ConstantBuffer.h
  * Date File Created: 10/1/2020 at 11:38 PM
  * Author: Matt
@@ -23,6 +23,7 @@
 #include "GraphicsException.h"
 #include "Bindable.h"
 #include "BindableCodex.h"
+#include "DynamicConstantBuffer.h"
 
 template<typename C>
 class ConstantBuffer : public Bindable
@@ -77,9 +78,9 @@ protected:
 template<typename C>
 class VertexConstantBuffer : public ConstantBuffer<C>
 {
-	using ConstantBuffer<C>::mBuffer;
-	using ConstantBuffer<C>::mSlot;
-	//using Bindable::getContext;
+using ConstantBuffer<C>::mBuffer;
+using ConstantBuffer<C>::mSlot;
+//using Bindable::getContext;
 
 public:
 	using ConstantBuffer<C>::ConstantBuffer;
@@ -116,8 +117,6 @@ public:
 	{
 		return generateUID(mSlot);
 	}
-
-	
 };
 
 template<typename C>
@@ -163,3 +162,29 @@ public:
 };
 
 
+class PixelConstantBufferEx : public Bindable
+{
+public:
+
+	PixelConstantBufferEx(Graphics& gfx, SharedPtr<dcb::LayoutElement> lay, const uint slot) :
+		PixelConstantBufferEx(gfx, std::move(lay), slot, nullptr) { }
+
+	PixelConstantBufferEx(Graphics& gfx, const dcb::Buffer& buf, const uint slot) :
+		PixelConstantBufferEx(gfx, buf.cloneLayout(), slot, &buf) { }
+
+	void update(Graphics& gfx, const dcb::Buffer& buf) const;
+
+	void bind(Graphics& gfx) noexcept override;
+
+	[[nodiscard]] const dcb::LayoutElement& getLayout() const noexcept
+	{
+		return *mLayout;
+	}
+
+private:
+	PixelConstantBufferEx(Graphics& gfx, SharedPtr<dcb::LayoutElement> lay, uint slot, const dcb::Buffer* buf);
+	
+	uint mSlot;
+	COMptr<ID3D11Buffer> mCBuf;
+	SharedPtr<dcb::LayoutElement> mLayout;
+};

@@ -32,6 +32,7 @@
 	class et : public LayoutElement							\
 	{														\
 	public:													\
+		using SysType = systype;							\
 		using LayoutElement::LayoutElement;					\
 		size_t resolve ## et() const NOX override final		\
 		{ return getOffsetBegin(); }						\
@@ -39,11 +40,16 @@
 		{ return getOffsetBegin() + sizeof(systype); }		\
 	};														\
 
-#define REF_CONVERSION(et, systype)												\
-	operator systype&() NOX														\
-	{ return *reinterpret_cast<systype*>(mBytes + mLayout->resolve ## et()); }	\
-	systype& operator=(const systype& rhs) NOX									\
-	{ return static_cast<systype&>(*this) = rhs; }
+#define REF_CONVERSION(et)															\
+	operator et::SysType&() NOX														\
+	{ return *reinterpret_cast<et::SysType*>(mBytes + mLayout->resolve ## et()); }	\
+	et::SysType& operator=(const et::SysType& rhs) NOX								\
+	{ return static_cast<et::SysType&>(*this) = rhs; }
+
+
+#define PTR_CONVERSION(et)						\
+	operator et::SysType*() NOX					\
+	{ return &static_cast<et::SysType&>(mRef); }
 
 namespace dcb
 {
@@ -190,6 +196,23 @@ namespace dcb
 	class ElementRef
 	{
 	public:
+
+		class ElementPtr
+		{
+		public:
+			ElementPtr(ElementRef& ref) : mRef(ref) {}
+
+			PTR_CONVERSION(Float4)
+			PTR_CONVERSION(Float3)
+			PTR_CONVERSION(Float2)
+			PTR_CONVERSION(Float)
+			PTR_CONVERSION(Bool)
+			PTR_CONVERSION(Matrix)
+		
+		private:
+			ElementRef& mRef;
+		};
+		
 		ElementRef(const LayoutElement* layout, char* bytes, const size_t offset) : mLayout(layout),
 			mBytes(bytes), mOffset(offset) { }
 		
@@ -198,21 +221,25 @@ namespace dcb
 			return { &(*mLayout)[key], mBytes, mOffset };
 		}
 
-		ElementRef operator[](size_t index) NOX
+		ElementRef operator[](size_t index) const NOX
 		{
 			const auto& t = mLayout->type();
 			return { &t, mBytes, mOffset + t.getSizeInBytes() * index };
 		}
 
-		REF_CONVERSION(Float4, vec4f)
-		REF_CONVERSION(Float3, vec3f)
-		REF_CONVERSION(Float2, vec2f)
-		REF_CONVERSION(Float, float)
-		REF_CONVERSION(Matrix, mat4f)
-		REF_CONVERSION(Bool, BOOL)
+		ElementPtr operator&() NOX
+		{
+			return { *this };
+		}
+
+		REF_CONVERSION(Float4)
+		REF_CONVERSION(Float3)
+		REF_CONVERSION(Float2)
+		REF_CONVERSION(Float)
+		REF_CONVERSION(Matrix)
+		REF_CONVERSION(Bool)
 	
 	private:
-		//const class LayoutElement* mLayout;
 		const LayoutElement* mLayout;
 		char* mBytes;
 		size_t mOffset;
@@ -221,16 +248,36 @@ namespace dcb
 	class Buffer
 	{
 	public:
-		Buffer(const Struct& layout) : mLayout(&layout),
-			mBytes(mLayout->getOffsetEnd()) { }
+		Buffer(SharedPtr<Struct> layout) : mLayout(layout),
+			mBytes(layout->getOffsetEnd()) { }
 		
 		ElementRef operator[](const std::string& key) NOX
 		{
 			return { &(*mLayout)[key], mBytes.data(), 0 };
 		}
 
+		[[nodiscard]] const char* getData() const noexcept
+		{
+			return mBytes.data();
+		}
+
+		[[nodiscard]] size_t getSizeInBytes() const noexcept
+		{
+			return mBytes.size();
+		}
+
+		[[nodiscard]] const LayoutElement& getLayout() const noexcept
+		{
+			return *mLayout;
+		}
+
+		[[nodiscard]] SharedPtr<LayoutElement> cloneLayout() const
+		{
+			return mLayout;
+		}
+
 	private:
-		const Struct* mLayout;
+		SharedPtr<Struct> mLayout;
 		list<char> mBytes;
 	};
 
