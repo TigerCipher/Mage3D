@@ -28,17 +28,19 @@
 	{ assert(false && "Cannot resolve to" #et); return 0; }
 
 
-#define LEAF_ELEMENT(et, systype)                           \
-	class et : public LayoutElement                         \
-	{                                                       \
-	public:                                                 \
-		using SysType = systype;                            \
-		using LayoutElement::LayoutElement;                 \
-		size_t resolve ## et() const NOX override final     \
-		{ return getOffsetBegin(); }                        \
-		size_t getOffsetEnd() const noexcept override final \
-		{ return getOffsetBegin() + sizeof(systype); }      \
-	};                                                      \
+#define LEAF_ELEMENT(et, systype)								\
+	class et : public LayoutElement								\
+	{															\
+	public:														\
+		using SysType = systype;								\
+		size_t resolve ## et() const NOX override final			\
+		{ return getOffsetBegin(); }							\
+		size_t getOffsetEnd() const noexcept override final		\
+		{ return getOffsetBegin() + sizeof(systype); }			\
+	protected:													\
+		size_t finish(const size_t offset) override				\
+		{ mOffset = offset; return offset + sizeof(systype); }	\
+	};															\
 
 #define REF_CONVERSION(et)                                                         \
 	operator et::SysType&()NOX                                                     \
@@ -55,12 +57,14 @@ namespace dcb
 {
 	class Struct;
 	class Array;
+	class Layout;
 
 	class LayoutElement
 	{
+		friend class Struct;
+		friend class Array;
+		friend class Layout;
 	public:
-		LayoutElement(const size_t offset) : mOffset(offset) { }
-
 		virtual ~LayoutElement() = default;
 
 		virtual LayoutElement& operator[](const std::string& key)
@@ -109,8 +113,9 @@ namespace dcb
 		RESOLVE_BASE(Bool)
 		RESOLVE_BASE(Matrix)
 
-	private:
-		size_t mOffset;
+	protected:
+		virtual size_t finish(const size_t offset) = 0;
+		size_t mOffset = 0;
 	};
 
 	LEAF_ELEMENT(Float4, vec4f)
@@ -145,12 +150,26 @@ namespace dcb
 		template<typename T>
 		Struct& add(const std::string& name) NOX
 		{
-			mElements.push_back(createScope<T>(getOffsetEnd()));
+			mElements.push_back(createScope<T>());
 			if(!mMap.emplace(name, mElements.back().get()).second)
 			{
 				assert(false);
 			}
 			return *this;
+		}
+
+	protected:
+		size_t finish(const size_t offset) override
+		{
+			assert(!mElements.empty());
+			mOffset = offset;
+			auto next = offset;
+			for(auto& e : mElements)
+			{
+				next = (*e).finish(next);
+			}
+
+			return getOffsetEnd();
 		}
 
 	private:
@@ -172,7 +191,7 @@ namespace dcb
 		template<typename T>
 		Array& set(const size_t size) NOX
 		{
-			mElement = createScope<T>(getOffsetBegin());
+			mElement = createScope<T>();
 			mSize = size;
 			return *this;
 		}
@@ -187,6 +206,15 @@ namespace dcb
 			return *mElement;
 		}
 
+	protected:
+		size_t finish(const size_t offset) override
+		{
+			assert(mSize != 0 && mElement);
+			mOffset = offset;
+			mElement->finish(offset);
+			return offset + mElement->getSizeInBytes() * mSize;
+		}
+
 	private:
 		size_t mSize = 0;
 		UniquePtr<LayoutElement> mElement;
@@ -196,7 +224,7 @@ namespace dcb
 	class Layout
 	{
 	public:
-		Layout() : mLayout(createRef<Struct>(0)) { }
+		Layout() : mLayout(createRef<Struct>()) { }
 
 		LayoutElement& operator[](const std::string& key)
 		{
@@ -218,6 +246,7 @@ namespace dcb
 
 		SharedPtr<LayoutElement> finish()
 		{
+			mLayout->finish(0);
 			mFinished = true;
 			return mLayout;
 		}
