@@ -323,13 +323,14 @@
     <ClInclude Include="3rdParty\StackWalker\StackWalker.h" />
     <ClInclude Include="App.h" />
     <ClInclude Include="Bindable.h" />
-    <ClInclude Include="BindableCodex.h" />
+    <ClInclude Include="BindableManger.h" />
     <ClInclude Include="Bindables.h" />
     <ClInclude Include="Blender.h" />
     <ClInclude Include="Callstack.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="DynamicConstantBuffer.h" />
+    <ClInclude Include="LayoutManager.h" />
     <ClInclude Include="ScriptCommander.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConstantBuffer.h" />
@@ -384,6 +385,7 @@
     <ResourceCompile Include="Mage3DX.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\.editorconfig" />
     <None Include="..\.gitattributes" />
     <None Include="..\.gitignore" />
     <None Include="..\prepare.bat" />

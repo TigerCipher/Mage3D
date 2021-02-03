@@ -22,7 +22,7 @@
 
 #include "GraphicsException.h"
 #include "Bindable.h"
-#include "BindableCodex.h"
+#include "BindableManger.h"
 #include "DynamicConstantBuffer.h"
 
 template<typename C>
@@ -94,12 +94,12 @@ public:
 
 	static SharedPtr<VertexConstantBuffer> resolve(Graphics& gfx, const C& consts, uint slot = 0)
 	{
-		return BindableCodex::resolve<VertexConstantBuffer>(gfx, consts, slot);
+		return BindableManger::resolve<VertexConstantBuffer>(gfx, consts, slot);
 	}
 
 	static SharedPtr<VertexConstantBuffer> resolve(Graphics& gfx, uint slot = 0)
 	{
-		return BindableCodex::resolve<VertexConstantBuffer>(gfx, slot);
+		return BindableManger::resolve<VertexConstantBuffer>(gfx, slot);
 	}
 
 	static std::string generateUID(const C& consts, uint slot)
@@ -136,12 +136,12 @@ public:
 
 	static SharedPtr<PixelConstantBuffer> resolve(Graphics& gfx, const C& consts, uint slot = 0)
 	{
-		return BindableCodex::resolve<PixelConstantBuffer>(gfx, consts, slot);
+		return BindableManger::resolve<PixelConstantBuffer>(gfx, consts, slot);
 	}
 
 	static SharedPtr<PixelConstantBuffer> resolve(Graphics& gfx, uint slot = 0)
 	{
-		return BindableCodex::resolve<PixelConstantBuffer>(gfx, slot);
+		return BindableManger::resolve<PixelConstantBuffer>(gfx, slot);
 	}
 
 	static std::string generateUID(const C& consts, uint slot)

@@ -14,7 +14,7 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: BindableCodex.h
+ * File Name: BindableManger.h
  * Date File Created: 1/22/2021 at 4:35 PM
  * Author: Matt
  */
@@ -22,7 +22,7 @@
 
 #include "Bindable.h"
 
-class BindableCodex
+class BindableManger
 {
 public:
 
@@ -50,10 +50,10 @@ private:
 		return std::static_pointer_cast<T>(i->second);
 	}
 
-	static BindableCodex& get()
+	static BindableManger& get()
 	{
-		static BindableCodex codex;
-		return codex;
+		static BindableManger mngr;
+		return mngr;
 	}
 
 

@@ -21,7 +21,7 @@
 //#include "pch.h" -intellisense works better with force include being used
 #include "InputLayout.h"
 #include "GraphicsException.h"
-#include "BindableCodex.h"
+#include "BindableManger.h"
 
 InputLayout::InputLayout(Graphics& gfx, vtx::VertexLayout layout,
                          ID3DBlob* vertexBytecode) :
@@ -44,7 +44,7 @@ void InputLayout::bind(Graphics& gfx) noexcept
 
 SharedPtr<InputLayout> InputLayout::resolve(Graphics& gfx, const vtx::VertexLayout& layout, ID3DBlob* vsBytecode)
 {
-	return BindableCodex::resolve<InputLayout>(gfx, layout, vsBytecode);
+	return BindableManger::resolve<InputLayout>(gfx, layout, vsBytecode);
 }
 
 std::string InputLayout::generateUID(const vtx::VertexLayout& layout, ID3DBlob* vsBytecode)

@@ -21,7 +21,7 @@
 //#include "pch.h" -intellisense works better with force include being used
 #include "Sampler.h"
 
-#include "BindableCodex.h"
+#include "BindableManger.h"
 #include "GraphicsException.h"
 #include "Settings.h"
 
@@ -54,7 +54,7 @@ void Sampler::bind(Graphics& gfx) noexcept
 
 SharedPtr<Sampler> Sampler::resolve(Graphics& gfx)
 {
-    return BindableCodex::resolve<Sampler>(gfx);
+    return BindableManger::resolve<Sampler>(gfx);
 }
 
 std::string Sampler::generateUID()

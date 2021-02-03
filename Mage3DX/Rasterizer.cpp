@@ -21,7 +21,7 @@
 #include "Rasterizer.h"
 
 #include "GraphicsException.h"
-#include "BindableCodex.h"
+#include "BindableManger.h"
 
 
 Rasterizer::Rasterizer(Graphics& gfx, bool twoSided) :
@@ -42,7 +42,7 @@ void Rasterizer::bind(Graphics& gfx) noexcept
 
 SharedPtr<Rasterizer> Rasterizer::resolve(Graphics& gfx, bool twoSided)
 {
-	return BindableCodex::resolve<Rasterizer>(gfx, twoSided);
+	return BindableManger::resolve<Rasterizer>(gfx, twoSided);
 }
 
 std::string Rasterizer::generateUID(bool twoSided)

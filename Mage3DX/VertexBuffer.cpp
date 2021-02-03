@@ -20,7 +20,7 @@
  */
 
 #include "VertexBuffer.h"
-#include "BindableCodex.h"
+#include "BindableManger.h"
 
 #include "GraphicsException.h"
 
@@ -61,7 +61,7 @@ SharedPtr<VertexBuffer> VertexBuffer::resolve(Graphics& gfx, const std::string& 
 	vtx::Buffer& vData)
 {
 	assert(tag != "?");
-	return BindableCodex::resolve<VertexBuffer>(gfx, tag, vData);
+	return BindableManger::resolve<VertexBuffer>(gfx, tag, vData);
 }
 
 std::string VertexBuffer::getUID() const noexcept

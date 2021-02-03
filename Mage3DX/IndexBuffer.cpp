@@ -21,7 +21,7 @@
 //#include "pch.h" -intellisense works better with force include being used
 #include "IndexBuffer.h"
 #include "GraphicsException.h"
-#include "BindableCodex.h"
+#include "BindableManger.h"
 
 IndexBuffer::IndexBuffer(Graphics& gfx, const list<ushort>& indices) :
         IndexBuffer(gfx, "?", indices)
@@ -57,7 +57,7 @@ void IndexBuffer::bind(Graphics& gfx) noexcept
 SharedPtr<IndexBuffer> IndexBuffer::resolve(Graphics& gfx, const std::string& tag, const list<ushort>& indices)
 {
     assert(tag != "?");
-    return BindableCodex::resolve<IndexBuffer>(gfx, tag, indices);
+    return BindableManger::resolve<IndexBuffer>(gfx, tag, indices);
 }
 
 

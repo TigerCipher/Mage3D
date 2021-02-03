@@ -20,7 +20,7 @@
  */
 #include "Blender.h"
 
-#include "BindableCodex.h"
+#include "BindableManger.h"
 #include "GraphicsException.h"
 
 Blender::Blender(Graphics& gfx, bool blending, std::optional<float> factor) :
@@ -68,7 +68,7 @@ void Blender::bind(Graphics& gfx) noexcept
 
 SharedPtr<Blender> Blender::resolve(Graphics& gfx, bool blending, std::optional<float> factor)
 {
-	return BindableCodex::resolve < Blender >(gfx, blending, factor);
+	return BindableManger::resolve < Blender >(gfx, blending, factor);
 }
 
 std::string Blender::generateUID(bool blending, std::optional<float> factor)

@@ -24,6 +24,7 @@
 #include "Bindables.h"
 #include "ImguiManager.h"
 #include "ModelException.h"
+#include "LayoutManager.h"
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -42,7 +43,7 @@ void Node::render(Graphics& gfx, mat4f accumulatedTransform) const noexcept(!MAG
 		m->render(gfx, transform);
 	}
 
-	
+
 	for(const auto& c : mChildren)
 	{
 		c->render(gfx, transform);
@@ -125,7 +126,7 @@ public:
 					std::tie(i, std::ignore) = mTransforms.insert({ id, tp });
 				}
 				auto& transform = i->second;
-				
+
 				IMGUI_FUNC(Text("Node ID: %i", mSelectedNode->getId()));
 				IMGUI_FUNC(Text("Orientation"));
 				IMGUI_FUNC(SliderAngle("Roll", &transform.roll, -180, 180));
@@ -178,7 +179,7 @@ private:
 
 //////////////////////////////////////////////////////////////
 
-Model::Model() : mWindow(createScope<ModelWindow>()) {}
+Model::Model() : mWindow(createScope<ModelWindow>()) { }
 
 Model::Model(Graphics& gfx, const std::string& fileName, const float scale) :
 	mWindow(createScope<ModelWindow>())
@@ -187,7 +188,7 @@ Model::Model(Graphics& gfx, const std::string& fileName, const float scale) :
 	Assimp::Importer imp;
 
 	const auto* scene = imp.ReadFile(fileName.c_str(), aiProcess_Triangulate | aiProcess_JoinIdenticalVertices
-	                          | aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace);
+		| aiProcess_ConvertToLeftHanded | aiProcess_GenNormals | aiProcess_CalcTangentSpace);
 
 	if(!scene)
 	{
@@ -216,7 +217,7 @@ UniquePtr<Node> Model::parseNode(int& nextId, const aiNode& node) noexcept
 
 	list<Mesh*> currentMeshes;
 	currentMeshes.reserve(node.mNumMeshes);
-	
+
 	for(size_t i = 0; i < node.mNumMeshes; i++)
 	{
 		const auto meshId = node.mMeshes[i];
@@ -259,7 +260,8 @@ void Model::load(Graphics& gfx, const std::string& fileName, const float scale)
 }
 
 
-UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* materials, const float scale)
+UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMaterial* const* materials, const float
+	scale)
 {
 	mMeshesLoaded++;
 	LOG_DEBUG("Loading mesh {} - {:.2f}%", mesh.mName.C_Str(), (mMeshesLoaded / mNumMeshes) * 100.0f);
@@ -326,11 +328,10 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 	std::string vertShader;
 	std::string pixShader;
 
-	
+
 	if(hasDiffuseMap && hasNormalMap && hasSpecMap)
 	{
-		
-		 vData = vtx::Buffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
+		vData = vtx::Buffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
 			.append(TANGENT).append(BITANGENT).append(TEXTURE2D)));
 
 		for (uint i = 0; i < mesh.mNumVertices; i++)
@@ -341,7 +342,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 				*reinterpret_cast<vec3f*>(&mesh.mTangents[i]),
 				*reinterpret_cast<vec3f*>(&mesh.mBitangents[i]),
 				*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
-			);
+				);
 		}
 
 		vertShader = "shaders\\phongNormalVS.cso";
@@ -351,7 +352,6 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		matConst.specularPower = shininess;
 		matConst.hasGlossMap = hasAlphaGloss ? TRUE : FALSE;
 		binds.push_back(PixelConstantBuffer<Node::MaterialConstFull>::resolve(gfx, matConst, 1));
-		
 	} else if(hasDiffuseMap && hasNormalMap)
 	{
 		vData = vtx::Buffer(std::move(vtx::VertexLayout{ }.append(POSITION3D).append(NORMAL)
@@ -365,7 +365,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 				*reinterpret_cast<vec3f*>(&mesh.mTangents[i]),
 				*reinterpret_cast<vec3f*>(&mesh.mBitangents[i]),
 				*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
-			);
+				);
 		}
 
 		list<ushort> indices;
@@ -384,10 +384,15 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		pixShader = "shaders\\phongNormalPS.cso";
 
 		dcb::Layout lay;
-		lay.add<dcb::Float>("specularIntensity");
-		lay.add<dcb::Float>("specularPower");
-		lay.add<dcb::Bool>("normalMapEnabled");
-		//lay.add<dcb::Float>("padding");
+		std::string tag = "dif_nrm";
+		if(!LayoutManager::load(tag, lay))
+		{
+			lay.add<dcb::Float>("specularIntensity");
+			lay.add<dcb::Float>("specularPower");
+			lay.add<dcb::Bool>("normalMapEnabled");
+
+			LayoutManager::store(tag, lay);
+		}
 
 		dcb::Buffer cbuf(lay);
 		cbuf["specularIntensity"] = (specColor.x + specColor.y + specColor.z) / 3.0f;
@@ -405,12 +410,12 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 				vec3f(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
 				*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
 				*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
-			);
+				);
 		}
 
 		vertShader = "shaders\\phongVS.cso";
 		pixShader = "shaders\\phongPS.cso";
-		
+
 		struct MaterialConst
 		{
 			float specIntensity;
@@ -427,7 +432,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 			vData.emplaceBack(
 				vec3f(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
 				*reinterpret_cast<vec3f*>(&mesh.mNormals[i])
-			);
+				);
 		}
 
 		vertShader = "shaders\\phongNotexVS.cso";
@@ -436,7 +441,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		Node::MaterialConstNotex matConst;
 		matConst.specPower = shininess;
 		matConst.specColor = specColor;
-		matConst.materialColor = diffColor; 
+		matConst.materialColor = diffColor;
 		binds.push_back(PixelConstantBuffer<Node::MaterialConstNotex>::resolve(gfx, matConst, 1));
 	}
 	else if (hasDiffuseMap && hasSpecMap && !hasNormalMap)
@@ -450,7 +455,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 				vec3f(mesh.mVertices[i].x * scale, mesh.mVertices[i].y * scale, mesh.mVertices[i].z * scale),
 				*reinterpret_cast<vec3f*>(&mesh.mNormals[i]),
 				*reinterpret_cast<vec2f*>(&mesh.mTextureCoords[0][i])
-			);
+				);
 		}
 
 		vertShader = "shaders\\phongVS.cso";
@@ -462,7 +467,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 			BOOL hasGloss;
 			float specularMapWeight;
 			float padding;
-		}matConst;
+		} matConst;
 
 		matConst.specularPower = shininess;
 		matConst.hasGloss = hasAlphaGloss ? TRUE : FALSE;
@@ -486,7 +491,7 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 		indices.push_back(face.mIndices[2]);
 	}
 
-	
+
 	binds.push_back(VertexBuffer::resolve(gfx, meshTag, vData));
 	binds.push_back(IndexBuffer::resolve(gfx, meshTag, indices));
 	auto pvs = VertexShader::resolve(gfx, vertShader);

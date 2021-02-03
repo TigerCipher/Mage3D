@@ -22,7 +22,7 @@
 #include "TextureData.h"
 #include "GraphicsException.h"
 #include "Texture.h"
-#include "BindableCodex.h"
+#include "BindableManger.h"
 
 
 TextureData::TextureData(Graphics& gfx, const std::string& path, uint slot) :
@@ -73,7 +73,7 @@ void TextureData::bind(Graphics& gfx) noexcept
 
 SharedPtr<TextureData> TextureData::resolve(Graphics& gfx, const std::string& path, uint slot)
 {
-	return BindableCodex::resolve<TextureData>(gfx, path, slot);
+	return BindableManger::resolve<TextureData>(gfx, path, slot);
 }
 
 std::string TextureData::generateUID(const std::string& path, const uint slot)

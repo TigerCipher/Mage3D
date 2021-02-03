@@ -20,7 +20,7 @@
  */
 //#include "pch.h" -intellisense works better with force include being used
 #include "Topology.h"
-#include "BindableCodex.h"
+#include "BindableManger.h"
 
 void Topology::bind(Graphics& gfx) noexcept
 {
@@ -29,7 +29,7 @@ void Topology::bind(Graphics& gfx) noexcept
 
 SharedPtr<Topology> Topology::resolve(Graphics& gfx, D3D11_PRIMITIVE_TOPOLOGY type)
 {
-	return BindableCodex::resolve<Topology>(gfx, type);
+	return BindableManger::resolve<Topology>(gfx, type);
 }
 
 std::string Topology::generateUID(D3D11_PRIMITIVE_TOPOLOGY type)

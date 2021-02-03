@@ -262,6 +262,8 @@ namespace dcb
 	public:
 		Layout() : mLayout(createRef<Struct>()) { }
 
+		Layout(SharedPtr<LayoutElement> layout) : mLayout(std::move(layout)) {}
+
 		LayoutElement& operator[](const std::string& key)
 		{
 			assert(!mFinished && "Cannot modify a completed layout");

@@ -395,9 +395,6 @@
     <ClInclude Include="Texture.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
-    <ClInclude Include="BindableCodex.h">
-      <Filter>Header Files\bindables</Filter>
-    </ClInclude>
     <ClInclude Include="Sampler.h">
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
@@ -431,6 +428,12 @@
     <ClInclude Include="DynamicConstantBuffer.h">
       <Filter>Header Files\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="LayoutManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BindableManger.h">
+      <Filter>Header Files\bindables</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="3rdParty\DXGetErrorDescription.inl">
@@ -462,6 +465,9 @@
       <Filter>Scripts</Filter>
     </None>
     <None Include="..\.gitattributes">
+      <Filter>Misc</Filter>
+    </None>
+    <None Include="..\.editorconfig">
       <Filter>Misc</Filter>
     </None>
   </ItemGroup>

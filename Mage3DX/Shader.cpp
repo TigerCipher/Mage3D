@@ -21,7 +21,7 @@
 
 #include "Shader.h"
 #include "GraphicsException.h"
-#include "BindableCodex.h"
+#include "BindableManger.h"
 #include "Util.h"
 
 #include <d3dcompiler.h>
@@ -50,7 +50,7 @@ void VertexShader::bind(Graphics& gfx) noexcept
 
 SharedPtr<VertexShader> VertexShader::resolve(Graphics& gfx, const std::string& path)
 {
-	return BindableCodex::resolve<VertexShader>(gfx, path);
+	return BindableManger::resolve<VertexShader>(gfx, path);
 }
 
 
@@ -86,7 +86,7 @@ void PixelShader::bind(Graphics& gfx) noexcept
 
 SharedPtr<PixelShader> PixelShader::resolve(Graphics& gfx, const std::string& path)
 {
-	return BindableCodex::resolve<PixelShader>(gfx, path);
+	return BindableManger::resolve<PixelShader>(gfx, path);
 }
 
 std::string PixelShader::generateUID(const std::string& path)
