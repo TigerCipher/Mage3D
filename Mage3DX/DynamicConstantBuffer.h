@@ -44,18 +44,18 @@
 		{ return sizeof(SysType); }                            \
 	};                                                         \
 
-#define OP_REF(et, ...)                                                         \
-	operator __VA_ARGS__ et::SysType&()NOX                                                     \
+#define OP_REF(et, ...)                    \
+	operator __VA_ARGS__ et::SysType&()NOX \
 	{ return *reinterpret_cast<et::SysType*>(mBytes + mLayout->resolve ## et()); }
 
-#define OP_ASSIGN(et) \
-	et::SysType& operator=(const et::SysType& rhs) NOX                             \
+#define OP_ASSIGN(et)                                  \
+	et::SysType& operator=(const et::SysType& rhs) NOX \
 	{ return static_cast<et::SysType&>(*this) = rhs; }
 
-#define REF_CONST_CONVERSION(et) OP_REF(et, const)
-#define REF_NON_CONST_CONVERSION(et) OP_REF(et) OP_ASSIGN(et)
+#define REF_CONST_CONVERSION(et)        OP_REF(et, const)
+#define REF_NON_CONST_CONVERSION(et)    OP_REF(et) OP_ASSIGN(et)
 
-#define PTR_CONVERSION(et, ...)     \
+#define PTR_CONVERSION(et, ...)            \
 	operator __VA_ARGS__ et::SysType*()NOX \
 	{ return &static_cast<__VA_ARGS__ et::SysType&>(mRef); }
 
@@ -107,10 +107,10 @@ namespace dcb
 		}
 
 		template<typename T>
-		Struct& add(const std::string& key) NOX;
+		LayoutElement& add(const std::string& key) NOX;
 
 		template<typename T>
-		Array& set(const size_t size) NOX;
+		LayoutElement& set(const size_t size) NOX;
 
 		static size_t getNextOffset(const size_t offset)
 		{
@@ -162,15 +162,13 @@ namespace dcb
 			return getNextOffset(mElements.back()->getOffsetEnd());
 		}
 
-		template<typename T>
-		Struct& add(const std::string& name) NOX
+		void add(const std::string& name, UniquePtr<LayoutElement> elem) NOX
 		{
-			mElements.push_back(createScope<T>());
+			mElements.push_back(std::move(elem));
 			if(!mMap.emplace(name, mElements.back().get()).second)
 			{
 				assert(false);
 			}
-			return *this;
 		}
 
 	protected:
@@ -223,12 +221,10 @@ namespace dcb
 			return getOffsetBegin() + getNextOffset(mElement->getSizeInBytes()) * mSize;
 		}
 
-		template<typename T>
-		Array& set(const size_t size) NOX
+		void set(UniquePtr<LayoutElement> elem, const size_t size) NOX
 		{
-			mElement = createScope<T>();
+			mElement = std::move(elem);
 			mSize = size;
-			return *this;
 		}
 
 		LayoutElement& type() override final
@@ -266,7 +262,7 @@ namespace dcb
 	public:
 		Layout() : mLayout(createRef<Struct>()) { }
 
-		Layout(SharedPtr<LayoutElement> layout) : mLayout(std::move(layout)) {}
+		Layout(SharedPtr<LayoutElement> layout) : mLayout(std::move(layout)) { }
 
 		LayoutElement& operator[](const std::string& key)
 		{
@@ -316,8 +312,10 @@ namespace dcb
 			ConstElementRef& mRef;
 		};
 
-		ConstElementRef(const LayoutElement* layout, char* bytes, const size_t offset):
-		mLayout(layout), mBytes(bytes), mOffset(offset) {}
+		ConstElementRef(const LayoutElement* layout, char* bytes, const size_t offset) :
+			mLayout(layout),
+			mBytes(bytes),
+			mOffset(offset) { }
 
 		ConstElementRef operator[](const std::string& key) NOX
 		{
@@ -328,7 +326,7 @@ namespace dcb
 		{
 			const auto& t = mLayout->type();
 			const auto size = LayoutElement::getNextOffset(t.getSizeInBytes());
-			return { &t, mBytes, mOffset + size * index };
+			return { &t, mBytes, mOffset + size* index };
 		}
 
 		ElementPtr operator&() NOX
@@ -348,7 +346,7 @@ namespace dcb
 		char* mBytes;
 		size_t mOffset;
 	};
-	
+
 	class ElementRef
 	{
 	public:
@@ -452,19 +450,21 @@ namespace dcb
 
 	// LayoutElement::add -> depends on Struct definition, but Struct definition depends on LayoutElement
 	template<typename T>
-	Struct& LayoutElement::add(const std::string& key) NOX
+	LayoutElement& LayoutElement::add(const std::string& key) NOX
 	{
 		auto* s = dynamic_cast<Struct*>(this);
 		assert(s != nullptr);
-		return s->add<T>(key);
+		s->add(key, createScope<T>());
+		return *this;
 	}
 
 
 	template <typename T>
-	Array& LayoutElement::set(const size_t size) NOX
+	LayoutElement& LayoutElement::set(const size_t size) NOX
 	{
 		auto* a = dynamic_cast<Array*>(this);
 		assert(a != nullptr);
-		return a->set<T>(size);
+		a->set(createScope<T>(), size);
+		return *this;
 	}
 } // namespace dcb
