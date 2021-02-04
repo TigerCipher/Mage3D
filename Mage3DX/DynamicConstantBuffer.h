@@ -23,88 +23,55 @@
 
 #include "MathHelper.h"
 
-#define RESOLVE_BASE(et)                     \
-	virtual size_t resolve ## et() const NOX \
-	{ assert(false && "Cannot resolve to" #et); return 0; }
+#define RESOLVE_BASE(et) \
+	virtual size_t resolve ## et() const NOX;
 
 
-#define LEAF_ELEMENT(et, systype)                              \
-	class et : public LayoutElement                            \
-	{                                                          \
-	public:                                                    \
-		using SysType = systype;                               \
-		size_t resolve ## et() const NOX override final        \
-		{ return getOffsetBegin(); }                           \
-		size_t getOffsetEnd() const noexcept override final    \
-		{ return getOffsetBegin() + calculateSize(); }         \
-	protected:                                                 \
-		size_t finish(const size_t offset) override final      \
-		{ mOffset = offset; return offset + calculateSize(); } \
-		size_t calculateSize() const NOX override final        \
-		{ return sizeof(SysType); }                            \
-	};                                                         \
+#define LEAF_ELEMENT(et, systype)                            \
+	class et final : public LayoutElement                    \
+	{                                                        \
+	public:                                                  \
+		using SysType = systype;                             \
+		size_t resolve ## et() const NOX override final;     \
+		size_t getOffsetEnd() const noexcept override final; \
+	protected:                                               \
+		size_t finish(const size_t offset) override final;   \
+		size_t calculateSize() const NOX override final;     \
+	};
 
-#define OP_REF(et, ...)                    \
-	operator __VA_ARGS__ et::SysType&()NOX \
-	{ return *reinterpret_cast<et::SysType*>(mBytes + mLayout->resolve ## et()); }
+#define OP_REF(et, ...)                 operator __VA_ARGS__ et::SysType&()NOX;
 
-#define OP_ASSIGN(et)                                  \
-	et::SysType& operator=(const et::SysType& rhs) NOX \
-	{ return static_cast<et::SysType&>(*this) = rhs; }
+#define OP_ASSIGN(et)                   et::SysType& operator=(const et::SysType& rhs) NOX;
 
 #define REF_CONST_CONVERSION(et)        OP_REF(et, const)
 #define REF_NON_CONST_CONVERSION(et)    OP_REF(et) OP_ASSIGN(et)
 
-#define PTR_CONVERSION(et, ...)            \
-	operator __VA_ARGS__ et::SysType*()NOX \
-	{ return &static_cast<__VA_ARGS__ et::SysType&>(mRef); }
+#define PTR_CONVERSION(et, ...)         operator __VA_ARGS__ et::SysType*()NOX;
 
 namespace dcb
 {
-	class Struct;
-	class Array;
-	class Layout;
-
 	class LayoutElement
 	{
 	friend class Struct;
 	friend class Array;
 	friend class Layout;
 	public:
-		virtual ~LayoutElement() = default;
+		virtual ~LayoutElement();
 
-		virtual LayoutElement& operator[](const std::string& key)
-		{
-			assert(false && "Cannot access member on non Struct");
-			return *this;
-		}
+		virtual LayoutElement& operator[](const std::string& key);
 
-		virtual const LayoutElement& operator[](const std::string& key) const
-		{
-			assert(false && "Cannot access member on non Struct");
-			return *this;
-		}
+		virtual const LayoutElement& operator[](const std::string& key) const;
 
-		[[nodiscard]] size_t getOffsetBegin() const noexcept { return mOffset; }
 
 		[[nodiscard]] virtual size_t getOffsetEnd() const noexcept = 0;
 
-		[[nodiscard]] size_t getSizeInBytes() const noexcept
-		{
-			return getOffsetEnd() - getOffsetBegin();
-		}
+		[[nodiscard]] size_t getSizeInBytes() const noexcept;
 
-		virtual LayoutElement& type()
-		{
-			assert(false);
-			return *this;
-		}
+		[[nodiscard]] size_t getOffsetBegin() const noexcept { return mOffset; }
 
-		[[nodiscard]] virtual const LayoutElement& type() const
-		{
-			assert(false);
-			return *this;
-		}
+		virtual LayoutElement& type();
+
+		[[nodiscard]] virtual const LayoutElement& type() const;
 
 		template<typename T>
 		LayoutElement& add(const std::string& key) NOX;
@@ -112,11 +79,7 @@ namespace dcb
 		template<typename T>
 		LayoutElement& set(const size_t size) NOX;
 
-		static size_t getNextOffset(const size_t offset)
-		{
-			// HLSL structs are multiples of 16 bytes each
-			return offset + (16 - offset % 16) % 16;
-		}
+		static size_t getNextOffset(const size_t offset);
 
 		RESOLVE_BASE(Float4)
 		RESOLVE_BASE(Float3)
@@ -127,7 +90,7 @@ namespace dcb
 
 	protected:
 		virtual size_t finish(const size_t offset) = 0;
-		virtual size_t calculateSize() const NOX = 0;
+		[[nodiscard]] virtual size_t calculateSize() const NOX = 0;
 
 
 		size_t mOffset = 0;
@@ -147,65 +110,20 @@ namespace dcb
 	public:
 		using LayoutElement::LayoutElement;
 
-		LayoutElement& operator[](const std::string& key) override final
-		{
-			return *mMap.at(key);
-		}
+		LayoutElement& operator[](const std::string& key) override final;
 
-		const LayoutElement& operator[](const std::string& key) const override final
-		{
-			return *mMap.at(key);
-		}
+		[[nodiscard]] size_t getOffsetEnd() const noexcept override final;
 
-		[[nodiscard]] size_t getOffsetEnd() const noexcept override final
-		{
-			return getNextOffset(mElements.back()->getOffsetEnd());
-		}
-
-		void add(const std::string& name, UniquePtr<LayoutElement> elem) NOX
-		{
-			mElements.push_back(std::move(elem));
-			if(!mMap.emplace(name, mElements.back().get()).second)
-			{
-				assert(false);
-			}
-		}
+		void add(const std::string& name, UniquePtr<LayoutElement> elem) NOX;
 
 	protected:
-		size_t finish(const size_t offset) override final
-		{
-			assert(!mElements.empty());
-			mOffset = offset;
-			auto next = offset;
-			for(auto& e : mElements)
-			{
-				next = (*e).finish(next);
-			}
+		size_t finish(const size_t offset) override final;
 
-			return getOffsetEnd();
-		}
-
-		size_t calculateSize() const NOX override final
-		{
-			size_t next = 0;
-			for(auto& e : mElements)
-			{
-				const auto size = e->calculateSize();
-				next += getPadding(next, size) + size;
-			}
-			return getNextOffset(next);
-		}
+		[[nodiscard]] size_t calculateSize() const NOX override final;
 
 	private:
 
-		static size_t getPadding(const size_t offset, const size_t size) noexcept
-		{
-			if(offset / 16 != (offset + size - 1) / 16)
-			{
-				return getNextOffset(offset) - offset;
-			}
-			return offset;
-		}
+		static size_t getPadding(const size_t offset, const size_t size) noexcept;
 
 		std::unordered_map<std::string, LayoutElement*> mMap;
 		list<UniquePtr<LayoutElement> > mElements;
@@ -216,40 +134,19 @@ namespace dcb
 	public:
 		using LayoutElement::LayoutElement;
 
-		[[nodiscard]] size_t getOffsetEnd() const noexcept override final
-		{
-			return getOffsetBegin() + getNextOffset(mElement->getSizeInBytes()) * mSize;
-		}
+		[[nodiscard]] size_t getOffsetEnd() const noexcept override final;
 
-		void set(UniquePtr<LayoutElement> elem, const size_t size) NOX
-		{
-			mElement = std::move(elem);
-			mSize = size;
-		}
+		void set(UniquePtr<LayoutElement> elem, const size_t size) NOX;
 
 		LayoutElement& type() override final
 		{
 			return *mElement;
 		}
 
-		[[nodiscard]] const LayoutElement& type() const override final
-		{
-			return *mElement;
-		}
-
 	protected:
-		size_t finish(const size_t offset) override final
-		{
-			assert(mSize != 0 && mElement);
-			mOffset = offset;
-			mElement->finish(offset);
-			return offset + mElement->getSizeInBytes() * mSize;
-		}
+		size_t finish(const size_t offset) override final;
 
-		size_t calculateSize() const NOX override final
-		{
-			return getNextOffset(mElement->calculateSize()) * mSize;
-		}
+		[[nodiscard]] size_t calculateSize() const NOX override final;
 
 	private:
 		size_t mSize = 0;
@@ -264,16 +161,9 @@ namespace dcb
 
 		Layout(SharedPtr<LayoutElement> layout) : mLayout(std::move(layout)) { }
 
-		LayoutElement& operator[](const std::string& key)
-		{
-			assert(!mFinished && "Cannot modify a completed layout");
-			return (*mLayout)[key];
-		}
+		LayoutElement& operator[](const std::string& key);
 
-		size_t getSizeInBytes() const noexcept
-		{
-			return mLayout->getSizeInBytes();
-		}
+		[[nodiscard]] size_t getSizeInBytes() const noexcept;
 
 		template<typename T>
 		LayoutElement& add(const std::string& key) NOX
@@ -282,12 +172,7 @@ namespace dcb
 			return mLayout->add<T>(key);
 		}
 
-		SharedPtr<LayoutElement> finish()
-		{
-			mLayout->finish(0);
-			mFinished = true;
-			return mLayout;
-		}
+		SharedPtr<LayoutElement> finish();
 	private:
 		bool mFinished = false;
 		SharedPtr<LayoutElement> mLayout;
@@ -317,17 +202,9 @@ namespace dcb
 			mBytes(bytes),
 			mOffset(offset) { }
 
-		ConstElementRef operator[](const std::string& key) NOX
-		{
-			return { &(*mLayout)[key], mBytes, mOffset };
-		}
+		ConstElementRef operator[](const std::string& key) NOX;
 
-		ConstElementRef operator[](const size_t index) NOX
-		{
-			const auto& t = mLayout->type();
-			const auto size = LayoutElement::getNextOffset(t.getSizeInBytes());
-			return { &t, mBytes, mOffset + size* index };
-		}
+		ConstElementRef operator[](const size_t index) NOX;
 
 		ElementPtr operator&() NOX
 		{
@@ -371,22 +248,11 @@ namespace dcb
 			mBytes(bytes),
 			mOffset(offset) { }
 
-		ElementRef operator[](const std::string& key) const NOX
-		{
-			return { &(*mLayout)[key], mBytes, mOffset };
-		}
+		ElementRef operator[](const std::string& key) const NOX;
 
-		ElementRef operator[](const size_t index) const NOX
-		{
-			const auto& t = mLayout->type();
-			const auto size = LayoutElement::getNextOffset(t.getSizeInBytes());
-			return { &t, mBytes, mOffset + size* index };
-		}
+		ElementRef operator[](const size_t index) const NOX;
 
-		operator ConstElementRef() const noexcept
-		{
-			return { mLayout, mBytes, mOffset };
-		}
+		operator ConstElementRef() const noexcept;
 
 		ElementPtr operator&() NOX
 		{
@@ -413,15 +279,9 @@ namespace dcb
 			mLayout(std::static_pointer_cast<Struct>(layout.finish())),
 			mBytes(mLayout->getOffsetEnd()) { }
 
-		ElementRef operator[](const std::string& key) NOX
-		{
-			return { &(*mLayout)[key], mBytes.data(), 0 };
-		}
+		ElementRef operator[](const std::string& key) NOX;
 
-		ConstElementRef operator[](const std::string& key) const NOX
-		{
-			return const_cast<Buffer&>(*this)[key];
-		}
+		ConstElementRef operator[](const std::string& key) const NOX;
 
 		[[nodiscard]] const char* getData() const noexcept
 		{
@@ -468,3 +328,13 @@ namespace dcb
 		return *this;
 	}
 } // namespace dcb
+
+
+
+#undef RESOLVE_BASE
+#undef REF_CONST_CONVERSION
+#undef REF_NON_CONST_CONVERSION
+#undef OP_ASSIGN
+#undef OP_REF
+#undef PTR_CONVERSION
+#undef LEAF_ELEMENT

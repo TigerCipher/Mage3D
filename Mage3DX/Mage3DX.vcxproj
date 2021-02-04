@@ -263,6 +263,7 @@
     <ClCompile Include="Callstack.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
+    <ClCompile Include="DynamicConstantBuffer.cpp" />
     <ClCompile Include="ScriptCommander.cpp" />
     <ClCompile Include="DebugInfo.cpp" />
     <ClCompile Include="DebugMessageMap.cpp" />

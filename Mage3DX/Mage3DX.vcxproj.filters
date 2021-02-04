@@ -67,6 +67,12 @@
     <Filter Include="Misc">
       <UniqueIdentifier>{940d5101-cb57-43f0-b701-dd687b5985f6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\dynamic constructs">
+      <UniqueIdentifier>{a88455d0-5e63-4e21-9f53-b60a09248f51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\dynamic constructs">
+      <UniqueIdentifier>{e0c286c7-99bf-4af5-9a4d-a7d8b94db027}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="PointLight.cpp">
@@ -201,9 +207,6 @@
     <ClCompile Include="Sampler.cpp">
       <Filter>Source Files\bindables</Filter>
     </ClCompile>
-    <ClCompile Include="Vertex.cpp">
-      <Filter>Source Files\graphics</Filter>
-    </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Source Files\graphics</Filter>
     </ClCompile>
@@ -233,6 +236,12 @@
     </ClCompile>
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>Source Files\bindables</Filter>
+    </ClCompile>
+    <ClCompile Include="DynamicConstantBuffer.cpp">
+      <Filter>Source Files\dynamic constructs</Filter>
+    </ClCompile>
+    <ClCompile Include="Vertex.cpp">
+      <Filter>Source Files\dynamic constructs</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -377,9 +386,6 @@
     <ClInclude Include="App.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Vertex.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="DebugTools.h">
       <Filter>Header Files\debug</Filter>
     </ClInclude>
@@ -425,14 +431,17 @@
     <ClInclude Include="VertexBuffer.h">
       <Filter>Header Files\bindables</Filter>
     </ClInclude>
-    <ClInclude Include="DynamicConstantBuffer.h">
-      <Filter>Header Files\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="LayoutManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="BindableManger.h">
       <Filter>Header Files\bindables</Filter>
+    </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Header Files\dynamic constructs</Filter>
+    </ClInclude>
+    <ClInclude Include="LayoutManager.h">
+      <Filter>Header Files\dynamic constructs</Filter>
+    </ClInclude>
+    <ClInclude Include="DynamicConstantBuffer.h">
+      <Filter>Header Files\dynamic constructs</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
