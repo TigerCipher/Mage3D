@@ -44,16 +44,20 @@
 		{ return sizeof(SysType); }                            \
 	};                                                         \
 
-#define REF_CONVERSION(et)                                                         \
-	operator et::SysType&()NOX                                                     \
-	{ return *reinterpret_cast<et::SysType*>(mBytes + mLayout->resolve ## et()); } \
+#define OP_REF(et, ...)                                                         \
+	operator __VA_ARGS__ et::SysType&()NOX                                                     \
+	{ return *reinterpret_cast<et::SysType*>(mBytes + mLayout->resolve ## et()); }
+
+#define OP_ASSIGN(et) \
 	et::SysType& operator=(const et::SysType& rhs) NOX                             \
 	{ return static_cast<et::SysType&>(*this) = rhs; }
 
+#define REF_CONST_CONVERSION(et) OP_REF(et, const)
+#define REF_NON_CONST_CONVERSION(et) OP_REF(et) OP_ASSIGN(et)
 
-#define PTR_CONVERSION(et)     \
-	operator et::SysType*()NOX \
-	{ return &static_cast<et::SysType&>(mRef); }
+#define PTR_CONVERSION(et, ...)     \
+	operator __VA_ARGS__ et::SysType*()NOX \
+	{ return &static_cast<__VA_ARGS__ et::SysType&>(mRef); }
 
 namespace dcb
 {
@@ -293,6 +297,58 @@ namespace dcb
 		SharedPtr<LayoutElement> mLayout;
 	};
 
+	class ConstElementRef
+	{
+	public:
+		class ElementPtr
+		{
+		public:
+			ElementPtr(ConstElementRef& ref) : mRef(ref) { }
+
+			PTR_CONVERSION(Float4, const)
+			PTR_CONVERSION(Float3, const)
+			PTR_CONVERSION(Float2, const)
+			PTR_CONVERSION(Float, const)
+			PTR_CONVERSION(Bool, const)
+			PTR_CONVERSION(Matrix, const)
+
+		private:
+			ConstElementRef& mRef;
+		};
+
+		ConstElementRef(const LayoutElement* layout, char* bytes, const size_t offset):
+		mLayout(layout), mBytes(bytes), mOffset(offset) {}
+
+		ConstElementRef operator[](const std::string& key) NOX
+		{
+			return { &(*mLayout)[key], mBytes, mOffset };
+		}
+
+		ConstElementRef operator[](const size_t index) NOX
+		{
+			const auto& t = mLayout->type();
+			const auto size = LayoutElement::getNextOffset(t.getSizeInBytes());
+			return { &t, mBytes, mOffset + size * index };
+		}
+
+		ElementPtr operator&() NOX
+		{
+			return { *this };
+		}
+
+		REF_CONST_CONVERSION(Float4)
+		REF_CONST_CONVERSION(Float3)
+		REF_CONST_CONVERSION(Float2)
+		REF_CONST_CONVERSION(Float)
+		REF_CONST_CONVERSION(Matrix)
+		REF_CONST_CONVERSION(Bool)
+
+	private:
+		const LayoutElement* mLayout;
+		char* mBytes;
+		size_t mOffset;
+	};
+	
 	class ElementRef
 	{
 	public:
@@ -329,17 +385,22 @@ namespace dcb
 			return { &t, mBytes, mOffset + size* index };
 		}
 
+		operator ConstElementRef() const noexcept
+		{
+			return { mLayout, mBytes, mOffset };
+		}
+
 		ElementPtr operator&() NOX
 		{
 			return { *this };
 		}
 
-		REF_CONVERSION(Float4)
-		REF_CONVERSION(Float3)
-		REF_CONVERSION(Float2)
-		REF_CONVERSION(Float)
-		REF_CONVERSION(Matrix)
-		REF_CONVERSION(Bool)
+		REF_NON_CONST_CONVERSION(Float4)
+		REF_NON_CONST_CONVERSION(Float3)
+		REF_NON_CONST_CONVERSION(Float2)
+		REF_NON_CONST_CONVERSION(Float)
+		REF_NON_CONST_CONVERSION(Matrix)
+		REF_NON_CONST_CONVERSION(Bool)
 
 	private:
 		const LayoutElement* mLayout;
@@ -357,6 +418,11 @@ namespace dcb
 		ElementRef operator[](const std::string& key) NOX
 		{
 			return { &(*mLayout)[key], mBytes.data(), 0 };
+		}
+
+		ConstElementRef operator[](const std::string& key) const NOX
+		{
+			return const_cast<Buffer&>(*this)[key];
 		}
 
 		[[nodiscard]] const char* getData() const noexcept
