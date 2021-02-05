@@ -27,16 +27,16 @@
 	virtual size_t resolve ## et() const NOX;
 
 
-#define LEAF_ELEMENT(et, systype)                            \
-	class et final : public LayoutElement                    \
-	{                                                        \
-	public:                                                  \
-		using SysType = systype;                             \
-		size_t resolve ## et() const NOX override final;     \
-		size_t getOffsetEnd() const noexcept override final; \
-	protected:                                               \
-		size_t finish(const size_t offset) override final;   \
-		size_t calculateSize() const NOX override final;     \
+#define LEAF_ELEMENT(et, systype)                      \
+	class et final : public LayoutElement              \
+	{                                                  \
+	public:                                            \
+		using SysType = systype;                       \
+		size_t resolve ## et() const NOX override;     \
+		size_t getOffsetEnd() const noexcept override; \
+	protected:                                         \
+		size_t finish(const size_t offset) override;   \
+		size_t calculateSize() const NOX override;     \
 	};
 
 #define OP_REF(et, ...)                 operator __VA_ARGS__ et::SysType&()NOX;
@@ -60,7 +60,7 @@ namespace dcb
 
 		virtual LayoutElement& operator[](const std::string& key);
 
-		virtual const LayoutElement& operator[](const std::string& key) const;
+		const LayoutElement& operator[](const std::string& key) const;
 
 
 		[[nodiscard]] virtual size_t getOffsetEnd() const noexcept = 0;
@@ -71,7 +71,9 @@ namespace dcb
 
 		virtual LayoutElement& type();
 
-		[[nodiscard]] virtual const LayoutElement& type() const;
+		[[nodiscard]] const LayoutElement& type() const;
+
+		[[nodiscard]] virtual bool exists() const noexcept { return true; }
 
 		template<typename T>
 		LayoutElement& add(const std::string& key) NOX;
@@ -108,8 +110,6 @@ namespace dcb
 	class Struct : public LayoutElement
 	{
 	public:
-		using LayoutElement::LayoutElement;
-
 		LayoutElement& operator[](const std::string& key) override final;
 
 		[[nodiscard]] size_t getOffsetEnd() const noexcept override final;
@@ -141,6 +141,13 @@ namespace dcb
 		LayoutElement& type() override final
 		{
 			return *mElement;
+		}
+
+
+		// return false if index is out of bounds
+		bool checkIndex(size_t index) const noexcept
+		{
+			return index < mSize;
 		}
 
 	protected:
@@ -211,6 +218,8 @@ namespace dcb
 			return { *this };
 		}
 
+		[[nodiscard]] std::optional<ConstElementRef> exists() const noexcept;
+
 		REF_CONST_CONVERSION(Float4)
 		REF_CONST_CONVERSION(Float3)
 		REF_CONST_CONVERSION(Float2)
@@ -258,6 +267,8 @@ namespace dcb
 		{
 			return { *this };
 		}
+
+		[[nodiscard]] std::optional<ElementRef> exists() const noexcept;
 
 		REF_NON_CONST_CONVERSION(Float4)
 		REF_NON_CONST_CONVERSION(Float3)

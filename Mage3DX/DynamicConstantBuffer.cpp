@@ -111,11 +111,45 @@ namespace dcb
 	LEAF_ELEMENT(Bool, BOOL)
 
 
+	// Internal fake element class
+	class Empty : public LayoutElement
+	{
+	public:
+		size_t getOffsetEnd() const noexcept override
+		{
+			return 0;
+		}
+
+		bool exists() const noexcept override
+		{
+			return false;
+		}
+
+	protected:
+		size_t finish(const size_t offset) override
+		{
+			return 0;
+		}
+
+		size_t calculateSize() const NOX override
+		{
+			return 0;
+		}
+	private:
+		size_t mSize = 0;
+		UniquePtr<LayoutElement> mElement;
+	} fakeEmptyElement;
+
 	// Struct class implementations
 
-	LayoutElement & Struct::operator[](const std::string& key)
+	LayoutElement& Struct::operator[](const std::string& key)
 	{
-		return *mMap.at(key);
+		const auto i = mMap.find(key);
+		if(i == mMap.end())
+		{
+			return fakeEmptyElement;
+		}
+		return *i->second;
 	}
 
 	size_t Struct::getOffsetEnd() const noexcept
@@ -226,11 +260,19 @@ namespace dcb
 		return { &(*mLayout)[key], mBytes, mOffset };
 	}
 
-	ConstElementRef ConstElementRef::operator[](const size_t index) noexcept(!1)
+	ConstElementRef ConstElementRef::operator[](const size_t index) NOX
 	{
 		const auto& t = mLayout->type();
+		assert(dynamic_cast<const Array&>(*mLayout).checkIndex(index));
 		const auto size = LayoutElement::getNextOffset(t.getSizeInBytes());
 		return { &t, mBytes, mOffset + size * index };
+	}
+
+	std::optional<ConstElementRef> ConstElementRef::exists() const noexcept
+	{
+		if (mLayout->exists())
+			return ConstElementRef(mLayout, mBytes, mOffset);
+		return std::nullopt;
 	}
 
 	REF_CONST_CONVERSION(ConstElementRef, Float4)
@@ -257,6 +299,7 @@ namespace dcb
 	ElementRef ElementRef::operator[](const size_t index) const NOX
 	{
 		const auto& t = mLayout->type();
+		assert(static_cast<const Array&>(*mLayout).checkIndex(index));
 		const auto size = LayoutElement::getNextOffset(t.getSizeInBytes());
 		return { &t, mBytes, mOffset + size * index };
 	}
@@ -264,6 +307,13 @@ namespace dcb
 	ElementRef::operator ConstElementRef() const noexcept
 	{
 		return { mLayout, mBytes, mOffset };
+	}
+
+	std::optional<ElementRef> ElementRef::exists() const noexcept
+	{
+		if (mLayout->exists())
+			return ElementRef(mLayout, mBytes, mOffset);
+		return std::nullopt;
 	}
 
 	REF_NON_CONST_CONVERSION(ElementRef, Float4)
