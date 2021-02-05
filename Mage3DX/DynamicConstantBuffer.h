@@ -49,6 +49,9 @@
 
 #define PTR_CONVERSION(et, ...)         operator __VA_ARGS__ et::SysType*()NOX;
 
+
+class LayoutManager;
+
 namespace dcb
 {
 	class LayoutElement
@@ -149,7 +152,7 @@ namespace dcb
 			return *mElement;
 		}
 
-		const LayoutElement& type() const override;
+		[[nodiscard]] const LayoutElement& type() const override;
 
 
 		// return false if index is out of bounds
@@ -171,6 +174,8 @@ namespace dcb
 
 	class Layout
 	{
+		friend LayoutManager;
+		friend class Buffer;
 	public:
 		Layout() : mLayout(createRef<Struct>()) { }
 
@@ -187,10 +192,15 @@ namespace dcb
 			return mLayout->add<T>(key);
 		}
 
-		SharedPtr<LayoutElement> finish();
+		void finish();
+
+		[[nodiscard]] bool isFinished() const { return mFinished; }
 
 		[[nodiscard]] std::string getTag() const NOX;
 	private:
+
+		[[nodiscard]] SharedPtr<LayoutElement> getRoot() const noexcept;
+		
 		bool mFinished = false;
 		SharedPtr<LayoutElement> mLayout;
 	};
@@ -296,10 +306,9 @@ namespace dcb
 	class Buffer
 	{
 	public:
-		Buffer(Layout& layout) :
-			mLayout(std::static_pointer_cast<Struct>(layout.finish())),
-			mBytes(mLayout->getOffsetEnd()) { }
 
+		static Buffer build(Layout& layout) NOX;
+		
 		ElementRef operator[](const std::string& key) NOX;
 
 		ConstElementRef operator[](const std::string& key) const NOX;
@@ -327,7 +336,10 @@ namespace dcb
 		[[nodiscard]] std::string getTag() const NOX;
 
 	private:
-		SharedPtr<Struct> mLayout;
+		Buffer(Layout& layout) : mLayout(layout.getRoot()), mBytes(mLayout->getOffsetEnd()) {}
+		Buffer(Layout&& layout) : Buffer(layout) {}
+		
+		SharedPtr<LayoutElement> mLayout;
 		list<char> mBytes;
 	};
 

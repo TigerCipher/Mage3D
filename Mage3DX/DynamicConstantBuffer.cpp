@@ -21,6 +21,8 @@
 
 #include "DynamicConstantBuffer.h"
 
+#include "LayoutManager.h"
+
 #define RESOLVE_BASE(et)                            \
 	size_t LayoutElement::resolve ## et() const NOX \
 	{ assert(false && "Cannot resolve to" #et); return 0; }
@@ -289,10 +291,20 @@ namespace dcb
 		return mLayout->getSizeInBytes();
 	}
 
-	SharedPtr<LayoutElement> Layout::finish()
+	void Layout::finish()
 	{
 		mLayout->finish(0);
 		mFinished = true;
+	}
+
+	std::string Layout::getTag() const NOX
+	{
+		assert(mFinished);
+		return mLayout->getTag();
+	}
+
+	SharedPtr<LayoutElement> Layout::getRoot() const noexcept
+	{
 		return mLayout;
 	}
 
@@ -373,6 +385,11 @@ namespace dcb
 
 	// Buffer class implementations
 
+
+	Buffer Buffer::build(Layout& layout) NOX
+	{
+		return LayoutManager::resolve(layout);
+	}
 
 	ElementRef Buffer::operator[](const std::string& key) NOX
 	{

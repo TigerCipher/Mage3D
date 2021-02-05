@@ -11,31 +11,30 @@
  * GNU General Public License for more details.
  * You should have received a copy of the GNU General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * Contact: team@bluemoondev.org
- * 
- * File Name: LayoutManager.h
- * Date File Created: 2/3/2021 at 3:14 PM
+ *
+ * File Name: LayoutManager.cpp
+ * Date File Created: 2/4/2021 at 11:35 PM
  * Author: Matt
  */
 
-#pragma once
 
-#include "DynamicConstantBuffer.h"
+#include "LayoutManager.h"
 
-class LayoutManager
+dcb::Layout LayoutManager::resolve(dcb::Layout& layout) NOX
 {
-public:
+	layout.finish();
+	const auto tag = layout.getTag();
+	auto& map = get().mMap;
+	const auto i = map.find(tag);
 
-	static dcb::Layout resolve(dcb::Layout& layout) NOX;
-
-private:
-
-	static LayoutManager& get()
+	if(i != map.end())
 	{
-		static LayoutManager mngr;
-		return mngr;
+		return i->second;
 	}
 
-	std::unordered_map<std::string, SharedPtr<dcb::LayoutElement>> mMap;
-};
+	const auto [fst, snd] = map.insert({ std::move(tag), layout.getRoot() });
+
+	return fst->second;
+}

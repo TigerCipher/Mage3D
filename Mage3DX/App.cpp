@@ -59,7 +59,7 @@ App::App(const int width, const int height, const char* title, const std::string
 	s["bork"].type().add<dcb::Float>("meow");
 	s["bork"].type().add<dcb::Float>("moo");
 
-	dcb::Buffer b(s);
+	auto b = dcb::Buffer::build(s);
 	b["test"]["idk"] = vec3f(0, 1, 0);
 	b["test"]["wut"] = 34.25f;
 	b["arr"][2]["monkey"][5] = 12.5f;

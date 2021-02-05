@@ -243,6 +243,9 @@
     <ClCompile Include="Vertex.cpp">
       <Filter>Source Files\dynamic constructs</Filter>
     </ClCompile>
+    <ClCompile Include="LayoutManager.cpp">
+      <Filter>Source Files\dynamic constructs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PointLight.h">

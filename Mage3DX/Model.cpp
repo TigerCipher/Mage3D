@@ -385,16 +385,14 @@ UniquePtr<Mesh> Model::parseMesh(Graphics& gfx, const aiMesh& mesh, const aiMate
 
 		dcb::Layout lay;
 		std::string tag = "dif_nrm";
-		if(!LayoutManager::load(tag, lay))
-		{
-			lay.add<dcb::Float>("specularIntensity");
-			lay.add<dcb::Float>("specularPower");
-			lay.add<dcb::Bool>("normalMapEnabled");
 
-			LayoutManager::store(tag, lay);
-		}
+		lay.add<dcb::Float>("specularIntensity");
+		lay.add<dcb::Float>("specularPower");
+		lay.add<dcb::Bool>("normalMapEnabled");
 
-		dcb::Buffer cbuf(lay);
+
+		auto cbuf = dcb::Buffer::build(lay);
+
 		cbuf["specularIntensity"] = (specColor.x + specColor.y + specColor.z) / 3.0f;
 		cbuf["specularPower"] = shininess;
 		cbuf["normalMapEnabled"] = TRUE;
