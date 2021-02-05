@@ -36,7 +36,9 @@
 		mOffset = offset; return offset + calculateSize(); \
 	}                                                      \
 	size_t et::calculateSize() const NOX                   \
-	{ return sizeof(SysType); }
+	{ return sizeof(SysType); }                            \
+	std::string et::getTag() const NOX                     \
+	{ return #et; }
 
 
 #define OP_REF(t, et, ...)                    \
@@ -112,9 +114,16 @@ namespace dcb
 
 
 	// Internal fake element class
-	class Empty : public LayoutElement
+	class Empty final : public LayoutElement
 	{
 	public:
+
+		std::string getTag() const NOX override
+		{
+			assert(false);
+			return "";
+		}
+
 		size_t getOffsetEnd() const noexcept override
 		{
 			return 0;
@@ -142,6 +151,8 @@ namespace dcb
 
 	// Struct class implementations
 
+
+
 	LayoutElement& Struct::operator[](const std::string& key)
 	{
 		const auto i = mMap.find(key);
@@ -157,12 +168,40 @@ namespace dcb
 		return getNextOffset(mElements.back()->getOffsetEnd());
 	}
 
+	std::string Struct::getTag() const NOX
+	{
+		using namespace std::string_literals;
+
+		auto tag = "Struct { "s;
+
+		for(const auto& e : mElements)
+		{
+			const auto i = std::ranges::find_if(mMap,
+				[&e] (const std::pair<std::string, LayoutElement*>& v)
+				{
+					return &*e == v.second;
+				});
+
+			tag += i->first + ":"s + e->getTag() + ";"s;
+		}
+
+		tag += " }"s;
+		return tag;
+	}
+
 	void Struct::add(const std::string& name, UniquePtr<LayoutElement> elem) NOX
 	{
+		const auto valid = !name.empty() && !std::isdigit(name.front()) && std::ranges::all_of(name,
+			[] (const char c)
+			{
+				return std::isalnum(c) || c == '_';
+			});
+		assert(valid && "Cannot add an invalid symbol to a Struct");
+
 		mElements.push_back(std::move(elem));
 		if (!mMap.emplace(name, mElements.back().get()).second)
 		{
-			assert(false);
+			assert(false && "Cannot add a duplicate symbol to a Struct");
 		}
 	}
 
@@ -202,6 +241,12 @@ namespace dcb
 
 	// Array class implementations
 
+	std::string Array::getTag() const NOX
+	{
+		using namespace std::string_literals;
+		return "Array:"s + std::to_string(mSize) + " { "s + type().getTag() + " }"s;
+	}
+
 	size_t Array::getOffsetEnd() const noexcept
 	{
 		return getOffsetBegin() + getNextOffset(mElement->getSizeInBytes()) * mSize;
@@ -211,6 +256,11 @@ namespace dcb
 	{
 		mElement = std::move(elem);
 		mSize = size;
+	}
+
+	const LayoutElement& Array::type() const
+	{
+		return const_cast<Array*>(this)->type();
 	}
 
 	size_t Array::finish(const size_t offset)
@@ -268,11 +318,9 @@ namespace dcb
 		return { &t, mBytes, mOffset + size * index };
 	}
 
-	std::optional<ConstElementRef> ConstElementRef::exists() const noexcept
+	bool ConstElementRef::exists() const noexcept
 	{
-		if (mLayout->exists())
-			return ConstElementRef(mLayout, mBytes, mOffset);
-		return std::nullopt;
+		return mLayout->exists();
 	}
 
 	REF_CONST_CONVERSION(ConstElementRef, Float4)
@@ -309,11 +357,9 @@ namespace dcb
 		return { mLayout, mBytes, mOffset };
 	}
 
-	std::optional<ElementRef> ElementRef::exists() const noexcept
+	bool ElementRef::exists() const noexcept
 	{
-		if (mLayout->exists())
-			return ElementRef(mLayout, mBytes, mOffset);
-		return std::nullopt;
+		return mLayout->exists();
 	}
 
 	REF_NON_CONST_CONVERSION(ElementRef, Float4)

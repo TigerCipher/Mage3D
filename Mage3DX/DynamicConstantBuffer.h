@@ -34,6 +34,7 @@
 		using SysType = systype;                       \
 		size_t resolve ## et() const NOX override;     \
 		size_t getOffsetEnd() const noexcept override; \
+		std::string getTag() const NOX;                \
 	protected:                                         \
 		size_t finish(const size_t offset) override;   \
 		size_t calculateSize() const NOX override;     \
@@ -62,6 +63,7 @@ namespace dcb
 
 		const LayoutElement& operator[](const std::string& key) const;
 
+		[[nodiscard]] virtual std::string getTag() const NOX = 0;
 
 		[[nodiscard]] virtual size_t getOffsetEnd() const noexcept = 0;
 
@@ -71,7 +73,7 @@ namespace dcb
 
 		virtual LayoutElement& type();
 
-		[[nodiscard]] const LayoutElement& type() const;
+		[[nodiscard]] virtual const LayoutElement& type() const;
 
 		[[nodiscard]] virtual bool exists() const noexcept { return true; }
 
@@ -107,53 +109,59 @@ namespace dcb
 
 
 
-	class Struct : public LayoutElement
+	class Struct final : public LayoutElement
 	{
 	public:
-		LayoutElement& operator[](const std::string& key) override final;
+		LayoutElement& operator[](const std::string& key) override;
 
-		[[nodiscard]] size_t getOffsetEnd() const noexcept override final;
+		[[nodiscard]] size_t getOffsetEnd() const noexcept override;
+
+		[[nodiscard]] std::string getTag() const NOX override;
 
 		void add(const std::string& name, UniquePtr<LayoutElement> elem) NOX;
 
 	protected:
-		size_t finish(const size_t offset) override final;
+		size_t finish(size_t offset) override;
 
-		[[nodiscard]] size_t calculateSize() const NOX override final;
+		[[nodiscard]] size_t calculateSize() const NOX override;
 
 	private:
 
-		static size_t getPadding(const size_t offset, const size_t size) noexcept;
+		static size_t getPadding(size_t offset, size_t size) noexcept;
 
 		std::unordered_map<std::string, LayoutElement*> mMap;
 		list<UniquePtr<LayoutElement> > mElements;
 	};
 
-	class Array : public LayoutElement
+	class Array final : public LayoutElement
 	{
 	public:
 		using LayoutElement::LayoutElement;
 
-		[[nodiscard]] size_t getOffsetEnd() const noexcept override final;
+		[[nodiscard]] std::string getTag() const NOX override;
+		
+		[[nodiscard]] size_t getOffsetEnd() const noexcept override;
 
-		void set(UniquePtr<LayoutElement> elem, const size_t size) NOX;
+		void set(UniquePtr<LayoutElement> elem, size_t size) NOX;
 
-		LayoutElement& type() override final
+		LayoutElement& type() override
 		{
 			return *mElement;
 		}
 
+		const LayoutElement& type() const override;
+
 
 		// return false if index is out of bounds
-		bool checkIndex(size_t index) const noexcept
+		[[nodiscard]] bool checkIndex(const size_t index) const noexcept
 		{
 			return index < mSize;
 		}
 
 	protected:
-		size_t finish(const size_t offset) override final;
+		size_t finish(const size_t offset) override;
 
-		[[nodiscard]] size_t calculateSize() const NOX override final;
+		[[nodiscard]] size_t calculateSize() const NOX override;
 
 	private:
 		size_t mSize = 0;
@@ -180,6 +188,8 @@ namespace dcb
 		}
 
 		SharedPtr<LayoutElement> finish();
+
+		[[nodiscard]] std::string getTag() const NOX;
 	private:
 		bool mFinished = false;
 		SharedPtr<LayoutElement> mLayout;
@@ -218,7 +228,7 @@ namespace dcb
 			return { *this };
 		}
 
-		[[nodiscard]] std::optional<ConstElementRef> exists() const noexcept;
+		[[nodiscard]] bool exists() const noexcept;
 
 		REF_CONST_CONVERSION(Float4)
 		REF_CONST_CONVERSION(Float3)
@@ -259,7 +269,7 @@ namespace dcb
 
 		ElementRef operator[](const std::string& key) const NOX;
 
-		ElementRef operator[](const size_t index) const NOX;
+		ElementRef operator[](size_t index) const NOX;
 
 		operator ConstElementRef() const noexcept;
 
@@ -268,7 +278,7 @@ namespace dcb
 			return { *this };
 		}
 
-		[[nodiscard]] std::optional<ElementRef> exists() const noexcept;
+		[[nodiscard]] bool exists() const noexcept;
 
 		REF_NON_CONST_CONVERSION(Float4)
 		REF_NON_CONST_CONVERSION(Float3)
@@ -313,6 +323,8 @@ namespace dcb
 		{
 			return mLayout;
 		}
+
+		[[nodiscard]] std::string getTag() const NOX;
 
 	private:
 		SharedPtr<Struct> mLayout;
