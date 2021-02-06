@@ -33,7 +33,7 @@
 	{ return getOffsetBegin(); }                           \
 	size_t et::getOffsetEnd() const noexcept               \
 	{ return getOffsetBegin() + calculateSize(); }         \
-	size_t et::finish(const size_t offset)                 \
+	size_t et::finish(const size_t offset) NOX             \
 	{                                                      \
 		mOffset = offset; return offset + calculateSize(); \
 	}                                                      \
@@ -65,13 +65,13 @@ namespace dcb
 
 	LayoutElement::~LayoutElement() = default;
 
-	LayoutElement& LayoutElement::operator[](const std::string& key)
+	LayoutElement& LayoutElement::operator[](const std::string& key) NOX
 	{
 		assert(false && "Cannot access member on non Struct");
 		return *this;
 	}
 
-	const LayoutElement& LayoutElement::operator[](const std::string& key) const
+	const LayoutElement& LayoutElement::operator[](const std::string& key) const NOX
 	{
 		return const_cast<LayoutElement&>(*this)[key];
 	}
@@ -81,13 +81,13 @@ namespace dcb
 		return getOffsetEnd() - getOffsetBegin();
 	}
 
-	LayoutElement& LayoutElement::type()
+	LayoutElement& LayoutElement::type() NOX
 	{
 		assert(false);
 		return *this;
 	}
 
-	const LayoutElement& LayoutElement::type() const
+	const LayoutElement& LayoutElement::type() const NOX
 	{
 		return const_cast<LayoutElement&>(*this).type();
 	}
@@ -137,7 +137,7 @@ namespace dcb
 		}
 
 	protected:
-		size_t finish(const size_t offset) override
+		size_t finish(size_t offset) NOX override
 		{
 			return 0;
 		}
@@ -155,7 +155,7 @@ namespace dcb
 
 
 
-	LayoutElement& Struct::operator[](const std::string& key)
+	LayoutElement& Struct::operator[](const std::string& key) NOX
 	{
 		const auto i = mMap.find(key);
 		if(i == mMap.end())
@@ -207,7 +207,7 @@ namespace dcb
 		}
 	}
 
-	size_t Struct::finish(const size_t offset)
+	size_t Struct::finish(const size_t offset) NOX
 	{
 		assert(!mElements.empty());
 		mOffset = offset;
@@ -260,7 +260,7 @@ namespace dcb
 		mSize = size;
 	}
 
-	const LayoutElement& Array::type() const
+	const LayoutElement& Array::type() const NOX
 	{
 		return const_cast<Array*>(this)->type();
 	}
@@ -280,7 +280,7 @@ namespace dcb
 
 	// Layout class implementations
 
-	LayoutElement& Layout::operator[](const std::string& key)
+	LayoutElement& Layout::operator[](const std::string& key) NOX
 	{
 		assert(!mFinished && "Cannot modify a completed layout");
 		return (*mLayout)[key];
@@ -291,7 +291,7 @@ namespace dcb
 		return mLayout->getSizeInBytes();
 	}
 
-	void Layout::finish()
+	void Layout::finish() NOX
 	{
 		mLayout->finish(0);
 		mFinished = true;

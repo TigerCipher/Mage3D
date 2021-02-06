@@ -27,17 +27,18 @@
 	virtual size_t resolve ## et() const NOX;
 
 
-#define LEAF_ELEMENT(et, systype)                      \
-	class et final : public LayoutElement              \
-	{                                                  \
-	public:                                            \
-		using SysType = systype;                       \
-		size_t resolve ## et() const NOX override;     \
-		size_t getOffsetEnd() const noexcept override; \
-		std::string getTag() const NOX;                \
-	protected:                                         \
-		size_t finish(const size_t offset) override;   \
-		size_t calculateSize() const NOX override;     \
+#define LEAF_ELEMENT(et, systype)                              \
+	class et : public LayoutElement                            \
+	{                                                          \
+	friend LayoutElement;                                      \
+	public:                                                    \
+		using SysType = systype;                               \
+		size_t resolve ## et() const NOX override final;       \
+		size_t getOffsetEnd() const noexcept override final;   \
+		std::string getTag() const NOX final;                  \
+	protected:                                                 \
+		size_t finish(const size_t offset) NOX override final; \
+		size_t calculateSize() const NOX override final;       \
 	};
 
 #define OP_REF(et, ...)                 operator __VA_ARGS__ et::SysType&()NOX;
@@ -48,6 +49,7 @@
 #define REF_NON_CONST_CONVERSION(et)    OP_REF(et) OP_ASSIGN(et)
 
 #define PTR_CONVERSION(et, ...)         operator __VA_ARGS__ et::SysType*()NOX;
+
 
 
 class LayoutManager;
@@ -62,9 +64,9 @@ namespace dcb
 	public:
 		virtual ~LayoutElement();
 
-		virtual LayoutElement& operator[](const std::string& key);
+		virtual LayoutElement& operator[](const std::string& key) NOX;
 
-		const LayoutElement& operator[](const std::string& key) const;
+		const LayoutElement& operator[](const std::string& key) const NOX;
 
 		[[nodiscard]] virtual std::string getTag() const NOX = 0;
 
@@ -74,9 +76,9 @@ namespace dcb
 
 		[[nodiscard]] size_t getOffsetBegin() const noexcept { return mOffset; }
 
-		virtual LayoutElement& type();
+		virtual LayoutElement& type() NOX;
 
-		[[nodiscard]] virtual const LayoutElement& type() const;
+		[[nodiscard]] virtual const LayoutElement& type() const NOX;
 
 		[[nodiscard]] virtual bool exists() const noexcept { return true; }
 
@@ -84,9 +86,9 @@ namespace dcb
 		LayoutElement& add(const std::string& key) NOX;
 
 		template<typename T>
-		LayoutElement& set(const size_t size) NOX;
+		LayoutElement& set(size_t size) NOX;
 
-		static size_t getNextOffset(const size_t offset);
+		static size_t getNextOffset(size_t offset);
 
 		RESOLVE_BASE(Float4)
 		RESOLVE_BASE(Float3)
@@ -96,7 +98,7 @@ namespace dcb
 		RESOLVE_BASE(Matrix)
 
 	protected:
-		virtual size_t finish(const size_t offset) = 0;
+		virtual size_t finish(size_t offset) NOX = 0;
 		[[nodiscard]] virtual size_t calculateSize() const NOX = 0;
 
 
@@ -112,21 +114,25 @@ namespace dcb
 
 
 
-	class Struct final : public LayoutElement
+	class Struct : public LayoutElement
 	{
+	friend LayoutElement;
 	public:
-		LayoutElement& operator[](const std::string& key) override;
+		LayoutElement& operator[](const std::string& key) NOX override final;
 
-		[[nodiscard]] size_t getOffsetEnd() const noexcept override;
+		[[nodiscard]] size_t getOffsetEnd() const noexcept override final;
 
-		[[nodiscard]] std::string getTag() const NOX override;
+		[[nodiscard]] std::string getTag() const NOX override final;
 
 		void add(const std::string& name, UniquePtr<LayoutElement> elem) NOX;
 
 	protected:
-		size_t finish(size_t offset) override;
 
-		[[nodiscard]] size_t calculateSize() const NOX override;
+		Struct() = default;
+
+		size_t finish(size_t offset) NOX override final;
+
+		[[nodiscard]] size_t calculateSize() const NOX override final;
 
 	private:
 
@@ -136,23 +142,24 @@ namespace dcb
 		list<UniquePtr<LayoutElement> > mElements;
 	};
 
-	class Array final : public LayoutElement
+	class Array : public LayoutElement
 	{
+	friend LayoutElement;
 	public:
 		using LayoutElement::LayoutElement;
 
-		[[nodiscard]] std::string getTag() const NOX override;
-		
-		[[nodiscard]] size_t getOffsetEnd() const noexcept override;
+		[[nodiscard]] std::string getTag() const NOX override final;
+
+		[[nodiscard]] size_t getOffsetEnd() const noexcept override final;
 
 		void set(UniquePtr<LayoutElement> elem, size_t size) NOX;
 
-		LayoutElement& type() override
+		LayoutElement& type() NOX override final
 		{
 			return *mElement;
 		}
 
-		[[nodiscard]] const LayoutElement& type() const override;
+		[[nodiscard]] const LayoutElement& type() const NOX override final;
 
 
 		// return false if index is out of bounds
@@ -162,9 +169,12 @@ namespace dcb
 		}
 
 	protected:
-		size_t finish(const size_t offset) override;
 
-		[[nodiscard]] size_t calculateSize() const NOX override;
+		Array() = default;
+
+		size_t finish(size_t offset) NOX override final;
+
+		[[nodiscard]] size_t calculateSize() const NOX override final;
 
 	private:
 		size_t mSize = 0;
@@ -174,14 +184,17 @@ namespace dcb
 
 	class Layout
 	{
-		friend LayoutManager;
-		friend class Buffer;
+	friend LayoutManager;
+	friend class Buffer;
 	public:
-		Layout() : mLayout(createRef<Struct>()) { }
+		Layout() NOX
+		{
+			struct ProtectedAccess : public Struct { };
+			mLayout = createRef<ProtectedAccess>();
+		}
 
-		Layout(SharedPtr<LayoutElement> layout) : mLayout(std::move(layout)) { }
 
-		LayoutElement& operator[](const std::string& key);
+		LayoutElement& operator[](const std::string& key) NOX;
 
 		[[nodiscard]] size_t getSizeInBytes() const noexcept;
 
@@ -192,26 +205,29 @@ namespace dcb
 			return mLayout->add<T>(key);
 		}
 
-		void finish();
+		void finish() NOX;
 
 		[[nodiscard]] bool isFinished() const { return mFinished; }
 
 		[[nodiscard]] std::string getTag() const NOX;
 	private:
+		Layout(SharedPtr<LayoutElement> layout) noexcept : mLayout(std::move(layout)) { }
 
 		[[nodiscard]] SharedPtr<LayoutElement> getRoot() const noexcept;
-		
+
 		bool mFinished = false;
 		SharedPtr<LayoutElement> mLayout;
 	};
 
 	class ConstElementRef
 	{
+	friend class ElementRef;
+	friend class Buffer;
 	public:
 		class ElementPtr
 		{
+		friend ConstElementRef;
 		public:
-			ElementPtr(ConstElementRef& ref) : mRef(ref) { }
 
 			PTR_CONVERSION(Float4, const)
 			PTR_CONVERSION(Float3, const)
@@ -221,17 +237,16 @@ namespace dcb
 			PTR_CONVERSION(Matrix, const)
 
 		private:
+			ElementPtr(ConstElementRef& ref) noexcept : mRef(ref) { }
+
 			ConstElementRef& mRef;
 		};
 
-		ConstElementRef(const LayoutElement* layout, char* bytes, const size_t offset) :
-			mLayout(layout),
-			mBytes(bytes),
-			mOffset(offset) { }
+
 
 		ConstElementRef operator[](const std::string& key) NOX;
 
-		ConstElementRef operator[](const size_t index) NOX;
+		ConstElementRef operator[](size_t index) NOX;
 
 		ElementPtr operator&() NOX
 		{
@@ -248,6 +263,11 @@ namespace dcb
 		REF_CONST_CONVERSION(Bool)
 
 	private:
+		ConstElementRef(const LayoutElement* layout, char* bytes, const size_t offset) noexcept :
+			mLayout(layout),
+			mBytes(bytes),
+			mOffset(offset) { }
+
 		const LayoutElement* mLayout;
 		char* mBytes;
 		size_t mOffset;
@@ -255,12 +275,13 @@ namespace dcb
 
 	class ElementRef
 	{
+	friend class Buffer;
 	public:
 
 		class ElementPtr
 		{
+		friend ElementRef;
 		public:
-			ElementPtr(ElementRef& ref) : mRef(ref) { }
 
 			PTR_CONVERSION(Float4)
 			PTR_CONVERSION(Float3)
@@ -270,12 +291,12 @@ namespace dcb
 			PTR_CONVERSION(Matrix)
 
 		private:
+			ElementPtr(ElementRef& ref) noexcept : mRef(ref) { }
+
 			ElementRef& mRef;
 		};
 
-		ElementRef(const LayoutElement* layout, char* bytes, const size_t offset) : mLayout(layout),
-			mBytes(bytes),
-			mOffset(offset) { }
+
 
 		ElementRef operator[](const std::string& key) const NOX;
 
@@ -298,6 +319,10 @@ namespace dcb
 		REF_NON_CONST_CONVERSION(Bool)
 
 	private:
+		ElementRef(const LayoutElement* layout, char* bytes, const size_t offset) noexcept : mLayout(layout),
+			mBytes(bytes),
+			mOffset(offset) { }
+
 		const LayoutElement* mLayout;
 		char* mBytes;
 		size_t mOffset;
@@ -308,7 +333,7 @@ namespace dcb
 	public:
 
 		static Buffer build(Layout& layout) NOX;
-		
+
 		ElementRef operator[](const std::string& key) NOX;
 
 		ConstElementRef operator[](const std::string& key) const NOX;
@@ -328,7 +353,7 @@ namespace dcb
 			return *mLayout;
 		}
 
-		[[nodiscard]] SharedPtr<LayoutElement> cloneLayout() const
+		[[nodiscard]] SharedPtr<LayoutElement> cloneLayout() const noexcept
 		{
 			return mLayout;
 		}
@@ -336,9 +361,10 @@ namespace dcb
 		[[nodiscard]] std::string getTag() const NOX;
 
 	private:
-		Buffer(Layout& layout) : mLayout(layout.getRoot()), mBytes(mLayout->getOffsetEnd()) {}
-		Buffer(Layout&& layout) : Buffer(layout) {}
-		
+		Buffer(Layout& layout) noexcept : mLayout(layout.getRoot()),
+			mBytes(mLayout->getOffsetEnd()) { }
+		Buffer(Layout&& layout) noexcept : Buffer(layout) { }
+
 		SharedPtr<LayoutElement> mLayout;
 		list<char> mBytes;
 	};
@@ -349,7 +375,8 @@ namespace dcb
 	{
 		auto* s = dynamic_cast<Struct*>(this);
 		assert(s != nullptr);
-		s->add(key, createScope<T>());
+		struct ProtectedAccess : public T { }; // because constructor is protected and not public
+		s->add(key, createScope<ProtectedAccess>());
 		return *this;
 	}
 
@@ -359,7 +386,8 @@ namespace dcb
 	{
 		auto* a = dynamic_cast<Array*>(this);
 		assert(a != nullptr);
-		a->set(createScope<T>(), size);
+		struct ProtectedAccess : public T { }; // because constructor is protected and not public
+		a->set(createScope<ProtectedAccess>(), size);
 		return *this;
 	}
 } // namespace dcb

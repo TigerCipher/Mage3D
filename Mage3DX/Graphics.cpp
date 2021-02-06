@@ -143,7 +143,7 @@ void Graphics::swap()
 	if (FAILED(hr = mSwap->Present(mVsync, 0)))
 	{
 #if MAGE_DEBUG
-		auto debugMsgs = from_list(mDebugInfo.getMessages());
+		const auto debugMsgs = from_list(mDebugInfo.getMessages());
 		//LOG_ERROR("Swap chain failed. Reasoning: \n{}", fmt::join(mDebugInfo.getMessages(), "\n"));
 		LOG_ERROR("Swap chain failed. Reasoning: \n{}", debugMsgs);
 		if (hr == DXGI_ERROR_DEVICE_REMOVED)

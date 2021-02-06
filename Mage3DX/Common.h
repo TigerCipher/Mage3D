@@ -44,10 +44,6 @@
 
 
 
-#define VOIDPP(x) reinterpret_cast<void**>(x)
-
-
-
 // because I got tired of writing noexcept(!MAGE_DEBUG) every time I felt a conditional noexcept was needed
 #define NOX noexcept(!MAGE_DEBUG)
 

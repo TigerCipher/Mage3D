@@ -1,0 +1,16 @@
+// Hint files help the Visual Studio IDE interpret Visual C++ identifiers
+// such as names of functions and macros.
+// For more information see https://go.microsoft.com/fwlink/?linkid=865984
+#define assert(expression) ((void)0)
+#define assert(expression) (void)( (!!(expression)) || (_wassert(_CRT_WIDE(#expression), _CRT_WIDE(__FILE__), (unsigned)(__LINE__)), 0) )
+#define REF_NON_CONST_CONVERSION(et) OP_REF(et) OP_ASSIGN(et)
+#define REF_NON_CONST_CONVERSION(t, et) OP_REF(t, et) OP_ASSIGN(t, et)
+#define PTR_CONVERSION(et, __VA_ARGS__) operator __VA_ARGS__ et::SysType*()NOX;
+#define PTR_CONVERSION(t, et, __VA_ARGS__) t::ElementPtr::operator __VA_ARGS__ et::SysType*()NOX { return &static_cast<__VA_ARGS__ et::SysType&>(mRef); }
+#define REF_CONST_CONVERSION(et) OP_REF(et, const)
+#define REF_CONST_CONVERSION(t, et) OP_REF(t, et, const)
+#define LEAF_ELEMENT(et, systype) class et final : public LayoutElement { public: using SysType = systype; size_t resolve##et() const NOX override; size_t getOffsetEnd() const noexcept override; std::string getTag() const NOX; protected: size_t finish(const size_t offset) override; size_t calculateSize() const NOX override; };
+#define LEAF_ELEMENT(et, systype) size_t et::resolve##et() const NOX { return getOffsetBegin(); } size_t et::getOffsetEnd() const noexcept { return getOffsetBegin() + calculateSize(); } size_t et::finish(const size_t offset) { mOffset = offset; return offset + calculateSize(); } size_t et::calculateSize() const NOX { return sizeof(SysType); } std::string et::getTag() const NOX { return #et; }
+#define RESOLVE_BASE(et) virtual size_t resolve##et() const NOX;
+#define RESOLVE_BASE(et) size_t LayoutElement::resolve##et() const NOX { assert(false && "Cannot resolve to" #et); return 0; }
+#define NOX noexcept(!MAGE_DEBUG)

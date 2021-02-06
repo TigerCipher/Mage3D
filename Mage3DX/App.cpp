@@ -80,7 +80,7 @@ App::App(const int width, const int height, const char* title, const std::string
 	const auto& test = b;
 	mat4x4 blorpgh = test["arr"][2]["meta"][5][3];
 
-	
+	//test["arr"][2]["meta"][5][3] = identityMatrix(); // doesn't compile (meaning my const correctness is working properly)
 
 	mDisplay.getGraphics().setProjection(dx::XMMatrixPerspectiveLH(1.0f,
 		mDisplay.getAspectRatio(),

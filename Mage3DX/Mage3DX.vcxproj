@@ -397,6 +397,7 @@
     <None Include="3rdParty\DXGetErrorDescription.inl" />
     <None Include="3rdParty\DXGetErrorString.inl" />
     <None Include="3rdParty\DXTrace.inl" />
+    <None Include="cpp.hint" />
     <None Include="Mage3DX.sln.licenseheader" />
     <None Include="uncrustify.cfg" />
   </ItemGroup>

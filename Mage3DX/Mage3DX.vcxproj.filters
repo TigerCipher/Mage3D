@@ -482,6 +482,7 @@
     <None Include="..\.editorconfig">
       <Filter>Misc</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="assets\shaders\phongPS.hlsl">
