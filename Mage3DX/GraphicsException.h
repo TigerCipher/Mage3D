@@ -35,7 +35,7 @@
 	#define GFX_THROW_INFO(hrcall)                       \
 	{                                                    \
 		HRESULT hr;                                      \
-		mDebugInfo.set();                               \
+		mDebugInfo.set();                                \
 		if (FAILED(hr = (hrcall))) throw GFX_EXCEPT(hr); \
 	}
 	#define GFX_DEVICE_REMOVED_EXCEPT(hr) \
@@ -55,7 +55,7 @@
 class GraphicsException : public MageException
 {
 public:
-	GraphicsException(int line, const char* file, HRESULT hr, const list<std::string>& msgs = { }) noexcept;
+	GraphicsException(int line, const char* file, HRESULT hr, const list<std::string>& msgs = {}) noexcept;
 
 	const char* what() const noexcept override;
 	HRESULT getErrorCode() const noexcept;
@@ -71,9 +71,7 @@ private:
 class GraphicsDeviceRemovedException : public GraphicsException
 {
 public:
-	GraphicsDeviceRemovedException(const int line, const char* file, const HRESULT hr, const list<std::string>& msgs) noexcept:
+	GraphicsDeviceRemovedException(const int line, const char* file, const HRESULT hr,
+	                               const list<std::string>& msgs) noexcept:
 		GraphicsException(line, file, hr, msgs) { }
-
 };
-
-

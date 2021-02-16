@@ -27,7 +27,7 @@ class StacktraceExceptionBase : public Callstack
 {
 public:
 	explicit StacktraceExceptionBase(bool showStack) : Callstack(2),
-		mShowStack(showStack) { }
+	                                                   mShowStack(showStack) { }
 
 	[[nodiscard]] virtual const char* what() const noexcept = 0;
 
@@ -37,12 +37,13 @@ protected:
 	bool mShowStack;
 };
 
-template<class T>
+template <class T>
 class StacktraceException : public T, public StacktraceExceptionBase
 {
 public:
 	explicit StacktraceException(const std::string& msg) : T(msg),
-		StacktraceExceptionBase(true) { }
+	                                                       StacktraceExceptionBase(true) { }
+
 	const char* what() const noexcept override
 	{
 		if (mShowStack)
@@ -73,6 +74,3 @@ typedef StacktraceException<std::out_of_range> stacktraceOutOfRange;
 //typedef StacktraceException<DisplayException> stacktraceDisplay;
 //typedef StacktraceException<NoGraphicsException> stacktraceNoGfx;
 //typedef StacktraceException<InfoException> stacktraceInfo;
-
-
-

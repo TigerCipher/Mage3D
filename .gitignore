@@ -51,3 +51,8 @@ Mage3DX/x64
 !Mage3DX/assets/models/.*gltf
 *.gltf
 *.mtl
+*.log
+
+TestApp/x64
+
+EngineTools/x64

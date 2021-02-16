@@ -156,9 +156,6 @@
     <ClCompile Include="SolidSphere.cpp">
       <Filter>Source Files\entities</Filter>
     </ClCompile>
-    <ClCompile Include="winmain.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="3rdParty\imgui\imgui.cpp">
       <Filter>3rdParty\ImGui</Filter>
     </ClCompile>

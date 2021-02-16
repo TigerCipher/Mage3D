@@ -32,6 +32,7 @@ class DisplayException : public MageException
 public:
 	DisplayException(const int line, const char* file, HRESULT hr) : MageException(line, file),
 	                                                                 mResult(hr) { }
+
 	const char* what() const noexcept override;
 	HRESULT getError() const noexcept { return mResult; }
 	std::string getErrorString() const noexcept;

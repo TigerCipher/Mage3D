@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Mage3DX
  * Copyright (C) 2021 Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify

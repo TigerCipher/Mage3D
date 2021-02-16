@@ -1,6 +1,8 @@
+﻿extensions: designer.cs generated.cs
+extensions: .cpp .h .c .hpp .cc .cxx .inl .hlsl .glsl .hlsli
 /*
- * Mage3DX
- * Copyright (C) 2020 Blue Moon Development. All rights reserved.
+ * %Project%
+ * Copyright (C) %CreationYear% Blue Moon Development. All rights reserved.
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -14,29 +16,17 @@
  * 
  * Contact: team@bluemoondev.org
  * 
- * File Name: TextureException.h
- * Date File Created: 10/1/2020 at 11:38 PM
+ * File Name: %FileName%
+ * Date File Created: %CreationMonth%/%CreationDay%/%CreationYear% at %CreationTime%
  * Author: Matt
  */
-#pragma once
-
-#include "MageException.h"
-#include "DisplayException.h"
-
-class TextureException : public MageException
-{
-public:
-	TextureException(const int line, const char* file, std::string info, std::optional<HRESULT> hr = {}) noexcept :
-		MageException(line, file),
-		mInfo(std::move(info))
-	{
-		if (hr)
-			mInfo = fmt::format("[Error Code] {}\n{}", ExceptionHelper::translateError(*hr), mInfo);
-	}
-
-	const char* what() const noexcept override;
-	const std::string& getInfo() const noexcept { return mInfo; }
-
-private:
-	std::string mInfo;
-};
+extensions: .aspx .ascx
+<%-- 
+Copyright (c) 2011 rubicon IT GmbH
+--%>
+extensions: .vb
+'Sample license text.
+extensions:  .xml .config .xsd
+<!--
+Sample license text.
+-->

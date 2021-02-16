@@ -1,4 +1,4 @@
-﻿// /*
+// /*
 //  * Mage3DX
 //  * Copyright (C) 2021 Blue Moon Development. All rights reserved.
 //  * This program is free software: you can redistribute it and/or modify
@@ -20,7 +20,6 @@
 //  */
 
 
-
 #pragma once
 
 #include "MageException.h"
@@ -33,9 +32,11 @@ public:
 	ModelException(const int line, const char* file, std::string info) noexcept :
 		MageException(line, file),
 		mInfo(std::move(info)) {}
+
 	const char* what() const noexcept override;
 	const std::string& getInfo() const noexcept { return mInfo; }
-protected:
+
+
 private:
 
 	std::string mInfo;

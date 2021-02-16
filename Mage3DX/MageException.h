@@ -33,8 +33,9 @@ class MageException : public std::exception, public StacktraceExceptionBase
 {
 public:
 	MageException(const int line, const char* file) noexcept : StacktraceExceptionBase(true),
-		mLine(line),
-		mFile(file) { }
+	                                                           mLine(line),
+	                                                           mFile(file) { }
+
 	[[nodiscard]] const char* what() const noexcept override;
 	virtual const char* getType() const noexcept;
 	inline int getLine() const noexcept { return mLine; }
@@ -48,4 +49,3 @@ private:
 	int mLine;
 	std::string mFile;
 };
-
